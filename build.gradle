@@ -58,4 +58,11 @@ subprojects {
 	tasks.named('test') {
 		useJUnitPlatform()
 	}
+
+	// 모든 하위 프로젝트에 대해 build 태스크를 실행하도록 설정
+        tasks.named('build') {
+	    dependsOn subprojects.collect { project ->
+	        project.tasks.findByName('build')
+	    }
+        }
 }
