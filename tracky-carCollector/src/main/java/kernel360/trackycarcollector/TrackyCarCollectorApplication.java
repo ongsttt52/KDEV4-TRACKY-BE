@@ -17,6 +17,7 @@ public class TrackyCarCollectorApplication {
 
         @GetMapping("/")
         public String hello() {
+
             return "안녕-Webserver test";
         }
     }
