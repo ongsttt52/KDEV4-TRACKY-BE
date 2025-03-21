@@ -16,7 +16,7 @@ public class TrackyEmulatorApplication {
 
         @GetMapping("/")
         public String hello() {
-            return "안녕";
+            return "안녕1";
         }
     }
 
