@@ -1,5 +1,5 @@
 rootProject.name = 'tracky-be'
 include 'tracky-web'
 include 'tracky-emulator'
-include 'tracky-carCollector'
+include 'tracky-hub'
 
