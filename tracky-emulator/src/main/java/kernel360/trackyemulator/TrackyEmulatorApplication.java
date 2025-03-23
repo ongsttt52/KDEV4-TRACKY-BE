@@ -16,7 +16,7 @@ public class TrackyEmulatorApplication {
 
         @GetMapping("/")
         public String hello() {
-            return "안녕-emulator server";
+            return "안녕-emulator server -jeenee-테스트중";
         }
     }
 

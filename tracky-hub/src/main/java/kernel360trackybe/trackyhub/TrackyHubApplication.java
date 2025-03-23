@@ -16,7 +16,7 @@ public class TrackyHubApplication {
 
 		@GetMapping("/")
 		public String hello() {
-			return "안녕-webserver";
+			return "안녕-hubserver-jeenee-테스트중";
 		}
 	}
 
