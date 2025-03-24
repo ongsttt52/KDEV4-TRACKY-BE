@@ -3,13 +3,13 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql-tracky-web
+    container_name: tracky-web-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: tracky
-      MYSQL_DATABASE: tracky-web
-      MYSQL_USER: tracky
-      MYSQL_PASSWORD: tracky
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
