@@ -11,6 +11,10 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# 루트 및 모든 서브디렉토리의 .env 파일 무시
+**/.env
+**/.env.*
+
 # Package Files #
 *.jar
 *.war
