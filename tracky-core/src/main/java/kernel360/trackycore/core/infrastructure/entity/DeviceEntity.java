@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import kernel360.trackycore.core.infrastructure.base.DateBaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,7 +16,7 @@ import lombok.ToString;
 @Table(name = "device")
 @NoArgsConstructor
 @ToString
-public class DeviceEntity {
+public class DeviceEntity extends DateBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
