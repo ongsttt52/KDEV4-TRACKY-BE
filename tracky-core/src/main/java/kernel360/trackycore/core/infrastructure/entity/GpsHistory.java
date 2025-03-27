@@ -9,9 +9,11 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +32,8 @@ public class GpsHistory {
 	private Long id;
 
 	@Column(name = "drive_id")
-	private Long driveId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private DriveEntity drive;
 
 	@Column(name = "o_time")
 	private String oTime;
