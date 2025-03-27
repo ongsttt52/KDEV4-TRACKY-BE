@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kernel360.trackyweb.biz.infrastructure.entity.BizEntity;
 import kernel360.trackyweb.biz.infrastructure.repository.BizRepository;
+import kernel360.trackyweb.biz.presentation.entity.BizEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
