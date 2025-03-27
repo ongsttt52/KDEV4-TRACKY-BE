@@ -1,7 +1,5 @@
 package kernel360.trackycore.core.infrastructure.entity;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -18,29 +16,34 @@ import lombok.ToString;
 
 @Getter
 @Entity
-@Table(name = "Biz")
+@Table(name = "drive")
 @NoArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class BizEntity extends DateBaseEntity {
+public class DriveEntity extends DateBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "biz_name")
-	private String bizName;
+	private String mdn;
 
-	@Column(name = "biz_reg_num")
-	private String bizRegNum;
+	@Column(name = "rent_id")
+	private String rentId;
 
-	@Column(name = "biz_admin")
-	private String bizAdmin;
 
-	@Column(name = "biz_phone_num")
-	private String bizPhoneNum;
+	@Column(name = "device_id")
+	private String deviceId;
 
-	@Column(name = "deleted_at")
-	private LocalDateTime deleteAt;
+	@Column(name = "drive_loc_id")
+	private String driveLocId;
 
+	@Column(name = "drive_distance")
+	private String driveDistance;
+
+	@Column(name = "drive_on_time")
+	private String driveOnTime;
+
+	@Column(name = "drive_off_time")
+	private String driveOffTime;
 }
