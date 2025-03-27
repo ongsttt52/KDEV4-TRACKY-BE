@@ -1,16 +1,17 @@
-package kernel360.trackyweb.biz.infrastructure.entity;
+package kernel360.trackycore.core.infrastructure.entity;
 
 import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import kernel360.trackycore.core.infrastructure.base.DateBaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -21,9 +22,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class BizEntity {
+public class BizEntity extends DateBaseEntity {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "biz_name")
@@ -37,13 +39,6 @@ public class BizEntity {
 
 	@Column(name = "biz_phone_num")
 	private String bizPhoneNum;
-
-	@CreationTimestamp
-	@Column(name = "created_at")
-	private LocalDateTime createAt;
-
-	@Column(name = "updated_at")
-	private LocalDateTime updatedAt;
 
 	@Column(name = "deleted_at")
 	private LocalDateTime deleteAt;
