@@ -16,3 +16,6 @@ spring:
     properties:
       hibernate.globally_quoted_identifiers: true
       hibernate.format_sql: true
+
+jwt:
+  secret: my-super-secret-key-my-super-secret-key-1234567890
