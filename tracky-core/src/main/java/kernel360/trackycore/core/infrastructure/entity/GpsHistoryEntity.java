@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -25,32 +26,43 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GpsHistory {
+public class GpsHistoryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "drive_id")
+	@JoinColumn(name = "drive_id")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DriveEntity drive;
 
 	@Column(name = "o_time")
-	private String oTime;
+	private LocalDateTime oTime;
 
 	private String gcd;
 
-	private String lat;
+	private long lat;
 
-	private String lon;
+	private long lon;
 
 	private String ang;
 
 	private String spd;
 
-	private String sum;
+	private int sum;
 
 	@Column(name = "created_at")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
+
+	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, long lat, long lon, String ang, String spd, int sum) {
+	    this.drive = drive;
+	    this.oTime = oTime;
+	    this.gcd = gcd;
+	    this.lat = lat;
+	    this.lon = lon;
+	    this.ang = ang;
+	    this.spd = spd;
+	    this.sum = sum;
+	}
 }

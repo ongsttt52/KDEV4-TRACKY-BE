@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -35,12 +36,12 @@ public class DriveEntity extends DateBaseEntity {
 	private long rentId;
 
 
-	@Column(name = "device_id")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "device_id")
 	private DeviceEntity device;
 
-	@Column(name = "drive_loc_id")
 	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "drive_loc_id")
 	private LocationEntity location;
 
 	@Column(name = "drive_distance")
@@ -51,4 +52,9 @@ public class DriveEntity extends DateBaseEntity {
 
 	@Column(name = "drive_off_time")
 	private String driveOffTime;
+
+	public DriveEntity(String mdn, long rentId, DeviceEntity device, LocationEntity location, String driveDistance,
+		String driveOnTime, String driveOffTime) {
+			
+		}
 }

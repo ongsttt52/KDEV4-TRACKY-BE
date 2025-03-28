@@ -35,7 +35,7 @@ public class LocationEntity extends DateBaseEntity {
 	@Column(name = "drive_start_lat")
 	private String driveStartLat;
 
-	@Column(name = "drive_end_lot")
+	@Column(name = "drive_end_loc")
 	private String driveEndLoc;
 
 	@Column(name = "drive_end_lon")

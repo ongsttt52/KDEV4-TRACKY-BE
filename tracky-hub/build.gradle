@@ -5,3 +5,16 @@ tasks.bootJar {
 tasks.jar {
 	enabled = true
 }
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+
+	implementation project(':tracky-core')
+	implementation project(':tracky-common')
+
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+}
