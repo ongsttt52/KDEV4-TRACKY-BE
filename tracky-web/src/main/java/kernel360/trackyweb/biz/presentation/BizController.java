@@ -23,7 +23,7 @@ public class BizController {
 
 	private final BizService bizService;
 
-	@GetMapping("/getall")
+	@GetMapping("/all")
 	@Operation(summary = "전체 비즈 조회", description = "DB에 있는 모든 비즈 리스트를 반환합니다.")
 	public List<BizEntity> getAll(
 	) {
