@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kernel360.trackycore.core.infrastructure.exception.ExampleNotFoundException;
 import kernel360.trackyweb.biz.application.BizService;
 import kernel360.trackyweb.biz.presentation.entity.BizEntity;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,11 @@ public class BizController {
 		var result = bizService.getAll();
 		log.info("result: {}", result);
 		return result;
+	}
+
+	@GetMapping("/error")
+	public String errorSample() {
+
+		throw new ExampleNotFoundException();
 	}
 }

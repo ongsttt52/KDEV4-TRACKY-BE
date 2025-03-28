@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -35,11 +36,11 @@ public class DriveEntity extends DateBaseEntity {
 	private long rentId;
 
 
-	@Column(name = "device_id")
+	@JoinColumn(name = "device_id")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DeviceEntity device;
 
-	@Column(name = "drive_loc_id")
+	@JoinColumn(name = "drive_loc_id")
 	@OneToOne(fetch = FetchType.LAZY)
 	private LocationEntity location;
 

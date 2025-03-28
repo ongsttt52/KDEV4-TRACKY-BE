@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class CarEntity {
 	private String bizId;         // 업체 ID
 
 	// 외래키
+	@JoinColumn(name = "device_id")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DeviceEntity device;
 
