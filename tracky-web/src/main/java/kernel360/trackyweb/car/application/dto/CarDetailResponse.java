@@ -1,23 +1,25 @@
-package kernel360.trackyweb.car.domain;
+package kernel360.trackyweb.car.application.dto;
 
 import java.time.LocalDateTime;
 
 import kernel360.trackycore.core.infrastructure.entity.CarEntity;
+import kernel360.trackycore.core.infrastructure.entity.DeviceEntity;
 
-public record CarResponse(
+public record CarDetailResponse(
 	Long id,
 	String mdn,
-	String bizId,
+	String bizName,
 	String carType,
 	String carPlate,
 	String carYear,
 	String purpose,
 	String status,
 	String sum,
+	DeviceEntity deviceInfo,
 	LocalDateTime createdAt
 ) {
-	public static CarResponse from(CarEntity car) {
-		return new CarResponse(
+	public static CarDetailResponse from(CarEntity car) {
+		return new CarDetailResponse(
 			car.getId(),
 			car.getMdn(),
 			car.getBizId(),
@@ -27,8 +29,8 @@ public record CarResponse(
 			car.getPurpose(),
 			car.getStatus(),
 			car.getSum(),
+			car.getDevice(),
 			car.getCreatedAt()
 		);
 	}
 }
-

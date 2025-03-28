@@ -1,5 +1,7 @@
 package kernel360.trackycore.core.infrastructure.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,4 +31,14 @@ public class DeviceEntity extends DateBaseEntity {
 	private String did;
 
 	private String pv;
+
+	public static DeviceEntity create(Long id, String tid, String mid, String did, String pv) {
+		DeviceEntity device = new DeviceEntity();
+		device.id = id;
+		device.tid = tid;
+		device.mid = mid;
+		device.did = did;
+		device.pv = pv;
+		return device;
+	}
 }
