@@ -31,7 +31,7 @@ public class StopRequestClient {
 		request.setPv(car.getPv());
 		request.setDid(car.getDid());
 
-		request.setOnTime(LocalDateTime.now());
+		request.setOffTime(LocalDateTime.now());
 		request.setGcd("A");
 		request.setLat(car.getCycleLastLat());
 		request.setLon(car.getCycleLastLon());
