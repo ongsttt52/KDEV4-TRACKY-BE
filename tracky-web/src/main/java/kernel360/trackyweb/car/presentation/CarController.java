@@ -1,8 +1,10 @@
 package kernel360.trackyweb.car.presentation;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +28,12 @@ public class CarController {
 		return carService.getAll();
 	}
 
-	@GetMapping("get/{id}")
+	@GetMapping("searchbymdn/{keyword}")
 	@Operation(summary = "전체 차량 조회", description = "DB에 있는 모든 차량 리스트 조회")
+	public List<CarResponse> searchByMdn(
+		@PathVariable String keyword
+ 	) {
+		return carService.searchByMdn(keyword);
+	}
 
 }

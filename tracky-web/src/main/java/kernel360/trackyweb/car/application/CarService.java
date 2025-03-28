@@ -21,4 +21,10 @@ public class CarService {
 			.map(CarResponse::from)
 			.collect(Collectors.toList());
 	}
+
+	public List<CarResponse> searchByMdn(String keyword) {
+		return carRepository.findByMdnContainingOrdered(keyword).stream()
+			.map(CarResponse::from)
+			.collect(Collectors.toList());
+	}
 }
