@@ -2,19 +2,17 @@ package kernel360.trackyweb.member.application.service;
 
 import kernel360.trackyweb.member.infrastructure.entity.Member;
 import kernel360.trackyweb.member.infrastructure.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
-
-	public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
-		this.memberRepository = memberRepository;
-		this.passwordEncoder = passwordEncoder;
-	}
 
 	/**
 	 * 주어진 memberId와 평문 비밀번호를 통해 회원 인증 처리.

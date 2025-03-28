@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-@EntityScan(basePackages = {
-	"kernel360.trackycore.core.infrastructure",
-	"kernel360.trackyweb.member.infrastructure.entity",
-	"kernel360.trackyweb.biz.presentation.entity"
-})
+
+@EntityScan(basePackages = "kernel360")
+
 public class TrackyWebApplication {
 
 	public static void main(String[] args) {
