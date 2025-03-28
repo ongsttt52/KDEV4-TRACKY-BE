@@ -1,49 +1,68 @@
 package kernel360.trackyweb.member.jwt;
 
+import java.security.Key;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtTokenProvider {
 
-	private String secretKey = "jiwonKey";
+	@Value("${spring.jwt.secret}")
+	private String secretKeyRaw;
 
-	private final long expiration = 1000L * 60 * 60 * 24; // 1day
+	@Value("${spring.jwt.expiration}")
+	private long expiration;
 
-	public String generateToken(String memberId) {
+	private Key secretKey;
+
+	@PostConstruct
+protected void init() {
+		this.secretKey = Keys.hmacShaKeyFor(secretKeyRaw.getBytes());
+	}
+
+	public String generateToken(String memberId, String role) {
 		Date now = new Date();
-		Date expiry = new Date(now.getTime() + expiration);
+		Date validity = new Date(now.getTime() + expiration);
 
 		return Jwts.builder()
 			.setSubject(memberId)
+			.claim("role", role)
 			.setIssuedAt(now)
-			.setExpiration(expiry)
-			.signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+			.setExpiration(validity)
+			.signWith(secretKey, SignatureAlgorithm.HS256)
 			.compact();
 	}
 
-	public String extractMemberId(String token) {
-		return Jwts.parserBuilder()
-			.setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
-			.build()
-			.parseClaimsJws(token)
-			.getBody()
-			.getSubject();
+	// 토큰에서 memberId 추출
+	public String getMemberId(String token) {
+		return parseClaims(token).getBody().getSubject();
 	}
 
-	public boolean isTokenValid(String token) {
+	// 토큰의 유효성을 검사 (예: 만료, 변조 여부 등)
+	public boolean validateToken(String token) {
 		try {
-			extractMemberId(token);
+			parseClaims(token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
 			return false;
 		}
+	}
+
+	// 내부적으로 토큰을 파싱하는 메서드
+	private Jws<Claims> parseClaims(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
+			.parseClaimsJws(token);
 	}
 }
