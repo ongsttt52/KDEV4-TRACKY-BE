@@ -41,11 +41,11 @@ public class DriveEntity extends DateBaseEntity {
 	@Column(name = "device_id")
 	private long deviceId;
 
-	// @OneToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "drive_loc_id")
-	// private LocationEntity location;
-	@Column(name = "drive_loc_id")
-	private long driveLocId;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "drive_loc_id")
+	private LocationEntity location;
+	// @Column(name = "drive_loc_id")
+	// private long driveLocId;
 
 	@Column(name = "drive_distance")
 	private int driveDistance;
@@ -64,12 +64,12 @@ public class DriveEntity extends DateBaseEntity {
 		this.driveOffTime = offTime;
 	}
 
-	public static DriveEntity create(String mdn, long rentId, long deviceId, long driveLocId, LocalDateTime onTime) {
+	public static DriveEntity create(String mdn, long rentId, long deviceId, LocationEntity location, LocalDateTime onTime) {
 		DriveEntity drive = new DriveEntity();
 		drive.mdn = mdn;
 		drive.rentId = rentId;
 		drive.deviceId = deviceId;
-		drive.driveLocId = driveLocId;
+		drive.location = location;
 		drive.driveOnTime = onTime;
 		drive.driveDistance = 0;
 

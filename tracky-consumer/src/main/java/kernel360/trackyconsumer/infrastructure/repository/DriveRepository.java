@@ -11,9 +11,10 @@ import kernel360.trackycore.core.infrastructure.entity.DriveEntity;
 @Repository
 public interface DriveRepository extends JpaRepository<DriveEntity, Long> {
 
-	// @Query("SELECT d FROM DriveEntity d WHERE d.mdn = :mdn AND :otime BETWEEN d.driveOnTime AND d.driveOffTime")
-    @Query("SELECT d FROM DriveEntity d WHERE d.mdn = :mdn AND DATE(d.driveOnTime) = DATE(:otime) AND :otime BETWEEN d.driveOnTime AND d.driveOffTime")
+    @Query("SELECT d FROM DriveEntity d WHERE d.mdn = :mdn " +
+           "AND d.driveOnTime <= :otime " +
+           "ORDER BY d.id DESC LIMIT 1")
     DriveEntity findByMdnAndOtime(String mdn, LocalDateTime otime);
 
-	DriveEntity findByMdn(String mdn);
+    DriveEntity findByMdn(String mdn);
 }

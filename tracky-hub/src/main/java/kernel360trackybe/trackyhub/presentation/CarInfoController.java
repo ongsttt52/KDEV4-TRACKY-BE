@@ -33,4 +33,11 @@ public class CarInfoController {
 		producerService.sendCarStart(carOnOffRequest);
 		return new ApiResponse<>("000", "Success", carOnOffRequest.getMdn());
 	}
+
+	// @PostMapping(value = "/off")
+	// public ApiResponse<String> sendCarStop(@RequestBody CarOnOffRequest carOnOffRequest) {
+	//
+	// 	producerService.sendCarStop(carOnOffRequest);
+	// 	return new ApiResponse<>("000", "Success", carOnOffRequest.getMdn());
+	// }
 }

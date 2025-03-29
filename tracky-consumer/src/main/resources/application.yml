@@ -3,7 +3,7 @@ spring:
     name: tracky-consumer
 
   datasource:
-     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
      username: ${DB_USER}
      password: ${DB_PASSWORD}
 #    url: jdbc:mysql://localhost:3306/tracky-web?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
@@ -19,6 +19,7 @@ spring:
     properties:
       hibernate.globally_quoted_identifiers: true
       hibernate.format_sql: true
+      hibernate.jdbc.time_zone: Asia/Seoul
 
 server:
   port: 8083

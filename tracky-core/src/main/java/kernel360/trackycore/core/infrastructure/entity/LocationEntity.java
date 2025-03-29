@@ -44,6 +44,12 @@ public class LocationEntity extends DateBaseEntity {
 	@Column(name = "drive_end_lat")
 	private long driveEndLat;
 
+	public void updateEndLocation(long lat, long lon) {
+		this.driveEndLoc = "종료 지점";
+		this.driveEndLat = lat;
+		this.driveEndLon = lon;
+	}
+
 	public static LocationEntity create(
             String driveStartLoc,
 			long driveStartLon,

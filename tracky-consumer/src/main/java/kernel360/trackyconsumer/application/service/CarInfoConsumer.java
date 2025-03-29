@@ -50,6 +50,7 @@ public class CarInfoConsumer {
 				processOnMessage(message);
 				break;
 			case "off":
+				// processOffMessage(message);
 				break;
 		}
 	}
@@ -60,15 +61,15 @@ public class CarInfoConsumer {
 		locationEntityRepository.save(location);
 
 		String mdn = carOnOffRequest.getMdn();
-		// CarEntity car = carEntityRepository.findByMdn(mdn);
-		//
-		// RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
-		//
-		// DriveEntity drive = DriveEntity.create(mdn, rent.getId(), car.getDevice().getId(), location.getId(), carOnOffRequest.getOnTime());
+		CarEntity car = carEntityRepository.findByMdn(mdn);
+
+		RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
+
+		DriveEntity drive = DriveEntity.create(mdn, rent.getId(), car.getDevice().getId(), location, carOnOffRequest.getOnTime());
 
 		// 임시 사용
-		LocalDateTime tmp = LocalDateTime.now();
-		DriveEntity drive = DriveEntity.create(mdn, 1, 1, location.getId(), tmp);
+		// LocalDateTime tmp = LocalDateTime.now();
+		// DriveEntity drive = DriveEntity.create(mdn, 1, 1, location, tmp);
 		// 임시 사용
 
 		driveRepository.save(drive);
@@ -84,7 +85,11 @@ public class CarInfoConsumer {
 	// 	drive.updateDistance(carOnOffRequest.getSum());
 	// 	drive.updateOffTime(carOnOffRequest.getOffTime());
 	//
-	// 	LocationEntity location = drive.getL
+	// 	LocationEntity location = drive.getLocation();
+	// 	location.updateEndLocation(carOnOffRequest.getLat(), carOnOffRequest.getLon());
+	//
+	// 	CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
+	// 	car.updateSum(drive.getDriveDistance());
 	// }
 
 	// GPS 정보 처리 큐
@@ -92,8 +97,14 @@ public class CarInfoConsumer {
 	@Transactional
 	public void receiveCarMessage(GpsHistoryMessage message) {
 
+		log.info("요청 시간: {}", message.getOTime().toString());
+		log.info("DB 시간: {}", driveRepository.findById(245L).get().getDriveOnTime());
+
 		List<CycleGpsRequest> cycleGpsRequestList = message.getCList();
+		// Drive 어떻게 찾지?
+
 		DriveEntity drive = driveRepository.findByMdnAndOtime(message.getMdn(), message.getOTime());
+		log.info("드라이브 엔티티: {}", drive.toString());
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < message.getCCnt(); i++) {
@@ -113,6 +124,7 @@ public class CarInfoConsumer {
 	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, int sum, CycleGpsRequest cycleGpsRequest) {
 
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(drive, oTime, sum);
+		log.info("히스토리 엔티티: {}", gpsHistoryEntity.toString());
 		
 		gpsHistoryRepository.save(gpsHistoryEntity);
 	}
