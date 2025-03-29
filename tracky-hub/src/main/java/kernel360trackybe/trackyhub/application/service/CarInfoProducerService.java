@@ -6,6 +6,9 @@ import kernel360trackybe.trackyhub.application.dto.CycleInfoRequest;
 import kernel360trackybe.trackyhub.application.dto.GpsHistoryMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.UUID;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -49,4 +52,8 @@ public class CarInfoProducerService {
 			gpsHistoryMessage
 		);
 	}
+
+    public String getToken() {
+        return UUID.randomUUID().toString();
+    }
 }

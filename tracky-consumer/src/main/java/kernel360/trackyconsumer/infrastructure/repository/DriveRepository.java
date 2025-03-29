@@ -16,5 +16,5 @@ public interface DriveRepository extends JpaRepository<DriveEntity, Long> {
            "ORDER BY d.id DESC LIMIT 1")
     DriveEntity findByMdnAndOtime(String mdn, LocalDateTime otime);
 
-    DriveEntity findByMdn(String mdn);
+	DriveEntity findByMdn(String mdn);
 }
