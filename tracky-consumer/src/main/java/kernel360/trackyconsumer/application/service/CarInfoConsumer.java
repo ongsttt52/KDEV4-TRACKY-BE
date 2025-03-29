@@ -50,7 +50,7 @@ public class CarInfoConsumer {
 				processOnMessage(message);
 				break;
 			case "off":
-				// processOffMessage(message);
+				processOffMessage(message);
 				break;
 		}
 	}
@@ -75,22 +75,24 @@ public class CarInfoConsumer {
 		driveRepository.save(drive);
 	}
 
-	// public void processOffMessage(CarOnOffRequest carOnOffRequest) {
-	//
-	// 	/** 시동 off시 다음 동작 수행
-	// 	 * 주행 종료 시간 update
-	// 	 * 주행 별 거리 sum으로 update
-	// 	 **/
-	// 	DriveEntity drive = driveRepository.findByMdnAndOtime(carOnOffRequest.getMdn(), carOnOffRequest.getOnTime());
-	// 	drive.updateDistance(carOnOffRequest.getSum());
-	// 	drive.updateOffTime(carOnOffRequest.getOffTime());
-	//
-	// 	LocationEntity location = drive.getLocation();
-	// 	location.updateEndLocation(carOnOffRequest.getLat(), carOnOffRequest.getLon());
-	//
-	// 	CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
-	// 	car.updateSum(drive.getDriveDistance());
-	// }
+	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
+
+		/** 시동 off시 다음 동작 수행
+		 * 주행 종료 시간 update(Drive)
+		 * 주행 별 거리 sum으로 update(Drive)
+		 * 차량 주행 거리 += sum update(Car)
+		 * 주행 종료 지점 update(Location)
+		 **/
+		DriveEntity drive = driveRepository.findByMdnAndOtime(carOnOffRequest.getMdn(), carOnOffRequest.getOnTime());
+		drive.updateDistance(carOnOffRequest.getSum());
+		drive.updateOffTime(carOnOffRequest.getOffTime());
+
+		CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
+		car.updateSum(drive.getDriveDistance());
+
+		LocationEntity location = drive.getLocation();
+		location.updateEndLocation(carOnOffRequest.getLat(), carOnOffRequest.getLon());
+	}
 
 	// GPS 정보 처리 큐
 	@RabbitListener(queues = RabbitMQConfig.GPS_QUEUE_NAME)

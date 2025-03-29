@@ -26,14 +26,14 @@ public class CarInfoProducerService {
 		);
 	}
 
-	// public void sendCarStop(CarOnOffRequest carOnOffRequest) {
-	//
-	// 	rabbitTemplate.convertAndSend(
-	// 		RabbitMQConfig.EXCHANGE_NAME,
-	// 		"off",
-	// 		carOnOffRequest
-	// 	);
-	// }
+	public void sendCarStop(CarOnOffRequest carOnOffRequest) {
+
+		rabbitTemplate.convertAndSend(
+			RabbitMQConfig.EXCHANGE_NAME,
+			"off",
+			carOnOffRequest
+		);
+	}
 
 	/**
 	 * GPS 정보 RabbitMQ로 전송 및 누적주행 거리 계산해서 RabbitMQ로 전송
