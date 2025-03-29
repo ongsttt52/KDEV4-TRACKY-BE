@@ -13,24 +13,24 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.MediaType;
 
 @RestController
-@RequestMapping(value = "/api/cars", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/car", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Slf4j
 public class CarInfoController {
 
 	private final CarInfoProducerService producerService;
 
-	@PostMapping
+	@PostMapping(value = "/cycle")
 	public ApiResponse<String> sendCycleInfo(@RequestBody CycleInfoRequest cycleInfoRequest) {
 
 		producerService.sendCycleInfo(cycleInfoRequest);
         return new ApiResponse<>("000", "Success", cycleInfoRequest.getMdn());
 	}
 
-	// @PostMapping(value = "/start")
-	// public ApiResponse<String> sendCarStart(@RequestBody CarOnOffRequest carOnOffRequest) {
-	//
-	// 	producerService.sendCarStart(carOnOffRequest);
-	// 	return new ApiResponse<>("000", "Success", carOnOffRequest.getMdn());
-	// }
+	@PostMapping(value = "/on")
+	public ApiResponse<String> sendCarStart(@RequestBody CarOnOffRequest carOnOffRequest) {
+
+		producerService.sendCarStart(carOnOffRequest);
+		return new ApiResponse<>("000", "Success", carOnOffRequest.getMdn());
+	}
 }

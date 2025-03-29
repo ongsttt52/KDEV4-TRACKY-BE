@@ -16,7 +16,7 @@ public class RabbitMQConfig {
 	public static final String EXCHANGE_NAME = "car-info-exchange";
 	// public static final String QUEUE_NAME = "car-info-queue";
 	public static final String GPS_QUEUE_NAME = "gps-queue";
-	public static final String ONOFF_QUEUE_NAME = "onOffQueue";
+	public static final String ONOFF_QUEUE_NAME = "on-off-Queue";
 	// public static final String OFF_QUEUE_NAME = "off-queue";
 	
 	@Bean

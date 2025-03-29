@@ -17,11 +17,13 @@ import jakarta.persistence.Table;
 import kernel360.trackycore.core.infrastructure.base.DateBaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "rent")
 @Getter
 @NoArgsConstructor
+@ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RentEntity extends DateBaseEntity {
 
@@ -54,19 +56,19 @@ public class RentEntity extends DateBaseEntity {
 	private String rentLoc;			// 대여 위치
 
 	@Column(name = "rent_lat")
-	private long rentLat;			// 대여 경도
+	private Long rentLat;			// 대여 경도
 
 	@Column(name = "rent_lon")
-	private long rentLon;			// 대여 위도
+	private Long rentLon;			// 대여 위도
 
 	@Column(name = "return_loc")
 	private String returnLoc;			// 반납 위치
 
 	@Column(name = "return_lat")
-	private long returnLat;			// 반납 위도
+	private Long returnLat;			// 반납 위도
 
 	@Column(name = "return_lon")
-	private long returnLon;			// 반납 경도
+	private Long returnLon;			// 반납 경도
 
 
 }

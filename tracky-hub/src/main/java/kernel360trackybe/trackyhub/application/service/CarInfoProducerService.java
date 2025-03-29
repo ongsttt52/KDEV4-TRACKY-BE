@@ -1,5 +1,6 @@
 package kernel360trackybe.trackyhub.application.service;
 
+import kernel360trackybe.trackyhub.application.dto.CarOnOffRequest;
 import kernel360trackybe.trackyhub.config.RabbitMQConfig;
 import kernel360trackybe.trackyhub.application.dto.CycleInfoRequest;
 import kernel360trackybe.trackyhub.application.dto.GpsHistoryMessage;
@@ -16,14 +17,14 @@ public class CarInfoProducerService {
 	private final RabbitTemplate rabbitTemplate;
 
 
-	// public void sendCarStart(CarOnOffRequest carOnOffRequest) {
-	//
-	// 	rabbitTemplate.convertAndSend(
-	// 		RabbitMQConfig.EXCHANGE_NAME,
-	// 		"on",
-	// 		carOnOffRequest
-	// 	);
-	// }
+	public void sendCarStart(CarOnOffRequest carOnOffRequest) {
+
+		rabbitTemplate.convertAndSend(
+			RabbitMQConfig.EXCHANGE_NAME,
+			"on",
+			carOnOffRequest
+		);
+	}
 
 	/**
 	 * GPS 정보 RabbitMQ로 전송 및 누적주행 거리 계산해서 RabbitMQ로 전송

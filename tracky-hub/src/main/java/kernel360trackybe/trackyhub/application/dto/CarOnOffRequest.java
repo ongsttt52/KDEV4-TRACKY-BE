@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import kernel360.trackycore.core.infrastructure.entity.LocationEntity;
 
 @Getter
@@ -16,8 +18,11 @@ public class CarOnOffRequest {
     private String mid;           // 제조사 ID
     private String pv;            // 패킷 버전
     private String did;           // 디바이스 ID
-    
+
+    @JsonFormat(pattern = "yyyyMMddHHmm")
     private LocalDateTime onTime;  // 시동 On 시간
+
+    @JsonFormat(pattern = "yyyyMMddHHmm")
     private LocalDateTime offTime; // 시동 Off 시간
     
     private String gcd;           // GPS 상태
