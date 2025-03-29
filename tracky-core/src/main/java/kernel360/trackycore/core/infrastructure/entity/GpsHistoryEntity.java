@@ -26,7 +26,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GpsHistory {
+public class GpsHistoryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,21 +37,32 @@ public class GpsHistory {
 	private DriveEntity drive;
 
 	@Column(name = "o_time")
-	private String oTime;
+	private LocalDateTime oTime;
 
 	private String gcd;
 
-	private String lat;
+	private long lat;
 
-	private String lon;
+	private long lon;
 
 	private String ang;
 
 	private String spd;
 
-	private String sum;
+	private int sum;
 
 	@Column(name = "created_at")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
+
+	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, long lat, long lon, String ang, String spd, int sum) {
+	    this.drive = drive;
+	    this.oTime = oTime;
+	    this.gcd = gcd;
+	    this.lat = lat;
+	    this.lon = lon;
+	    this.ang = ang;
+	    this.spd = spd;
+	    this.sum = sum;
+	}
 }
