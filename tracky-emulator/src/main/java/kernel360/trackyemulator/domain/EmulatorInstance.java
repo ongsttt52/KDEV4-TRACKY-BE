@@ -46,19 +46,14 @@ public class EmulatorInstance {
 		this.token = token;
 	}
 
-	//누적 거리 더하기
-	public void addSum(double nowSum) {
-		this.sum += nowSum;    //시동 ON 후 누적 거리
+	// 주기 데이터 정보 & 누적 거리 한번에 업데이트
+	public void updateCycleInfo(long lat, long lon, int speed, int ang, double distance) {
+		this.sum += distance;
+		this.cycleLastLat = lat;
+		this.cycleLastLon = lon;
+		this.cycleLastSpeed = speed;
+		this.cycleLastAng = ang;
 	}
-
-	//주기 데이터 정보 저장
-	public void setCycleLastInfo(long cycleLastLat, long cycleLastLon, int cycleLastSpeed, int cycleLastAng) {
-		this.cycleLastLat = cycleLastLat;
-		this.cycleLastLon = cycleLastLon;
-		this.cycleLastSpeed = cycleLastSpeed;
-		this.cycleLastAng = cycleLastAng;
-	}
-
 
 	public void addCycleData(CycleGpsRequest data) {
 		cycleBuffer.add(data);

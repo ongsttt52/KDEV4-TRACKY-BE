@@ -1,8 +1,5 @@
 package kernel360.trackyemulator.application.service.client;
 
-import java.time.LocalDateTime;
-
-import kernel360.trackyemulator.application.mapper.CarOnOffRequestMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

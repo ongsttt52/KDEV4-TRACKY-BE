@@ -1,6 +1,8 @@
 package kernel360.trackyemulator.application.service.client;
 
+import kernel360.trackyemulator.domain.EmulatorInstance;
 import kernel360.trackyemulator.presentation.dto.ApiResponse;
+import kernel360.trackyemulator.presentation.dto.CycleGpsRequest;
 import kernel360.trackyemulator.presentation.dto.CycleInfoRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -18,7 +24,19 @@ public class CycleRequestClient {
 
     private final RestTemplate restTemplate;
 
-    public ApiResponse sendCycleData(CycleInfoRequest request) {
+    public ApiResponse sendCycleData(EmulatorInstance instance) {
+
+        // CycleInfoRequest DTO 생성
+        List<CycleGpsRequest> buffer = new ArrayList<>(instance.getCycleBuffer());
+        CycleInfoRequest request = CycleInfoRequest.of(
+                instance.getMdn(),
+                instance.getTid(),
+                instance.getMid(),
+                instance.getPv(),
+                instance.getDid(),
+                LocalDateTime.now(),
+                buffer
+        );
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
