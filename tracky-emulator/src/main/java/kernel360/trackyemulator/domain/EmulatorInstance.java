@@ -1,6 +1,10 @@
 package kernel360.trackyemulator.domain;
 
+import kernel360.trackyemulator.presentation.dto.CycleGpsRequest;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class EmulatorInstance {
@@ -14,12 +18,14 @@ public class EmulatorInstance {
 
 	private String token;  // 단말 인증 토큰
 
-	private int sum;             // 시동 ON 후 총 누적 거리
+	private double sum;             // 시동 ON 후 총 누적 거리
 
 	private long cycleLastLat;    // 60초 주기 데이터 중 마지막 60번째 GPS 위도
 	private long cycleLastLon;    // 60초 주기 데이터 중 마지막 60번째 GPS 경도
 	private int cycleLastSpeed;    //60초 주기 데이터 중 마지막 속도
 	private int cycleLastAng;        //60초 주기 데이터 중 마지막 방향
+
+	private final List<CycleGpsRequest> cycleBuffer = new ArrayList<>();
 
 	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd) {
 		this.mdn = mdn;
@@ -35,14 +41,17 @@ public class EmulatorInstance {
 		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd);
 	}
 
+	//토큰 세팅
 	public void setToken(String token) {
 		this.token = token;
 	}
 
-	public void addSum(int nowSum) {
+	//누적 거리 더하기
+	public void addSum(double nowSum) {
 		this.sum += nowSum;    //시동 ON 후 누적 거리
 	}
 
+	//주기 데이터 정보 저장
 	public void setCycleLastInfo(long cycleLastLat, long cycleLastLon, int cycleLastSpeed, int cycleLastAng) {
 		this.cycleLastLat = cycleLastLat;
 		this.cycleLastLon = cycleLastLon;
@@ -50,4 +59,19 @@ public class EmulatorInstance {
 		this.cycleLastAng = cycleLastAng;
 	}
 
+
+	public void addCycleData(CycleGpsRequest data) {
+		cycleBuffer.add(data);
+	}
+
+	//주기 데이터 60개가 모였는지
+	public boolean isBufferFull() {
+		return cycleBuffer.size() >= 60;
+	}
+
+	public List<CycleGpsRequest> clearBuffer() {
+		List<CycleGpsRequest> copy = new ArrayList<>(cycleBuffer);
+		cycleBuffer.clear();
+		return copy;
+	}
 }

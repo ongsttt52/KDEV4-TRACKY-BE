@@ -1,8 +1,9 @@
 package kernel360.trackyemulator.application.service.client;
 
-import java.time.LocalDateTime;
-
-import kernel360.trackyemulator.application.mapper.CarOnOffRequestMapper;
+import kernel360.trackyemulator.presentation.dto.ApiResponse;
+import kernel360.trackyemulator.presentation.dto.CycleInfoRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,40 +11,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import kernel360.trackyemulator.presentation.dto.ApiResponse;
-import kernel360.trackyemulator.presentation.dto.CarOnOffRequest;
-import kernel360.trackyemulator.domain.EmulatorInstance;
-import lombok.RequiredArgsConstructor;
-
 @Component
 @RequiredArgsConstructor
-public class StopRequestClient {
+@Slf4j
+public class CycleRequestClient {
 
     private final RestTemplate restTemplate;
 
-    public ApiResponse sendCarStop(EmulatorInstance car) {
-
-        //CarOnOffRequest DTO 생성
-        CarOnOffRequest request = CarOnOffRequest.ofOff(car);
+    public ApiResponse sendCycleData(CycleInfoRequest request) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<CarOnOffRequest> entity = new HttpEntity<>(request, headers);
+        HttpEntity<CycleInfoRequest> entity = new HttpEntity<>(request, headers);
 
-        //sendCarStop 전송
+        // Cycle 데이터 전송 API 호출
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
-                "/http://localhost:8082/api/car/시동 오프",
+                "http://localhost:8082/api/car/cycle",
                 entity,
                 ApiResponse.class
         );
 
-        //API 응답
+        // API 응답 처리
         ApiResponse apiResponse = response.getBody();
         if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
             throw new IllegalStateException(
-                    "Stop 정보 전송 실패 " + apiResponse.getMdn());
+                    "주기 데이터 전송 실패 " + request.getMdn());
         }
+
+        log.info("{} → 60초 주기 데이터 전송 완료", request.getMdn());
 
         return apiResponse;
     }

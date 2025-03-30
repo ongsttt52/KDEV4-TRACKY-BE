@@ -1,8 +1,5 @@
 package kernel360.trackyemulator.application.service.client;
 
-import java.time.LocalDateTime;
-
-import kernel360.trackyemulator.application.mapper.CarOnOffRequestMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,12 +18,14 @@ import lombok.RequiredArgsConstructor;
 public class StartRequestClient {
 
     private final RestTemplate restTemplate;
-    private final CarOnOffRequestMapper requestMapper;
+    private final RandomLocationGenerator locationGenerator;
 
     public ApiResponse sendCarStart(EmulatorInstance car) {
 
         //CarOnOffRequest DTO 생성
-        CarOnOffRequest request = requestMapper.toCarOnRequest(car);
+        long lat = locationGenerator.randomLatitude();  //랜덤 위도 생성
+        long lon = locationGenerator.randomLongitude(); //랜덤 경도 생성
+        CarOnOffRequest request = CarOnOffRequest.ofOn(car, lat, lon);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
