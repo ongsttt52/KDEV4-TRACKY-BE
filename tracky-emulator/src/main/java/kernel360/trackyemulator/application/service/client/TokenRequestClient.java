@@ -21,12 +21,8 @@ public class TokenRequestClient {
 	public String getToken(EmulatorInstance instance) {
 
 		//TokenRequest DTO set
-		TokenRequest request = new TokenRequest();
-		request.setMdn(instance.getMdn());
-		request.setTid(instance.getTid());
-		request.setMid(instance.getMid());
-		request.setPv(instance.getPv());
-		request.setDid(instance.getDid());
+		TokenRequest request = TokenRequest.from(instance);
+
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
