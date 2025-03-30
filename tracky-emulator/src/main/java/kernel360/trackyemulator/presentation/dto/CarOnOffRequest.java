@@ -1,14 +1,12 @@
-package kernel360.trackyemulator.application.dto;
+package kernel360.trackyemulator.presentation.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class CarOnOffRequest {
 	private String mdn;           // 차량 식별 key
 	private String tid;           // 차량관제 터미널 ID
