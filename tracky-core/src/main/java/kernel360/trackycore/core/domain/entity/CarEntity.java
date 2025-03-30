@@ -12,13 +12,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.base.DateBaseEntity;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "car")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CarEntity extends DateBaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,12 +53,7 @@ public class CarEntity extends DateBaseEntity {
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
-	public void updateSum(int sum) {
-		this.sum += sum;
-	}
-
-	public static CarEntity create(
-		Long id,
+	protected CarEntity (
 		String mdn,
 		String bizId,
 		DeviceEntity device,
@@ -67,18 +64,14 @@ public class CarEntity extends DateBaseEntity {
 		String status,
 		String sum
 	) {
-		CarEntity car = new CarEntity();
-		car.id = id;
-		car.mdn = mdn;
-		car.bizId = bizId;
-		car.device = device;
-		car.carType = carType;
-		car.carPlate = carPlate;
-		car.carYear = carYear;
-		car.purpose = purpose;
-		car.status = status;
-		car.sum = sum;
-		car.createdAt = LocalDateTime.now();
-		return car;
+		this.mdn = mdn;
+		this.bizId = bizId;
+		this.device = device;
+		this.carType = carType;
+		this.carPlate = carPlate;
+		this.carYear = carYear;
+		this.purpose = purpose;
+		this.status = status;
+		this.sum = sum;
 	}
 }
