@@ -1,7 +1,6 @@
 package kernel360.trackyweb.car.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -29,20 +28,16 @@ public class CarService {
 	 * @return 전체 차량 List
 	 */
 	public ApiResponse<List<CarResponse>> getAll() {
-		return ApiResponse.success(carRepository.findAll().stream()
-			.map(CarResponse::from)
-			.collect(Collectors.toList()));
+		return ApiResponse.success(CarResponse.fromList(carRepository.findAll()));
 	}
 
 	/**
 	 * Mdn 기반 차량 검색
-	 * @param keyword
+	 * @param mdn
 	 * @return 검색된 차량 List
 	 */
-	public ApiResponse<List<CarResponse>> searchByMdn(String keyword) {
-		return ApiResponse.success(carRepository.findByMdnContainingOrdered(keyword).stream()
-			.map(CarResponse::from)
-			.collect(Collectors.toList()));
+	public ApiResponse<List<CarResponse>> searchByMdn(String mdn) {
+		return ApiResponse.success(CarResponse.fromList(carRepository.findByMdnContainingOrdered(mdn)));
 	}
 
 	/**

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,37 +20,32 @@ import kernel360.trackyweb.car.application.dto.CarResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/car")
+@RequestMapping("/api/cars")
 @RequiredArgsConstructor
-@Tag(name = "Car API", description = "차량에 관련한 기본 CRUD API 입니다")
-public class CarController {
+public class CarController implements CarApiDocs {
 
 	private final CarService carService;
 
-	@GetMapping("all")
-	@Operation(summary = "전체 차량 조회", description = "DB에 있는 모든 차량 리스트 조회")
+	@GetMapping("/all")
 	public ApiResponse<List<CarResponse>> getAll() {
 		return carService.getAll();
 	}
 
-	@GetMapping("searchbymdn/{keyword}")
-	@Operation(summary = "전체 차량 조회", description = "DB에 있는 모든 차량 리스트 조회")
+	@GetMapping("/search")
 	public ApiResponse<List<CarResponse>> searchByMdn(
-		@PathVariable String keyword
+		@RequestParam String mdn
  	) {
-		return carService.searchByMdn(keyword);
+		return carService.searchByMdn(mdn);
 	}
 
-	@GetMapping("searchbyid/{id}")
-	@Operation(summary = "단건 차량 조회", description = "DB에 있는 차량 중 id로 상세 조회")
+	@GetMapping("/search/{id}")
 	public ApiResponse<CarResponse> searchById(
 		@PathVariable Long id
 	) {
 		return carService.searchById(id);
 	}
 
-	@GetMapping("searchbyid/detail/{id}")
-	@Operation(summary = "단건 차량 조회", description = "DB에 있는 차량 중 id로 상세 조회, device 정보 포함")
+	@GetMapping("/search/{id}/detail")
 	public ApiResponse<CarDetailResponse> searchDetailById(
 		@PathVariable Long id
 	) {

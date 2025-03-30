@@ -12,13 +12,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.base.DateBaseEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "car")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CarEntity extends DateBaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,37 +47,26 @@ public class CarEntity extends DateBaseEntity {
 
 	private String purpose;       // 차량용도
 	private String status;        // 차량상태
-	private	String sum;           // 누적 주행 거리
+	private String sum;           // 누적 주행 거리
 
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
-	public void updateSum(int sum) {
-		this.sum += sum;
+	protected CarEntity(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
+		String purpose, String status, String sum) {
+		this.mdn = mdn;
+		this.bizId = bizId;
+		this.device = device;
+		this.carType = carType;
+		this.carPlate = carPlate;
+		this.carYear = carYear;
+		this.purpose = purpose;
+		this.status = status;
+		this.sum = sum;
 	}
 
-	public static CarEntity create(
-		String mdn,
-		String bizId,
-		DeviceEntity device,
-		String carType,
-		String carPlate,
-		String carYear,
-		String purpose,
-		String status,
-		String sum
-	) {
-		CarEntity car = new CarEntity();
-		car.mdn = mdn;
-		car.bizId = bizId;
-		car.device = device;
-		car.carType = carType;
-		car.carPlate = carPlate;
-		car.carYear = carYear;
-		car.purpose = purpose;
-		car.status = status;
-		car.sum = sum;
-		car.createdAt = LocalDateTime.now();
-		return car;
+	public static CarEntity create(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
+		String purpose, String status, String sum) {
+		return new CarEntity(mdn, bizId, device, carType, carPlate, carYear, purpose, status, sum);
 	}
 }
