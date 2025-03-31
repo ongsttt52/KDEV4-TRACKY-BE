@@ -1,18 +1,17 @@
 package kernel360.trackyweb.car.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import kernel360.trackycore.core.common.ApiResponse;
-import kernel360.trackycore.core.domain.entity.CarEntity;
-import kernel360.trackycore.core.domain.entity.DeviceEntity;
+import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
-import kernel360.trackyweb.car.application.dto.CarDetailResponse;
-import kernel360.trackyweb.car.application.dto.CarRequest;
-import kernel360.trackyweb.car.application.dto.CarResponse;
+import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
+import kernel360.trackyweb.car.presentation.dto.CarRequest;
+import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.car.infrastructure.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,20 +28,16 @@ public class CarService {
 	 * @return 전체 차량 List
 	 */
 	public ApiResponse<List<CarResponse>> getAll() {
-		return ApiResponse.success(carRepository.findAll().stream()
-			.map(CarResponse::from)
-			.collect(Collectors.toList()));
+		return ApiResponse.success(CarResponse.fromList(carRepository.findAll()));
 	}
 
 	/**
 	 * Mdn 기반 차량 검색
-	 * @param keyword
+	 * @param mdn
 	 * @return 검색된 차량 List
 	 */
-	public ApiResponse<List<CarResponse>> searchByMdn(String keyword) {
-		return ApiResponse.success(carRepository.findByMdnContainingOrdered(keyword).stream()
-			.map(CarResponse::from)
-			.collect(Collectors.toList()));
+	public ApiResponse<List<CarResponse>> searchByMdn(String mdn) {
+		return ApiResponse.success(CarResponse.fromList(carRepository.findByMdnContainingOrdered(mdn)));
 	}
 
 	/**
@@ -90,7 +85,7 @@ public class CarService {
 			carRequest.sum()
 		);
 
-		var savedCar = carRepository.save(car);
+		CarEntity savedCar = carRepository.save(car);
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
 

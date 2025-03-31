@@ -1,6 +1,10 @@
 package kernel360.trackyemulator.domain;
 
+import kernel360.trackyemulator.presentation.dto.CycleGpsRequest;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class EmulatorInstance {
@@ -11,44 +15,58 @@ public class EmulatorInstance {
 	private final String pv;     // 패킷 버전 - '5' 고정
 	private final String did;    // 디바이스 아이디 - GPS로만 운영함으로 '1'로 고정
 	private final String gcd;    // GPS 상태 - 'A' 고정
-	private final String token;  // 단말 인증 토큰
 
-	private int sum;             // 시동 ON 후 총 누적 거리
+	private String token;  // 단말 인증 토큰
+
+	private double sum;             // 시동 ON 후 총 누적 거리
 
 	private long cycleLastLat;    // 60초 주기 데이터 중 마지막 60번째 GPS 위도
 	private long cycleLastLon;    // 60초 주기 데이터 중 마지막 60번째 GPS 경도
-	private String cycleLastSpeed;    //60초 주기 데이터 중 마지막 속도
+	private int cycleLastSpeed;    //60초 주기 데이터 중 마지막 속도
+	private int cycleLastAng;        //60초 주기 데이터 중 마지막 방향
 
-	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd, String token) {
+	private final List<CycleGpsRequest> cycleBuffer = new ArrayList<>();
+
+	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd) {
 		this.mdn = mdn;
 		this.tid = tid;
 		this.mid = mid;
 		this.pv = pv;
 		this.did = did;
 		this.gcd = gcd;
-		this.token = token;
 		this.sum = 0;
 	}
 
-	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd,
-		String token) {
-		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, token);
+	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd) {
+		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd);
 	}
 
-	public void setSum(int nowSum) {
-		this.sum = nowSum;    //시동 ON 후 누적 거리
+	//토큰 세팅
+	public void setToken(String token) {
+		this.token = token;
 	}
 
-	public void setLastLat(long cycleLastLat) {
-		this.cycleLastLat = cycleLastLat;
+	// 주기 데이터 정보 & 누적 거리 한번에 업데이트
+	public void updateCycleInfo(long lat, long lon, int speed, int ang, double distance) {
+		this.sum += distance;
+		this.cycleLastLat = lat;
+		this.cycleLastLon = lon;
+		this.cycleLastSpeed = speed;
+		this.cycleLastAng = ang;
 	}
 
-	public void setLastLon(long cycleLastLon) {
-		this.cycleLastLon = cycleLastLon;
+	public void addCycleData(CycleGpsRequest data) {
+		cycleBuffer.add(data);
 	}
 
-	public void setLastSpeed(String cycleLastSpeed) {
-		this.cycleLastSpeed = cycleLastSpeed;
+	//주기 데이터 60개가 모였는지
+	public boolean isBufferFull() {
+		return cycleBuffer.size() >= 60;
 	}
 
+	public List<CycleGpsRequest> clearBuffer() {
+		List<CycleGpsRequest> copy = new ArrayList<>(cycleBuffer);
+		cycleBuffer.clear();
+		return copy;
+	}
 }
