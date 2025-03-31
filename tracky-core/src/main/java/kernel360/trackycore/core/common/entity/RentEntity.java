@@ -138,39 +138,3 @@ public class RentEntity extends DateBaseEntity {
 		);
 	}
 }
-
-/*
-	// 생성자 추가
-	public RentEntity(
-		String mdn,
-		String rentUuid,
-		LocalDateTime rentStime,
-		LocalDateTime rentEtime,
-		String renterName,
-		String renterPhone,
-		String purpose,
-		String rentStatus,
-		String rentLoc,
-		Long rentLat,
-		Long rentLon,
-		String returnLoc,
-		Long returnLat,
-		Long returnLon
-	) {
-		this.mdn = mdn;
-		this.rentUuid = rentUuid;
-		this.rentStime = rentStime;
-		this.rentEtime = rentEtime;
-		this.renterName = renterName;
-		this.renterPhone = renterPhone;
-		this.purpose = purpose;
-		this.rentStatus = rentStatus;
-		this.rentLoc = rentLoc;
-		this.rentLat = rentLat;
-		this.rentLon = rentLon;
-		this.returnLoc = returnLoc;
-		this.returnLat = returnLat;
-		this.returnLon = returnLon;
-	}
-}
-*/

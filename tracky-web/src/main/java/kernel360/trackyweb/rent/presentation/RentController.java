@@ -17,7 +17,7 @@ import kernel360.trackyweb.rent.application.service.RentService;
 
 @RestController
 @RequestMapping("/api/rents")
-public class RentController {
+public class RentController implements RentApiDocs {
 
 	private final RentService rentService;
 
@@ -26,14 +26,12 @@ public class RentController {
 	}
 
 	@GetMapping("/all")
-	@Operation(summary = "대여 목록 전체 조회", description = "DB에 있는 모든 대여 리스트 조회")
 	public ApiResponse<List<RentResponse>> getAll() {
 		return rentService.getAll();
 	}
 
 
 	@PostMapping("/register")
-	@Operation(summary = "대여 신규 등록", description = "대여 신규 등록 API")
 	public ApiResponse<RentResponse> create(
 		@RequestBody RentRequest rentRequest
 	){

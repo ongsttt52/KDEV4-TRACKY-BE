@@ -26,7 +26,6 @@ public class CarController implements CarApiDocs {
 	private final CarService carService;
 
 	@GetMapping("/all")
-	@Operation(summary = "전체 차량 조회", description = "DB에 있는 모든 차량 리스트 조회")
 	public ApiResponse<List<CarResponse>> getAll() {
 		return carService.getAll();
 	}

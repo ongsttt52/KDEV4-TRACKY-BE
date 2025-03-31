@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class RentService {
 
 	private final RentRepository rentRepository;
-	@Qualifier("carRepositoryForRent")
+	@Qualifier("carRepositoryForRent") // 4월 1일 공통화 작업
 	private final CarRepository carRepository;
 
 	// 8자리 UUID 생성 메서드
@@ -43,24 +43,22 @@ public class RentService {
 	/**
 	 * 대여 신규 등록
 	 * @param
-	 * @return 등록 성공한 대여 detail
+	 * @return 등록 성공한 대여
 	 */
 	public ApiResponse<RentResponse> create(RentRequest rentRequest) {
-		// 1. mdn으로 차량 조회
 		CarEntity car = carRepository.findByMdn(rentRequest.mdn())
 			.orElseThrow(() -> CarException.notFound());
 
-		// 2. RentEntity 생성 (차량과 대여 정보 포함)
+		// RentEntity 생성 (차량과 대여 정보 포함, uuid 만들기 (임시 8자리)
 		String rentUuid = generateShortUuid();
-		RentEntity rent = rentRequest.toEntity(rentUuid, "PENDING");
 
-		// 3. DB에 저장
+		// 구지원 - 임시로 예약 등록은 전부 '대여 전'
+		RentEntity rent = rentRequest.toEntity(rentUuid, "대여 전");
+
 		RentEntity savedRent = rentRepository.save(rent);
 
-		// 4. 응답 DTO로 변환
 		RentResponse response = RentResponse.from(savedRent);
 
-		// 5. 성공 응답 반환
 		return ApiResponse.success(response);
 	}
 }
