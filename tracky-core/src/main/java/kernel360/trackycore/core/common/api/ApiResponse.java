@@ -1,4 +1,4 @@
-package kernel360.trackycore.core.common;
+package kernel360.trackycore.core.common.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

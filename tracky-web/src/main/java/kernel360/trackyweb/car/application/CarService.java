@@ -4,12 +4,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kernel360.trackycore.core.common.ApiResponse;
-import kernel360.trackycore.core.domain.entity.CarEntity;
-import kernel360.trackycore.core.infrastructure.exception.CarNotFoundException;
-import kernel360.trackyweb.car.application.dto.CarDetailResponse;
-import kernel360.trackyweb.car.application.dto.CarResponse;
+import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.common.entity.DeviceEntity;
+import kernel360.trackycore.core.infrastructure.exception.CarException;
+import kernel360.trackycore.core.infrastructure.exception.DeviceException;
+import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
+import kernel360.trackyweb.car.presentation.dto.CarRequest;
+import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
+import kernel360.trackyweb.car.infrastructure.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class CarService {
 
 	private final CarRepository carRepository;
+	private final DeviceRepository deviceRepository;
 
 	/**
 	 * 등록 차량 전체 조회
@@ -43,7 +48,7 @@ public class CarService {
 	public ApiResponse<CarResponse> searchById(Long id) {
 		CarEntity car = carRepository.findById(id)
 			// 천승준 - 공통 에러 처리 해봤어요
-			.orElseThrow(() -> new CarNotFoundException());
+			.orElseThrow(() -> CarException.notFound());
 		return ApiResponse.success(CarResponse.from(car));
 	}
 
@@ -55,7 +60,37 @@ public class CarService {
 	public ApiResponse<CarDetailResponse> searchDetailById(Long id) {
 		CarEntity car = carRepository.findDetailById(id)
 			// 천승준 - 공통 에러 처리 해봤어요
-			.orElseThrow(() -> new CarNotFoundException());
+			.orElseThrow(() -> CarException.notFound());
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}
+
+	/**
+	 * 차량 신규 등록 ( device는 기본 device 설정 ID 1 가져옴 )
+	 * @param carRequest
+	 * @return 등록 성공한 차량 detail
+	 */
+	public ApiResponse<CarDetailResponse> create(CarRequest carRequest) {
+		DeviceEntity device = deviceRepository.findById(1L)
+			.orElseThrow(() -> DeviceException.notFound());
+
+		CarEntity car = CarEntity.create(
+			carRequest.mdn(),
+			carRequest.bizId(),
+			device,
+			carRequest.carType(),
+			carRequest.carPlate(),
+			carRequest.carYear(),
+			carRequest.purpose(),
+			carRequest.status(),
+			carRequest.sum()
+		);
+
+		CarEntity savedCar = carRepository.save(car);
+
+		CarDetailResponse response = CarDetailResponse.from(savedCar);
+
+		return ApiResponse.success(response);
+	}
+
+
 }

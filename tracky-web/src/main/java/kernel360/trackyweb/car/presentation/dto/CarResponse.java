@@ -1,9 +1,9 @@
-package kernel360.trackyweb.car.application.dto;
+package kernel360.trackyweb.car.presentation.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.common.entity.CarEntity;
 
 public record CarResponse(
 	Long id,

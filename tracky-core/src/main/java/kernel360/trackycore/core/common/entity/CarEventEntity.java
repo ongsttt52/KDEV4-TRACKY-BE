@@ -1,4 +1,4 @@
-package kernel360.trackycore.core.domain.entity;
+package kernel360.trackycore.core.common.entity;
 
 import java.time.LocalDateTime;
 
