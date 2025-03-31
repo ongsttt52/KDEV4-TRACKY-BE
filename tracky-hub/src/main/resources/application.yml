@@ -1,2 +1,26 @@
+spring:
+  application:
+    name: tracky-hub
+
+  datasource:
+     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
+     username: ${DB_USER}
+     password: ${DB_PASSWORD}
+#    url: jdbc:mysql://localhost:3306/tracky-web?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+#    username: tracky
+#    password: tracky
+     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    naming:
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate.globally_quoted_identifiers: true
+      hibernate.format_sql: true
+      hibernate.jdbc.time_zone: Asia/Seoul
+
+
 server:
   port: 8082

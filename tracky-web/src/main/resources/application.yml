@@ -16,3 +16,12 @@ spring:
     properties:
       hibernate.globally_quoted_identifiers: true
       hibernate.format_sql: true
+
+  server:
+    port: 8080
+
+  jwt:
+    # 32바이트 이상 길이의 시크릿 키 (예: "ThisIsASecretKeyForJwtTokenThatIsLongEnough123!@#")
+    secret: "my-super-secret-key-my-super-secret-key-1234567890"
+    # 토큰 만료 시간 (밀리초 단위, 예: 3600000 = 1시간)
+    expiration: 3600000
