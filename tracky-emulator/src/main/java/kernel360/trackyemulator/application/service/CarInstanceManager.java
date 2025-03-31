@@ -22,6 +22,7 @@ public class CarInstanceManager {
     private final TokenRequestClient tokenRequestClient;
     private final StartRequestClient startRequestClient;
     private final StopRequestClient stopRequestClient;
+    private final CycleDataManager cycleDataManager;
 
     private List<EmulatorInstance> instances = new ArrayList<>();
 
@@ -54,10 +55,12 @@ public class CarInstanceManager {
     //시동 ON 데이터 전송
     public Map<String, String> sendStartRequests() {
         Map<String, String> result = new LinkedHashMap<>();
+
         for (EmulatorInstance instance : instances) {
             ApiResponse response = startRequestClient.sendCarStart(instance);
-
             result.put(instance.getMdn(), response.getRstMsg());
+
+            cycleDataManager.startSending(instance); // 스케줄 시작
         }
 
         return result;
@@ -71,15 +74,15 @@ public class CarInstanceManager {
         for (EmulatorInstance instance : instances) {
             ApiResponse response = stopRequestClient.sendCarStop(instance);
             result.put(instance.getMdn(), response.getRstMsg());
-            stoppedMdnSet.add(response.getMdn());    //시동 꺼진 에뮬레이터 정보 저장
+
+            cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
+            stoppedMdnSet.add(response.getMdn());
         }
 
-        removeStoppedInstances(stoppedMdnSet);    //시동 꺼진 에뮬레이터 한번에 삭제
+        removeStoppedInstances(stoppedMdnSet); // 리스트에서 삭제
 
         return result;
     }
-
-    //TODO : 주기 데이터 전송
 
 
     //에뮬레이터 삭제

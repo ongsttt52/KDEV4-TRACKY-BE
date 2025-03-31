@@ -1,8 +1,5 @@
 package kernel360.trackyemulator.application.service.client;
 
-import java.time.LocalDateTime;
-
-import kernel360.trackyemulator.application.mapper.CarOnOffRequestMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,12 +17,11 @@ import lombok.RequiredArgsConstructor;
 public class StopRequestClient {
 
     private final RestTemplate restTemplate;
-    private final CarOnOffRequestMapper requestMapper;
 
     public ApiResponse sendCarStop(EmulatorInstance car) {
 
         //CarOnOffRequest DTO 생성
-        CarOnOffRequest request = requestMapper.toCarOffRequest(car);
+        CarOnOffRequest request = CarOnOffRequest.ofOff(car);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
