@@ -10,10 +10,12 @@ import kernel360.trackycore.core.common.entity.LocationEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class CarOnOffRequest {
     private String mdn;           // 차량 식별 key
     private String tid;           // 차량관제 터미널 ID
@@ -32,7 +34,7 @@ public class CarOnOffRequest {
     private long lon;             // GPS 경도
     private String ang;           // 방향
     private String spd;           // 속도(km/h)
-    private int sum;              // 누적 주행 거리(m)
+    private double sum;              // 누적 주행 거리(m)
 
     public LocationEntity toLocationEntity() {
 

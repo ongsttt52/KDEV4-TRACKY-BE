@@ -44,7 +44,7 @@ public class DriveEntity extends DateBaseEntity {
 	private LocationEntity location;
 
 	@Column(name = "drive_distance")
-	private int driveDistance;
+	private double driveDistance;
 
 	@Column(name = "drive_on_time")
 	private LocalDateTime driveOnTime;
@@ -52,7 +52,7 @@ public class DriveEntity extends DateBaseEntity {
 	@Column(name = "drive_off_time")
 	private LocalDateTime driveOffTime;
   
-	public void updateDistance(int sum) {
+	public void updateDistance(double sum) {
 		this.driveDistance = sum;
 	}
 

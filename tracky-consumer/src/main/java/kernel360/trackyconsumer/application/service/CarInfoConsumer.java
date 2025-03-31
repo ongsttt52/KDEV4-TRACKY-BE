@@ -48,22 +48,27 @@ public class CarInfoConsumer {
 				processOnMessage(message);
 				break;
 			case "off":
-				processOffMessage(message);
+				// processOffMessage(message);
 				break;
 		}
 	}
 
 	public void processOnMessage(CarOnOffRequest carOnOffRequest) {
 
+		log.info("processOnMessage 진입: {}", carOnOffRequest.toString());
 		LocationEntity location = carOnOffRequest.toLocationEntity();
 		locationEntityRepository.save(location);
+		log.info("location 엔티티: {}", location.toString());
 
 		String mdn = carOnOffRequest.getMdn();
 		CarEntity car = carEntityRepository.findByMdn(mdn);
+		log.info("car 엔티티: {}", car.toString());
 
 		RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
+		log.info("rent 엔티티: {}", rent.toString());
 
 		DriveEntity drive = DriveEntity.create(mdn, rent.getId(), car.getDevice().getId(), location, carOnOffRequest.getOnTime());
+		log.info("drive 엔티티: {}", drive.toString());
 
 		// 임시 사용
 		// LocalDateTime tmp = LocalDateTime.now();
@@ -99,36 +104,33 @@ public class CarInfoConsumer {
 	@Transactional
 	public void receiveCarMessage(GpsHistoryMessage message) {
 
-		log.info("요청 시간: {}", message.getOTime().toString());
-		log.info("DB 시간: {}", driveRepository.findById(245L).get().getDriveOnTime());
+		// log.info("요청 시간: {}", message.getOTime().toString());
+		// log.info("DB 시간: {}", driveRepository.findById(245L).get().getDriveOnTime());
 
 		List<CycleGpsRequest> cycleGpsRequestList = message.getCList();
 		// Drive 어떻게 찾지?
 
 		DriveEntity drive = driveRepository.findByMdnAndOtime(message.getMdn(), message.getOTime());
-		log.info("드라이브 엔티티: {}", drive.toString());
+		// log.info("드라이브 엔티티: {}", drive.toString());
+
+
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < message.getCCnt(); i++) {
-
-			if (i == 0) {
-				saveGpsMessage(drive, message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
-			}
-			else {
-				int nowSum = cycleGpsRequestList.get(i).getSum();
-				int beforeSum = cycleGpsRequestList.get(i - 1).getSum();
-				int sum = nowSum - beforeSum;
-				saveGpsMessage(drive, message.getOTime(), sum, cycleGpsRequestList.get(i));
-			}
+			log.info("gpshistory 위도: {}, 경도: {}", cycleGpsRequestList.get(i).getLat(),
+				cycleGpsRequestList.get(i).getLon());
+			saveGpsMessage(drive, message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
 		}
+
 	}
 
-	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, int sum, CycleGpsRequest cycleGpsRequest) {
+	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
 
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(drive, oTime, sum);
-		log.info("히스토리 엔티티: {}", gpsHistoryEntity.toString());
+		// log.info("히스토리 엔티티: {}", gpsHistoryEntity.toString());
 		
 		gpsHistoryRepository.save(gpsHistoryEntity);
+		// log.info("gpshistory 위도: {}, 경도: {}", gpsHistoryEntity.getLat(), gpsHistoryEntity.getLon());
 	}
 
 

@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import kernel360.trackyemulator.presentation.dto.ApiResponse;
-import kernel360.trackyemulator.presentation.dto.TokenRequest;
+import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
+import kernel360.trackyemulator.infrastructure.dto.TokenRequest;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +30,7 @@ public class TokenRequestClient {
 
         //getToken Request 요청
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
-                "http://localhost:8082/api/car/토큰 요청 url 필요",
+                "http://localhost:8082/api/car/token",
                 entity,
                 ApiResponse.class
         );

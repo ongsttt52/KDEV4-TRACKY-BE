@@ -1,4 +1,4 @@
-package kernel360trackybe.trackyhub.application.dto;
+package kernel360trackybe.trackyhub.presentation.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +14,5 @@ public class CycleGpsRequest {
 	private long lon;    // GPS 경도
 	private int ang;    // 방향
 	private int spd;    // 속도
-	private int sum;    // 누적주행 거리
+	private double sum;    // 누적주행 거리
 }

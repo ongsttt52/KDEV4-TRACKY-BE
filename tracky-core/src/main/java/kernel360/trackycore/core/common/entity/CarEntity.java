@@ -49,13 +49,13 @@ public class CarEntity extends DateBaseEntity {
 
 	private String purpose;       // 차량용도
 	private String status;        // 차량상태
-	private int sum;           // 누적 주행 거리
+	private double sum;           // 누적 주행 거리
 
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
 	private CarEntity(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
-		String purpose, String status, int sum) {
+		String purpose, String status, double sum) {
 		this.mdn = mdn;
 		this.bizId = bizId;
 		this.device = device;
@@ -68,11 +68,11 @@ public class CarEntity extends DateBaseEntity {
 	}
 
 	public static CarEntity create(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
-		String purpose, String status, int sum) {
+		String purpose, String status, double sum) {
 		return new CarEntity(mdn, bizId, device, carType, carPlate, carYear, purpose, status, sum);
 	}
 
-	public void updateSum(int updateSum) {
+	public void updateSum(double updateSum) {
 		this.sum += updateSum;
 	}
 }
