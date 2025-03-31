@@ -37,7 +37,6 @@ public class DriveEntity extends DateBaseEntity {
 	@Column(name = "rent_id")
 	private long rentId;
 
-
 	@Column(name = "device_id")
 	private long deviceId;
 
@@ -55,7 +54,6 @@ public class DriveEntity extends DateBaseEntity {
 	@Column(name = "drive_off_time")
 	private LocalDateTime driveOffTime;
 
-
 	public static DriveEntity create(String mdn, long rentId, long deviceId, long locationId) {
 		DriveEntity drive = new DriveEntity();
 		drive.mdn = mdn;
@@ -64,5 +62,5 @@ public class DriveEntity extends DateBaseEntity {
 		drive.locationId = locationId;
 
 		return drive;
-	}
+  }
 }
