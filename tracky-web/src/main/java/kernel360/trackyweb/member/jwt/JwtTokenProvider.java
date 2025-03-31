@@ -48,13 +48,20 @@ protected void init() {
 		return parseClaims(token).getBody().getSubject();
 	}
 
+	// 토큰에서 DB에 저장된 권한 값(role)을 추출하는 메서드
+	public String getRole(String token) {
+		return parseClaims(token).getBody().get("role", String.class);
+	}
+
 	// 토큰의 유효성을 검사 (예: 만료, 변조 여부 등)
 	public boolean validateToken(String token) {
 		try {
 			parseClaims(token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
-			return true;
+			// 예외 상황을 로깅
+			//logger.error("Invalid JWT token: {}", e.getMessage());
+			return false;
 		}
 	}
 

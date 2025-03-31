@@ -4,14 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kernel360.trackycore.core.common.ApiResponse;
-import kernel360.trackycore.core.domain.entity.CarEntity;
-import kernel360.trackycore.core.domain.entity.DeviceEntity;
+import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
-import kernel360.trackyweb.car.application.dto.CarDetailResponse;
-import kernel360.trackyweb.car.application.dto.CarRequest;
-import kernel360.trackyweb.car.application.dto.CarResponse;
+import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
+import kernel360.trackyweb.car.presentation.dto.CarRequest;
+import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.car.infrastructure.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
@@ -85,7 +85,7 @@ public class CarService {
 			carRequest.sum()
 		);
 
-		var savedCar = carRepository.save(car);
+		CarEntity savedCar = carRepository.save(car);
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
 
