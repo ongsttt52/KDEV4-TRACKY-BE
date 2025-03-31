@@ -53,17 +53,8 @@ public class CarEntity extends DateBaseEntity {
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
-	protected CarEntity (
-		String mdn,
-		String bizId,
-		DeviceEntity device,
-		String carType,
-		String carPlate,
-		String carYear,
-		String purpose,
-		String status,
-		String sum
-	) {
+	private CarEntity(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
+		String purpose, String status, String sum) {
 		this.mdn = mdn;
 		this.bizId = bizId;
 		this.device = device;
@@ -73,5 +64,10 @@ public class CarEntity extends DateBaseEntity {
 		this.purpose = purpose;
 		this.status = status;
 		this.sum = sum;
+	}
+
+	public static CarEntity create(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
+		String purpose, String status, String sum) {
+		return new CarEntity(mdn, bizId, device, carType, carPlate, carYear, purpose, status, sum);
 	}
 }
