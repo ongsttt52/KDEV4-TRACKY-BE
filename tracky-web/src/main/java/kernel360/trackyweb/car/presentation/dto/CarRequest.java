@@ -5,7 +5,7 @@ import kernel360.trackycore.core.common.entity.DeviceEntity;
 
 public record CarRequest(
 	String mdn,
-	String bizId,
+	Long bizId,
 	DeviceEntity device,
 	String carType,
 	String carPlate,
