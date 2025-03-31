@@ -2,7 +2,7 @@ package kernel360.trackyweb.rent.application.dto;
 
 import java.time.LocalDateTime;
 
-import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.common.entity.RentEntity;
 
 public record RentRequest(
 	String mdn,
@@ -11,15 +11,11 @@ public record RentRequest(
 	LocalDateTime rentStime,
 	LocalDateTime rentEtime,
 	String rentLoc,
-	String rentLat,
-	String rentLon,
 	String returnLoc,
-	String returnLat,
-	String returnLon,
 	String purpose
-)  {
+) {
 	public RentEntity toEntity(String rentUuid, String rentStatus) {
-		return new RentEntity(
+		return RentEntity.create(
 			mdn,
 			rentUuid,
 			rentStime,
@@ -29,11 +25,11 @@ public record RentRequest(
 			purpose,
 			rentStatus,
 			rentLoc,
-			rentLat,
-			rentLon,
+			null,  // rentLat
+			null,  // rentLon
 			returnLoc,
-			returnLat,
-			returnLon
+			null,  // returnLat
+			null   // returnLon
 		);
 	}
 }

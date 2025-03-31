@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
-import kernel360.trackycore.core.common.ApiResponse;
+import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.rent.application.dto.RentDetailResponse;
 import kernel360.trackyweb.rent.application.dto.RentRequest;
 import kernel360.trackyweb.rent.application.dto.RentResponse;
 import kernel360.trackyweb.rent.application.service.RentService;
 
 @RestController
-@RequestMapping("/api/rent")
+@RequestMapping("/api/rents")
 public class RentController {
 
 	private final RentService rentService;
@@ -34,7 +34,7 @@ public class RentController {
 
 	@PostMapping("/register")
 	@Operation(summary = "대여 신규 등록", description = "대여 신규 등록 API")
-	public ApiResponse<RentDetailResponse> create(
+	public ApiResponse<RentResponse> create(
 		@RequestBody RentRequest rentRequest
 	){
 		return rentService.create(rentRequest);
