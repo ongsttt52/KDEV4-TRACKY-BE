@@ -14,7 +14,7 @@ public record CarDetailResponse(
 	String carYear,
 	String purpose,
 	String status,
-	String sum,
+	int sum,
 	DeviceEntity deviceInfo,
 	LocalDateTime createdAt
 ) {

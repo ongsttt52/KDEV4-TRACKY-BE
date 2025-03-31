@@ -14,7 +14,7 @@ public record CarResponse(
 	String carYear,
 	String purpose,
 	String status,
-	String sum,
+	int sum,
 	LocalDateTime createdAt
 ) {
 	public static CarResponse from(CarEntity car) {

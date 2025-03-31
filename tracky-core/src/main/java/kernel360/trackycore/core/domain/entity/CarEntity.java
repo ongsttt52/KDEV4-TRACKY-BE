@@ -13,13 +13,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.base.DateBaseEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "car")
 @Getter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CarEntity extends DateBaseEntity {
 	@Id
@@ -48,13 +49,13 @@ public class CarEntity extends DateBaseEntity {
 
 	private String purpose;       // 차량용도
 	private String status;        // 차량상태
-	private	String sum;           // 누적 주행 거리
+	private int sum;           // 누적 주행 거리
 
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
 	private CarEntity(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
-		String purpose, String status, String sum) {
+		String purpose, String status, int sum) {
 		this.mdn = mdn;
 		this.bizId = bizId;
 		this.device = device;
@@ -67,7 +68,7 @@ public class CarEntity extends DateBaseEntity {
 	}
 
 	public static CarEntity create(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
-		String purpose, String status, String sum) {
+		String purpose, String status, int sum) {
 		return new CarEntity(mdn, bizId, device, carType, carPlate, carYear, purpose, status, sum);
 	}
 }

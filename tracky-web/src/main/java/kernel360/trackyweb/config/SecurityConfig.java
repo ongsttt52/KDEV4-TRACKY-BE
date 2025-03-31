@@ -39,7 +39,7 @@ public class SecurityConfig {
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ JWT 쓸 땐 세션 X
 			// 천승준 - api test 때매 임시 제거
 			.authorizeHttpRequests(auth -> auth
-				.anyRequest().permitAll() // 🔥 전체 허용 (JWT 없이 테스트 시)
+				.anyRequest().permitAll() // 전체 허용 (JWT 없이 테스트 시)
 			)
 			// .authorizeHttpRequests(auth -> auth
 			// 	.requestMatchers("/login", "/api/login", "/api/car", "/api/car/**").permitAll()
