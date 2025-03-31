@@ -40,26 +40,35 @@ public class DriveEntity extends DateBaseEntity {
 	@Column(name = "device_id")
 	private long deviceId;
 
-	// @OneToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "drive_loc_id")
-	// private LocationEntity location;
-	private long locationId;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "drive_loc_id")
+	private LocationEntity location;
 
 	@Column(name = "drive_distance")
-	private String driveDistance;
+	private int driveDistance;
 
 	@Column(name = "drive_on_time")
 	private LocalDateTime driveOnTime;
 
 	@Column(name = "drive_off_time")
 	private LocalDateTime driveOffTime;
+  
+	public void updateDistance(int sum) {
+		this.driveDistance = sum;
+	}
 
-	public static DriveEntity create(String mdn, long rentId, long deviceId, long locationId) {
+	public void updateOffTime(LocalDateTime offTime) {
+		this.driveOffTime = offTime;
+	}
+
+	public static DriveEntity create(String mdn, long rentId, long deviceId, LocationEntity location, LocalDateTime onTime) {
 		DriveEntity drive = new DriveEntity();
 		drive.mdn = mdn;
 		drive.rentId = rentId;
 		drive.deviceId = deviceId;
-		drive.locationId = locationId;
+		drive.location = location;
+		drive.driveOnTime = onTime;
+		drive.driveDistance = 0;
 
 		return drive;
   }
