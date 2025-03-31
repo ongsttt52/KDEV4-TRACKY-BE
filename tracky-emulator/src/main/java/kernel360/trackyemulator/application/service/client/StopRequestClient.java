@@ -12,30 +12,29 @@ import org.springframework.web.client.RestTemplate;
 
 import kernel360.trackyemulator.presentation.dto.ApiResponse;
 import kernel360.trackyemulator.presentation.dto.CarOnOffRequest;
-import kernel360.trackyemulator.application.service.util.RandomLocationGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class StartRequestClient {
+public class StopRequestClient {
 
     private final RestTemplate restTemplate;
     private final CarOnOffRequestMapper requestMapper;
 
-    public ApiResponse sendCarStart(EmulatorInstance car) {
+    public ApiResponse sendCarStop(EmulatorInstance car) {
 
         //CarOnOffRequest DTO 생성
-        CarOnOffRequest request = requestMapper.toCarOnRequest(car);
+        CarOnOffRequest request = requestMapper.toCarOffRequest(car);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<CarOnOffRequest> entity = new HttpEntity<>(request, headers);
 
-        //sendCarStart API 호출
+        //sendCarStop 전송
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
-                "/http://localhost:8082/api/car/",
+                "/http://localhost:8082/api/car/시동 오프",
                 entity,
                 ApiResponse.class
         );
@@ -44,7 +43,7 @@ public class StartRequestClient {
         ApiResponse apiResponse = response.getBody();
         if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
             throw new IllegalStateException(
-                    "Start 정보 전송 실패 " + apiResponse.getMdn());
+                    "Stop 정보 전송 실패 " + apiResponse.getMdn());
         }
 
         return apiResponse;
