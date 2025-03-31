@@ -1,12 +1,12 @@
-package kernel360.trackycore.core.infrastructure.entity;
+package kernel360.trackycore.core.domain.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import kernel360.trackycore.core.infrastructure.base.DateBaseEntity;
+import kernel360.trackycore.core.domain.base.DateBaseEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Entity
 @Table(name = "device")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class DeviceEntity extends DateBaseEntity {
 
@@ -29,4 +29,15 @@ public class DeviceEntity extends DateBaseEntity {
 	private String did;
 
 	private String pv;
+
+	private DeviceEntity(String tid, String mid, String did, String pv) {
+		this.tid = tid;
+		this.mid = mid;
+		this.did = did;
+		this.pv = pv;
+	}
+
+	public static DeviceEntity create(String tid, String mid, String did, String pv) {
+		return new DeviceEntity(tid, mid, did, pv);
+	}
 }

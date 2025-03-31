@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.config;
+package kernel360.trackyweb.config;
 
 import java.util.List;
 
@@ -37,15 +37,16 @@ public class SecurityConfig {
 			.formLogin(form -> form.disable()) // ✅ 기본 로그인 비활성화!
 			.httpBasic(httpBasic -> httpBasic.disable()) // (선택) 브라우저 인증창 제거
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ JWT 쓸 땐 세션 X
+			// 천승준 - api test 때매 임시 제거
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/login", "/api/login").permitAll() // 로그인 엔드포인트는 인증 없이 접근
-				// 예시: /super-admin/**는 "super_admin" 권한을 가진 사용자만 접근
-				.requestMatchers("/super-admin/**").hasAuthority("super_admin")
-				// 예시: /admin/**은 "admin" 권한을 가진 사용자만 접근 (필요 시 super_admin도 포함하려면 hasAnyAuthority 사용)
-				.requestMatchers("/admin/**").hasAuthority("admin")
-				.anyRequest().authenticated()
+				.anyRequest().permitAll() // 전체 허용 (JWT 없이 테스트 시)
 			)
-			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+			// .authorizeHttpRequests(auth -> auth
+			// 	.requestMatchers("/login", "/api/login", "/api/car", "/api/car/**").permitAll()
+			// 	.anyRequest().authenticated()
+			// )
+			// .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+			// .httpBasic(Customizer.withDefaults())
 			.build();
 	}
 
@@ -63,6 +64,14 @@ public class SecurityConfig {
 		return source;
 	}
 
+
+	// @Bean
+	// public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+	// 	AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+	// 	authBuilder.build();
+	// 	return authBuilder.build();
+	// }
+	//
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -72,4 +81,7 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
 		return authConfig.getAuthenticationManager();
 	}
+
+
+
 }
