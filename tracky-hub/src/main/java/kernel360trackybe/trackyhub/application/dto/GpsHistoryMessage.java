@@ -1,7 +1,5 @@
 package kernel360trackybe.trackyhub.application.dto;
 
-import kernel360.trackycore.core.domain.entity.DriveEntity;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

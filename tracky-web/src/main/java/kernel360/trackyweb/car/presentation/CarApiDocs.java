@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kernel360.trackycore.core.common.ApiResponse;
-import kernel360.trackyweb.car.application.dto.CarDetailResponse;
-import kernel360.trackyweb.car.application.dto.CarResponse;
+import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
+import kernel360.trackyweb.car.presentation.dto.CarResponse;
 
 @Tag(name = "Car API", description = "차량 관련 API")
 public interface CarApiDocs {
