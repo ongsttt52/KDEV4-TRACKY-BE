@@ -31,7 +31,7 @@ public class CarEntity extends DateBaseEntity {
 	// 외래키
 	// @ManyToOne(fetch = FetchType.LAZY)
 	@Column(name = "biz_id")
-	private String bizId;         // 업체 ID
+	private Long bizId;         // 업체 ID
 
 	// 외래키
 	@JoinColumn(name = "device_id")
@@ -49,13 +49,14 @@ public class CarEntity extends DateBaseEntity {
 
 	private String purpose;       // 차량용도
 	private String status;        // 차량상태
-	private int sum;           // 누적 주행 거리
+	private double sum;           // 누적 주행 거리
 
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
-	private CarEntity(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
+	private CarEntity(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate, String carYear,
 		String purpose, String status, int sum) {
+
 		this.mdn = mdn;
 		this.bizId = bizId;
 		this.device = device;
@@ -67,9 +68,31 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public static CarEntity create(String mdn, String bizId, DeviceEntity device, String carType, String carPlate, String carYear,
+	public static CarEntity create(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate, String carYear,
 		String purpose, String status, int sum) {
 		return new CarEntity(mdn, bizId, device, carType, carPlate, carYear, purpose, status, sum);
+	}
+
+	public void update(
+		String mdn,
+		Long bizId,
+		DeviceEntity device,
+		String carType,
+		String carPlate,
+		String carYear,
+		String purpose,
+		String status,
+		int sum
+	) {
+		this.mdn = mdn;
+		this.bizId = bizId;
+		this.device = device;
+		this.carType = carType;
+		this.carPlate = carPlate;
+		this.carYear = carYear;
+		this.purpose = purpose;
+		this.status = status;
+		this.sum = sum;
 	}
 
 	public void updateSum(int updateSum) {

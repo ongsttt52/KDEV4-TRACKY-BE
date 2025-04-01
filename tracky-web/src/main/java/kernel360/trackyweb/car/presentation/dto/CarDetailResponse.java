@@ -8,7 +8,7 @@ import kernel360.trackycore.core.common.entity.DeviceEntity;
 public record CarDetailResponse(
 	Long id,
 	String mdn,
-	String bizName,
+	Long bizId,
 	String carType,
 	String carPlate,
 	String carYear,

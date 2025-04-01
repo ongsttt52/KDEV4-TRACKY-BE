@@ -18,9 +18,9 @@ public class CycleGpsRequest {
 	private long lon;    // GPS 경도
 	private int ang;    // 방향
 	private int spd;    // 속도
-	private int sum;    // 누적주행 거리
+	private double sum;    // 누적주행 거리
 
-	public GpsHistoryEntity toGpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, int sum) {
+	public GpsHistoryEntity toGpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, double sum) {
 		return new GpsHistoryEntity(drive, oTime, this.gcd, this.lat, this.lon, this.ang, this.spd, sum);
 	}
 }

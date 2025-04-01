@@ -9,13 +9,16 @@ import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
+import kernel360.trackyweb.car.application.mapper.CarMapper;
 import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
 import kernel360.trackyweb.car.presentation.dto.CarRequest;
 import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.car.infrastructure.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CarService {
@@ -54,7 +57,7 @@ public class CarService {
 
 	/**
 	 * 디바이스 정보를 포함한 차량 ID 값으로 검색
-	 * @param id
+	 * @param id 차량 ID
 	 * @return 단건 차량 데이터 + 디바이스 정보
 	 */
 	public ApiResponse<CarDetailResponse> searchDetailById(Long id) {
@@ -73,17 +76,8 @@ public class CarService {
 		DeviceEntity device = deviceRepository.findById(1L)
 			.orElseThrow(() -> DeviceException.notFound());
 
-		CarEntity car = CarEntity.create(
-			carRequest.mdn(),
-			carRequest.bizId(),
-			device,
-			carRequest.carType(),
-			carRequest.carPlate(),
-			carRequest.carYear(),
-			carRequest.purpose(),
-			carRequest.status(),
-			carRequest.sum()
-		);
+		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
+		CarEntity car = CarMapper.createCar(carRequest, device);
 
 		CarEntity savedCar = carRepository.save(car);
 
@@ -92,5 +86,37 @@ public class CarService {
 		return ApiResponse.success(response);
 	}
 
+	/**
+	 * 차량 정보 수정
+	 * @param id 차량 ID
+	 * @param carRequest 차량 정보
+	 * @return 수정된 차량 detail
+	 */
+	public ApiResponse<CarDetailResponse> update(Long id, CarRequest carRequest) {
+		CarEntity car = carRepository.findDetailById(id)
+			.orElseThrow(() -> CarException.notFound());
+
+		// 항상 ID 1인 디바이스 사용
+		DeviceEntity device = deviceRepository.findById(1L)
+			.orElseThrow(() -> DeviceException.notFound());
+
+		// update 할 객체 생성
+		CarMapper.updateCar(car, carRequest, device);
+
+		log.info("업데이트 차량 : {}", car);
+
+		CarEntity updatedCar = carRepository.save(car);
+		return ApiResponse.success(CarDetailResponse.from(updatedCar));
+	}
+
+	/**
+	 * 차량 삭제 API
+	 * @param id
+	 * @return ApiResponse
+	 */
+	public ApiResponse<String> delete(Long id) {
+		carRepository.deleteById(id);
+		return ApiResponse.success("삭제 완료");
+	}
 
 }

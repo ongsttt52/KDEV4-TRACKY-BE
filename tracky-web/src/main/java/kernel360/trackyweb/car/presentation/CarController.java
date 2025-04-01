@@ -2,7 +2,9 @@ package kernel360.trackyweb.car.presentation;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +19,9 @@ import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
 import kernel360.trackyweb.car.presentation.dto.CarRequest;
 import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/cars")
 @RequiredArgsConstructor
@@ -48,15 +52,29 @@ public class CarController implements CarApiDocs {
 	public ApiResponse<CarDetailResponse> searchDetailById(
 		@PathVariable Long id
 	) {
+		log.info("searchDetailById : {}" , id);
 		return carService.searchDetailById(id);
 	}
 
-	@PostMapping("/register")
-	@Operation(summary = "차량 신규 등록", description = "차량 신규 등록 API")
+	@PostMapping("/create")
 	public ApiResponse<CarDetailResponse> create(
 		@RequestBody CarRequest carRequest
 	) {
 		return carService.create(carRequest);
 	}
 
+	@PatchMapping("/update/{id}")
+	public ApiResponse<CarDetailResponse> update(
+		@PathVariable Long id,
+		@RequestBody CarRequest carRequest
+	) {
+		return carService.update(id, carRequest);
+	}
+
+	@DeleteMapping("/delete/{id}")
+	public ApiResponse<String> delete(
+		@PathVariable Long id
+	) {
+		return carService.delete(id);
+	}
 }

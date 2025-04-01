@@ -1,4 +1,4 @@
-package kernel360trackybe.trackyhub.application.dto;
+package kernel360trackybe.trackyhub.presentation.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

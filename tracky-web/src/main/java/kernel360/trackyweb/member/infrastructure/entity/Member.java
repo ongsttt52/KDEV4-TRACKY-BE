@@ -28,7 +28,7 @@ public class Member extends DateBaseEntity {
 	private Long id;
 
 	@Column(name = "biz_id")
-	private String bizId;
+	private Long bizId;
 
 	@Column(name = "member_id")
 	private String memberId;
