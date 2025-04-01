@@ -24,8 +24,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CarEntity extends DateBaseEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;              // 차량 ID
 	private String mdn;           // 차량식별기
 
 	// 외래키
@@ -49,7 +47,7 @@ public class CarEntity extends DateBaseEntity {
 
 	private String purpose;       // 차량용도
 	private String status;        // 차량상태
-	private double sum;           // 누적 주행 거리
+	private int sum;           // 누적 주행 거리
 
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
@@ -68,7 +66,8 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public static CarEntity create(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate, String carYear,
+	public static CarEntity create(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate,
+		String carYear,
 		String purpose, String status, int sum) {
 		return new CarEntity(mdn, bizId, device, carType, carPlate, carYear, purpose, status, sum);
 	}

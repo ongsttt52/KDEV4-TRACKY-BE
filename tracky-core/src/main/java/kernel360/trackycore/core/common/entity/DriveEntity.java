@@ -33,8 +33,8 @@ public class DriveEntity extends DateBaseEntity {
 
 	private String mdn;
 
-	@Column(name = "rent_id")
-	private long rentId;
+	@Column(name = "rent_uuid")
+	private String rentUuid;
 
 	@Column(name = "device_id")
 	private long deviceId;
@@ -44,7 +44,7 @@ public class DriveEntity extends DateBaseEntity {
 	private LocationEntity location;
 
 	@Column(name = "drive_distance")
-	private double driveDistance;
+	private int driveDistance;
 
 	@Column(name = "drive_on_time")
 	private LocalDateTime driveOnTime;
@@ -52,7 +52,7 @@ public class DriveEntity extends DateBaseEntity {
 	@Column(name = "drive_off_time")
 	private LocalDateTime driveOffTime;
   
-	public void updateDistance(double sum) {
+	public void updateDistance(int sum) {
 		this.driveDistance = sum;
 	}
 
@@ -60,10 +60,10 @@ public class DriveEntity extends DateBaseEntity {
 		this.driveOffTime = offTime;
 	}
 
-	public static DriveEntity create(String mdn, long rentId, long deviceId, LocationEntity location, LocalDateTime onTime) {
+	public static DriveEntity create(String mdn, String rentUuid, long deviceId, LocationEntity location, LocalDateTime onTime) {
 		DriveEntity drive = new DriveEntity();
 		drive.mdn = mdn;
-		drive.rentId = rentId;
+		drive.rentUuid = rentUuid;
 		drive.deviceId = deviceId;
 		drive.location = location;
 		drive.driveOnTime = onTime;

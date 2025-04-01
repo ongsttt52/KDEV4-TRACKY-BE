@@ -25,14 +25,13 @@ import lombok.ToString;
 public class RentEntity extends DateBaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;		// 대여 ID
+	@Column(name = "rent_uuid")
+	private String rentUuid;	// 대여 고유 UUID
 
 	//@ManyToOne(fetch = FetchType.LAZY)
 	private String mdn;		// 차량식별키
 
-	@Column(name = "rent_uuid")
-	private String rentUuid;	// 대여 고유 UUID
+
 
 	@Column(name = "rent_stime")
 	private LocalDateTime rentStime;	// 대여 시작 시간

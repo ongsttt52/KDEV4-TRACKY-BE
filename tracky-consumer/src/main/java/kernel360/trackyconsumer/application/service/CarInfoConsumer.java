@@ -1,6 +1,7 @@
 package kernel360.trackyconsumer.application.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
@@ -42,6 +43,7 @@ public class CarInfoConsumer {
 	public void receiveCarOnOffMessage(@Payload CarOnOffRequest message,
 		@Header("amqp_receivedRoutingKey") String routingKey) {
 
+		log.info("메시지 수신: {}", message.toString());
 		switch (routingKey) {
 			case "on":
 				processOnMessage(message);
@@ -62,7 +64,7 @@ public class CarInfoConsumer {
 
 		RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
 
-		DriveEntity drive = DriveEntity.create(mdn, rent.getId(), car.getDevice().getId(), location,
+		DriveEntity drive = DriveEntity.create(mdn, rent.getRentUuid(), car.getDevice().getId(), location,
 			carOnOffRequest.getOnTime());
 
 		// 임시 사용
@@ -105,19 +107,17 @@ public class CarInfoConsumer {
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < message.getCCnt(); i++) {
-			log.info("gpshistory 위도: {}, 경도: {}", cycleGpsRequestList.get(i).getLat(),
-				cycleGpsRequestList.get(i).getLon());
 			saveGpsMessage(drive, message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
 		}
 
 	}
 
-	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
+	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, int sum, CycleGpsRequest cycleGpsRequest) {
 
-		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(drive, oTime, sum);
-		log.info("gpsHistoryEntity : {}", gpsHistoryEntity.toString());
+		long maxSeq = gpsHistoryRepository.findMaxSeqByDrive(drive);
+		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
+
 		gpsHistoryRepository.save(gpsHistoryEntity);
 
 	}
-
 }
