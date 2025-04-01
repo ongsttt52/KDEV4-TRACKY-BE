@@ -49,13 +49,13 @@ public class GpsHistoryEntity {
 
 	private int spd;
 
-	private int sum;
+	private double sum;
 
 	@Column(name = "created_at")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 
-	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, long lat, long lon, int ang, int spd, int sum) {
+	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, long lat, long lon, int ang, int spd, double sum) {
 	    this.drive = drive;
 	    this.oTime = oTime;
 	    this.gcd = gcd;

@@ -1,4 +1,4 @@
-package kernel360trackybe.trackyhub.application.dto;
+package kernel360trackybe.trackyhub.presentation.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +30,7 @@ public class CarOnOffRequest {
     private long lon;             // GPS 경도
     private String ang;           // 방향
     private String spd;           // 속도(km/h)
-    private int sum;              // 누적 주행 거리(m)
+    private double sum;              // 누적 주행 거리(m)
 
     public LocationEntity toLocationEntity() {
         LocationEntity location = LocationEntity.create(
