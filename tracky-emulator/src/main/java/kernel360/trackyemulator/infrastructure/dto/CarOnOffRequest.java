@@ -5,6 +5,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Getter
 public class CarOnOffRequest {
 
@@ -14,7 +16,9 @@ public class CarOnOffRequest {
 	private String pv;
 	private String did;
 
+	@JsonFormat(pattern = "yyyyMMddHHmm")
 	private LocalDateTime onTime;
+	@JsonFormat(pattern = "yyyyMMddHHmm")
 	private LocalDateTime offTime;
 
 	private String gcd;
@@ -52,7 +56,7 @@ public class CarOnOffRequest {
 			car.getMid(),
 			car.getPv(),
 			car.getDid(),
-			LocalDateTime.now(), // onTime
+			car.getCarOnTime(), // onTime
 			null,               // offTime
 			"A",
 			car.getCycleLastLat(),
@@ -73,8 +77,8 @@ public class CarOnOffRequest {
 			car.getMid(),
 			car.getPv(),
 			car.getDid(),
-			null,               // onTime
-			LocalDateTime.now(), // offTime
+			car.getCarOnTime(),               // onTime
+			car.getCarOffTime(), // offTime
 			"A",
 			car.getCycleLastLat(),
 			car.getCycleLastLon(),

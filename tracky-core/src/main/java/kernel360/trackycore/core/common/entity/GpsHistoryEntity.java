@@ -10,9 +10,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -26,13 +25,14 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@IdClass(GpsHistoryId.class)
 public class GpsHistoryEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(name = "drive_seq", nullable = false)
+	private Long driveSeq;
 
-	@JoinColumn(name = "drive_id")
+	@JoinColumn(name = "drive_id", nullable = false)
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DriveEntity drive;
 
@@ -55,14 +55,15 @@ public class GpsHistoryEntity {
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 
-	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, long lat, long lon, int ang, int spd, double sum) {
-	    this.drive = drive;
-	    this.oTime = oTime;
-	    this.gcd = gcd;
-	    this.lat = lat;
-	    this.lon = lon;
-	    this.ang = ang;
-	    this.spd = spd;
-	    this.sum = sum;
+	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, long lat, long lon, int ang, int spd,
+		double sum) {
+		this.drive = drive;
+		this.oTime = oTime;
+		this.gcd = gcd;
+		this.lat = lat;
+		this.lon = lon;
+		this.ang = ang;
+		this.spd = spd;
+		this.sum = sum;
 	}
 }

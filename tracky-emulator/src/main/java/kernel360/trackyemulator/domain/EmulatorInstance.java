@@ -3,6 +3,7 @@ package kernel360.trackyemulator.domain;
 import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +26,13 @@ public class EmulatorInstance {
 	private int cycleLastSpeed;    //60초 주기 데이터 중 마지막 속도
 	private int cycleLastAng;        //60초 주기 데이터 중 마지막 방향
 
+	private LocalDateTime carOnTime;
+	private LocalDateTime carOffTime;
+
 	private final List<CycleGpsRequest> cycleBuffer = new ArrayList<>();
 
-	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd, long cycleLastLat, long cycleLastLon) {
+	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd, long cycleLastLat,
+		long cycleLastLon, LocalDateTime carOnTime) {
 		this.mdn = mdn;
 		this.tid = tid;
 		this.mid = mid;
@@ -37,15 +42,21 @@ public class EmulatorInstance {
 		this.sum = 0;
 		this.cycleLastLat = cycleLastLat;
 		this.cycleLastLon = cycleLastLon;
+		this.carOnTime = carOnTime;
 	}
 
-	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd, long cycleLastLat, long cycleLastLon) {
-		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, cycleLastLat, cycleLastLon );
+	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd,
+		long cycleLastLat, long cycleLastLon, LocalDateTime carOnTime) {
+		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, cycleLastLat, cycleLastLon, carOnTime);
 	}
 
 	//토큰 세팅
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public void setCarOffTime(LocalDateTime carOffTime) {
+		this.carOffTime = carOffTime;
 	}
 
 	// 주기 데이터 정보 & 누적 거리 한번에 업데이트

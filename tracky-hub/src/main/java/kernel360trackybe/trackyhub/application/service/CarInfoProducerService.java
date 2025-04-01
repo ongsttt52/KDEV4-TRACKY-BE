@@ -19,7 +19,6 @@ public class CarInfoProducerService {
 
 	private final RabbitTemplate rabbitTemplate;
 
-
 	public void sendCarStart(CarOnOffRequest carOnOffRequest) {
 
 		rabbitTemplate.convertAndSend(
@@ -30,6 +29,7 @@ public class CarInfoProducerService {
 	}
 
 	public void sendCarStop(CarOnOffRequest carOnOffRequest) {
+		log.info("Car stop requested: {}", carOnOffRequest);
 
 		rabbitTemplate.convertAndSend(
 			RabbitMQConfig.EXCHANGE_NAME,
@@ -43,9 +43,10 @@ public class CarInfoProducerService {
 	 */
 	public void sendCycleInfo(CycleInfoRequest carInfo) {
 
-		GpsHistoryMessage gpsHistoryMessage = GpsHistoryMessage.from(carInfo.getMdn(), carInfo.getOTime(), carInfo.getCCnt(), carInfo.getCList());
+		GpsHistoryMessage gpsHistoryMessage = GpsHistoryMessage.from(carInfo.getMdn(), carInfo.getOTime(),
+			carInfo.getCCnt(), carInfo.getCList());
 
-		log.info("GPS 전송:{}" , gpsHistoryMessage.toString());
+		log.info("GPS 전송:{}", gpsHistoryMessage.toString());
 		rabbitTemplate.convertAndSend(
 			RabbitMQConfig.EXCHANGE_NAME,
 			"gps",
@@ -53,7 +54,7 @@ public class CarInfoProducerService {
 		);
 	}
 
-    public String getToken() {
-        return UUID.randomUUID().toString();
-    }
+	public String getToken() {
+		return UUID.randomUUID().toString();
+	}
 }

@@ -1,5 +1,6 @@
 package kernel360.trackyemulator.application.service.CarInstanceFactory;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class SingleCarInstanceFactory {
 		long lat = locationGenerator.randomLatitude();
 		long lon = locationGenerator.randomLongitude();
 
-		EmulatorInstance car = EmulatorInstance.create(mdn, "A001", "6", "5", "1", "A", lat, lon);
+		EmulatorInstance car = EmulatorInstance.create(mdn, "A001", "6", "5", "1", "A", lat, lon, LocalDateTime.now());
 
 		List<EmulatorInstance> instances = new ArrayList<>();
 		instances.add(car);

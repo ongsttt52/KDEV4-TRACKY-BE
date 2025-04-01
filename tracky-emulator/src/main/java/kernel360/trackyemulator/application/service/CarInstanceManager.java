@@ -1,5 +1,6 @@
 package kernel360.trackyemulator.application.service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.stereotype.Component;
@@ -68,11 +69,16 @@ public class CarInstanceManager {
 
 	//시동 OFF 데이터 전송
 	public Map<String, String> sendStopRequests() {
+		log.info("시동 off manager 들어옴");
 		Map<String, String> result = new LinkedHashMap<>();
 		Set<String> stoppedMdnSet = new HashSet<>();
 
 		for (EmulatorInstance instance : instances) {
+			instance.setCarOffTime(LocalDateTime.now());
+
 			ApiResponse response = stopRequestClient.sendCarStop(instance);
+			log.info("시동 off response : {}", response.getRstMsg());
+
 			result.put(instance.getMdn(), response.getRstMsg());
 
 			cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
