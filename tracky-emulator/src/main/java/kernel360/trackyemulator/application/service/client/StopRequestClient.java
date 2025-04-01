@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import kernel360.trackyemulator.presentation.dto.ApiResponse;
-import kernel360.trackyemulator.presentation.dto.CarOnOffRequest;
+import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
+import kernel360.trackyemulator.infrastructure.dto.CarOnOffRequest;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +30,7 @@ public class StopRequestClient {
 
         //sendCarStop 전송
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
-                "/http://localhost:8082/api/car/시동 오프",
+                "http://localhost:8082/api/car/off",
                 entity,
                 ApiResponse.class
         );

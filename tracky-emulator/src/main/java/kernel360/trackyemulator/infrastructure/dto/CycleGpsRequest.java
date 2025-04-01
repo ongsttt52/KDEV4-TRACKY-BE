@@ -1,4 +1,4 @@
-package kernel360.trackyemulator.presentation.dto;
+package kernel360.trackyemulator.infrastructure.dto;
 
 import lombok.Getter;
 
