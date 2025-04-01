@@ -11,37 +11,39 @@ import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import kernel360.trackyemulator.infrastructure.dto.CarOnOffRequest;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class StopRequestClient {
 
-    private final RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 
-    public ApiResponse sendCarStop(EmulatorInstance car) {
+	public ApiResponse sendCarStop(EmulatorInstance car) {
 
-        //CarOnOffRequest DTO 생성
-        CarOnOffRequest request = CarOnOffRequest.ofOff(car);
+		//CarOnOffRequest DTO 생성
+		CarOnOffRequest request = CarOnOffRequest.ofOff(car);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<CarOnOffRequest> entity = new HttpEntity<>(request, headers);
+		HttpEntity<CarOnOffRequest> entity = new HttpEntity<>(request, headers);
 
-        //sendCarStop 전송
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
-                "http://localhost:8082/api/car/off",
-                entity,
-                ApiResponse.class
-        );
+		//sendCarStop 전송
+		ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
+			"http://localhost:8082/api/car/off",
+			entity,
+			ApiResponse.class
+		);
 
-        //API 응답
-        ApiResponse apiResponse = response.getBody();
-        if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
-            throw new IllegalStateException(
-                    "Stop 정보 전송 실패 " + apiResponse.getMdn());
-        }
+		//API 응답
+		ApiResponse apiResponse = response.getBody();
+		if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
+			throw new IllegalStateException(
+				"Stop 정보 전송 실패 " + apiResponse.getMdn());
+		}
 
-        return apiResponse;
-    }
+		return apiResponse;
+	}
 }
