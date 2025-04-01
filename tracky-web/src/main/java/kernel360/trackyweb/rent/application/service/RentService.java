@@ -11,6 +11,8 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
+import kernel360.trackycore.core.infrastructure.exception.RentException;
+import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import kernel360.trackyweb.rent.application.dto.RentDetailResponse;
 import kernel360.trackyweb.rent.application.dto.RentRequest;
 import kernel360.trackyweb.rent.application.dto.RentResponse;
@@ -39,6 +41,20 @@ public class RentService {
 			.map(RentResponse::from)
 			.collect(Collectors.toList()));
 	}
+
+	/**
+	 * rentUuid 기반 대여 검색
+	 * @Param rentUuid
+	 * @return 검색된 대여 List
+	 */
+	public ApiResponse<List<RentResponse>> searchByRentUuid(String rentUuid) {
+		return ApiResponse.success(RentResponse.fromList(rentRepository.findByRentUuidContainingOrdered(rentUuid)));
+	}
+/*	public ApiResponse<List<RentResponse>> searchByRentUuid(String rentUuid) {
+		RentEntity rent = rentRepository.findByRentUuid(rentUuid)
+			.orElseThrow(() -> RentException.notFound());
+		return ApiResponse.success(RentResponse.from(rent));
+	}*/
 
 	/**
 	 * 대여 신규 등록
