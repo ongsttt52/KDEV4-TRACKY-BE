@@ -28,9 +28,11 @@ public class RentEntity extends DateBaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;		// 대여 ID
 
+	//@ManyToOne(fetch = FetchType.LAZY)
 	private String mdn;		// 차량식별키
 
-	private String rent_uuid;	// 대여 고유 UUID
+	@Column(name = "rent_uuid")
+	private String rentUuid;	// 대여 고유 UUID
 
 	@Column(name = "rent_stime")
 	private LocalDateTime rentStime;	// 대여 시작 시간
@@ -68,4 +70,71 @@ public class RentEntity extends DateBaseEntity {
 	private Long returnLon;			// 반납 경도
 
 
+	// 생성자: 외부에서 직접 호출하지 못하도록 private 으로 변경
+	private RentEntity(
+		String mdn,
+		String rentUuid,
+		LocalDateTime rentStime,
+		LocalDateTime rentEtime,
+		String renterName,
+		String renterPhone,
+		String purpose,
+		String rentStatus,
+		String rentLoc,
+		Long rentLat,
+		Long rentLon,
+		String returnLoc,
+		Long returnLat,
+		Long returnLon
+	) {
+		this.mdn = mdn;
+		this.rentUuid = rentUuid;
+		this.rentStime = rentStime;
+		this.rentEtime = rentEtime;
+		this.renterName = renterName;
+		this.renterPhone = renterPhone;
+		this.purpose = purpose;
+		this.rentStatus = rentStatus;
+		this.rentLoc = rentLoc;
+		this.rentLat = rentLat;
+		this.rentLon = rentLon;
+		this.returnLoc = returnLoc;
+		this.returnLat = returnLat;
+		this.returnLon = returnLon;
+	}
+
+	// 정적 팩토리 메서드
+	public static RentEntity create(
+		String mdn,
+		String rentUuid,
+		LocalDateTime rentStime,
+		LocalDateTime rentEtime,
+		String renterName,
+		String renterPhone,
+		String purpose,
+		String rentStatus,
+		String rentLoc,
+		Long rentLat,
+		Long rentLon,
+		String returnLoc,
+		Long returnLat,
+		Long returnLon
+	) {
+		return new RentEntity(
+			mdn,
+			rentUuid,
+			rentStime,
+			rentEtime,
+			renterName,
+			renterPhone,
+			purpose,
+			rentStatus,
+			rentLoc,
+			rentLat,
+			rentLon,
+			returnLoc,
+			returnLat,
+			returnLon
+		);
+	}
 }

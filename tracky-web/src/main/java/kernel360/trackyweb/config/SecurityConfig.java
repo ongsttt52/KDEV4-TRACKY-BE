@@ -34,9 +34,9 @@ public class SecurityConfig {
 		return http
 			.cors(Customizer.withDefaults())
 			.csrf(csrf -> csrf.disable())
-			.formLogin(form -> form.disable()) // ✅ 기본 로그인 비활성화!
+			.formLogin(form -> form.disable()) // 기본 로그인 비활성화!
 			.httpBasic(httpBasic -> httpBasic.disable()) // (선택) 브라우저 인증창 제거
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ JWT 쓸 땐 세션 X
+			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 쓸 땐 세션 X
 			// 천승준 - api test 때매 임시 제거
 			.authorizeHttpRequests(auth -> auth
 				.anyRequest().permitAll() // 전체 허용 (JWT 없이 테스트 시)
@@ -54,10 +54,10 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOrigins(List.of("http://localhost:5177", "http://localhost:5173", "https://tracky-fe.vercel.app")); // ✅ 프론트 주소
+		config.setAllowedOrigins(List.of("http://localhost:5177", "http://localhost:5173", "https://tracky-fe.vercel.app")); // 프론트 주소
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
-		config.setAllowCredentials(true); // ✅ 인증정보 포함 허용 (Authorization 헤더 등)
+		config.setAllowCredentials(true); // 인증정보 포함 허용 (Authorization 헤더 등)
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config);
