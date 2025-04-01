@@ -1,7 +1,7 @@
 package kernel360.trackyemulator.application.service.generator;
 
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.presentation.dto.CycleGpsRequest;
+import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

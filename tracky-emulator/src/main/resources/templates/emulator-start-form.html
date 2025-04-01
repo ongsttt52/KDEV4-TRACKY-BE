@@ -32,7 +32,12 @@
 
 <br/>
 <form th:action="@{/emulator/start}" method="post">
-    <button type="submit">시동 ON 요청</button>
+    <button type="submit">🚗 시동 ON 요청</button>
+</form>
+
+<br/>
+<form th:action="@{/emulator/stop}" method="post">
+    <button type="submit">🛑 시동 OFF 요청</button>
 </form>
 
 <p th:if="${message}" th:text="${message}">결과 메시지</p>
@@ -47,6 +52,29 @@
         </li>
     </ul>
 </div>
+
+<hr/>
+
+<!-- ✅ 주기 데이터 전송 로그 표시 -->
+<div id="log">
+    <h3>🚗 주기 데이터 전송 내역</h3>
+</div>
+
+<script>
+    const eventSource = new EventSource('/emulator/stream');
+
+    eventSource.addEventListener("cycleLog", function (event) {
+        const data = JSON.parse(event.data);
+        const logContainer = document.getElementById('log');
+        const newLog = document.createElement('div');
+        newLog.textContent = `${data.mdn} → ${data.lat}, ${data.lon}, ${data.spd}km/h`;
+        logContainer.appendChild(newLog);
+    });
+
+    eventSource.onerror = function (error) {
+        console.error("🚨 SSE 연결 오류:", error);
+    };
+</script>
 
 </body>
 </html>

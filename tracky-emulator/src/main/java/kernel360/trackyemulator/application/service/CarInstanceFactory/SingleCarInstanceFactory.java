@@ -1,8 +1,11 @@
 package kernel360.trackyemulator.application.service.CarInstanceFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import kernel360.trackyemulator.application.service.util.RandomLocationGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
 
@@ -10,13 +13,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SingleCarInstanceFactory {
 
-	public EmulatorInstance createCarInstances() {
-		String mdn = "01012345678";
+	private final RandomLocationGenerator locationGenerator;
 
-		//EmulatorInstance 생성
-		EmulatorInstance car = EmulatorInstance.create(mdn, "A001", "6", "5", "1", "A");
+	public List<EmulatorInstance> createCarInstances() {
+		String mdn = "KMHXX00XXXX123456";
+		long lat = locationGenerator.randomLatitude();
+		long lon = locationGenerator.randomLongitude();
 
-		return car;
+		EmulatorInstance car = EmulatorInstance.create(mdn, "A001", "6", "5", "1", "A", lat, lon);
+
+		List<EmulatorInstance> instances = new ArrayList<>();
+		instances.add(car);
+		return instances;
 	}
 
 }

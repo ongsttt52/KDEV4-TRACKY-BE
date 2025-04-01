@@ -1,6 +1,6 @@
 package kernel360.trackyemulator.domain;
 
-import kernel360.trackyemulator.presentation.dto.CycleGpsRequest;
+import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class EmulatorInstance {
 
 	private final List<CycleGpsRequest> cycleBuffer = new ArrayList<>();
 
-	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd) {
+	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd, long cycleLastLat, long cycleLastLon) {
 		this.mdn = mdn;
 		this.tid = tid;
 		this.mid = mid;
@@ -35,10 +35,12 @@ public class EmulatorInstance {
 		this.did = did;
 		this.gcd = gcd;
 		this.sum = 0;
+		this.cycleLastLat = cycleLastLat;
+		this.cycleLastLon = cycleLastLon;
 	}
 
-	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd) {
-		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd);
+	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd, long cycleLastLat, long cycleLastLon) {
+		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, cycleLastLat, cycleLastLon );
 	}
 
 	//토큰 세팅
@@ -53,6 +55,11 @@ public class EmulatorInstance {
 		this.cycleLastLon = lon;
 		this.cycleLastSpeed = speed;
 		this.cycleLastAng = ang;
+	}
+
+	public void setInitLocation(long lat, long lon) {
+		this.cycleLastLon = lon;
+		this.cycleLastLat = lat;
 	}
 
 	public void addCycleData(CycleGpsRequest data) {

@@ -1,10 +1,10 @@
 package kernel360trackybe.trackyhub.presentation;
 
-import kernel360trackybe.trackyhub.application.dto.ApiTokenResponse;
-import kernel360trackybe.trackyhub.application.dto.CycleInfoRequest;
-import kernel360trackybe.trackyhub.application.dto.ApiResponse;
-import kernel360trackybe.trackyhub.application.dto.CarOnOffRequest;
-import kernel360trackybe.trackyhub.application.dto.TokenRequest;
+import kernel360trackybe.trackyhub.presentation.dto.ApiTokenResponse;
+import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
+import kernel360trackybe.trackyhub.presentation.dto.ApiResponse;
+import kernel360trackybe.trackyhub.presentation.dto.CarOnOffRequest;
+import kernel360trackybe.trackyhub.presentation.dto.TokenRequest;
 import kernel360trackybe.trackyhub.application.service.CarInfoProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
