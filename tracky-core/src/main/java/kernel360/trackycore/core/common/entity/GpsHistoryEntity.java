@@ -44,22 +44,22 @@ public class GpsHistoryEntity {
 
 	private String gcd;
 
-	private long lat;
+	private int lat;
 
-	private long lon;
+	private int lon;
 
 	private int ang;
 
 	private int spd;
 
-	private int sum;
+	private double sum;
 
 	@Column(name = "created_at")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 
-	public GpsHistoryEntity(long maxSeq, DriveEntity drive, LocalDateTime oTime, String gcd, long lat, long lon, int ang, int spd,
-		int sum) {
+	public GpsHistoryEntity(long maxSeq, DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang, int spd,
+		double sum) {
 		this.driveSeq = maxSeq;
 		this.drive = drive;
 		this.oTime = oTime;

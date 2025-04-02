@@ -17,9 +17,9 @@ public class SingleCarInstanceFactory {
 	private final RandomLocationGenerator locationGenerator;
 
 	public List<EmulatorInstance> createCarInstances() {
-		String mdn = "KMHXX00XXXX123456";
-		long lat = locationGenerator.randomLatitude();
-		long lon = locationGenerator.randomLongitude();
+		String mdn = "0077184075";
+		int lat = locationGenerator.randomLatitude();
+		int lon = locationGenerator.randomLongitude();
 
 		EmulatorInstance car = EmulatorInstance.create(mdn, "A001", "6", "5", "1", "A", lat, lon, LocalDateTime.now());
 

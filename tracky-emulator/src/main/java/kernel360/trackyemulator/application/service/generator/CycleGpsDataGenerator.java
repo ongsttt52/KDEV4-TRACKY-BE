@@ -12,8 +12,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CycleGpsDataGenerator {
 
     public CycleGpsRequest generate(EmulatorInstance instance) {
-        long lastLat = instance.getCycleLastLat();
-        long lastLon = instance.getCycleLastLon();
+        int lastLat = instance.getCycleLastLat();
+        int lastLon = instance.getCycleLastLon();
         int lastSpeed = instance.getCycleLastSpeed();
         int lastAng = instance.getCycleLastAng();
 
@@ -21,10 +21,10 @@ public class CycleGpsDataGenerator {
         int newAng = adjustAngle(lastAng);  //마지막 방향 기반 새 방향 생성
 
         double distance = newSpeed;
-        long[] newCoordinates = movePosition(lastLat, lastLon, newAng, distance);
+        int[] newCoordinates = movePosition(lastLat, lastLon, newAng, distance);
 
-        long newLat = newCoordinates[0];
-        long newLon = newCoordinates[1];
+        int newLat = newCoordinates[0];
+        int newLon = newCoordinates[1];
 
         instance.updateCycleInfo(newLat, newLon, newSpeed, newAng, distance);
 
@@ -50,15 +50,15 @@ public class CycleGpsDataGenerator {
     }
 
     //랜덤 위도 및 경도 - 방향과 이동 거리를 기준으로 새로운 위치 계산
-    private long[] movePosition(long lat, long lon, int angle, double distanceMeter) {
+    private int[] movePosition(int lat, int lon, int angle, double distanceMeter) {
         double earthRadius = 6378137;
 
         double dLat = (distanceMeter * Math.cos(Math.toRadians(angle))) / earthRadius;
         double dLon = (distanceMeter * Math.sin(Math.toRadians(angle))) / (earthRadius * Math.cos(Math.toRadians(lat / 1e6)));
 
-        long newLat = lat + (long) (dLat * 1e6);
-        long newLon = lon + (long) (dLon * 1e6);
+        int newLat = lat + (int) (dLat * 1e6);
+        int newLon = lon + (int) (dLon * 1e6);
 
-        return new long[]{newLat, newLon};
+        return new int[]{newLat, newLon};
     }
 }
