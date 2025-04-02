@@ -1,5 +1,7 @@
 package kernel360trackybe.trackyhub.presentation;
 
+import java.util.List;
+
 import kernel360trackybe.trackyhub.presentation.dto.ApiTokenResponse;
 import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
 import kernel360trackybe.trackyhub.presentation.dto.ApiResponse;
@@ -8,6 +10,8 @@ import kernel360trackybe.trackyhub.presentation.dto.TokenRequest;
 import kernel360trackybe.trackyhub.application.service.CarInfoProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,5 +52,11 @@ public class CarInfoController {
 
 		String token = producerService.getToken();
 		return new ApiTokenResponse("000", "Success", tokenRequest.getMdn(), token, "4");
+	}
+
+	@GetMapping(value = "/mdns")
+	public List<String> getMdns() {
+
+		return producerService.getMdns();
 	}
 }
