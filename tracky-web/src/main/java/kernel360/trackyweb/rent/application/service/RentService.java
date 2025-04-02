@@ -7,21 +7,23 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.RentException;
-import kernel360.trackyweb.car.presentation.dto.CarResponse;
-import kernel360.trackyweb.rent.application.dto.RentDetailResponse;
-import kernel360.trackyweb.rent.application.dto.RentRequest;
-import kernel360.trackyweb.rent.application.dto.RentResponse;
+import kernel360.trackyweb.rent.application.mapper.RentMapper;
+import kernel360.trackyweb.rent.presentation.dto.RentRequest;
+import kernel360.trackyweb.rent.presentation.dto.RentResponse;
 import kernel360.trackyweb.rent.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.rent.infrastructure.repository.RentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RentService {
 
 	private final RentRepository rentRepository;
@@ -50,11 +52,17 @@ public class RentService {
 	public ApiResponse<List<RentResponse>> searchByRentUuid(String rentUuid) {
 		return ApiResponse.success(RentResponse.fromList(rentRepository.findByRentUuidContainingOrdered(rentUuid)));
 	}
-/*	public ApiResponse<List<RentResponse>> searchByRentUuid(String rentUuid) {
-		RentEntity rent = rentRepository.findByRentUuid(rentUuid)
+
+	/**
+	 * rentUuid 값으로 검색
+	 */
+	public ApiResponse<RentResponse> searchDetailByRentUuid(String rentUuid) {
+		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
 			.orElseThrow(() -> RentException.notFound());
 		return ApiResponse.success(RentResponse.from(rent));
-	}*/
+	}
+
+
 
 	/**
 	 * 대여 신규 등록
@@ -76,5 +84,36 @@ public class RentService {
 		RentResponse response = RentResponse.from(savedRent);
 
 		return ApiResponse.success(response);
+	}
+
+	/**
+	 * 대여 정보 수정
+	 * @param rentUuid
+	 * @return 수정된 대여 detail
+	 */
+	@Transactional
+	public ApiResponse<RentResponse> update(String rentUuid, RentRequest rentRequest) {
+		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
+			.orElseThrow(() -> RentException.notFound());
+
+		RentMapper.updateRent(rent, rentRequest);
+
+		log.info("업테이트 대여 : {}", rent);
+
+		RentEntity updatedRent = rentRepository.save(rent);
+		return ApiResponse.success(RentResponse.from(rent));
+	}
+
+
+
+	/**
+	 * 대여 삭제 API
+	 * @param rentUuid
+	 * @return ApiResponse
+	 */
+	@Transactional
+	public ApiResponse<String> delete(String rentUuid) {
+		rentRepository.deleteByRentUuid(rentUuid);
+		return ApiResponse.success("삭제 완료");
 	}
 }

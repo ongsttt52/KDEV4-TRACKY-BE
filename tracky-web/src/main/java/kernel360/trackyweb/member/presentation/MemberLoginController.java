@@ -4,9 +4,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kernel360.trackyweb.member.application.dto.LoginRequest;
 import kernel360.trackyweb.member.application.dto.LoginResponse;
 import kernel360.trackyweb.member.application.service.MemberService;
-import kernel360.trackyweb.member.infrastructure.entity.Member;
+import kernel360.trackyweb.member.infrastructure.entity.MemberEntity;
 import kernel360.trackyweb.member.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,13 +32,10 @@ public class MemberLoginController {
 		log.info("Login attempt for memberId: {}", request.getMemberId());
 		try {
 			// DB에서 회원 조회 및 비밀번호 검증 (비밀번호 불일치, 존재하지 않는 회원일 경우 예외 발생)
-			Member member = memberService.authenticate(request.getMemberId(), request.getPwd());
+			MemberEntity memberEntity = memberService.authenticate(request.getMemberId(), request.getPwd());
 
 			// 인증 성공 시 JWT 토큰 발급 (여기서는 role을 "admin"으로 고정)
-			String jwt = jwtTokenProvider.generateToken(member.getMemberId(), member.getRole());
-
-			// 여기 부분에 ~~ 권한 ~~~~ 알아보기~~~~~~
-
+			String jwt = jwtTokenProvider.generateToken(memberEntity.getMemberId(), memberEntity.getRole());
 
 			log.info("Login success for memberId: {}", request.getMemberId());
 			return ResponseEntity.ok(new LoginResponse(jwt));

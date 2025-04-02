@@ -2,8 +2,9 @@ package kernel360.trackyweb.rent.presentation;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,23 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Operation;
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackyweb.car.presentation.dto.CarResponse;
-import kernel360.trackyweb.rent.application.dto.RentDetailResponse;
-import kernel360.trackyweb.rent.application.dto.RentRequest;
-import kernel360.trackyweb.rent.application.dto.RentResponse;
+import kernel360.trackyweb.rent.presentation.dto.RentRequest;
+import kernel360.trackyweb.rent.presentation.dto.RentResponse;
 import kernel360.trackyweb.rent.application.service.RentService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/rents")
+@RequiredArgsConstructor
 public class RentController implements RentApiDocs {
 
 	private final RentService rentService;
 
-	public RentController(RentService rentService) {
-		this.rentService = rentService;
-	}
 
 	@GetMapping("/all")
 	public ApiResponse<List<RentResponse>> getAll() {
@@ -42,11 +41,34 @@ public class RentController implements RentApiDocs {
 		return rentService.searchByRentUuid(rentUuid);
 	}
 
-	@PostMapping("/create")
+	@GetMapping("/search/{rentUuid}")
+	public ApiResponse<RentResponse> searchDetailByRentUuid(
+		@PathVariable String rentUuid
+	){
+		log.info("searchDetailByRentUuid : {}" , rentUuid);
+		return rentService.searchDetailByRentUuid(rentUuid);
+	}
+
+	@PostMapping("/register")
 	public ApiResponse<RentResponse> create(
 		@RequestBody RentRequest rentRequest
 	){
 		return rentService.create(rentRequest);
+	}
+
+	@PatchMapping("/update/{rentUuid}")
+	public ApiResponse<RentResponse> update(
+		@PathVariable String rentUuid,
+		@RequestBody RentRequest rentRequest
+	) {
+		return rentService.update(rentUuid, rentRequest);
+	}
+
+	@DeleteMapping("/delete/{rentUuid}")
+	public ApiResponse<String> delete(
+		@PathVariable String rentUuid
+	) {
+		return rentService.delete(rentUuid);
 	}
 
 }

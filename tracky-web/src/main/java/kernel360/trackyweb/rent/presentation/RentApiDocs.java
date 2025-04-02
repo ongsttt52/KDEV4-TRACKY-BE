@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackyweb.rent.application.dto.RentRequest;
-import kernel360.trackyweb.rent.application.dto.RentResponse;
+import kernel360.trackyweb.rent.presentation.dto.RentRequest;
+import kernel360.trackyweb.rent.presentation.dto.RentResponse;
 
 @Tag(name = "Rent API", description = "렌트 관련 API")
 public interface RentApiDocs {

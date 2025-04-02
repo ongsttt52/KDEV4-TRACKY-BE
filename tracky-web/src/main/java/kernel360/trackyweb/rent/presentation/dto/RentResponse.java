@@ -1,4 +1,4 @@
-package kernel360.trackyweb.rent.application.dto;
+package kernel360.trackyweb.rent.presentation.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
