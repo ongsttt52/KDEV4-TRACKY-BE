@@ -41,19 +41,19 @@ public class CarController implements CarApiDocs {
 		return carService.searchByMdn(mdn);
 	}
 
-	@GetMapping("/search/{id}")
-	public ApiResponse<CarResponse> searchById(
-		@PathVariable Long id
+	@GetMapping("/search/{mdn}")
+	public ApiResponse<CarResponse> searchOneByMdn(
+		@PathVariable String mdn
 	) {
-		return carService.searchById(id);
+		return carService.searchOneByMdn(mdn);
 	}
 
-	@GetMapping("/search/{id}/detail")
-	public ApiResponse<CarDetailResponse> searchDetailById(
-		@PathVariable Long id
+	@GetMapping("/search/{mdn}/detail")
+	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(
+		@PathVariable String mdn
 	) {
-		log.info("searchDetailById : {}" , id);
-		return carService.searchDetailById(id);
+		log.info("searchOneDetailByMdn : {}", mdn);
+		return carService.searchOneDetailByMdn(mdn);
 	}
 
 	@PostMapping("/create")
@@ -63,18 +63,18 @@ public class CarController implements CarApiDocs {
 		return carService.create(carRequest);
 	}
 
-	@PatchMapping("/update/{id}")
+	@PatchMapping("/update/{mdn}")
 	public ApiResponse<CarDetailResponse> update(
-		@PathVariable Long id,
+		@PathVariable String mdn,
 		@RequestBody CarRequest carRequest
 	) {
-		return carService.update(id, carRequest);
+		return carService.update(mdn, carRequest);
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/delete/{mdn}")
 	public ApiResponse<String> delete(
-		@PathVariable Long id
+		@PathVariable String mdn
 	) {
-		return carService.delete(id);
+		return carService.delete(mdn);
 	}
 }
