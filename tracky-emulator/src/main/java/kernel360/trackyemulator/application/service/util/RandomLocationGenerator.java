@@ -17,14 +17,14 @@ public class RandomLocationGenerator {
 	private static final double MAX_LON = 129.5;
 
 	// 랜덤 위도 long 값 생성
-	public long randomLatitude() {
+	public int randomLatitude() {
 		double lat = ThreadLocalRandom.current().nextDouble(MIN_LAT, MAX_LAT);
-		return (long) (lat * 1_000_000);
+		return (int) (lat * 1_000_000);
 	}
 
 	// 랜덤 경도 long 값 생성
-	public long randomLongitude() {
+	public int randomLongitude() {
 		double lon = ThreadLocalRandom.current().nextDouble(MIN_LON, MAX_LON);
-		return (long) (lon * 1_000_000);
+		return (int) (lon * 1_000_000);
 	}
 }

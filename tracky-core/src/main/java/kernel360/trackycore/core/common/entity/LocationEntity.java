@@ -30,36 +30,36 @@ public class LocationEntity extends DateBaseEntity {
 	private String driveStartLoc;
 
 	@Column(name = "drive_start_lon")
-	private long driveStartLon;
+	private int driveStartLon;
 
 	@Column(name = "drive_start_lat")
-	private long driveStartLat;
+	private int driveStartLat;
 
 	@Column(name = "drive_end_loc")
 	private String driveEndLoc;
 
 	@Column(name = "drive_end_lon")
-	private long driveEndLon;
+	private int driveEndLon;
 
 	@Column(name = "drive_end_lat")
-	private long driveEndLat;
+	private int driveEndLat;
 
-	public void updateEndLocation(long lat, long lon) {
+	public void updateEndLocation(int lat, int lon) {
 		this.driveEndLoc = "종료 지점";
 		this.driveEndLat = lat;
 		this.driveEndLon = lon;
 	}
 
 	public static LocationEntity create(
-            String driveStartLoc,
-			long driveStartLon,
-			long driveStartLat) {
+		String driveStartLoc,
+		int driveStartLon,
+		int driveStartLat) {
 
-        LocationEntity location = new LocationEntity();
-        location.driveStartLoc = driveStartLoc;
-        location.driveStartLon = driveStartLon;
-        location.driveStartLat = driveStartLat;
+		LocationEntity location = new LocationEntity();
+		location.driveStartLoc = driveStartLoc;
+		location.driveStartLon = driveStartLon;
+		location.driveStartLat = driveStartLat;
 
-        return location;
-    }
+		return location;
+	}
 }

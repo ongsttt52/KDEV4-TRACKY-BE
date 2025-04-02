@@ -25,11 +25,11 @@ public record RentRequest(
 			purpose,
 			rentStatus,
 			rentLoc,
-			null,  // rentLat
-			null,  // rentLon
+			0,  // rentLat
+			0,  // rentLon
 			returnLoc,
-			null,  // returnLat
-			null   // returnLon
+			0,  // returnLat
+			0   // returnLon
 		);
 	}
 }

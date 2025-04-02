@@ -22,18 +22,18 @@ public interface CarApiDocs {
 	@Operation(summary = "MDN으로 차량 검색", description = "MDN 키워드로 차량을 검색합니다.")
 	ApiResponse<List<CarResponse>> searchByMdn(@RequestParam String mdn);
 
-	@Operation(summary = "차량 ID로 단건 조회", description = "ID를 기준으로 차량을 조회합니다.")
-	ApiResponse<CarResponse> searchById(@PathVariable Long id);
+	@Operation(summary = "차량 MDN으로 단건 조회", description = "MDN 기준으로 차량을 조회합니다.")
+	ApiResponse<CarResponse> searchOneByMdn(@PathVariable String mdn);
 
-	@Operation(summary = "차량 ID로 상세 조회", description = "ID를 기준으로 차량 및 디바이스 상세 정보를 조회합니다.")
-	ApiResponse<CarDetailResponse> searchDetailById(@PathVariable Long id);
+	@Operation(summary = "차량 MDN으로 상세 조회", description = "MDN 기준으로 차량 및 디바이스 상세 정보를 조회합니다.")
+	ApiResponse<CarDetailResponse> searchOneDetailByMdn(@PathVariable String mdn);
 
 	@Operation(summary = "차량 신규 등록", description = "차량 신규 등록 API")
 	ApiResponse<CarDetailResponse> create(@RequestBody CarRequest carRequest);
 
 	@Operation(summary = "차량 정보 수정", description = "차량 정보를 수정하는 API")
-	ApiResponse<CarDetailResponse> update(@PathVariable Long id, @RequestBody CarRequest carRequest);
+	ApiResponse<CarDetailResponse> update(@PathVariable String mdn, @RequestBody CarRequest carRequest);
 
 	@Operation(summary = "차량 삭제", description = "차량 정보 삭제 API")
-	ApiResponse<String> delete(@PathVariable Long id);
+	ApiResponse<String> delete(@PathVariable String mdn);
 }

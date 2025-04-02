@@ -25,14 +25,13 @@ import lombok.ToString;
 public class RentEntity extends DateBaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;		// 대여 ID
+	@Column(name = "rent_uuid")
+	private String rentUuid;	// 대여 고유 UUID
 
 	//@ManyToOne(fetch = FetchType.LAZY)
 	private String mdn;		// 차량식별키
 
-	@Column(name = "rent_uuid")
-	private String rentUuid;	// 대여 고유 UUID
+
 
 	@Column(name = "rent_stime")
 	private LocalDateTime rentStime;	// 대여 시작 시간
@@ -55,19 +54,19 @@ public class RentEntity extends DateBaseEntity {
 	private String rentLoc;			// 대여 위치
 
 	@Column(name = "rent_lat")
-	private Long rentLat;			// 대여 경도
+	private int rentLat;			// 대여 경도
 
 	@Column(name = "rent_lon")
-	private Long rentLon;			// 대여 위도
+	private int rentLon;			// 대여 위도
 
 	@Column(name = "return_loc")
 	private String returnLoc;			// 반납 위치
 
 	@Column(name = "return_lat")
-	private Long returnLat;			// 반납 위도
+	private int returnLat;			// 반납 위도
 
 	@Column(name = "return_lon")
-	private Long returnLon;			// 반납 경도
+	private int returnLon;			// 반납 경도
 
 
 	// 생성자: 외부에서 직접 호출하지 못하도록 private 으로 변경
@@ -81,11 +80,11 @@ public class RentEntity extends DateBaseEntity {
 		String purpose,
 		String rentStatus,
 		String rentLoc,
-		Long rentLat,
-		Long rentLon,
+		int rentLat,
+		int rentLon,
 		String returnLoc,
-		Long returnLat,
-		Long returnLon
+		int returnLat,
+		int returnLon
 	) {
 		this.mdn = mdn;
 		this.rentUuid = rentUuid;
@@ -114,11 +113,11 @@ public class RentEntity extends DateBaseEntity {
 		String purpose,
 		String rentStatus,
 		String rentLoc,
-		Long rentLat,
-		Long rentLon,
+		int rentLat,
+		int rentLon,
 		String returnLoc,
-		Long returnLat,
-		Long returnLon
+		int returnLat,
+		int returnLon
 	) {
 		return new RentEntity(
 			mdn,

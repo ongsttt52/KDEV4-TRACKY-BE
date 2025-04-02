@@ -1,7 +1,7 @@
 package kernel360.trackyconsumer.application.service;
 
-
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
@@ -21,6 +21,7 @@ import kernel360.trackycore.core.common.entity.LocationEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -39,41 +40,35 @@ public class CarInfoConsumer {
 
 	@RabbitListener(queues = RabbitMQConfig.ONOFF_QUEUE_NAME)
 	@Transactional
-	public void receiveCarOnOffMessage(@Payload CarOnOffRequest message, @Header("amqp_receivedRoutingKey") String routingKey) {
+	public void receiveCarOnOffMessage(@Payload CarOnOffRequest message,
+		@Header("amqp_receivedRoutingKey") String routingKey) {
 
-		log.info("시동 메시지 수신: {}", message.toString());
-
+		log.info("메시지 수신: {}", message.toString());
 		switch (routingKey) {
 			case "on":
 				processOnMessage(message);
 				break;
 			case "off":
-				// processOffMessage(message);
+				processOffMessage(message);
 				break;
 		}
 	}
 
 	public void processOnMessage(CarOnOffRequest carOnOffRequest) {
 
-		log.info("processOnMessage 진입: {}", carOnOffRequest.toString());
 		LocationEntity location = carOnOffRequest.toLocationEntity();
 		locationEntityRepository.save(location);
-		log.info("location 엔티티: {}", location.toString());
 
 		String mdn = carOnOffRequest.getMdn();
 		CarEntity car = carEntityRepository.findByMdn(mdn);
-		log.info("car 엔티티: {}", car.toString());
 
 		RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
-		log.info("rent 엔티티: {}", rent.toString());
 
-		DriveEntity drive = DriveEntity.create(mdn, rent.getId(), car.getDevice().getId(), location, carOnOffRequest.getOnTime());
-		log.info("drive 엔티티: {}", drive.toString());
+		DriveEntity drive = DriveEntity.create(mdn, rent.getRentUuid(), car.getDevice().getId(), location,
+		carOnOffRequest.getOnTime());
 
-		// 임시 사용
-		// LocalDateTime tmp = LocalDateTime.now();
-		// DriveEntity drive = DriveEntity.create(mdn, 1, 1, location, tmp);
-		// 임시 사용
+		// DriveEntity drive = DriveEntity.create("temp1234", "some_uuid", 1, location,
+		// 	carOnOffRequest.getOnTime());
 
 		driveRepository.save(drive);
 	}
@@ -86,11 +81,11 @@ public class CarInfoConsumer {
 		 * 차량 주행 거리 += sum update(Car)
 		 * 주행 종료 지점 update(Location)
 		 **/
+		log.info("drive 전 : {}");
+
 		DriveEntity drive = driveRepository.findByMdnAndOtime(carOnOffRequest.getMdn(), carOnOffRequest.getOnTime());
 		drive.updateDistance(carOnOffRequest.getSum());
 		drive.updateOffTime(carOnOffRequest.getOffTime());
-
-
 
 		CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
 		car.updateSum(drive.getDriveDistance());
@@ -104,34 +99,25 @@ public class CarInfoConsumer {
 	@Transactional
 	public void receiveCarMessage(GpsHistoryMessage message) {
 
-		// log.info("요청 시간: {}", message.getOTime().toString());
-		// log.info("DB 시간: {}", driveRepository.findById(245L).get().getDriveOnTime());
-
 		List<CycleGpsRequest> cycleGpsRequestList = message.getCList();
-		// Drive 어떻게 찾지?
 
 		DriveEntity drive = driveRepository.findByMdnAndOtime(message.getMdn(), message.getOTime());
-		// log.info("드라이브 엔티티: {}", drive.toString());
-
-
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < message.getCCnt(); i++) {
-			log.info("gpshistory 위도: {}, 경도: {}", cycleGpsRequestList.get(i).getLat(),
-				cycleGpsRequestList.get(i).getLon());
 			saveGpsMessage(drive, message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
+			// saveGpsMessage(message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
 		}
 
 	}
 
 	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
+	// public void saveGpsMessage(LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
 
-		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(drive, oTime, sum);
-		// log.info("히스토리 엔티티: {}", gpsHistoryEntity.toString());
-		
+		long maxSeq = gpsHistoryRepository.findMaxSeqByDrive(drive);
+		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
+
 		gpsHistoryRepository.save(gpsHistoryEntity);
-		// log.info("gpshistory 위도: {}, 경도: {}", gpsHistoryEntity.getLat(), gpsHistoryEntity.getLon());
+
 	}
-
-
 }

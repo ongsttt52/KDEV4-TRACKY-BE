@@ -24,8 +24,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CarEntity extends DateBaseEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;              // 차량 ID
 	private String mdn;           // 차량식별기
 
 	// 외래키
@@ -55,7 +53,7 @@ public class CarEntity extends DateBaseEntity {
 	private LocalDateTime deletedAt;   // 삭제 시간
 
 	private CarEntity(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate, String carYear,
-		String purpose, String status, int sum) {
+		String purpose, String status, double sum) {
 
 		this.mdn = mdn;
 		this.bizId = bizId;
@@ -68,8 +66,9 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public static CarEntity create(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate, String carYear,
-		String purpose, String status, int sum) {
+	public static CarEntity create(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate,
+		String carYear,
+		String purpose, String status, double sum) {
 		return new CarEntity(mdn, bizId, device, carType, carPlate, carYear, purpose, status, sum);
 	}
 
@@ -82,7 +81,7 @@ public class CarEntity extends DateBaseEntity {
 		String carYear,
 		String purpose,
 		String status,
-		int sum
+		double sum
 	) {
 		this.mdn = mdn;
 		this.bizId = bizId;
@@ -95,7 +94,7 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public void updateSum(int updateSum) {
+	public void updateSum(double updateSum) {
 		this.sum += updateSum;
 	}
 }

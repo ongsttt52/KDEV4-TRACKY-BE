@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
@@ -30,6 +31,7 @@ public class CarService {
 	 * 등록 차량 전체 조회
 	 * @return 전체 차량 List
 	 */
+	@Transactional
 	public ApiResponse<List<CarResponse>> getAll() {
 		return ApiResponse.success(CarResponse.fromList(carRepository.findAll()));
 	}
@@ -39,39 +41,42 @@ public class CarService {
 	 * @param mdn
 	 * @return 검색된 차량 List
 	 */
+	@Transactional
 	public ApiResponse<List<CarResponse>> searchByMdn(String mdn) {
 		return ApiResponse.success(CarResponse.fromList(carRepository.findByMdnContainingOrdered(mdn)));
 	}
 
 	/**
-	 * 차량 ID 값으로 단건 검색
-	 * @param id
+	 * 차량 MDN 값으로 단건 검색
+	 * @param mdn
 	 * @return 단건 차량 데이터
 	 */
-	public ApiResponse<CarResponse> searchById(Long id) {
-		CarEntity car = carRepository.findById(id)
-			// 천승준 - 공통 에러 처리 해봤어요
+	@Transactional
+	public ApiResponse<CarResponse> searchOneByMdn(String mdn) {
+		CarEntity car = carRepository.findByMdn(mdn)
 			.orElseThrow(() -> CarException.notFound());
 		return ApiResponse.success(CarResponse.from(car));
 	}
 
 	/**
-	 * 디바이스 정보를 포함한 차량 ID 값으로 검색
-	 * @param id 차량 ID
+	 * 디바이스 정보를 포함한 차량 MDN 값으로 검색
+	 * @param mdn 차량 MDN
 	 * @return 단건 차량 데이터 + 디바이스 정보
 	 */
-	public ApiResponse<CarDetailResponse> searchDetailById(Long id) {
-		CarEntity car = carRepository.findDetailById(id)
+	@Transactional
+	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(String mdn) {
+		CarEntity car = carRepository.findDetailByMdn(mdn)
 			// 천승준 - 공통 에러 처리 해봤어요
 			.orElseThrow(() -> CarException.notFound());
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}
 
 	/**
-	 * 차량 신규 등록 ( device는 기본 device 설정 ID 1 가져옴 )
+	 * 차량 신규 등록 ( device는 기본 device 설정 MDN 1 가져옴 )
 	 * @param carRequest
 	 * @return 등록 성공한 차량 detail
 	 */
+	@Transactional
 	public ApiResponse<CarDetailResponse> create(CarRequest carRequest) {
 		DeviceEntity device = deviceRepository.findById(1L)
 			.orElseThrow(() -> DeviceException.notFound());
@@ -88,15 +93,16 @@ public class CarService {
 
 	/**
 	 * 차량 정보 수정
-	 * @param id 차량 ID
+	 * @param mdn 차량 mdn
 	 * @param carRequest 차량 정보
 	 * @return 수정된 차량 detail
 	 */
-	public ApiResponse<CarDetailResponse> update(Long id, CarRequest carRequest) {
-		CarEntity car = carRepository.findDetailById(id)
+	@Transactional
+	public ApiResponse<CarDetailResponse> update(String mdn, CarRequest carRequest) {
+		CarEntity car = carRepository.findDetailByMdn(mdn)
 			.orElseThrow(() -> CarException.notFound());
 
-		// 항상 ID 1인 디바이스 사용
+		// 항상 MDN 1인 디바이스 사용
 		DeviceEntity device = deviceRepository.findById(1L)
 			.orElseThrow(() -> DeviceException.notFound());
 
@@ -111,11 +117,12 @@ public class CarService {
 
 	/**
 	 * 차량 삭제 API
-	 * @param id
+	 * @param mdn
 	 * @return ApiResponse
 	 */
-	public ApiResponse<String> delete(Long id) {
-		carRepository.deleteById(id);
+	@Transactional
+	public ApiResponse<String> delete(String mdn) {
+		carRepository.deleteByMdn(mdn);
 		return ApiResponse.success("삭제 완료");
 	}
 
