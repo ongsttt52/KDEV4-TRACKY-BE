@@ -22,7 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class Member extends DateBaseEntity {
+public class MemberEntity extends DateBaseEntity {
 
 	@Id
 	private Long id;

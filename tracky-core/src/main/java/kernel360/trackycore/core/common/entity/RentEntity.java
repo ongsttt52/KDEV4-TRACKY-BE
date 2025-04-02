@@ -31,8 +31,6 @@ public class RentEntity extends DateBaseEntity {
 	//@ManyToOne(fetch = FetchType.LAZY)
 	private String mdn;		// 차량식별키
 
-
-
 	@Column(name = "rent_stime")
 	private LocalDateTime rentStime;	// 대여 시작 시간
 
@@ -135,5 +133,25 @@ public class RentEntity extends DateBaseEntity {
 			returnLat,
 			returnLon
 		);
+	}
+
+	public void update(
+		String mdn,
+		LocalDateTime rentStime,
+		LocalDateTime rentEtime,
+		String renterName,
+		String renterPhone,
+		String purpose,
+		String rentLoc,
+		String returnLoc
+	) {
+		this.mdn = mdn;
+		this.rentStime = rentStime;
+		this.rentEtime = rentEtime;
+		this.renterName = renterName;
+		this.renterPhone = renterPhone;
+		this.purpose = purpose;
+		this.rentLoc = rentLoc;
+		this.returnLoc = returnLoc;
 	}
 }

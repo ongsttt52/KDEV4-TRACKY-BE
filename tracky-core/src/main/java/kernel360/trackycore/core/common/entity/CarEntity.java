@@ -94,7 +94,7 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public void updateSum(double updateSum) {
+	public void updateSum(int updateSum) {
 		this.sum += updateSum;
 	}
 }

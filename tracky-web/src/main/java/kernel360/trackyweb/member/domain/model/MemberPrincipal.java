@@ -2,21 +2,20 @@ package kernel360.trackyweb.member.domain.model;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import kernel360.trackyweb.member.infrastructure.entity.Member;
+import kernel360.trackyweb.member.infrastructure.entity.MemberEntity;
 
 public class MemberPrincipal implements UserDetails {
 
-	private final Member member;
+	private final MemberEntity memberEntity;
 
-	public MemberPrincipal(Member member) {
+	public MemberPrincipal(MemberEntity memberEntity) {
 
-		this.member = member;
+		this.memberEntity = memberEntity;
 	}
 
 	@Override
@@ -24,7 +23,7 @@ public class MemberPrincipal implements UserDetails {
 
 		// DB의 role 값: "admin" 또는 "super_admin"
 		// Security에서 hasAuthority("admin") / hasAuthority("super_admin") 로 체크 가능
-		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + member.getRole().toUpperCase()));
+		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + memberEntity.getRole().toUpperCase()));
 
 		// role = "admin" → "admin"으로 그대로 인식되도록
 		//return List.of(new SimpleGrantedAuthority("ROLE_" + member.getRole().toUpperCase()));
@@ -33,13 +32,13 @@ public class MemberPrincipal implements UserDetails {
 	@Override
 	public String getPassword() {
 
-		return member.getPwd();
+		return memberEntity.getPwd();
 	}
 
 	@Override
 	public String getUsername() {
 
-		return member.getMemberId();
+		return memberEntity.getMemberId();
 	}
 
 	@Override public boolean isAccountNonExpired() {return true;}
@@ -47,7 +46,7 @@ public class MemberPrincipal implements UserDetails {
 	@Override public boolean isCredentialsNonExpired() {return true;}
 	@Override public boolean isEnabled() {return true;}
 
-	public Member getMember() {
-		return member;
+	public MemberEntity getMember() {
+		return memberEntity;
 	}
 }

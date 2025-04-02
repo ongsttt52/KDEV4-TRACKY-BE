@@ -1,6 +1,7 @@
-package kernel360.trackyweb.rent.application.dto;
+package kernel360.trackyweb.rent.presentation.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import kernel360.trackycore.core.common.entity.RentEntity;
 
@@ -30,4 +31,11 @@ public record RentResponse(
 			rent.getRentStatus()        // rentStatus
 		);
 	}
+
+	public static List<RentResponse> fromList(List<RentEntity> rents) {
+		return rents.stream()
+			.map(RentResponse::from)
+			.toList();
+	}
+
 }
