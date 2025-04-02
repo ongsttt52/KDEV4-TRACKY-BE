@@ -55,6 +55,8 @@ public class RentService {
 
 	/**
 	 * rentUuid 값으로 검색
+	 * @param rentUuid
+	 * @return 수정된 대여 detail
 	 */
 	public ApiResponse<RentResponse> searchDetailByRentUuid(String rentUuid) {
 		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
