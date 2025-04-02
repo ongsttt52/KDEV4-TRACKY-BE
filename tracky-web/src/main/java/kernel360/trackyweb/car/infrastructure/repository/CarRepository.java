@@ -24,9 +24,22 @@ public interface CarRepository extends JpaRepository<CarEntity, Long> {
 
 	/**
 	 * 디바이스 내용을 포함한 차량 단건 데이터
-	 * @param id 차량 ID
+	 * @param mdn 차량 mdn
 	 * @return 차량 단건 조회 값
 	 */
-	@Query("SELECT c FROM CarEntity c JOIN FETCH c.device WHERE c.id = :id")
-	Optional<CarEntity> findDetailById(@Param("id") Long id);
+	@Query("SELECT c FROM CarEntity c JOIN FETCH c.device WHERE c.mdn = :mdn")
+	Optional<CarEntity> findDetailByMdn(@Param("mdn") String mdn);
+
+	/**
+	 * mdn이 일치하는 차량 찾기
+	 * @param mdn
+	 * @return 차량 단건 조회
+	 */
+	Optional<CarEntity> findByMdn(String mdn);
+
+	/**
+	 * MDN이 일치하는 차량 삭제
+	 * @param mdn
+	 */
+	void deleteByMdn(String mdn);
 }
