@@ -30,10 +30,10 @@ public class CarOnOffRequest {
 	private LocalDateTime offTime; // 시동 Off 시간
 
 	private String gcd;           // GPS 상태
-	private long lat;             // GPS 위도
-	private long lon;             // GPS 경도
-	private String ang;           // 방향
-	private String spd;           // 속도(km/h)
+	private int lat;             // GPS 위도
+	private int lon;             // GPS 경도
+	private int ang;           // 방향
+	private int spd;           // 속도(km/h)
 	private double sum;              // 누적 주행 거리(m)
 
 	public LocationEntity toLocationEntity() {

@@ -22,15 +22,15 @@ public class CarOnOffRequest {
 	private LocalDateTime offTime;
 
 	private String gcd;
-	private long lat;
-	private long lon;
+	private int lat;
+	private int lon;
 	private int ang;
 	private int spd;
 	private double sum;
 
 	private CarOnOffRequest(String mdn, String tid, String mid, String pv, String did,
 		LocalDateTime onTime, LocalDateTime offTime,
-		String gcd, long lat, long lon, int ang, int spd, double sum) {
+		String gcd, int lat, int lon, int ang, int spd, double sum) {
 		this.mdn = mdn;
 		this.tid = tid;
 		this.mid = mid;

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import kernel360.trackycore.core.common.entity.RentEntity;
 
 public record RentResponse(
-	Long id,
 	String rent_uuid,
 	String mdn,
 	String renterName,
@@ -19,7 +18,6 @@ public record RentResponse(
 ) {
 	public static RentResponse from(RentEntity rent) {
 		return new RentResponse(
-			rent.getId(),               // id
 			rent.getRentUuid(),         // rent_uuid
 			rent.getMdn(),              // mdn
 			rent.getRenterName(),       // renterName

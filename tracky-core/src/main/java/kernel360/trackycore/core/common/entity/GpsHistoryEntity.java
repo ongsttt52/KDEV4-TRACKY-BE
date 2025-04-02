@@ -15,6 +15,7 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -22,6 +23,7 @@ import lombok.ToString;
 @Getter
 @Entity
 @Table(name = "gpshistory")
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -32,6 +34,7 @@ public class GpsHistoryEntity {
 	@Column(name = "drive_seq", nullable = false)
 	private Long driveSeq;
 
+	@Id
 	@JoinColumn(name = "drive_id", nullable = false)
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DriveEntity drive;
@@ -41,9 +44,9 @@ public class GpsHistoryEntity {
 
 	private String gcd;
 
-	private long lat;
+	private int lat;
 
-	private long lon;
+	private int lon;
 
 	private int ang;
 
@@ -55,8 +58,9 @@ public class GpsHistoryEntity {
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 
-	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, long lat, long lon, int ang, int spd,
+	public GpsHistoryEntity(long maxSeq, DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang, int spd,
 		double sum) {
+		this.driveSeq = maxSeq;
 		this.drive = drive;
 		this.oTime = oTime;
 		this.gcd = gcd;

@@ -12,7 +12,7 @@ public record CarRequest(
 	String carYear,
 	String purpose,
 	String status,
-	int sum
+	double sum
 ) {
 	public static CarRequest from(CarEntity car) {
 		return new CarRequest(
