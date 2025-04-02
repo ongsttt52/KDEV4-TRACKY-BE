@@ -5,6 +5,8 @@ import java.util.*;
 
 import org.springframework.stereotype.Component;
 
+import kernel360.trackyemulator.application.service.CarInstanceFactory.MultiCarInstanceFactory;
+import kernel360.trackyemulator.application.service.client.MdnListRequestClient;
 import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import kernel360.trackyemulator.application.service.CarInstanceFactory.SingleCarInstanceFactory;
 import kernel360.trackyemulator.application.service.client.StartRequestClient;
@@ -24,8 +26,19 @@ public class CarInstanceManager {
 	private final StartRequestClient startRequestClient;
 	private final StopRequestClient stopRequestClient;
 	private final CycleDataManager cycleDataManager;
+	private final MdnListRequestClient mdnListRequestClient;
+	private final MultiCarInstanceFactory multiCarInstanceFactory;
 
 	private List<EmulatorInstance> instances = new ArrayList<>();
+
+	private List<String> mdnList;
+
+	//현재 생성 가능한 에뮬레이터 개수 받아옴
+	public int getAvailableEmulatorCount(){
+		mdnList = mdnListRequestClient.getMdnList();
+
+		return mdnList.size();
+	}
 
 	// 뷰에서 입력받은 에뮬레이터 개수만큼 인스턴스 생성
 	public int createEmulator(int count) {
@@ -34,7 +47,7 @@ public class CarInstanceManager {
 			this.instances = singleCarInstanceFactory.createCarInstances();
 			log.info("single car instance factory가 {}개의 인스턴스 생성 완료", instances.size());
 		} else {
-			throw new UnsupportedOperationException("지금은 1대만 지원합니다.");
+			this.instances = multiCarInstanceFactory.createCarInstances(count, mdnList);
 		}
 		return instances.size();
 	}
@@ -95,4 +108,5 @@ public class CarInstanceManager {
 		instances.removeIf(instance -> stoppedMdns.contains(instance.getMdn()));
 		stoppedMdns.forEach(mdn -> log.info("{} 인스턴스 삭제 완료", mdn));
 	}
+
 }

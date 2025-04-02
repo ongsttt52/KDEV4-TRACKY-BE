@@ -116,6 +116,7 @@ public class CarInfoConsumer {
 
 		long maxSeq = gpsHistoryRepository.findMaxSeqByDrive(drive);
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
+		log.info("gpshitory 엔티티: {}", gpsHistoryEntity.toString());
 
 		gpsHistoryRepository.save(gpsHistoryEntity);
 
