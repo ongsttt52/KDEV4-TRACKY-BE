@@ -5,22 +5,45 @@
     <title>에뮬레이터 시동 설정</title>
     <script>
         function validateEmulatorCount(event) {
-            const count = document.getElementById("emulator-count").value;
-            if (parseInt(count) !== 1) {
-                alert("⚠️ 현재는 1대만 설정할 수 있습니다.");
-                event.preventDefault(); // 폼 전송 막기
+            const count = parseInt(document.getElementById("emulator-count").value);
+            if (isNaN(count) || count < 1 || count > 15000) {
+                alert("⚠️ 에뮬레이터 개수는 1 이상 15000 이하로 입력해야 합니다.");
+                event.preventDefault();
                 return false;
             }
             return true;
+        }
+
+        function disableButton(buttonId) {
+            const button = document.getElementById(buttonId);
+            button.disabled = true;
+            button.textContent += " (요청 중)";
         }
     </script>
 </head>
 <body>
 <h2>에뮬레이터 수동 시동 설정</h2>
 
+<br/>
+<form th:action="@{/emulator/available}" method="post">
+    <button type="submit">✅ 현재 생성 가능한 에뮬레이터 개수 확인</button>
+</form>
+
+<p th:if="${availableCount != null}">
+    <strong>📌 현재 생성 가능 에뮬레이터 개수 : </strong> <span th:text="${availableCount}"></span> 대
+</p>
+
+<!-- ✅ 상태 정보 -->
+<div>
+    <p><strong>📌 현재 생성된 에뮬레이터 개수: </strong> <span th:text="${instanceCount ?: '설정되지 않음'}"></span></p>
+
+</div>
+
+<hr/>
+
 <form th:action="@{/emulator/configure}" method="post" onsubmit="return validateEmulatorCount(event)">
     <label>에뮬레이터 개수:
-        <input type="number" id="emulator-count" name="count" min="1" value="1"/>
+        <input type="number" id="emulator-count" name="count" min="1" max="15000" value="1"/>
     </label>
     <button type="submit">에뮬레이터 개수 설정</button>
 </form>
@@ -31,14 +54,16 @@
 </form>
 
 <br/>
-<form th:action="@{/emulator/start}" method="post">
-    <button type="submit">🚗 시동 ON 요청</button>
+<form th:action="@{/emulator/start}" method="post" onsubmit="disableButton('start-btn')">
+    <button type="submit" id="start-btn" th:disabled="${engineStatus == 'ON'}">🚗 시동 ON 요청</button>
 </form>
 
 <br/>
-<form th:action="@{/emulator/stop}" method="post">
-    <button type="submit">🛑 시동 OFF 요청</button>
-</form>
+<form th:action="@{/emulator/stop}" method="post" onsubmit="disableButton('stop-btn')">
+    <button type="submit" id="stop-btn"
+            th:disabled="${engineStatus == null}">
+        🛑 시동 OFF 요청
+    </button></form>
 
 <p th:if="${message}" th:text="${message}">결과 메시지</p>
 
@@ -76,5 +101,9 @@
     };
 </script>
 
+<br/>
+<form th:action="@{/emulator/reset}" method="post">
+    <button type="submit">🧹 세션 정보 초기화</button>
+</form>
+
 </body>
-</html>
