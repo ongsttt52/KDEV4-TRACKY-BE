@@ -11,4 +11,8 @@ public class CarException extends GlobalException {
 	public static CarException notFound() {
 		return new CarException(ErrorCode.CAR_NOT_FOUND);
 	}
+
+	public static CarException duplicated() {
+		return new CarException(ErrorCode.CAR_DUPLICATED);
+	}
 }

@@ -84,11 +84,13 @@ public class CarService {
 
 		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
 		CarEntity car = CarMapper.createCar(carCreateRequest, device);
-		
+
+		if (carRepository.existsByMdn(carCreateRequest.mdn())) {
+			throw CarException.duplicated();
+		}
 		CarEntity savedCar = carRepository.save(car);
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
-
 		return ApiResponse.success(response);
 	}
 
@@ -126,5 +128,4 @@ public class CarService {
 		carRepository.deleteByMdn(mdn);
 		return ApiResponse.success("삭제 완료");
 	}
-
 }
