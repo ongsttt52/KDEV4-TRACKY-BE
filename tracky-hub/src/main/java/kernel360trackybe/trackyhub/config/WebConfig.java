@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("https://tracky-fe.vercel.app/", "http://localhost:5173")
-                .allowedMethods("POST")
+                .allowedMethods("POST", "GET", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)  // credentials를 false로 설정하면 allowedOrigins에 와일드카드 사용 가능
                 .maxAge(3600);  // 1시간 동안 pre-flight 요청 결과를 캐시
