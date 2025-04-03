@@ -6,7 +6,6 @@ import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 
 public record CarDetailResponse(
-	Long id,
 	String mdn,
 	Long bizId,
 	String carType,
@@ -14,13 +13,12 @@ public record CarDetailResponse(
 	String carYear,
 	String purpose,
 	String status,
-	int sum,
+	double sum,
 	DeviceEntity deviceInfo,
 	LocalDateTime createdAt
 ) {
 	public static CarDetailResponse from(CarEntity car) {
 		return new CarDetailResponse(
-			car.getId(),
 			car.getMdn(),
 			car.getBizId(),
 			car.getCarType(),

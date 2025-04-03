@@ -1,5 +1,6 @@
 package kernel360trackybe.trackyhub.application.service;
 
+import kernel360trackybe.trackyhub.infrastructure.repository.CarRepository;
 import kernel360trackybe.trackyhub.presentation.dto.CarOnOffRequest;
 import kernel360trackybe.trackyhub.config.RabbitMQConfig;
 import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
@@ -7,6 +8,7 @@ import kernel360trackybe.trackyhub.presentation.dto.GpsHistoryMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class CarInfoProducerService {
 
 	private final RabbitTemplate rabbitTemplate;
-
+	private final CarRepository carRepository;
 
 	public void sendCarStart(CarOnOffRequest carOnOffRequest) {
 
@@ -30,6 +32,7 @@ public class CarInfoProducerService {
 	}
 
 	public void sendCarStop(CarOnOffRequest carOnOffRequest) {
+		log.info("Car stop requested: {}", carOnOffRequest);
 
 		rabbitTemplate.convertAndSend(
 			RabbitMQConfig.EXCHANGE_NAME,
@@ -43,9 +46,10 @@ public class CarInfoProducerService {
 	 */
 	public void sendCycleInfo(CycleInfoRequest carInfo) {
 
-		GpsHistoryMessage gpsHistoryMessage = GpsHistoryMessage.from(carInfo.getMdn(), carInfo.getOTime(), carInfo.getCCnt(), carInfo.getCList());
+		GpsHistoryMessage gpsHistoryMessage = GpsHistoryMessage.from(carInfo.getMdn(), carInfo.getOTime(),
+			carInfo.getCCnt(), carInfo.getCList());
 
-		log.info("GPS 전송:{}" , gpsHistoryMessage.toString());
+		log.info("GPS 전송:{}", gpsHistoryMessage.toString());
 		rabbitTemplate.convertAndSend(
 			RabbitMQConfig.EXCHANGE_NAME,
 			"gps",
@@ -53,7 +57,11 @@ public class CarInfoProducerService {
 		);
 	}
 
-    public String getToken() {
-        return UUID.randomUUID().toString();
-    }
+	public String getToken() {
+		return UUID.randomUUID().toString();
+	}
+
+	public List<String> getMdns() {
+		return carRepository.findAllMdn();
+	}
 }

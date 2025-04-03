@@ -5,6 +5,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Getter
 public class CarOnOffRequest {
 
@@ -14,19 +16,21 @@ public class CarOnOffRequest {
 	private String pv;
 	private String did;
 
+	@JsonFormat(pattern = "yyyyMMddHHmm")
 	private LocalDateTime onTime;
+	@JsonFormat(pattern = "yyyyMMddHHmm")
 	private LocalDateTime offTime;
 
 	private String gcd;
-	private long lat;
-	private long lon;
+	private int lat;
+	private int lon;
 	private int ang;
 	private int spd;
 	private double sum;
 
 	private CarOnOffRequest(String mdn, String tid, String mid, String pv, String did,
 		LocalDateTime onTime, LocalDateTime offTime,
-		String gcd, long lat, long lon, int ang, int spd, double sum) {
+		String gcd, int lat, int lon, int ang, int spd, double sum) {
 		this.mdn = mdn;
 		this.tid = tid;
 		this.mid = mid;
@@ -52,7 +56,7 @@ public class CarOnOffRequest {
 			car.getMid(),
 			car.getPv(),
 			car.getDid(),
-			LocalDateTime.now(), // onTime
+			car.getCarOnTime(), // onTime
 			null,               // offTime
 			"A",
 			car.getCycleLastLat(),
@@ -73,8 +77,8 @@ public class CarOnOffRequest {
 			car.getMid(),
 			car.getPv(),
 			car.getDid(),
-			null,               // onTime
-			LocalDateTime.now(), // offTime
+			car.getCarOnTime(),               // onTime
+			car.getCarOffTime(), // offTime
 			"A",
 			car.getCycleLastLat(),
 			car.getCycleLastLon(),

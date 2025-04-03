@@ -26,7 +26,7 @@ public class JwtTokenProvider {
 	private Key secretKey;
 
 	@PostConstruct
-protected void init() {
+	protected void init() {
 		this.secretKey = Keys.hmacShaKeyFor(secretKeyRaw.getBytes());
 	}
 

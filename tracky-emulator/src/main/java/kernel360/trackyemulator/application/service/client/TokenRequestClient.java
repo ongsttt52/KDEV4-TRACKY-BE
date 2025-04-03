@@ -16,32 +16,32 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenRequestClient {
 
-    private final RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 
-    public String getToken(EmulatorInstance instance) {
+	public String getToken(EmulatorInstance instance) {
 
-        //TokenRequest DTO 생성
-        TokenRequest request = TokenRequest.from(instance);
+		//TokenRequest DTO 생성
+		TokenRequest request = TokenRequest.from(instance);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<TokenRequest> entity = new HttpEntity<>(request, headers);
+		HttpEntity<TokenRequest> entity = new HttpEntity<>(request, headers);
 
-        //getToken Request 요청
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
-                "http://localhost:8082/api/car/token",
-                entity,
-                ApiResponse.class
-        );
+		//getToken Request 요청
+		ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
+			"http://localhost:8082/api/car/token",
+			entity,
+			ApiResponse.class
+		);
 
-        //응답
-        ApiResponse apiResponse = response.getBody();
-        if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
-            throw new IllegalStateException(
-                    "토큰 요청 실패 " + instance.getMdn());
-        }
+		//응답
+		ApiResponse apiResponse = response.getBody();
+		if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
+			throw new IllegalStateException(
+				"토큰 요청 실패 " + instance.getMdn());
+		}
 
-        return apiResponse.getToken();
-    }
+		return apiResponse.getToken();
+	}
 }

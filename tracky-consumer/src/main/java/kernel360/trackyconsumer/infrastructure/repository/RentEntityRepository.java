@@ -13,4 +13,6 @@ public interface RentEntityRepository extends JpaRepository<RentEntity, Long> {
 
 	@Query("SELECT r FROM RentEntity r WHERE r.mdn = :mdn AND :onTime BETWEEN r.rentStime AND r.rentEtime")
 	RentEntity findMyMdnAndTime(String mdn, LocalDateTime onTime);
+
+	RentEntity findByMdn(String mdn);
 }

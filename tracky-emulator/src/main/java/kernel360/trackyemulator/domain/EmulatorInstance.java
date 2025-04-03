@@ -2,7 +2,7 @@ package kernel360.trackyemulator.domain;
 
 import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import lombok.Getter;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +20,18 @@ public class EmulatorInstance {
 
 	private double sum;             // 시동 ON 후 총 누적 거리
 
-	private long cycleLastLat;    // 60초 주기 데이터 중 마지막 60번째 GPS 위도
-	private long cycleLastLon;    // 60초 주기 데이터 중 마지막 60번째 GPS 경도
+	private int cycleLastLat;    // 60초 주기 데이터 중 마지막 60번째 GPS 위도
+	private int cycleLastLon;    // 60초 주기 데이터 중 마지막 60번째 GPS 경도
 	private int cycleLastSpeed;    //60초 주기 데이터 중 마지막 속도
 	private int cycleLastAng;        //60초 주기 데이터 중 마지막 방향
 
+	private final LocalDateTime carOnTime;
+	private LocalDateTime carOffTime;
+
 	private final List<CycleGpsRequest> cycleBuffer = new ArrayList<>();
 
-	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd, long cycleLastLat, long cycleLastLon) {
+	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd, int cycleLastLat,
+		int cycleLastLon, LocalDateTime carOnTime) {
 		this.mdn = mdn;
 		this.tid = tid;
 		this.mid = mid;
@@ -37,10 +41,12 @@ public class EmulatorInstance {
 		this.sum = 0;
 		this.cycleLastLat = cycleLastLat;
 		this.cycleLastLon = cycleLastLon;
+		this.carOnTime = carOnTime;
 	}
 
-	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd, long cycleLastLat, long cycleLastLon) {
-		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, cycleLastLat, cycleLastLon );
+	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd,
+		int cycleLastLat, int cycleLastLon, LocalDateTime carOnTime) {
+		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, cycleLastLat, cycleLastLon, carOnTime);
 	}
 
 	//토큰 세팅
@@ -48,8 +54,12 @@ public class EmulatorInstance {
 		this.token = token;
 	}
 
+	public void setCarOffTime(LocalDateTime carOffTime) {
+		this.carOffTime = carOffTime;
+	}
+
 	// 주기 데이터 정보 & 누적 거리 한번에 업데이트
-	public void updateCycleInfo(long lat, long lon, int speed, int ang, double distance) {
+	public void updateCycleInfo(int lat, int lon, int speed, int ang, double distance) {
 		this.sum += distance;
 		this.cycleLastLat = lat;
 		this.cycleLastLon = lon;
@@ -57,7 +67,7 @@ public class EmulatorInstance {
 		this.cycleLastAng = ang;
 	}
 
-	public void setInitLocation(long lat, long lon) {
+	public void setInitLocation(int lat, int lon) {
 		this.cycleLastLon = lon;
 		this.cycleLastLat = lat;
 	}

@@ -6,7 +6,6 @@ import java.util.List;
 import kernel360.trackycore.core.common.entity.CarEntity;
 
 public record CarResponse(
-	Long id,
 	String mdn,
 	Long bizId,
 	String carType,
@@ -14,12 +13,11 @@ public record CarResponse(
 	String carYear,
 	String purpose,
 	String status,
-	int sum,
+	double sum,
 	LocalDateTime createdAt
 ) {
 	public static CarResponse from(CarEntity car) {
 		return new CarResponse(
-			car.getId(),
 			car.getMdn(),
 			car.getBizId(),
 			car.getCarType(),
