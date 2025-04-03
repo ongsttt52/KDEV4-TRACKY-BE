@@ -11,11 +11,12 @@ import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
 import kernel360.trackyweb.car.application.mapper.CarMapper;
-import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
-import kernel360.trackyweb.car.presentation.dto.CarRequest;
-import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.car.infrastructure.repository.DeviceRepository;
+import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
+import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
+import kernel360.trackyweb.car.presentation.dto.CarResponse;
+import kernel360.trackyweb.car.presentation.dto.CarUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -73,17 +74,17 @@ public class CarService {
 
 	/**
 	 * 차량 신규 등록 ( device는 기본 device 설정 MDN 1 가져옴 )
-	 * @param carRequest
+	 * @param carCreateRequest
 	 * @return 등록 성공한 차량 detail
 	 */
 	@Transactional
-	public ApiResponse<CarDetailResponse> create(CarRequest carRequest) {
+	public ApiResponse<CarDetailResponse> create(CarCreateRequest carCreateRequest) {
 		DeviceEntity device = deviceRepository.findById(1L)
 			.orElseThrow(() -> DeviceException.notFound());
 
 		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
-		CarEntity car = CarMapper.createCar(carRequest, device);
-
+		CarEntity car = CarMapper.createCar(carCreateRequest, device);
+		
 		CarEntity savedCar = carRepository.save(car);
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
@@ -94,11 +95,11 @@ public class CarService {
 	/**
 	 * 차량 정보 수정
 	 * @param mdn 차량 mdn
-	 * @param carRequest 차량 정보
+	 * @param carUpdateRequest 차량 정보
 	 * @return 수정된 차량 detail
 	 */
 	@Transactional
-	public ApiResponse<CarDetailResponse> update(String mdn, CarRequest carRequest) {
+	public ApiResponse<CarDetailResponse> update(String mdn, CarUpdateRequest carUpdateRequest) {
 		CarEntity car = carRepository.findDetailByMdn(mdn)
 			.orElseThrow(() -> CarException.notFound());
 
@@ -107,7 +108,7 @@ public class CarService {
 			.orElseThrow(() -> DeviceException.notFound());
 
 		// update 할 객체 생성
-		CarMapper.updateCar(car, carRequest, device);
+		CarMapper.updateCar(car, carUpdateRequest, device);
 
 		log.info("업데이트 차량 : {}", car);
 
