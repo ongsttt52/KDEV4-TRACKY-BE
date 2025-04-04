@@ -142,6 +142,7 @@ public class RentEntity extends DateBaseEntity {
 		String renterName,
 		String renterPhone,
 		String purpose,
+		String rentStatus,
 		String rentLoc,
 		String returnLoc
 	) {
@@ -151,6 +152,7 @@ public class RentEntity extends DateBaseEntity {
 		this.renterName = renterName;
 		this.renterPhone = renterPhone;
 		this.purpose = purpose;
+		this.rentStatus	= rentStatus;
 		this.rentLoc = rentLoc;
 		this.returnLoc = returnLoc;
 	}
