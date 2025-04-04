@@ -37,6 +37,8 @@ public interface CarRepository extends JpaRepository<CarEntity, Long> {
 	 */
 	Optional<CarEntity> findByMdn(String mdn);
 
+	boolean existsByMdn(String mdn);
+
 	/**
 	 * MDN이 일치하는 차량 삭제
 	 * @param mdn
