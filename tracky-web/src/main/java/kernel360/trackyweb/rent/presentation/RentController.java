@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@PreAuthorize("hasRole('admin')")
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/rents")
 @RequiredArgsConstructor
 public class RentController implements RentApiDocs {
