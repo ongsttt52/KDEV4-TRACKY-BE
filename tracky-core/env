@@ -1,0 +1,12 @@
+# Database config
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=tracky-web
+DB_USER=tracky
+DB_PASSWORD=tracky
+
+# RabbitMQ config
+RABBITMQ_HOST=127.0.0.1
+RABBITMQ_PORT=5672
+RABBITMQ_USER=guest
+RABBITMQ_PASSWORD=guest

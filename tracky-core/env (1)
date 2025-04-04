@@ -1,0 +1,13 @@
+# Database config
+DB_HOST=db-tracky-1.cxssikac8df9.ap-northeast-2.rds.amazonaws.com
+DB_PORT=3306
+DB_NAME=tracky
+DB_USER=admin
+DB_PASSWORD=tracky1234
+
+# RabbitMQ config
+# RABBITMQ_HOST=127.0.0.1
+RABBITMQ_HOST=tojaman.mooo.com
+RABBITMQ_PORT=5672
+RABBITMQ_USER=guest
+RABBITMQ_PASSWORD=guest
