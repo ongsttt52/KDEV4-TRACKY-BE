@@ -33,9 +33,13 @@ public class MemberLoginController {
 		try {
 			// DB에서 회원 조회 및 비밀번호 검증 (비밀번호 불일치, 존재하지 않는 회원일 경우 예외 발생)
 			MemberEntity memberEntity = memberService.authenticate(request.getMemberId(), request.getPwd());
+			String bizName = memberEntity.getBizId().getBizName();
 
 			// 인증 성공 시 JWT 토큰 발급 (여기서는 role을 "admin"으로 고정)
-			String jwt = jwtTokenProvider.generateToken(memberEntity.getMemberId(), memberEntity.getRole());
+			String jwt = jwtTokenProvider.generateToken(
+				memberEntity.getMemberId(),
+				memberEntity.getRole(),
+				bizName);
 
 			log.info("Login success for memberId: {}", request.getMemberId());
 			return ResponseEntity.ok(new LoginResponse(jwt));

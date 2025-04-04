@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
 	private final JwtTokenProvider jwtTokenProvider;
@@ -39,8 +41,10 @@ public class SecurityConfig {
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 쓸 땐 세션 X
 			// 천승준 - api test 때매 임시 제거
 			.authorizeHttpRequests(auth -> auth
-				.anyRequest().permitAll() // 전체 허용 (JWT 없이 테스트 시)
+				.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
+				.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
 			)
+			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 			// .authorizeHttpRequests(auth -> auth
 			// 	.requestMatchers("/login", "/api/login", "/api/car", "/api/car/**").permitAll()
 			// 	.anyRequest().authenticated()
