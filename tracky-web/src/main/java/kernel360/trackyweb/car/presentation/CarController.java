@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Operation;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.car.application.CarService;
+import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
 import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
-import kernel360.trackyweb.car.presentation.dto.CarRequest;
 import kernel360.trackyweb.car.presentation.dto.CarResponse;
+import kernel360.trackyweb.car.presentation.dto.CarUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +37,7 @@ public class CarController implements CarApiDocs {
 	@GetMapping("/search")
 	public ApiResponse<List<CarResponse>> searchByMdn(
 		@RequestParam String mdn
- 	) {
+	) {
 		return carService.searchByMdn(mdn);
 	}
 
@@ -58,17 +58,17 @@ public class CarController implements CarApiDocs {
 
 	@PostMapping("/create")
 	public ApiResponse<CarDetailResponse> create(
-		@RequestBody CarRequest carRequest
+		@RequestBody CarCreateRequest carCreateRequest
 	) {
-		return carService.create(carRequest);
+		return carService.create(carCreateRequest);
 	}
 
 	@PatchMapping("/update/{mdn}")
 	public ApiResponse<CarDetailResponse> update(
 		@PathVariable String mdn,
-		@RequestBody CarRequest carRequest
+		@RequestBody CarUpdateRequest carUpdateRequest
 	) {
-		return carService.update(mdn, carRequest);
+		return carService.update(mdn, carUpdateRequest);
 	}
 
 	@DeleteMapping("/delete/{mdn}")
