@@ -8,4 +8,5 @@ public class PasswordTest {
 		String encoded = new BCryptPasswordEncoder().encode("0321");
 		System.out.println(encoded);
 	}
-}*/
+}
+*/

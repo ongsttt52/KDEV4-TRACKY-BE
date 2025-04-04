@@ -13,6 +13,7 @@ public class RentMapper {
 			rentRequest.renterName(),
 			rentRequest.renterPhone(),
 			rentRequest.purpose(),
+			rentRequest.rentStatus(),
 			rentRequest.rentLoc(),
 			rentRequest.returnLoc()
 		);

@@ -103,7 +103,7 @@ public class RentService {
 		log.info("업테이트 대여 : {}", rent);
 
 		RentEntity updatedRent = rentRepository.save(rent);
-		return ApiResponse.success(RentResponse.from(rent));
+		return ApiResponse.success(RentResponse.from(updatedRent));
 	}
 
 

@@ -20,8 +20,10 @@ public class JwtTokenProvider {
 	@Value("${spring.jwt.secret}")
 	private String secretKeyRaw;
 
-	@Value("${spring.jwt.expiration}")
-	private long expiration;
+	// @Value("${spring.jwt.expiration}")
+	// private long expiration;
+	// 구지원 - 임시로 유효 시간 24시간으로 세팅
+	private long expiration = 43200000L;
 
 	private Key secretKey;
 
@@ -30,13 +32,14 @@ public class JwtTokenProvider {
 		this.secretKey = Keys.hmacShaKeyFor(secretKeyRaw.getBytes());
 	}
 
-	public String generateToken(String memberId, String role) {
+	public String generateToken(String memberId, String role, String bizName) {
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + expiration);
 
 		return Jwts.builder()
 			.setSubject(memberId)
 			.claim("role", role)
+			.claim("bizName", bizName)
 			.setIssuedAt(now)
 			.setExpiration(validity)
 			.signWith(secretKey, SignatureAlgorithm.HS256)

@@ -41,14 +41,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if (token != null && jwtTokenProvider.validateToken(token)) {
 
 			String memberId = jwtTokenProvider.getMemberId(token);
-			String role = jwtTokenProvider.getRole(token);
+
+			String role = jwtTokenProvider.getRole(token).toUpperCase();
+			String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
 
 			// 추출한 값을 GrantedAuthority로 변환
 			UsernamePasswordAuthenticationToken authentication =
 				new UsernamePasswordAuthenticationToken(
 					memberId,
 					null,
-					Collections.singletonList(new SimpleGrantedAuthority(role))
+					Collections.singletonList(new SimpleGrantedAuthority(authority))
 				);
 
 			// SecurityContext에 Authentication 객체를 설정합니다.

@@ -12,7 +12,8 @@ public record RentRequest(
 	LocalDateTime rentEtime,
 	String rentLoc,
 	String returnLoc,
-	String purpose
+	String purpose,
+	String rentStatus
 ) {
 	public RentEntity toEntity(String rentUuid, String rentStatus) {
 		return RentEntity.create(
