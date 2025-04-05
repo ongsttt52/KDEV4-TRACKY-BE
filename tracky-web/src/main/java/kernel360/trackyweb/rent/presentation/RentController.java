@@ -49,7 +49,7 @@ public class RentController implements RentApiDocs {
 		return rentService.searchByFilter(rentUuid, rentStatus, rentDateTime);
 	}
 
-	@GetMapping("/search/{rentUuid}")
+	@GetMapping("/search/{rentUuid}/detail")
 	public ApiResponse<RentResponse> searchDetailByRentUuid(
 		@PathVariable String rentUuid
 	){
@@ -57,7 +57,7 @@ public class RentController implements RentApiDocs {
 		return rentService.searchDetailByRentUuid(rentUuid);
 	}
 
-	@PostMapping("/register")
+	@PostMapping("/create")
 	public ApiResponse<RentResponse> create(
 		@RequestBody RentRequest rentRequest
 	){
