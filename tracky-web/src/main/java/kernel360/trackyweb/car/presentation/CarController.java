@@ -34,11 +34,20 @@ public class CarController implements CarApiDocs {
 		return carService.getAll();
 	}
 
-	@GetMapping("/search")
-	public ApiResponse<List<CarResponse>> searchByMdn(
-		@RequestParam String mdn
+	@GetMapping("/check-mdn/{mdn}")
+	public ApiResponse<Boolean> isMdnExist(
+		@PathVariable String mdn
 	) {
-		return carService.searchByMdn(mdn);
+		return carService.isMdnExist(mdn);
+	}
+
+	@GetMapping("/search")
+	public ApiResponse<List<CarResponse>> searchByFilter(
+		@RequestParam(required = false) String mdn,
+		@RequestParam(required = false) String status,
+		@RequestParam(required = false) String purpose
+	) {
+		return carService.searchByFilter(mdn, status, purpose);
 	}
 
 	@GetMapping("/search/{mdn}")

@@ -38,13 +38,26 @@ public class CarService {
 	}
 
 	/**
-	 * Mdn 기반 차량 검색
+	 * mdn이 일치하는 차량 찾기
+	 * @param mdn 차량 mdn
+	 * @return 차량 단건 조회
+	 */
+	@Transactional
+	public ApiResponse<Boolean> isMdnExist(String mdn) {
+		return ApiResponse.success(carRepository.existsByMdn(mdn));
+	}
+
+	/**
+	 * 필터링 기반 검색
 	 * @param mdn
+	 * @param status
+	 * @param purpose
 	 * @return 검색된 차량 List
 	 */
 	@Transactional
-	public ApiResponse<List<CarResponse>> searchByMdn(String mdn) {
-		return ApiResponse.success(CarResponse.fromList(carRepository.findByMdnContainingOrdered(mdn)));
+	public ApiResponse<List<CarResponse>> searchByFilter(String mdn, String status, String purpose) {
+		List<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose);
+		return ApiResponse.success(CarResponse.fromList(cars));
 	}
 
 	/**
