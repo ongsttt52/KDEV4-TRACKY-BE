@@ -42,10 +42,10 @@ public class SecurityConfig {
 			.sessionManagement(
 				session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 쓸 땐 세션 X
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-				// .requestMatchers("/api/**").permitAll() // 오승택 - 요청 테스트용 코드, 모든 API 허용
-				.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
-				.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
+					.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+					.requestMatchers("/api/**").permitAll() // 오승택 - 요청 테스트용 코드, 모든 API 허용
+				// .requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
+				// .requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
 			)
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 			.build();

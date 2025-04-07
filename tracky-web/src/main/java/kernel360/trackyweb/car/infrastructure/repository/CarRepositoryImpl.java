@@ -26,16 +26,8 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 
 		CriteriaQuery<CarEntity> query = cb.createQuery(CarEntity.class);
 		Root<CarEntity> car = query.from(CarEntity.class);
-		List<Predicate> predicates = new ArrayList<>();
-		if (mdn != null && !mdn.isBlank()) {
-			predicates.add(cb.like(car.get("mdn"), "%" + mdn + "%"));
-		}
-		if (status != null && !status.isBlank()) {
-			predicates.add(cb.equal(car.get("status"), status));
-		}
-		if (purpose != null && !purpose.isBlank()) {
-			predicates.add(cb.equal(car.get("purpose"), purpose));
-		}
+		List<Predicate> predicates = setPredicates(mdn, status, purpose, cb, car);
+
 		query.where(cb.and(predicates.toArray(new Predicate[0])));
 		if (mdn != null && !mdn.isBlank()) {
 			query.orderBy(cb.asc(cb.locate(car.get("mdn"), mdn)));
@@ -47,20 +39,27 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 
 		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
 		Root<CarEntity> countRoot = countQuery.from(CarEntity.class);
-		List<Predicate> countPredicates = new ArrayList<>();
-		if (mdn != null && !mdn.isBlank()) {
-			countPredicates.add(cb.like(countRoot.get("mdn"), "%" + mdn + "%"));
-		}
-		if (status != null && !status.isBlank()) {
-			countPredicates.add(cb.equal(countRoot.get("status"), status));
-		}
-		if (purpose != null && !purpose.isBlank()) {
-			countPredicates.add(cb.equal(countRoot.get("purpose"), purpose));
-		}
+		List<Predicate> countPredicates = setPredicates(mdn, status, purpose, cb, countRoot);
+
 		countQuery.select(cb.count(countRoot))
 			.where(cb.and(countPredicates.toArray(new Predicate[0])));
 		Long total = em.createQuery(countQuery).getSingleResult();
 
 		return new PageImpl<>(resultList, pageable, total);
+	}
+
+	private List<Predicate> setPredicates(String mdn, String status, String purpose, CriteriaBuilder cb,
+		Root<CarEntity> root) {
+		List<Predicate> predicates = new ArrayList<>();
+		if (mdn != null && !mdn.isBlank()) {
+			predicates.add(cb.like(root.get("mdn"), "%" + mdn + "%"));
+		}
+		if (status != null && !status.isBlank()) {
+			predicates.add(cb.equal(root.get("status"), status));
+		}
+		if (purpose != null && !purpose.isBlank()) {
+			predicates.add(cb.equal(root.get("purpose"), purpose));
+		}
+		return predicates;
 	}
 }
