@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackyweb.dashboard.domain.DashBoardReader;
 import kernel360.trackyweb.dashboard.domain.RentDashboardDto;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +23,7 @@ public class DashBoardReaderImpl implements DashBoardReader {
 		LocalDateTime end = baseDate.plusDays(1).atStartOfDay();
 
 		return dashRentRepository.findByRentStimeBetween(start, end).stream()
-			.map(rent -> {
-				var carOpt = dashCarRepository.findByMdn(rent.getMdn());
-				return new RentDashboardDto(
-					rent.getRentUuid(),
-					rent.getRenterName(),
-					carOpt.map(CarEntity::getMdn).orElse(null),
-					carOpt.map(CarEntity::getCarPlate).orElse(null),
-					carOpt.map(CarEntity::getCarType).orElse(null),
-					rent.getRentStatus(),
-					rent.getRentStime(),
-					rent.getRentEtime()
-				);
-			})
+			.map(rent -> RentDashboardDto.from(rent))
 			.sorted(Comparator.comparing(RentDashboardDto::rentStime))
 			.toList();
 	}
