@@ -1,4 +1,4 @@
-package kernel360.trackyweb.dashboard2.domain;
+package kernel360.trackyweb.dashboard.domain;
 
 import lombok.Data;
 
