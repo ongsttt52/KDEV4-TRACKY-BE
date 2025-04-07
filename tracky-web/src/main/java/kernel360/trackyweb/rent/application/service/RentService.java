@@ -14,11 +14,13 @@ import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.RentException;
+import kernel360.trackyweb.emitter.EventEmitterService;
+import kernel360.trackyweb.rent.application.mapper.RentEvent;
 import kernel360.trackyweb.rent.application.mapper.RentMapper;
-import kernel360.trackyweb.rent.presentation.dto.RentRequest;
-import kernel360.trackyweb.rent.presentation.dto.RentResponse;
 import kernel360.trackyweb.rent.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.rent.infrastructure.repository.RentRepository;
+import kernel360.trackyweb.rent.presentation.dto.RentRequest;
+import kernel360.trackyweb.rent.presentation.dto.RentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +32,9 @@ public class RentService {
 	private final RentRepository rentRepository;
 	@Qualifier("carRepositoryForRent") // 4월 1일 공통화 작업
 	private final CarRepository carRepository;
+
+	// sse emitter
+	private final EventEmitterService eventEmitterService;
 
 	// 8자리 UUID 생성 메서드
 	private String generateShortUuid() {
@@ -57,7 +62,6 @@ public class RentService {
 		return ApiResponse.success(RentResponse.fromList(results));
 	}
 
-
 	/**
 	 * rentUuid 값으로 검색
 	 * @param rentUuid
@@ -68,8 +72,6 @@ public class RentService {
 			.orElseThrow(() -> RentException.notFound());
 		return ApiResponse.success(RentResponse.from(rent));
 	}
-
-
 
 	/**
 	 * 대여 신규 등록
@@ -89,6 +91,9 @@ public class RentService {
 		RentEntity savedRent = rentRepository.save(rent);
 
 		RentResponse response = RentResponse.from(savedRent);
+
+		RentEvent rentEvent = RentEvent.create("rent_event", "create", "예약을 생성 하였습니다.");
+		eventEmitterService.sendEvent("rent_event", rentEvent);
 
 		return ApiResponse.success(response);
 	}
@@ -111,10 +116,12 @@ public class RentService {
 		log.info("업테이트 대여 : {}", rent);
 
 		RentEntity updatedRent = rentRepository.save(rent);
+
+		RentEvent rentEvent = RentEvent.create("rent_event", "update", "예약을 수정 하였습니다.");
+		eventEmitterService.sendEvent("rent_event", rentEvent);
+
 		return ApiResponse.success(RentResponse.from(updatedRent));
 	}
-
-
 
 	/**
 	 * 대여 삭제 API
@@ -124,6 +131,10 @@ public class RentService {
 	@Transactional
 	public ApiResponse<String> delete(String rentUuid) {
 		rentRepository.deleteByRentUuid(rentUuid);
+
+		RentEvent rentEvent = RentEvent.create("rent_event", "delete", "예약을 삭제 하였습니다.");
+		eventEmitterService.sendEvent("rent_event", rentEvent);
+
 		return ApiResponse.success("삭제 완료");
 	}
 }
