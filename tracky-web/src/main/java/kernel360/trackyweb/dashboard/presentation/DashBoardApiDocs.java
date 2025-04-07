@@ -1,6 +1,7 @@
 package kernel360.trackyweb.dashboard.presentation;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -16,4 +17,7 @@ public interface DashBoardApiDocs {
 	ApiResponse<List<RentDashboardDto>> findRents(
 		@RequestParam(name = "date", required = false, defaultValue = "today") String date
 	);
+
+	@Operation(summary = "차량 상태 통계 조회", description = "등록된 차량 상태 통계")
+	ApiResponse<Map<String, Long>> getAllCarStatus();
 }
