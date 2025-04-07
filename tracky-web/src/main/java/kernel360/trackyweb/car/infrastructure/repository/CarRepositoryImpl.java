@@ -36,7 +36,6 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 				.otherwise(car.get("createdAt"))
 			));
 		}
-
 		List<CarEntity> resultList = em.createQuery(query)
 			.setFirstResult((int)pageable.getOffset())
 			.setMaxResults(pageable.getPageSize())
