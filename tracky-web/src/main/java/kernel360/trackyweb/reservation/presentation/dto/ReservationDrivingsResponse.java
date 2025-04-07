@@ -11,8 +11,8 @@ public record ReservationDrivingsResponse(
 	Double driveDistance,    //주행 별 거리
 	int driveStartLon,    //시작 위도
 	int driveStartLat,    //시작 경도
-	Integer driveEndLon,    //종료 위도
-	Integer driveEndLat //종료 경도
+	int driveEndLon,    //종료 위도
+	int driveEndLat //종료 경도
 
 ) {
 	public static ReservationDrivingsResponse fromEntity(DriveEntity driveEntity, LocationEntity locationEntity) {
