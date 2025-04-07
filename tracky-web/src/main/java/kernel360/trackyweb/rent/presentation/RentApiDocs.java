@@ -3,6 +3,8 @@ package kernel360.trackyweb.rent.presentation;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,10 +23,12 @@ public interface RentApiDocs {
 	ApiResponse<List<RentResponse>> getAll();
 
 	@Operation(summary = "rent uuid, status, date 필터링 검색", description = "rent uuid, status, date 필터링 검색")
-	ApiResponse<List<RentResponse>> searchByFilter(
+	ApiResponse<Page<RentResponse>> searchByFilter(
 		@RequestParam String rentUuid,
 		@RequestParam(required = false, name = "status") String rentStatus,
-		@RequestParam(required = false, name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rentDate // yyyy-MM-dd
+		@RequestParam(required = false, name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rentDate,
+		// yyyy-MM-dd
+		Pageable pageable
 	);
 
 	@Operation(summary = "대여 신규 등록", description = "대여 신규 등록 API")

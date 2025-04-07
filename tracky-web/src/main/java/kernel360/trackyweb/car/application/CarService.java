@@ -60,8 +60,8 @@ public class CarService {
 	public ApiResponse<Page<CarResponse>> searchByFilter(String mdn, String status, String purpose, Pageable pageable) {
 		Page<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose, pageable);
 		// CarResponse.fromList 대신 각 CarEntity를 CarResponse로 변환하는 로직이 필요
-		Page<CarResponse> responsePage = cars.map(CarResponse::from);
-		return ApiResponse.success(responsePage);
+		Page<CarResponse> mappedCars = cars.map(CarResponse::from);
+		return ApiResponse.success(mappedCars);
 	}
 
 	/**

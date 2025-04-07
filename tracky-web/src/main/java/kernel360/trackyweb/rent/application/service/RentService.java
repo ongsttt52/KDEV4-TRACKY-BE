@@ -6,6 +6,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -15,10 +17,10 @@ import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.RentException;
 import kernel360.trackyweb.rent.application.mapper.RentMapper;
-import kernel360.trackyweb.rent.presentation.dto.RentRequest;
-import kernel360.trackyweb.rent.presentation.dto.RentResponse;
 import kernel360.trackyweb.rent.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.rent.infrastructure.repository.RentRepository;
+import kernel360.trackyweb.rent.presentation.dto.RentRequest;
+import kernel360.trackyweb.rent.presentation.dto.RentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,11 +54,12 @@ public class RentService {
 	 * @param rentDate
 	 * @return 검색된 예약 List
 	 */
-	public ApiResponse<List<RentResponse>> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate) {
-		List<RentEntity> results = rentRepository.searchByFilters(rentUuid, rentStatus, rentDate);
-		return ApiResponse.success(RentResponse.fromList(results));
+	public ApiResponse<Page<RentResponse>> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate,
+		Pageable pageable) {
+		Page<RentEntity> results = rentRepository.searchByFilters(rentUuid, rentStatus, rentDate, pageable);
+		Page<RentResponse> mappedResults = results.map(RentResponse::from);
+		return ApiResponse.success(mappedResults);
 	}
-
 
 	/**
 	 * rentUuid 값으로 검색
@@ -68,8 +71,6 @@ public class RentService {
 			.orElseThrow(() -> RentException.notFound());
 		return ApiResponse.success(RentResponse.from(rent));
 	}
-
-
 
 	/**
 	 * 대여 신규 등록
@@ -110,8 +111,6 @@ public class RentService {
 		RentEntity updatedRent = rentRepository.save(rent);
 		return ApiResponse.success(RentResponse.from(updatedRent));
 	}
-
-
 
 	/**
 	 * 대여 삭제 API

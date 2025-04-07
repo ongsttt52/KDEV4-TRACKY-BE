@@ -4,8 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackyweb.rent.application.service.RentService;
 import kernel360.trackyweb.rent.presentation.dto.RentRequest;
 import kernel360.trackyweb.rent.presentation.dto.RentResponse;
-import kernel360.trackyweb.rent.application.service.RentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,30 +38,31 @@ public class RentController implements RentApiDocs {
 		return rentService.getAll();
 	}
 
-
 	@GetMapping("/search")
-	public ApiResponse<List<RentResponse>> searchByFilter(
+	public ApiResponse<Page<RentResponse>> searchByFilter(
 		@RequestParam(required = false) String rentUuid,
 		@RequestParam(required = false, name = "status") String rentStatus,
-		@RequestParam(required = false, name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rentDate // yyyy-MM-dd
+		@RequestParam(required = false, name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rentDate,
+		// yyyy-MM-dd
+		Pageable pageable
 	) {
 		// LocalDate를 LocalDateTime으로 변환
 		LocalDateTime rentDateTime = rentDate != null ? rentDate.atStartOfDay() : null;
-		return rentService.searchByFilter(rentUuid, rentStatus, rentDateTime);
+		return rentService.searchByFilter(rentUuid, rentStatus, rentDateTime, pageable);
 	}
 
 	@GetMapping("/search/{rentUuid}/detail")
 	public ApiResponse<RentResponse> searchDetailByRentUuid(
 		@PathVariable String rentUuid
-	){
-		log.info("searchDetailByRentUuid : {}" , rentUuid);
+	) {
+		log.info("searchDetailByRentUuid : {}", rentUuid);
 		return rentService.searchDetailByRentUuid(rentUuid);
 	}
 
 	@PostMapping("/create")
 	public ApiResponse<RentResponse> create(
 		@RequestBody RentRequest rentRequest
-	){
+	) {
 		return rentService.create(rentRequest);
 	}
 
