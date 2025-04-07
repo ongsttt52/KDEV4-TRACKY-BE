@@ -2,6 +2,8 @@ package kernel360.trackyweb.car.application;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -55,9 +57,11 @@ public class CarService {
 	 * @return 검색된 차량 List
 	 */
 	@Transactional
-	public ApiResponse<List<CarResponse>> searchByFilter(String mdn, String status, String purpose) {
-		List<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose);
-		return ApiResponse.success(CarResponse.fromList(cars));
+	public ApiResponse<Page<CarResponse>> searchByFilter(String mdn, String status, String purpose, Pageable pageable) {
+		Page<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose, pageable);
+		// CarResponse.fromList 대신 각 CarEntity를 CarResponse로 변환하는 로직이 필요
+		Page<CarResponse> responsePage = cars.map(CarResponse::from);
+		return ApiResponse.success(responsePage);
 	}
 
 	/**
