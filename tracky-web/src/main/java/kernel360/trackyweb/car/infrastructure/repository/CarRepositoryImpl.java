@@ -23,13 +23,11 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 	@Override
 	public Page<CarEntity> searchByFilter(String mdn, String status, String purpose, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
+
 		CriteriaQuery<CarEntity> query = cb.createQuery(CarEntity.class);
 		Root<CarEntity> car = query.from(CarEntity.class);
-
 		List<Predicate> predicates = new ArrayList<>();
-
 		if (mdn != null && !mdn.isBlank()) {
-			// mdn 부분 일치 (LIKE) 조건 추가
 			predicates.add(cb.like(car.get("mdn"), "%" + mdn + "%"));
 		}
 		if (status != null && !status.isBlank()) {
@@ -38,28 +36,31 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 		if (purpose != null && !purpose.isBlank()) {
 			predicates.add(cb.equal(car.get("purpose"), purpose));
 		}
-
 		query.where(cb.and(predicates.toArray(new Predicate[0])));
-
-		// mdn 정렬: 검색어가 앞쪽에 있을수록 우선
 		if (mdn != null && !mdn.isBlank()) {
-			// LOCATE(mdn, '검색어') ASC 정렬
 			query.orderBy(cb.asc(cb.locate(car.get("mdn"), mdn)));
 		}
-
 		List<CarEntity> resultList = em.createQuery(query)
 			.setFirstResult((int)pageable.getOffset())
 			.setMaxResults(pageable.getPageSize())
 			.getResultList();
 
-		// 전체 건수를 위한 Count 쿼리 생성
 		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
 		Root<CarEntity> countRoot = countQuery.from(CarEntity.class);
+		List<Predicate> countPredicates = new ArrayList<>();
+		if (mdn != null && !mdn.isBlank()) {
+			countPredicates.add(cb.like(countRoot.get("mdn"), "%" + mdn + "%"));
+		}
+		if (status != null && !status.isBlank()) {
+			countPredicates.add(cb.equal(countRoot.get("status"), status));
+		}
+		if (purpose != null && !purpose.isBlank()) {
+			countPredicates.add(cb.equal(countRoot.get("purpose"), purpose));
+		}
 		countQuery.select(cb.count(countRoot))
-			.where(cb.and(predicates.toArray(new Predicate[0])));
+			.where(cb.and(countPredicates.toArray(new Predicate[0])));
 		Long total = em.createQuery(countQuery).getSingleResult();
 
 		return new PageImpl<>(resultList, pageable, total);
 	}
-
 }
