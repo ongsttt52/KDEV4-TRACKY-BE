@@ -10,20 +10,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackyweb.dashboard.application.DashBoardService;
 import kernel360.trackyweb.dashboard.domain.RentDashboardDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
-public class DashBoardController {
+public class DashBoardController implements DashBoardApiDocs {
+
+	private final DashBoardService dashBoardService;
 
 	@GetMapping("/rents")
-	// public ApiResponse<List<RentDashboardDto>> getRents(
-	public ApiResponse<String> getRents(
-		@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+	@Override
+	public ApiResponse<List<RentDashboardDto>> findRents(
+		@RequestParam(name = "date", defaultValue = "today") String date
 	) {
-		// List<RentDashboardDto> rents = dashboardService.getRentsByDate(date);
-		return ApiResponse.success("data");
+		return dashBoardService.findRents(date);
 	}
 }
