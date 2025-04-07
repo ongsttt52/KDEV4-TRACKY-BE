@@ -61,14 +61,10 @@ public class CarInfoConsumer {
 		String mdn = carOnOffRequest.getMdn();
 		CarEntity car = carEntityRepository.findByMdn(mdn);
 
-		// RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
 		RentEntity rent = rentEntityRepository.findMyCarAndTime(car, carOnOffRequest.getOnTime());
 
 		DriveEntity drive = DriveEntity.create(car, rent, location,
 			carOnOffRequest.getOnTime());
-
-		// DriveEntity drive = DriveEntity.create("temp1234", "some_uuid", 1, location,
-		// 	carOnOffRequest.getOnTime());
 
 		driveEntityRepository.save(drive);
 	}
@@ -89,7 +85,6 @@ public class CarInfoConsumer {
 		drive.updateDistance(carOnOffRequest.getSum());
 		drive.updateOffTime(carOnOffRequest.getOffTime());
 
-		// CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
 		car.updateSum(drive.getDriveDistance());
 
 		LocationEntity location = drive.getLocation();
@@ -109,13 +104,11 @@ public class CarInfoConsumer {
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < message.getCCnt(); i++) {
 			saveGpsMessage(drive, message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
-			// saveGpsMessage(message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
 		}
 
 	}
 
 	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
-		// public void saveGpsMessage(LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
 
 		long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
