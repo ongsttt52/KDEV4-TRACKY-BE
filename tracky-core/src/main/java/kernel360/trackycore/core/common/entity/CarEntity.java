@@ -27,7 +27,6 @@ public class CarEntity extends DateBaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "biz_id")
-	@Column(name = "biz_id")
 	private BizEntity biz;         // 업체 ID 외래키
 
 	@ManyToOne(fetch = FetchType.LAZY)
