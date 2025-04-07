@@ -1,10 +1,11 @@
 package kernel360.trackyweb.car.presentation.dto;
 
+import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 
 public record CarUpdateRequest(
-	Long bizId,
+	BizEntity biz,
 	DeviceEntity device,
 	String carType,
 	String carPlate,
@@ -15,7 +16,7 @@ public record CarUpdateRequest(
 ) {
 	public static CarUpdateRequest from(CarEntity car) {
 		return new CarUpdateRequest(
-			car.getBizId(),
+			car.getBiz(),
 			car.getDevice(),
 			car.getCarType(),
 			car.getCarPlate(),

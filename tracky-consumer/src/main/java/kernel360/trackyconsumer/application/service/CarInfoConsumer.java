@@ -1,19 +1,23 @@
 package kernel360.trackyconsumer.application.service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
+
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
 import kernel360.trackyconsumer.application.dto.CycleGpsRequest;
+import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
+import kernel360.trackyconsumer.config.RabbitMQConfig;
 import kernel360.trackyconsumer.infrastructure.repository.CarEntityRepository;
-import kernel360.trackyconsumer.infrastructure.repository.DriveRepository;
-import kernel360.trackyconsumer.infrastructure.repository.GpsHistoryRepository;
+import kernel360.trackyconsumer.infrastructure.repository.DriveEntityRepository;
+import kernel360.trackyconsumer.infrastructure.repository.GpsHistoryEntityRepository;
 import kernel360.trackyconsumer.infrastructure.repository.LocationEntityRepository;
 import kernel360.trackyconsumer.infrastructure.repository.RentEntityRepository;
-import kernel360.trackyconsumer.config.RabbitMQConfig;
-import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DriveEntity;
 import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
@@ -22,18 +26,13 @@ import kernel360.trackycore.core.common.entity.RentEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Service;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CarInfoConsumer {
 
-	private final DriveRepository driveRepository;
-	private final GpsHistoryRepository gpsHistoryRepository;
+	private final DriveEntityRepository driveEntityRepository;
+	private final GpsHistoryEntityRepository gpsHistoryEntityRepository;
 	private final LocationEntityRepository locationEntityRepository;
 	private final RentEntityRepository rentEntityRepository;
 	private final CarEntityRepository carEntityRepository;
@@ -62,15 +61,12 @@ public class CarInfoConsumer {
 		String mdn = carOnOffRequest.getMdn();
 		CarEntity car = carEntityRepository.findByMdn(mdn);
 
-		RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
+		RentEntity rent = rentEntityRepository.findMyCarAndTime(car, carOnOffRequest.getOnTime());
 
-		DriveEntity drive = DriveEntity.create(mdn, rent.getRentUuid(), car.getDevice().getId(), location,
-		carOnOffRequest.getOnTime());
+		DriveEntity drive = DriveEntity.create(car, rent, location,
+			carOnOffRequest.getOnTime());
 
-		// DriveEntity drive = DriveEntity.create("temp1234", "some_uuid", 1, location,
-		// 	carOnOffRequest.getOnTime());
-
-		driveRepository.save(drive);
+		driveEntityRepository.save(drive);
 	}
 
 	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
@@ -83,11 +79,12 @@ public class CarInfoConsumer {
 		 **/
 		log.info("drive 전 : {}");
 
-		DriveEntity drive = driveRepository.findByMdnAndOtime(carOnOffRequest.getMdn(), carOnOffRequest.getOnTime());
+		CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
+
+		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, carOnOffRequest.getOnTime());
 		drive.updateDistance(carOnOffRequest.getSum());
 		drive.updateOffTime(carOnOffRequest.getOffTime());
 
-		CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
 		car.updateSum(drive.getDriveDistance());
 
 		LocationEntity location = drive.getLocation();
@@ -101,24 +98,23 @@ public class CarInfoConsumer {
 
 		List<CycleGpsRequest> cycleGpsRequestList = message.getCList();
 
-		DriveEntity drive = driveRepository.findByMdnAndOtime(message.getMdn(), message.getOTime());
+		CarEntity car = carEntityRepository.findByMdn(message.getMdn());
+		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, message.getOTime());
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < message.getCCnt(); i++) {
 			saveGpsMessage(drive, message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
-			// saveGpsMessage(message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
 		}
 
 	}
 
 	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
-	// public void saveGpsMessage(LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
 
-		long maxSeq = gpsHistoryRepository.findMaxSeqByDrive(drive);
+		long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
 		log.info("gpshitory 엔티티: {}", gpsHistoryEntity.toString());
 
-		gpsHistoryRepository.save(gpsHistoryEntity);
+		gpsHistoryEntityRepository.save(gpsHistoryEntity);
 
 	}
 }

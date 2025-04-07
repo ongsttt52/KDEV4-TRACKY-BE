@@ -1,5 +1,6 @@
 package kernel360.trackyweb.car.application.mapper;
 
+import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
@@ -9,11 +10,12 @@ public class CarMapper {
 
 	public static CarEntity createCar(
 		CarCreateRequest carCreateRequest,
-		DeviceEntity device
+		DeviceEntity device,
+		BizEntity biz
 	) {
 		return CarEntity.create(
 			carCreateRequest.mdn(),
-			carCreateRequest.bizId(),
+			biz,
 			device,
 			carCreateRequest.carType(),
 			carCreateRequest.carPlate(),
@@ -24,9 +26,9 @@ public class CarMapper {
 		);
 	}
 
-	public static void updateCar(CarEntity car, CarUpdateRequest carUpdateRequest, DeviceEntity device) {
+	public static void updateCar(CarEntity car, CarUpdateRequest carUpdateRequest, DeviceEntity device, BizEntity biz) {
 		car.update(
-			carUpdateRequest.bizId(),
+			biz,
 			device,
 			carUpdateRequest.carType(),
 			carUpdateRequest.carPlate(),

@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.common.base.DateBaseEntity;
@@ -31,13 +32,13 @@ public class DriveEntity extends DateBaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String mdn;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "mdn")
+	private CarEntity car;
 
-	@Column(name = "rent_uuid")
-	private String rentUuid;
-
-	@Column(name = "device_id")
-	private long deviceId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "rent_uuid")
+	private RentEntity rent;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "drive_loc_id")
@@ -51,7 +52,10 @@ public class DriveEntity extends DateBaseEntity {
 
 	@Column(name = "drive_off_time")
 	private LocalDateTime driveOffTime;
-  
+
+	@Column(name = "memo")
+	private String memo;
+
 	public void updateDistance(double sum) {
 		this.driveDistance = sum;
 	}
@@ -60,15 +64,15 @@ public class DriveEntity extends DateBaseEntity {
 		this.driveOffTime = offTime;
 	}
 
-	public static DriveEntity create(String mdn, String rentUuid, long deviceId, LocationEntity location, LocalDateTime onTime) {
+	public static DriveEntity create(CarEntity car, RentEntity rent, LocationEntity location,
+		LocalDateTime onTime) {
 		DriveEntity drive = new DriveEntity();
-		drive.mdn = mdn;
-		drive.rentUuid = rentUuid;
-		drive.deviceId = deviceId;
+		drive.car = car;
+		drive.rent = rent;
 		drive.location = location;
 		drive.driveOnTime = onTime;
 		drive.driveDistance = 0;
 
 		return drive;
-  }
+	}
 }
