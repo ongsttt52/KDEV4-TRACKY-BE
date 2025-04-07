@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +38,7 @@ public class RentController implements RentApiDocs {
 	}
 
 	@GetMapping("/search")
-	public ApiResponse<Page<RentResponse>> searchByFilter(
+	public ApiResponse<List<RentResponse>> searchByFilter(
 		@RequestParam(required = false) String rentUuid,
 		@RequestParam(required = false, name = "status") String rentStatus,
 		@RequestParam(required = false, name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rentDate,

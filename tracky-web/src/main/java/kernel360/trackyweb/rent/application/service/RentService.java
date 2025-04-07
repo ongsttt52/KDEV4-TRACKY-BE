@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
@@ -54,11 +55,12 @@ public class RentService {
 	 * @param rentDate
 	 * @return 검색된 예약 List
 	 */
-	public ApiResponse<Page<RentResponse>> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate,
+	public ApiResponse<List<RentResponse>> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate,
 		Pageable pageable) {
-		Page<RentEntity> results = rentRepository.searchByFilters(rentUuid, rentStatus, rentDate, pageable);
-		Page<RentResponse> mappedResults = results.map(RentResponse::from);
-		return ApiResponse.success(mappedResults);
+		Page<RentEntity> rents = rentRepository.searchByFilters(rentUuid, rentStatus, rentDate, pageable);
+		Page<RentResponse> rentResponses = rents.map(RentResponse::from);
+		PageResponse pageResponse = PageResponse.from(rentResponses);
+		return ApiResponse.success(rentResponses.getContent(), pageResponse);
 	}
 
 	/**

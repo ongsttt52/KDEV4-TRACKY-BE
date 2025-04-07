@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
@@ -57,11 +58,13 @@ public class CarService {
 	 * @return 검색된 차량 List
 	 */
 	@Transactional
-	public ApiResponse<Page<CarResponse>> searchByFilter(String mdn, String status, String purpose, Pageable pageable) {
+	public ApiResponse<List<CarResponse>> searchByFilter(String mdn, String status, String purpose,
+		Pageable pageable) {
 		Page<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose, pageable);
-		// CarResponse.fromList 대신 각 CarEntity를 CarResponse로 변환하는 로직이 필요
-		Page<CarResponse> mappedCars = cars.map(CarResponse::from);
-		return ApiResponse.success(mappedCars);
+		Page<CarResponse> carResponses = cars.map(CarResponse::from);
+		PageResponse pageResponse = PageResponse.from(carResponses);
+
+		return ApiResponse.success(carResponses.getContent(), pageResponse);
 	}
 
 	/**

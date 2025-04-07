@@ -2,7 +2,6 @@ package kernel360.trackyweb.car.presentation;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +25,7 @@ public interface CarApiDocs {
 	ApiResponse<Boolean> isMdnExist(@PathVariable String mdn);
 
 	@Operation(summary = "mdn, status, purpose 필터링 검색", description = "mdn, status, purpose 필터링 차량 검색합니다")
-	ApiResponse<Page<CarResponse>> searchByFilter(
+	ApiResponse<List<CarResponse>> searchByFilter(
 		@RequestParam(required = false) String mdn,
 		@RequestParam(required = false) String status,
 		@RequestParam(required = false) String purpose,

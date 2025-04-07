@@ -2,7 +2,6 @@ package kernel360.trackyweb.car.presentation;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,11 +43,11 @@ public class CarController implements CarApiDocs {
 	}
 
 	@GetMapping("/search")
-	public ApiResponse<Page<CarResponse>> searchByFilter(
+	public ApiResponse<List<CarResponse>> searchByFilter(
 		@RequestParam(required = false) String mdn,
 		@RequestParam(required = false) String status,
 		@RequestParam(required = false) String purpose,
-		Pageable pageable // page, size, sort
+		Pageable pageable
 	) {
 		return carService.searchByFilter(mdn, status, purpose, pageable);
 	}
