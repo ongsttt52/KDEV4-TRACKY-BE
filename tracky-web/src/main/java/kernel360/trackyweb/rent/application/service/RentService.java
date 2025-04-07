@@ -84,7 +84,7 @@ public class RentService {
 		String rentUuid = generateShortUuid();
 
 		// 구지원 - 임시로 예약 등록은 전부 '대여 전'
-		RentEntity rent = rentRequest.toEntity(rentUuid, "대여 전");
+		RentEntity rent = rentRequest.toEntity(car, rentUuid, "대여 전");
 
 		RentEntity savedRent = rentRepository.save(rent);
 
@@ -103,7 +103,10 @@ public class RentService {
 		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
 			.orElseThrow(() -> RentException.notFound());
 
-		RentMapper.updateRent(rent, rentRequest);
+		CarEntity car = carRepository.findByMdn(rentRequest.mdn())
+			.orElseThrow(() -> CarException.notFound());
+
+		RentMapper.updateRent(car, rent, rentRequest);
 
 		log.info("업테이트 대여 : {}", rent);
 

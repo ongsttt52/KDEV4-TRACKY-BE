@@ -44,7 +44,8 @@ public class BizEntity extends DateBaseEntity {
 	private LocalDateTime deleteAt;
 
 	// 생성 메서드만 공개
-	public static BizEntity create(String bizName, String bizRegNum, String bizAdmin, String bizPhoneNum, LocalDateTime deleteAt) {
+	public static BizEntity create(String bizName, String bizRegNum, String bizAdmin, String bizPhoneNum,
+		LocalDateTime deleteAt) {
 		BizEntity biz = new BizEntity();
 		biz.bizName = bizName;
 		biz.bizRegNum = bizRegNum;
