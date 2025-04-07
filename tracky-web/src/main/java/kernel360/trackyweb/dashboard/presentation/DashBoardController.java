@@ -21,7 +21,7 @@ public class DashBoardController implements DashBoardApiDocs {
 
 	private final DashBoardService dashBoardService;
 
-	@GetMapping("/rents")
+	@GetMapping("/rents/status")
 	@Override
 	public ApiResponse<List<RentDashboardDto>> findRents(
 		@RequestParam(name = "date", defaultValue = "today") String date
