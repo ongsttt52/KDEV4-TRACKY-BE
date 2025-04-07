@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
+import kernel360.trackycore.core.infrastructure.exception.BizException;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
 import kernel360.trackyweb.car.application.mapper.CarMapper;
+import kernel360.trackyweb.car.infrastructure.repository.BizRepository;
 import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.car.infrastructure.repository.DeviceRepository;
 import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
@@ -27,6 +30,7 @@ public class CarService {
 
 	private final CarRepository carRepository;
 	private final DeviceRepository deviceRepository;
+	private final BizRepository bizRepository;
 
 	/**
 	 * 등록 차량 전체 조회
@@ -95,8 +99,11 @@ public class CarService {
 		DeviceEntity device = deviceRepository.findById(1L)
 			.orElseThrow(() -> DeviceException.notFound());
 
+		BizEntity biz = bizRepository.findById(1L)
+			.orElseThrow(() -> BizException.notFound());
+
 		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
-		CarEntity car = CarMapper.createCar(carCreateRequest, device);
+		CarEntity car = CarMapper.createCar(carCreateRequest, device, biz);
 
 		if (carRepository.existsByMdn(carCreateRequest.mdn())) {
 			throw CarException.duplicated();
@@ -118,12 +125,15 @@ public class CarService {
 		CarEntity car = carRepository.findDetailByMdn(mdn)
 			.orElseThrow(() -> CarException.notFound());
 
+		BizEntity biz = bizRepository.findById(1L)
+			.orElseThrow(() -> BizException.notFound());
+
 		// 항상 MDN 1인 디바이스 사용
 		DeviceEntity device = deviceRepository.findById(1L)
 			.orElseThrow(() -> DeviceException.notFound());
 
 		// update 할 객체 생성
-		CarMapper.updateCar(car, carUpdateRequest, device);
+		CarMapper.updateCar(car, carUpdateRequest, device, biz);
 
 		log.info("업데이트 차량 : {}", car);
 
