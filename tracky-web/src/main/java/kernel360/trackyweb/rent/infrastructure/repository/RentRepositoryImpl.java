@@ -35,7 +35,16 @@ public class RentRepositoryImpl implements RentRepositoryCustom {
 		Root<RentEntity> rent = query.from(RentEntity.class);
 		List<Predicate> predicates = setPredicates(rentUuid, rentStatus, rentDate, cb, rent);
 		query.where(cb.and(predicates.toArray(new Predicate[0])));
-		// 필요한 경우 추가 정렬 로직을 넣을 수 있습니다.
+
+		// Pageable에 정렬 조건이 없으면 기본 정렬 적용 (updatedAt이 존재하면 그 값, 아니면 createdAt)
+		if (!pageable.getSort().isSorted()) {
+			query.orderBy(cb.desc(
+				cb.selectCase()
+					.when(cb.isNotNull(rent.get("updatedAt")), rent.get("updatedAt"))
+					.otherwise(rent.get("createdAt"))
+			));
+		}
+
 		List<RentEntity> resultList = em.createQuery(query)
 			.setFirstResult((int)pageable.getOffset())
 			.setMaxResults(pageable.getPageSize())

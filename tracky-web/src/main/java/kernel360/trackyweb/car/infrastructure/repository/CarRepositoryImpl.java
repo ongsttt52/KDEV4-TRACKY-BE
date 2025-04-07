@@ -29,9 +29,14 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 		List<Predicate> predicates = setPredicates(mdn, status, purpose, cb, car);
 
 		query.where(cb.and(predicates.toArray(new Predicate[0])));
-		if (mdn != null && !mdn.isBlank()) {
-			query.orderBy(cb.asc(cb.locate(car.get("mdn"), mdn)));
+
+		if (!pageable.getSort().isSorted()) {
+			query.orderBy(cb.desc(cb.selectCase()
+				.when(cb.isNotNull(car.get("updatedAt")), car.get("updatedAt"))
+				.otherwise(car.get("createdAt"))
+			));
 		}
+
 		List<CarEntity> resultList = em.createQuery(query)
 			.setFirstResult((int)pageable.getOffset())
 			.setMaxResults(pageable.getPageSize())
