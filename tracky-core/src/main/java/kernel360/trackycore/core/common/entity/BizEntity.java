@@ -47,9 +47,6 @@ public class BizEntity extends DateBaseEntity {
 	@Column(name = "deleted_at")
 	private LocalDateTime deleteAt;
 
-	@OneToMany(mappedBy = "biz", fetch = FetchType.LAZY)
-	private List<CarEntity> cars;
-
 	// 생성 메서드만 공개
 	public static BizEntity create(String bizName, String bizRegNum, String bizAdmin, String bizPhoneNum,
 		LocalDateTime deleteAt) {
