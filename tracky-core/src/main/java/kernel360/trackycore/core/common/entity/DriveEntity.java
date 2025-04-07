@@ -1,6 +1,7 @@
 package kernel360.trackycore.core.common.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -12,6 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.common.base.DateBaseEntity;
@@ -31,10 +34,13 @@ public class DriveEntity extends DateBaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String mdn;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "mdn")
+	private CarEntity car;
 
-	@Column(name = "rent_uuid")
-	private String rentUuid;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "rent_uuid")
+	private RentEntity rent;
 
 	@Column(name = "device_id")
 	private long deviceId;
@@ -51,7 +57,9 @@ public class DriveEntity extends DateBaseEntity {
 
 	@Column(name = "drive_off_time")
 	private LocalDateTime driveOffTime;
-  
+
+	private String memo;
+
 	public void updateDistance(double sum) {
 		this.driveDistance = sum;
 	}
@@ -60,15 +68,16 @@ public class DriveEntity extends DateBaseEntity {
 		this.driveOffTime = offTime;
 	}
 
-	public static DriveEntity create(String mdn, String rentUuid, long deviceId, LocationEntity location, LocalDateTime onTime) {
+	public static DriveEntity create(CarEntity car, RentEntity rent, long deviceId, LocationEntity location,
+		LocalDateTime onTime) {
 		DriveEntity drive = new DriveEntity();
-		drive.mdn = mdn;
-		drive.rentUuid = rentUuid;
+		drive.car = car;
+		drive.rent = rent;
 		drive.deviceId = deviceId;
 		drive.location = location;
 		drive.driveOnTime = onTime;
 		drive.driveDistance = 0;
 
 		return drive;
-  }
+	}
 }

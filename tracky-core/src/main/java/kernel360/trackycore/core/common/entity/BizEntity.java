@@ -1,15 +1,19 @@
 package kernel360.trackycore.core.common.entity;
 
+import java.lang.reflect.Member;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.common.base.DateBaseEntity;
 import lombok.Getter;
@@ -43,8 +47,12 @@ public class BizEntity extends DateBaseEntity {
 	@Column(name = "deleted_at")
 	private LocalDateTime deleteAt;
 
+	@OneToMany(mappedBy = "biz", fetch = FetchType.LAZY)
+	private List<CarEntity> cars;
+
 	// 생성 메서드만 공개
-	public static BizEntity create(String bizName, String bizRegNum, String bizAdmin, String bizPhoneNum, LocalDateTime deleteAt) {
+	public static BizEntity create(String bizName, String bizRegNum, String bizAdmin, String bizPhoneNum,
+		LocalDateTime deleteAt) {
 		BizEntity biz = new BizEntity();
 		biz.bizName = bizName;
 		biz.bizRegNum = bizRegNum;
