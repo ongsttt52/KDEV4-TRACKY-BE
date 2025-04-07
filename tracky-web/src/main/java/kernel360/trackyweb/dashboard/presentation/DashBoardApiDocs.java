@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.dashboard.domain.RentDashboardDto;
+import kernel360.trackyweb.dashboard.domain.Statistics;
 
 @Tag(name = "DashBoard Api", description = "대쉬보드 관련 API")
 public interface DashBoardApiDocs {
@@ -20,4 +21,7 @@ public interface DashBoardApiDocs {
 
 	@Operation(summary = "차량 상태 통계 조회", description = "등록된 차량 상태 통계")
 	ApiResponse<Map<String, Long>> getAllCarStatus();
+
+	@Operation(summary = "대시 보드 통계 조회", description = "대시 보드 통계 ( ")
+	ApiResponse<Statistics> getStatistics();
 }
