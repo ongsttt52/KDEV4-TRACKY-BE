@@ -7,18 +7,19 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
 import kernel360.trackyweb.dashboard.domain.CarStatus;
 import kernel360.trackyweb.dashboard.domain.DashBoardReader;
 import kernel360.trackyweb.dashboard.domain.RentDashboardDto;
-import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
 import kernel360.trackyweb.dashboard.domain.Statistics;
+import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
 import kernel360.trackyweb.dashboard.infrastructure.repository.CarStatusRepository;
-import kernel360.trackyweb.dashboard.infrastructure.repository.DashGpsHistoryRepository;
 import kernel360.trackyweb.dashboard.infrastructure.repository.DashCarRepository;
 import kernel360.trackyweb.dashboard.infrastructure.repository.DashDriveRepository;
+import kernel360.trackyweb.dashboard.infrastructure.repository.DashGpsHistoryRepository;
 import kernel360.trackyweb.dashboard.infrastructure.repository.DashRentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,7 @@ public class DashBoardService {
 	 * @param date
 	 * @return 예약 list
 	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<List<RentDashboardDto>> findRents(String date) {
 		LocalDate baseDate = switch (date.toLowerCase()) {
 			case "yesterday" -> LocalDate.now().minusDays(1);
@@ -57,6 +59,7 @@ public class DashBoardService {
 	 * 차량 상태 통계 api
 	 * @return hashmap(status, count)
 	 */
+	@Transactional(readOnly = true)
 	public Map<String, Long> getAllCarStatus() {
 		List<CarStatus> grouped = carStatusRepository.findAllGroupedByStatus();
 
@@ -67,10 +70,12 @@ public class DashBoardService {
 
 		return carStatusMap;
 	}
+
 	/**
 	 * 대시보드용 통계 데이터
 	 * @return Statistics 통계 데이터
 	 */
+	@Transactional(readOnly = true)
 	public Statistics getStatistics() {
 		double totalDriveDistance = Optional.ofNullable(dashDriveRepository.getTotalDriveDistance()).orElse(0.0);
 		long totalRentCount = dashRentRepository.count();
@@ -86,6 +91,7 @@ public class DashBoardService {
 	 * geo 기반 영역 안의 차량 수 hashmap 구하기
 	 * @return 구역 : 차량 수 map
 	 */
+	@Transactional(readOnly = true)
 	public Map<String, Integer> getGeoData() {
 		List<GpsHistoryEntity> gpsList = dashGpsHistoryRepository.findLatestGpsByMdn();
 

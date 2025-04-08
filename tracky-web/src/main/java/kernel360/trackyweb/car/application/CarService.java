@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.BizEntity;
@@ -44,7 +44,7 @@ public class CarService {
 	 * 등록 차량 전체 조회
 	 * @return 전체 차량 List
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> getAll() {
 		return ApiResponse.success(CarResponse.fromList(carRepository.findAll()));
 	}
@@ -54,7 +54,7 @@ public class CarService {
 	 * @param mdn 차량 mdn
 	 * @return 차량 단건 조회
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<Boolean> isMdnExist(String mdn) {
 		return ApiResponse.success(carRepository.existsByMdn(mdn));
 	}
@@ -66,7 +66,7 @@ public class CarService {
 	 * @param purpose
 	 * @return 검색된 차량 List
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> searchByFilter(String mdn, String status, String purpose,
 		Pageable pageable) {
 		Page<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose, pageable);
@@ -81,7 +81,7 @@ public class CarService {
 	 * @param mdn
 	 * @return 단건 차량 데이터
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<CarResponse> searchOneByMdn(String mdn) {
 		CarEntity car = carRepository.findByMdn(mdn)
 			.orElseThrow(() -> CarException.notFound());
@@ -93,7 +93,7 @@ public class CarService {
 	 * @param mdn 차량 MDN
 	 * @return 단건 차량 데이터 + 디바이스 정보
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(String mdn) {
 		CarEntity car = carRepository.findDetailByMdn(mdn)
 			// 천승준 - 공통 에러 처리 해봤어요
