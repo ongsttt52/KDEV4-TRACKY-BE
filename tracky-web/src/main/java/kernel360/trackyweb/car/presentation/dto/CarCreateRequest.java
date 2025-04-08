@@ -1,6 +1,8 @@
 package kernel360.trackyweb.car.presentation.dto;
 
+import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.common.entity.DeviceEntity;
 
 public record CarCreateRequest(
 	String mdn,
