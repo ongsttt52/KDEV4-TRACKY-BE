@@ -18,37 +18,37 @@ public class RabbitMQConfig {
 	public static final String GPS_QUEUE_NAME = "gps-queue";
 	public static final String ONOFF_QUEUE_NAME = "on-off-Queue";
 	// public static final String OFF_QUEUE_NAME = "off-queue";
-	
+
 	@Bean
 	public TopicExchange exchange() {
 		return new TopicExchange(EXCHANGE_NAME);
 	}
-	
+
 	@Bean
 	public Queue gpsQueue() {
 		return new Queue(GPS_QUEUE_NAME, true);
 	}
-	
+
 	@Bean
 	public Queue onOffQueue() {
 		return new Queue(ONOFF_QUEUE_NAME, true);
 	}
-	
+
 	// @Bean
 	// public Queue offQueue() {
 	// 	return new Queue(OFF_QUEUE_NAME, true);
 	// }
-	
+
 	@Bean
 	public Binding gpsBinding(Queue gpsQueue, TopicExchange exchange) {
 		return BindingBuilder.bind(gpsQueue).to(exchange).with("gps");
 	}
-	
+
 	@Bean
 	public Binding onOffBinding(Queue onOffQueue, TopicExchange exchange) {
 		return BindingBuilder.bind(onOffQueue).to(exchange).with("on");
 	}
-	
+
 	// @Bean
 	// public Binding offBinding(Queue offQueue, TopicExchange exchange) {
 	// 	return BindingBuilder.bind(offQueue).to(exchange).with("off");
