@@ -32,33 +32,34 @@ public class GpsHistoryEntity {
 
 	@Id
 	@Column(name = "drive_seq", nullable = false)
-	private Long driveSeq;
+	private Long driveSeq;    //주행기록 시퀀스
 
 	@Id
-	@JoinColumn(name = "drive_id", nullable = false)
 	@ManyToOne(fetch = FetchType.LAZY)
-	private DriveEntity drive;
+	@JoinColumn(name = "drive_id", nullable = false)
+	private DriveEntity drive;    //주행ID 외래키
 
 	@Column(name = "o_time")
-	private LocalDateTime oTime;
+	private LocalDateTime oTime;    //발생시간
 
-	private String gcd;
+	private String gcd;        //GPS상태
 
-	private int lat;
+	private int lat;    //GPS위도
 
-	private int lon;
+	private int lon;    //GPS경도
 
-	private int ang;
+	private int ang;    //방향
 
-	private int spd;
+	private int spd;    //속도
 
-	private double sum;
+	private double sum;    //단건 주행거리
 
 	@Column(name = "created_at")
 	@CreationTimestamp
-	private LocalDateTime createdAt;
+	private LocalDateTime createdAt;    //생성시간
 
-	public GpsHistoryEntity(long maxSeq, DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang, int spd,
+	public GpsHistoryEntity(long maxSeq, DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang,
+		int spd,
 		double sum) {
 		this.driveSeq = maxSeq;
 		this.drive = drive;

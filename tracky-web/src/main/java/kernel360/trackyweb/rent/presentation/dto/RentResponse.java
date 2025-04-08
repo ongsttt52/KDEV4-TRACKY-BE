@@ -3,6 +3,7 @@ package kernel360.trackyweb.rent.presentation.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
 
 public record RentResponse(
@@ -20,7 +21,7 @@ public record RentResponse(
 	public static RentResponse from(RentEntity rent) {
 		return new RentResponse(
 			rent.getRentUuid(),         // rent_uuid
-			rent.getMdn(),              // mdn
+			rent.getCar().getMdn(),              // mdn
 			rent.getRenterName(),       // renterName
 			rent.getRenterPhone(),      // renterPhone
 			rent.getRentStime(),        // rentStime

@@ -11,8 +11,8 @@ import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
 import kernel360.trackyconsumer.application.dto.CycleGpsRequest;
 import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
 import kernel360.trackyconsumer.infrastructure.repository.CarEntityRepository;
-import kernel360.trackyconsumer.infrastructure.repository.DriveRepository;
-import kernel360.trackyconsumer.infrastructure.repository.GpsHistoryRepository;
+import kernel360.trackyconsumer.infrastructure.repository.DriveEntityRepository;
+import kernel360.trackyconsumer.infrastructure.repository.GpsHistoryEntityRepository;
 import kernel360.trackyconsumer.infrastructure.repository.LocationEntityRepository;
 import kernel360.trackyconsumer.infrastructure.repository.RentEntityRepository;
 import kernel360.trackycore.core.common.entity.CarEntity;
@@ -28,8 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ConsumerService {
 
-	private final GpsHistoryRepository gpsHistoryRepository;
-	private final DriveRepository driveRepository;
+	private final DriveEntityRepository driveEntityRepository;
+	private final GpsHistoryEntityRepository gpsHistoryEntityRepository;
 	private final LocationEntityRepository locationEntityRepository;
 	private final RentEntityRepository rentEntityRepository;
 	private final CarEntityRepository carEntityRepository;
@@ -41,7 +41,7 @@ public class ConsumerService {
 		// 처리 로직
 		List<CycleGpsRequest> cycleGpsRequestList = request.getCList();
 
-		DriveEntity drive = driveRepository.findByMdnAndOtime(request.getMdn(), request.getOTime());
+		DriveEntity drive = driveEntityRepository.findByMdnAndOtime(request.getMdn(), request.getOTime());
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < request.getCCnt(); i++) {
@@ -52,10 +52,10 @@ public class ConsumerService {
 	private void saveCycleInfo(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
 		// public void saveGpsMessage(LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
 
-		long maxSeq = gpsHistoryRepository.findMaxSeqByDrive(drive);
+		long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
 
-		gpsHistoryRepository.save(gpsHistoryEntity);
+		gpsHistoryEntityRepository.save(gpsHistoryEntity);
 
 	}
 
