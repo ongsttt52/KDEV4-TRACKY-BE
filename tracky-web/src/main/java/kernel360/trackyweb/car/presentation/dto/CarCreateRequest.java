@@ -1,12 +1,13 @@
 package kernel360.trackyweb.car.presentation.dto;
 
+import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 
 public record CarCreateRequest(
 	String mdn,
 	Long bizId,
-	DeviceEntity device,
+	Long device,
 	String carType,
 	String carPlate,
 	String carYear,
@@ -18,7 +19,7 @@ public record CarCreateRequest(
 		return new CarCreateRequest(
 			car.getMdn(),
 			car.getBiz().getId(),
-			car.getDevice(),
+			car.getDevice().getId(),
 			car.getCarType(),
 			car.getCarPlate(),
 			car.getCarYear(),

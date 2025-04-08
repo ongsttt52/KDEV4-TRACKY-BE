@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0    # 최신 8.0 버전 사용 (ARM64 지원)
+    platform: linux/arm64/v8   # M1 Mac용 플랫폼 명시
+    container_name: mysql
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=0000
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - tracky-network
+
+  springboot:
+    build:
+      dockerfile: Dockerfile
+    container_name: springboot-app
+    depends_on:
+      - mysql
+    ports:
+      - "8083:8083"
+    deploy:
+      resources:
+        limits:
+          # 서버 환경과 동일하겍 설정(1 vCpu, 2GB)
+          cpus: '1.0'
+          memory: 2g
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME}?serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - tracky-network
+
+# Add networks section at the bottom
+networks:
+  tracky-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

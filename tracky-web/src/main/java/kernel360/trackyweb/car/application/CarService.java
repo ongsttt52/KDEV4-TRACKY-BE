@@ -2,10 +2,13 @@ package kernel360.trackyweb.car.application;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
@@ -64,9 +67,13 @@ public class CarService {
 	 * @return 검색된 차량 List
 	 */
 	@Transactional
-	public ApiResponse<List<CarResponse>> searchByFilter(String mdn, String status, String purpose) {
-		List<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose);
-		return ApiResponse.success(CarResponse.fromList(cars));
+	public ApiResponse<List<CarResponse>> searchByFilter(String mdn, String status, String purpose,
+		Pageable pageable) {
+		Page<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose, pageable);
+		Page<CarResponse> carResponses = cars.map(CarResponse::from);
+		PageResponse pageResponse = PageResponse.from(carResponses);
+
+		return ApiResponse.success(carResponses.getContent(), pageResponse);
 	}
 
 	/**

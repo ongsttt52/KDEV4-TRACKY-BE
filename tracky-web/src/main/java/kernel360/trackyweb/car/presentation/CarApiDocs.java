@@ -2,6 +2,7 @@ package kernel360.trackyweb.car.presentation;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +28,8 @@ public interface CarApiDocs {
 	ApiResponse<List<CarResponse>> searchByFilter(
 		@RequestParam(required = false) String mdn,
 		@RequestParam(required = false) String status,
-		@RequestParam(required = false) String purpose
+		@RequestParam(required = false) String purpose,
+		Pageable pageable
 	);
 
 	@Operation(summary = "차량 MDN으로 단건 조회", description = "MDN 기준으로 차량을 조회합니다.")
