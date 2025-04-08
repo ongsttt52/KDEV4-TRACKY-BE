@@ -37,11 +37,13 @@ public class ConsumerService {
 	@Async
 	@Transactional
 	public void receiveCycleInfo(GpsHistoryMessage request) {
-
+		log.info("receiveCycleInfo 시작");
 		// 처리 로직
 		List<CycleGpsRequest> cycleGpsRequestList = request.getCList();
 
-		DriveEntity drive = driveEntityRepository.findByMdnAndOtime(request.getMdn(), request.getOTime());
+		CarEntity car = carEntityRepository.findByMdn(request.getMdn());
+
+		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, request.getOTime());
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < request.getCCnt(); i++) {
@@ -50,10 +52,11 @@ public class ConsumerService {
 	}
 
 	private void saveCycleInfo(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
-		// public void saveGpsMessage(LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
+		log.info("saveCycleInfo 시작");
 
 		long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
+		log.info("toGpsHistoryEntity 시작");
 
 		gpsHistoryEntityRepository.save(gpsHistoryEntity);
 
@@ -68,15 +71,12 @@ public class ConsumerService {
 		String mdn = carOnOffRequest.getMdn();
 		CarEntity car = carEntityRepository.findByMdn(mdn);
 
-		RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
+		RentEntity rent = rentEntityRepository.findMyCarAndTime(car, carOnOffRequest.getOnTime());
 
-		DriveEntity drive = DriveEntity.create(mdn, rent.getRentUuid(), car.getDevice().getId(), location,
+		DriveEntity drive = DriveEntity.create(car, rent, location,
 			carOnOffRequest.getOnTime());
 
-		// DriveEntity drive = DriveEntity.create("temp1234", "some_uuid", 1, location,
-		// 	carOnOffRequest.getOnTime());
-
-		driveRepository.save(drive);
+		driveEntityRepository.save(drive);
 	}
 
 	@Transactional
@@ -90,11 +90,12 @@ public class ConsumerService {
 		 **/
 		log.info("drive 전 : {}");
 
-		DriveEntity drive = driveRepository.findByMdnAndOtime(carOnOffRequest.getMdn(), carOnOffRequest.getOnTime());
+		CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
+
+		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, carOnOffRequest.getOnTime());
 		drive.updateDistance(carOnOffRequest.getSum());
 		drive.updateOffTime(carOnOffRequest.getOffTime());
 
-		CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
 		car.updateSum(drive.getDriveDistance());
 
 		LocationEntity location = drive.getLocation();
