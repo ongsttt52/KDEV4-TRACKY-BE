@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.dashboard.application.DashBoardService;
 import kernel360.trackyweb.dashboard.domain.RentDashboardDto;
+import kernel360.trackyweb.dashboard.domain.Statistics;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,5 +32,10 @@ public class DashBoardController implements DashBoardApiDocs {
 	public ApiResponse<Map<String, Long>> getAllCarStatus() {
 		Map<String, Long> statusMap = dashBoardService.getAllCarStatus();
 		return ApiResponse.success(statusMap);
+	}
+
+	@GetMapping("/statistics")
+	public ApiResponse<Statistics> getStatistics() {
+		return ApiResponse.success(dashBoardService.getStatistics());
 	}
 }
