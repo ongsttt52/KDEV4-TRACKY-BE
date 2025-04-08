@@ -32,4 +32,10 @@ public class DashBoardController implements DashBoardApiDocs {
 		Map<String, Long> statusMap = dashBoardService.getAllCarStatus();
 		return ApiResponse.success(statusMap);
 	}
+
+	@GetMapping("/geo")
+	public ApiResponse<Map<String, Integer>> getGeoData() {
+		Map<String, Integer> geoMap = dashBoardService.getGeoData();
+		return ApiResponse.success(geoMap);
+	}
 }
