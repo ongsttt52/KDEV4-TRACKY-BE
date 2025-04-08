@@ -1,11 +1,13 @@
 package kernel360.trackyweb.rent.infrastructure.repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import kernel360.trackycore.core.common.entity.RentEntity;
 
 public interface RentRepositoryCustom {
-	List<RentEntity> searchByFilters(String rentUuid, String rentStatus, LocalDateTime rentDate);
+	Page<RentEntity> searchByFilters(String rentUuid, String rentStatus, LocalDateTime rentDate, Pageable pageable);
 }
 

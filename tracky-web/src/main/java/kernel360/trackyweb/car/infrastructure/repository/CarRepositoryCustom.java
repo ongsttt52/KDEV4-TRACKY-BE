@@ -1,9 +1,10 @@
 package kernel360.trackyweb.car.infrastructure.repository;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import kernel360.trackycore.core.common.entity.CarEntity;
 
 public interface CarRepositoryCustom {
-	List<CarEntity> searchByFilter(String mdn, String status, String purpose);
+	Page<CarEntity> searchByFilter(String mdn, String status, String purpose, Pageable pageable);
 }

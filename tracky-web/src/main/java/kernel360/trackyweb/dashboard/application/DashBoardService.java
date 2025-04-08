@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,12 @@ import kernel360.trackyweb.dashboard.domain.CarStatus;
 import kernel360.trackyweb.dashboard.domain.DashBoardReader;
 import kernel360.trackyweb.dashboard.domain.RentDashboardDto;
 import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
+import kernel360.trackyweb.dashboard.domain.Statistics;
 import kernel360.trackyweb.dashboard.infrastructure.repository.CarStatusRepository;
 import kernel360.trackyweb.dashboard.infrastructure.repository.DashGpsHistoryRepository;
+import kernel360.trackyweb.dashboard.infrastructure.repository.DashCarRepository;
+import kernel360.trackyweb.dashboard.infrastructure.repository.DashDriveRepository;
+import kernel360.trackyweb.dashboard.infrastructure.repository.DashRentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +30,9 @@ public class DashBoardService {
 
 	private final DashBoardReader dashBoardReader;
 	private final CarStatusRepository carStatusRepository;
+	private final DashDriveRepository dashDriveRepository;
+	private final DashCarRepository dashCarRepository;
+	private final DashRentRepository dashRentRepository;
 
 	private final ProvinceMatcher provinceMatcher;
 
@@ -33,7 +41,7 @@ public class DashBoardService {
 	/**
 	 * 예약 현황 조회( 어제/오늘/내일 )
 	 * @param date
-	 * @return
+	 * @return 예약 list
 	 */
 	public ApiResponse<List<RentDashboardDto>> findRents(String date) {
 		LocalDate baseDate = switch (date.toLowerCase()) {
@@ -52,17 +60,32 @@ public class DashBoardService {
 	public Map<String, Long> getAllCarStatus() {
 		List<CarStatus> grouped = carStatusRepository.findAllGroupedByStatus();
 
-		String provinceName = provinceMatcher.findProvince(127.03, 37.56);
-		System.out.println("해당 좌표는 위치한 도: " + provinceName);  // 예: 서울특별시
-
-		Map<String, Long> result = new HashMap<>();
+		Map<String, Long> carStatusMap = new HashMap<>();
 		for (CarStatus carStatus : grouped) {
-			result.put(carStatus.getStatus(), carStatus.getCount());
+			carStatusMap.put(carStatus.getStatus(), carStatus.getCount());
 		}
 
-		return result;
+		return carStatusMap;
+	}
+	/**
+	 * 대시보드용 통계 데이터
+	 * @return Statistics 통계 데이터
+	 */
+	public Statistics getStatistics() {
+		double totalDriveDistance = Optional.ofNullable(dashDriveRepository.getTotalDriveDistance()).orElse(0.0);
+		long totalRentCount = dashRentRepository.count();
+		long totalCarCount = dashCarRepository.count();
+		long totalRentDuration = Optional.ofNullable(dashRentRepository.getTotalRentDurationInMinutes()).orElse(0L);
+		long totalDriveDuration = Optional.ofNullable(dashDriveRepository.getTotalDriveDurationInMinutes()).orElse(0L);
+
+		return Statistics.create(totalDriveDistance, totalRentCount, totalCarCount, totalRentDuration,
+			totalDriveDuration);
 	}
 
+	/**
+	 * geo 기반 영역 안의 차량 수 hashmap 구하기
+	 * @return 구역 : 차량 수 map
+	 */
 	public Map<String, Integer> getGeoData() {
 		List<GpsHistoryEntity> gpsList = dashGpsHistoryRepository.findLatestGpsByMdn();
 
