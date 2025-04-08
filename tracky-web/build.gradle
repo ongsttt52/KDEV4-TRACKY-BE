@@ -6,6 +6,9 @@ dependencies {
 
     implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
+    implementation 'org.locationtech.jts:jts-core:1.18.2'
+    implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
+
     implementation project(':tracky-core')
 
     runtimeOnly 'com.mysql:mysql-connector-j'
