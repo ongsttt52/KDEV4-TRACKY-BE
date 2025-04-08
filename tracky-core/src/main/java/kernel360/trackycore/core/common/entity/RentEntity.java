@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.common.base.DateBaseEntity;
 import lombok.Getter;
@@ -26,65 +28,52 @@ public class RentEntity extends DateBaseEntity {
 
 	@Id
 	@Column(name = "rent_uuid")
-	private String rentUuid;	// 대여 고유 UUID
+	private String rentUuid;    // 대여 고유 UUID
 
-	//@ManyToOne(fetch = FetchType.LAZY)
-	private String mdn;		// 차량식별키
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "mdn")
+	private CarEntity car;
 
 	@Column(name = "rent_stime")
-	private LocalDateTime rentStime;	// 대여 시작 시간
+	private LocalDateTime rentStime;    // 대여 시작 시간
 
 	@Column(name = "rent_etime")
-	private LocalDateTime rentEtime;	// 대여 종료 시간
+	private LocalDateTime rentEtime;    // 대여 종료 시간
 
 	@Column(name = "renter_name")
-	private String renterName;			// 사용자 이름
+	private String renterName;            // 사용자 이름
 
 	@Column(name = "renter_phone")
-	private String renterPhone;		// 사용자 전화번호
+	private String renterPhone;        // 사용자 전화번호
 
-	private String purpose;				// 차량 사용 목적
+	private String purpose;                // 차량 사용 목적
 
 	@Column(name = "rent_status")
-	private String rentStatus;			// 대여 상태
+	private String rentStatus;            // 대여 상태
 
 	@Column(name = "rent_loc")
-	private String rentLoc;			// 대여 위치
+	private String rentLoc;            // 대여 위치
 
 	@Column(name = "rent_lat")
-	private int rentLat;			// 대여 경도
+	private int rentLat;            // 대여 경도
 
 	@Column(name = "rent_lon")
-	private int rentLon;			// 대여 위도
+	private int rentLon;            // 대여 위도
 
 	@Column(name = "return_loc")
-	private String returnLoc;			// 반납 위치
+	private String returnLoc;            // 반납 위치
 
 	@Column(name = "return_lat")
-	private int returnLat;			// 반납 위도
+	private int returnLat;            // 반납 위도
 
 	@Column(name = "return_lon")
-	private int returnLon;			// 반납 경도
-
+	private int returnLon;            // 반납 경도
 
 	// 생성자: 외부에서 직접 호출하지 못하도록 private 으로 변경
-	private RentEntity(
-		String mdn,
-		String rentUuid,
-		LocalDateTime rentStime,
-		LocalDateTime rentEtime,
-		String renterName,
-		String renterPhone,
-		String purpose,
-		String rentStatus,
-		String rentLoc,
-		int rentLat,
-		int rentLon,
-		String returnLoc,
-		int returnLat,
-		int returnLon
-	) {
-		this.mdn = mdn;
+	private RentEntity(CarEntity car, String rentUuid, LocalDateTime rentStime, LocalDateTime rentEtime,
+		String renterName, String renterPhone, String purpose, String rentStatus, String rentLoc, int rentLat,
+		int rentLon, String returnLoc, int returnLat, int returnLon) {
+		this.car = car;
 		this.rentUuid = rentUuid;
 		this.rentStime = rentStime;
 		this.rentEtime = rentEtime;
@@ -101,24 +90,11 @@ public class RentEntity extends DateBaseEntity {
 	}
 
 	// 정적 팩토리 메서드
-	public static RentEntity create(
-		String mdn,
-		String rentUuid,
-		LocalDateTime rentStime,
-		LocalDateTime rentEtime,
-		String renterName,
-		String renterPhone,
-		String purpose,
-		String rentStatus,
-		String rentLoc,
-		int rentLat,
-		int rentLon,
-		String returnLoc,
-		int returnLat,
-		int returnLon
-	) {
+	public static RentEntity create(CarEntity car, String rentUuid, LocalDateTime rentStime, LocalDateTime rentEtime,
+		String renterName, String renterPhone, String purpose, String rentStatus, String rentLoc, int rentLat,
+		int rentLon, String returnLoc, int returnLat, int returnLon) {
 		return new RentEntity(
-			mdn,
+			car,
 			rentUuid,
 			rentStime,
 			rentEtime,
@@ -135,22 +111,16 @@ public class RentEntity extends DateBaseEntity {
 		);
 	}
 
-	public void update(
-		String mdn,
-		LocalDateTime rentStime,
-		LocalDateTime rentEtime,
-		String renterName,
-		String renterPhone,
-		String purpose,
-		String rentLoc,
-		String returnLoc
-	) {
-		this.mdn = mdn;
+	public void update(CarEntity car, LocalDateTime rentStime, LocalDateTime rentEtime,
+		String renterName, String renterPhone, String purpose, String rentStatus,
+		String rentLoc, String returnLoc) {
+		this.car = car;
 		this.rentStime = rentStime;
 		this.rentEtime = rentEtime;
 		this.renterName = renterName;
 		this.renterPhone = renterPhone;
 		this.purpose = purpose;
+		this.rentStatus = rentStatus;
 		this.rentLoc = rentLoc;
 		this.returnLoc = returnLoc;
 	}

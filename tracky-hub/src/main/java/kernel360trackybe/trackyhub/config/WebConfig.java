@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://tracky-fe.vercel.app/", "http://localhost:5173")
+                .allowedOrigins("https://tracky-fe.vercel.app/", "http://localhost:5173", "https://www.tracky.kr/", "https://tracky.kr/")
                 .allowedMethods("POST", "GET", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)  // credentials를 false로 설정하면 allowedOrigins에 와일드카드 사용 가능

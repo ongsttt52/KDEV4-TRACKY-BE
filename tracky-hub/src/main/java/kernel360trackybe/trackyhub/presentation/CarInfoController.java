@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.MediaType;
 
 @RestController
-@RequestMapping(value = "/api/car", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/hub/car", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Slf4j
 public class CarInfoController {

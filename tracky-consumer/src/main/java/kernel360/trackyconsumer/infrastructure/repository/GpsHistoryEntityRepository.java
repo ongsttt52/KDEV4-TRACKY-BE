@@ -9,8 +9,8 @@ import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.common.entity.GpsHistoryId;
 
 @Repository
-public interface GpsHistoryRepository extends JpaRepository<GpsHistoryEntity, GpsHistoryId> {
+public interface GpsHistoryEntityRepository extends JpaRepository<GpsHistoryEntity, GpsHistoryId> {
 
-    @Query("SELECT COALESCE(MAX(gh.driveSeq), 0L) FROM GpsHistoryEntity gh WHERE gh.drive = :drive")
-    long findMaxSeqByDrive(DriveEntity drive);
+	@Query("SELECT COALESCE(MAX(gh.driveSeq), 0L) FROM GpsHistoryEntity gh WHERE gh.drive = :drive")
+	long findMaxSeqByDrive(DriveEntity drive);
 }

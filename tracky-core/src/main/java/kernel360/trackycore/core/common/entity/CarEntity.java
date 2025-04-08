@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -23,18 +21,17 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CarEntity extends DateBaseEntity {
+
 	@Id
-	private String mdn;           // 차량식별기
+	private String mdn;           // 차량식별키
 
-	// 외래키
-	// @ManyToOne(fetch = FetchType.LAZY)
-	@Column(name = "biz_id")
-	private Long bizId;         // 업체 ID
-
-	// 외래키
-	@JoinColumn(name = "device_id")
 	@ManyToOne(fetch = FetchType.LAZY)
-	private DeviceEntity device;
+	@JoinColumn(name = "biz_id")
+	private BizEntity biz;         // 업체 ID 외래키
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "device_id")
+	private DeviceEntity device;    // 디바이스 세팅ID 외래키
 
 	@Column(name = "car_type")
 	private String carType;       // 차종
@@ -52,11 +49,11 @@ public class CarEntity extends DateBaseEntity {
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
-	private CarEntity(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate, String carYear,
+	private CarEntity(String mdn, BizEntity biz, DeviceEntity device, String carType, String carPlate, String carYear,
 		String purpose, String status, double sum) {
 
 		this.mdn = mdn;
-		this.bizId = bizId;
+		this.biz = biz;
 		this.device = device;
 		this.carType = carType;
 		this.carPlate = carPlate;
@@ -66,15 +63,13 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public static CarEntity create(String mdn, Long bizId, DeviceEntity device, String carType, String carPlate,
-		String carYear,
-		String purpose, String status, double sum) {
-		return new CarEntity(mdn, bizId, device, carType, carPlate, carYear, purpose, status, sum);
+	public static CarEntity create(String mdn, BizEntity biz, DeviceEntity device, String carType, String carPlate,
+		String carYear, String purpose, String status, double sum) {
+		return new CarEntity(mdn, biz, device, carType, carPlate, carYear, purpose, status, sum);
 	}
 
 	public void update(
-		String mdn,
-		Long bizId,
+		BizEntity biz,
 		DeviceEntity device,
 		String carType,
 		String carPlate,
@@ -83,8 +78,7 @@ public class CarEntity extends DateBaseEntity {
 		String status,
 		double sum
 	) {
-		this.mdn = mdn;
-		this.bizId = bizId;
+		this.biz = biz;
 		this.device = device;
 		this.carType = carType;
 		this.carPlate = carPlate;
@@ -94,7 +88,7 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public void updateSum(int updateSum) {
+	public void updateSum(double updateSum) {
 		this.sum += updateSum;
 	}
 }

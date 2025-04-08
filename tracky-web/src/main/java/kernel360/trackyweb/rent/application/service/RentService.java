@@ -1,5 +1,6 @@
 package kernel360.trackyweb.rent.application.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -45,13 +46,17 @@ public class RentService {
 	}
 
 	/**
-	 * rentUuid 기반 대여 검색
-	 * @Param rentUuid
-	 * @return 검색된 대여 List
+	 * 필터링 기반 검색
+	 * @param rentUuid
+	 * @param rentStatus
+	 * @param rentDate
+	 * @return 검색된 예약 List
 	 */
-	public ApiResponse<List<RentResponse>> searchByRentUuid(String rentUuid) {
-		return ApiResponse.success(RentResponse.fromList(rentRepository.findByRentUuidContainingOrdered(rentUuid)));
+	public ApiResponse<List<RentResponse>> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate) {
+		List<RentEntity> results = rentRepository.searchByFilters(rentUuid, rentStatus, rentDate);
+		return ApiResponse.success(RentResponse.fromList(results));
 	}
+
 
 	/**
 	 * rentUuid 값으로 검색
@@ -79,7 +84,7 @@ public class RentService {
 		String rentUuid = generateShortUuid();
 
 		// 구지원 - 임시로 예약 등록은 전부 '대여 전'
-		RentEntity rent = rentRequest.toEntity(rentUuid, "대여 전");
+		RentEntity rent = rentRequest.toEntity(car, rentUuid, "대여 전");
 
 		RentEntity savedRent = rentRepository.save(rent);
 
@@ -98,12 +103,15 @@ public class RentService {
 		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
 			.orElseThrow(() -> RentException.notFound());
 
-		RentMapper.updateRent(rent, rentRequest);
+		CarEntity car = carRepository.findByMdn(rentRequest.mdn())
+			.orElseThrow(() -> CarException.notFound());
+
+		RentMapper.updateRent(car, rent, rentRequest);
 
 		log.info("업테이트 대여 : {}", rent);
 
 		RentEntity updatedRent = rentRepository.save(rent);
-		return ApiResponse.success(RentResponse.from(rent));
+		return ApiResponse.success(RentResponse.from(updatedRent));
 	}
 
 
