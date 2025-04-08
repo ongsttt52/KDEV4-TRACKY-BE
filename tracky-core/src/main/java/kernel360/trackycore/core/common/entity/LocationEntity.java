@@ -50,11 +50,7 @@ public class LocationEntity extends DateBaseEntity {
 		this.driveEndLon = lon;
 	}
 
-	public static LocationEntity create(
-		String driveStartLoc,
-		int driveStartLon,
-		int driveStartLat) {
-
+	public static LocationEntity create(String driveStartLoc, int driveStartLon, int driveStartLat) {
 		LocationEntity location = new LocationEntity();
 		location.driveStartLoc = driveStartLoc;
 		location.driveStartLon = driveStartLon;

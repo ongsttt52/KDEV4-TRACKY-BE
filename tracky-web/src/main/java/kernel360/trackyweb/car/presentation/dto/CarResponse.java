@@ -3,6 +3,7 @@ package kernel360.trackyweb.car.presentation.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
 
 public record CarResponse(
@@ -19,7 +20,7 @@ public record CarResponse(
 	public static CarResponse from(CarEntity car) {
 		return new CarResponse(
 			car.getMdn(),
-			car.getBizId(),
+			car.getBiz().getId(),
 			car.getCarType(),
 			car.getCarPlate(),
 			car.getCarYear(),
