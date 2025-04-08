@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -39,6 +41,7 @@ public class SecurityConfig {
 			.csrf(csrf -> csrf.disable())
 			.formLogin(form -> form.disable()) // 기본 로그인 비활성화!
 			.httpBasic(httpBasic -> httpBasic.disable()) // (선택) 브라우저 인증창 제거
+<<<<<<< Updated upstream
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 쓸 땐 세션 X
 			// 천승준 - api test 때매 임시 제거
 			// .authorizeHttpRequests(auth -> auth
@@ -46,12 +49,25 @@ public class SecurityConfig {
 			// 	.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
 			// 	.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
 			// )
+=======
+			.sessionManagement(
+				session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 쓸 땐 세션 X
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				// .requestMatchers("/api/**").permitAll() // 오승택 - 요청 테스트용 코드, 모든 API 허용
+				.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
+				.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
+				.requestMatchers("/events/**").permitAll() // sse 관련
+			)
+			.headers(headers -> headers.frameOptions(frame -> frame.disable()))
+>>>>>>> Stashed changes
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}
 
 
 	@Bean
+	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowedOrigins(List.of("http://localhost:5177", "http://localhost:5173", "https://tracky-fe.vercel.app", "https://www.tracky.kr", "https://tracky.kr")); // 프론트 주소
@@ -64,6 +80,7 @@ public class SecurityConfig {
 		return source;
 	}
 
+<<<<<<< Updated upstream
 
 	// @Bean
 	// public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -72,6 +89,8 @@ public class SecurityConfig {
 	// 	return authBuilder.build();
 	// }
 	//
+=======
+>>>>>>> Stashed changes
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
