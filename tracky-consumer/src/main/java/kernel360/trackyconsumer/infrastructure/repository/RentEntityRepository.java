@@ -12,9 +12,6 @@ import kernel360.trackycore.core.common.entity.RentEntity;
 @Repository
 public interface RentEntityRepository extends JpaRepository<RentEntity, Long> {
 
-	// @Query("SELECT r FROM RentEntity r WHERE r.car.mdn = :mdn AND :onTime BETWEEN r.rentStime AND r.rentEtime")
-	// RentEntity findMyMdnAndTime(String mdn, LocalDateTime onTime);
-
 	@Query("SELECT r FROM RentEntity r WHERE r.car = :car AND :onTime BETWEEN r.rentStime AND r.rentEtime")
 	RentEntity findMyCarAndTime(CarEntity car, LocalDateTime onTime);
 }

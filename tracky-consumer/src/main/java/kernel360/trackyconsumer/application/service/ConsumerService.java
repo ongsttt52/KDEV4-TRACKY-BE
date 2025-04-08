@@ -3,16 +3,13 @@ package kernel360.trackyconsumer.application.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
 import kernel360.trackyconsumer.application.dto.CycleGpsRequest;
 import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
-import kernel360.trackyconsumer.config.RabbitMQConfig;
 import kernel360.trackyconsumer.infrastructure.repository.CarEntityRepository;
 import kernel360.trackyconsumer.infrastructure.repository.DriveEntityRepository;
 import kernel360.trackyconsumer.infrastructure.repository.GpsHistoryEntityRepository;
@@ -29,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CarInfoConsumer {
+public class ConsumerService {
 
 	private final DriveEntityRepository driveEntityRepository;
 	private final GpsHistoryEntityRepository gpsHistoryEntityRepository;
@@ -37,22 +34,35 @@ public class CarInfoConsumer {
 	private final RentEntityRepository rentEntityRepository;
 	private final CarEntityRepository carEntityRepository;
 
-	@RabbitListener(queues = RabbitMQConfig.ONOFF_QUEUE_NAME)
+	@Async
 	@Transactional
-	public void receiveCarOnOffMessage(@Payload CarOnOffRequest message,
-		@Header("amqp_receivedRoutingKey") String routingKey) {
+	public void receiveCycleInfo(GpsHistoryMessage request) {
+		log.info("receiveCycleInfo 시작");
+		// 처리 로직
+		List<CycleGpsRequest> cycleGpsRequestList = request.getCList();
 
-		log.info("메시지 수신: {}", message.toString());
-		switch (routingKey) {
-			case "on":
-				processOnMessage(message);
-				break;
-			case "off":
-				processOffMessage(message);
-				break;
+		CarEntity car = carEntityRepository.findByMdn(request.getMdn());
+
+		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, request.getOTime());
+
+		// GPS 쪼개서 정보 저장
+		for (int i = 0; i < request.getCCnt(); i++) {
+			saveCycleInfo(drive, request.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
 		}
 	}
 
+	private void saveCycleInfo(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
+		log.info("saveCycleInfo 시작");
+
+		long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
+		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
+		log.info("toGpsHistoryEntity 시작");
+
+		gpsHistoryEntityRepository.save(gpsHistoryEntity);
+
+	}
+
+	@Transactional
 	public void processOnMessage(CarOnOffRequest carOnOffRequest) {
 
 		LocationEntity location = carOnOffRequest.toLocationEntity();
@@ -61,18 +71,15 @@ public class CarInfoConsumer {
 		String mdn = carOnOffRequest.getMdn();
 		CarEntity car = carEntityRepository.findByMdn(mdn);
 
-		// RentEntity rent = rentEntityRepository.findMyMdnAndTime(mdn, carOnOffRequest.getOnTime());
 		RentEntity rent = rentEntityRepository.findMyCarAndTime(car, carOnOffRequest.getOnTime());
 
 		DriveEntity drive = DriveEntity.create(car, rent, location,
 			carOnOffRequest.getOnTime());
 
-		// DriveEntity drive = DriveEntity.create("temp1234", "some_uuid", 1, location,
-		// 	carOnOffRequest.getOnTime());
-
 		driveEntityRepository.save(drive);
 	}
 
+	@Transactional
 	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
 
 		/** 시동 off시 다음 동작 수행
@@ -89,39 +96,9 @@ public class CarInfoConsumer {
 		drive.updateDistance(carOnOffRequest.getSum());
 		drive.updateOffTime(carOnOffRequest.getOffTime());
 
-		// CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
 		car.updateSum(drive.getDriveDistance());
 
 		LocationEntity location = drive.getLocation();
 		location.updateEndLocation(carOnOffRequest.getLat(), carOnOffRequest.getLon());
-	}
-
-	// GPS 정보 처리 큐
-	@RabbitListener(queues = RabbitMQConfig.GPS_QUEUE_NAME)
-	@Transactional
-	public void receiveCarMessage(GpsHistoryMessage message) {
-
-		List<CycleGpsRequest> cycleGpsRequestList = message.getCList();
-
-		CarEntity car = carEntityRepository.findByMdn(message.getMdn());
-		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, message.getOTime());
-
-		// GPS 쪼개서 정보 저장
-		for (int i = 0; i < message.getCCnt(); i++) {
-			saveGpsMessage(drive, message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
-			// saveGpsMessage(message.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
-		}
-
-	}
-
-	public void saveGpsMessage(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
-		// public void saveGpsMessage(LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
-
-		long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
-		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
-		log.info("gpshitory 엔티티: {}", gpsHistoryEntity.toString());
-
-		gpsHistoryEntityRepository.save(gpsHistoryEntity);
-
 	}
 }

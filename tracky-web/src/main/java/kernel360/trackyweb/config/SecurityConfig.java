@@ -38,13 +38,13 @@ public class SecurityConfig {
 			.httpBasic(httpBasic -> httpBasic.disable()) // (선택) 브라우저 인증창 제거
 			.sessionManagement(
 				session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 쓸 땐 세션 X
-			// 천승준 - api test 때매 임시 제거
-			// .authorizeHttpRequests(auth -> auth
-			// 	.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-			// 	.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
-			// 	.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
-			// )
-			// .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				// .requestMatchers("/api/**").permitAll() // 오승택 - 요청 테스트용 코드, 모든 API 허용
+				.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
+				.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
+			)
+			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}
 

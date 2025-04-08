@@ -23,7 +23,8 @@ public class JwtTokenProvider {
 	// @Value("${spring.jwt.expiration}")
 	// private long expiration;
 	// 구지원 - 임시로 유효 시간 24시간으로 세팅
-	private long expiration = 43200000L;
+	private long expiration = 86400000L;
+	// private long expiration = 60000L;
 
 	private Key secretKey;
 
