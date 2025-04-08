@@ -52,7 +52,7 @@ public class EventEmitterService {
 		});
 	}
 
-	// 🔁 keep-alive 메시지를 15초마다 전송
+	// keep-alive 메시지를 15초마다 전송
 	@Scheduled(fixedRate = 15000)
 	public void sendKeepAlive() {
 		emitters.forEach((clientId, emitter) -> {
