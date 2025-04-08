@@ -37,6 +37,11 @@ public class RentController implements RentApiDocs {
 		return rentService.getAll();
 	}
 
+	@GetMapping("/cars/all")
+	public ApiResponse<List<String>> getAllCars() {
+		return rentService.getAllCars();
+	}
+
 	@GetMapping("/search")
 	public ApiResponse<List<RentResponse>> searchByFilter(
 		@RequestParam(required = false) String rentUuid,

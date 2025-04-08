@@ -54,6 +54,16 @@ public class RentService {
 	}
 
 	/**
+	 * 차량 mdn list 조회
+	 * @return mdn list
+	 */
+	public ApiResponse<List<String>> getAllCars() {
+		List<String> mdns = carRepository.findAllMdns();
+
+		return ApiResponse.success(mdns);
+	}
+
+	/**
 	 * 필터링 기반 검색
 	 * @param rentUuid
 	 * @param rentStatus
@@ -92,7 +102,7 @@ public class RentService {
 		String rentUuid = generateShortUuid();
 
 		// 구지원 - 임시로 예약 등록은 전부 '대여 전'
-		RentEntity rent = rentRequest.toEntity(car, rentUuid, "대여 전");
+		RentEntity rent = rentRequest.toEntity(car, rentUuid, "reserved");
 
 		RentEntity savedRent = rentRepository.save(rent);
 
