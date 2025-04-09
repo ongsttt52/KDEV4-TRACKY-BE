@@ -28,7 +28,7 @@ public class DriveHistoryService {
 	}
 
 	public List<DriveHistoryDto> getDriveHistoriesByDriveid(Long Id) {
-		List<DriveEntity> drives = driveHistoryRepository.findAllByDriveId(Id);
+		List<DriveEntity> drives = driveHistoryRepository.findAllById(Id);
 
 		return drives.stream()
 			.map(drive -> {
