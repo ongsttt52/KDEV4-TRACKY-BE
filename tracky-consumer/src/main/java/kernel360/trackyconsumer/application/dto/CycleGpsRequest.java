@@ -20,7 +20,11 @@ public class CycleGpsRequest {
 	private int spd;    // 속도
 	private double sum;    // 누적주행 거리
 
-	public GpsHistoryEntity toGpsHistoryEntity(long maxSeq, DriveEntity drive, LocalDateTime oTime, double sum) {
-		return new GpsHistoryEntity(maxSeq, drive, oTime, this.gcd, this.lat, this.lon, this.ang, this.spd, sum);
+	// public GpsHistoryEntity toGpsHistoryEntity(long maxSeq, DriveEntity drive, LocalDateTime oTime, double sum) {
+	// 	return new GpsHistoryEntity(maxSeq, drive, oTime, this.gcd, this.lat, this.lon, this.ang, this.spd, sum);
+	// }
+	public GpsHistoryEntity toGpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, double sum) {
+		return new GpsHistoryEntity(drive, oTime, this.gcd, this.lat, this.lon, this.ang, this.spd, sum);
 	}
+
 }

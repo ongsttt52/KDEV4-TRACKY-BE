@@ -36,7 +36,6 @@ public class ConsumerController {
 
 	@PostMapping("/cycle")
 	public ApiResponse postCarCycle(@RequestBody GpsHistoryMessage request) {
-		log.info("컨트롤러 진입");
 
 		ConsumerService.receiveCycleInfo(request);
 		return new ApiResponse("000", "Success", request.getMdn());

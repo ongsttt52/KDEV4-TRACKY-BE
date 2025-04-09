@@ -1,7 +1,9 @@
 spring:
   config:
     import: classpath:application-common.yml
-
+  jpa:
+    hibernate:
+      ddl-auto: update
   application:
     name: tracky-consumer
 

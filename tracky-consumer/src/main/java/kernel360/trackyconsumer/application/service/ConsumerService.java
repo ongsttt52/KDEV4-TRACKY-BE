@@ -37,7 +37,7 @@ public class ConsumerService {
 	@Async
 	@Transactional
 	public void receiveCycleInfo(GpsHistoryMessage request) {
-		log.info("receiveCycleInfo 시작");
+
 		// 처리 로직
 		List<CycleGpsRequest> cycleGpsRequestList = request.getCList();
 
@@ -52,14 +52,12 @@ public class ConsumerService {
 	}
 
 	private void saveCycleInfo(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
-		log.info("saveCycleInfo 시작");
 
-		long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
-		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(maxSeq + 1, drive, oTime, sum);
-		log.info("toGpsHistoryEntity 시작");
+		// long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
+		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(drive, oTime, sum);
 
 		gpsHistoryEntityRepository.save(gpsHistoryEntity);
-
+		log.info("GpsHistory 저장 완료");
 	}
 
 	@Transactional
@@ -88,8 +86,6 @@ public class ConsumerService {
 		 * 차량 주행 거리 += sum update(Car)
 		 * 주행 종료 지점 update(Location)
 		 **/
-		log.info("drive 전 : {}");
-
 		CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
 
 		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, carOnOffRequest.getOnTime());
