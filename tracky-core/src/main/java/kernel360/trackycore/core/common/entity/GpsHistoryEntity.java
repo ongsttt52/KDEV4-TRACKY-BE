@@ -58,10 +58,10 @@ public class GpsHistoryEntity {
 	@CreationTimestamp
 	private LocalDateTime createdAt;    //생성시간
 
-	public GpsHistoryEntity(long maxSeq, DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang,
+	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang,
 		int spd,
 		double sum) {
-		this.driveSeq = maxSeq;
+		// this.driveSeq = maxSeq;
 		this.drive = drive;
 		this.oTime = oTime;
 		this.gcd = gcd;
