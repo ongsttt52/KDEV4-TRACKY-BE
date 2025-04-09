@@ -28,12 +28,14 @@ public class DriveHistoryService {
 	}
 
 	public List<DriveHistoryDto> getDriveHistoriesByDriveid(Long Id) {
-		List<DriveEntity> drives = driveHistoryRepository.findAllByDriveId(Id);
+		List<DriveEntity> drives = driveHistoryRepository.findAllById(Id);
 
 		return drives.stream()
 			.map(drive -> {
-				Optional<GpsHistoryEntity> onGpsOpt = gpsHistoryRepository.findFirstByDriveOrderByDriveSeqAsc(drive);
-				Optional<GpsHistoryEntity> offGpsOpt = gpsHistoryRepository.findFirstByDriveOrderByDriveSeqDesc(drive);
+				Optional<GpsHistoryEntity> onGpsOpt = gpsHistoryRepository.findFirstByDriveIdOrderByDriveSeqAsc(
+					drive.getId());
+				Optional<GpsHistoryEntity> offGpsOpt = gpsHistoryRepository.findFirstByDriveIdOrderByDriveSeqDesc(
+					drive.getId());
 
 				int onLat = onGpsOpt.map(GpsHistoryEntity::getLat).orElse(0);
 				int onLon = onGpsOpt.map(GpsHistoryEntity::getLon).orElse(0);
@@ -41,7 +43,7 @@ public class DriveHistoryService {
 				int offLon = offGpsOpt.map(GpsHistoryEntity::getLon).orElse(0);
 				double sum = offGpsOpt.map(GpsHistoryEntity::getSum).orElse(0.0);
 
-				List<GpsHistoryEntity> gpsList = gpsHistoryRepository.findByDrive(drive);
+				List<GpsHistoryEntity> gpsList = gpsHistoryRepository.findByDriveId(drive.getId());
 				List<DriveHistoryDto.Coordinate> coords = gpsList.stream()
 					.map(
 						gps -> new DriveHistoryDto.Coordinate(gps.getLat(), gps.getLon(), gps.getSpd(), gps.getOTime()))

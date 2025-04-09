@@ -5,14 +5,13 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import kernel360.trackycore.core.common.entity.DriveEntity;
 import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
 
 public interface GpsHistoryRepository extends JpaRepository<GpsHistoryEntity, Long> {
 
-	Optional<GpsHistoryEntity> findFirstByDriveOrderByDriveSeqAsc(DriveEntity drive);
+	Optional<GpsHistoryEntity> findFirstByDriveIdOrderByDriveSeqAsc(Long driveId);
 
-	Optional<GpsHistoryEntity> findFirstByDriveOrderByDriveSeqDesc(DriveEntity drive);
+	Optional<GpsHistoryEntity> findFirstByDriveIdOrderByDriveSeqDesc(Long driveId);
 
-	List<GpsHistoryEntity> findByDrive(DriveEntity drive);
+	List<GpsHistoryEntity> findByDriveId(Long driveId);
 }

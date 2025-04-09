@@ -37,11 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// SSE 요청은 토큰 없이 통과시킴
 		if (request.getRequestURI().startsWith("/events")) {
-			System.out.println("request.getRequestURI() : " + request.getRequestURI());
 			filterChain.doFilter(request, response);
 			return;
 		}
-		System.out.println("jwt token: " + resolveToken(request));
 
 		String token = resolveToken(request);
 
@@ -63,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			// SecurityContext에 Authentication 객체를 설정합니다.
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			logger.info("Authentication set for memberId: {}", memberId);
+			// logger.info("Authentication set for memberId: {}", memberId);
 		} else {
 			logger.warn("JWT token is missing or invalid");
 		}
