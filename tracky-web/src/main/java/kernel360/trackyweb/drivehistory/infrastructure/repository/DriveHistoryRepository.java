@@ -10,4 +10,6 @@ public interface DriveHistoryRepository extends JpaRepository<DriveEntity, Long>
 	List<DriveEntity> findAllById(Long id);
 
 	List<DriveEntity> findAllByCar_Mdn(String mdn);
+
+	List<DriveEntity> findAllByRent_RentUuid(String rentUuid);
 }

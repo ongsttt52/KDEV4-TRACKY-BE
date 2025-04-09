@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.drivehistory.application.DriveHistoryService;
 import kernel360.trackyweb.drivehistory.domain.CarDriveHistory;
-import kernel360.trackyweb.drivehistory.domain.DriveHistoryDto;
-import kernel360.trackyweb.drivehistory.domain.RentDriveHistoryDto;
+import kernel360.trackyweb.drivehistory.domain.DriveHistory;
+import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,15 +22,17 @@ public class DriveHistoryController implements DriveHistoryApiDocs {
 
 	private final DriveHistoryService driveHistoryService;
 
-	@GetMapping("/history")
-	public ApiResponse<List<RentDriveHistoryDto>> findAllRentHistories() {
-		List<RentDriveHistoryDto> result = driveHistoryService.getAllRentHistories();
+	@GetMapping("/history/rents")
+	public ApiResponse<List<RentDriveHistory>> findAllRentHistories(
+		@RequestParam(required = false) String rentUuid
+	) {
+		List<RentDriveHistory> result = driveHistoryService.getAllRentHistories(rentUuid);
 		return ApiResponse.success(result);
 	}
 
 	@GetMapping("/history/{id}")
-	public ApiResponse<List<DriveHistoryDto>> getDriveHistories(@PathVariable Long id) {
-		List<DriveHistoryDto> histories = driveHistoryService.getDriveHistoriesByDriveid(id);
+	public ApiResponse<List<DriveHistory>> getDriveHistories(@PathVariable Long id) {
+		List<DriveHistory> histories = driveHistoryService.getDriveHistoriesByDriveid(id);
 		return ApiResponse.success(histories);
 	}
 

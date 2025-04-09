@@ -2,16 +2,18 @@ package kernel360.trackyweb.drivehistory.infrastructure.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.stereotype.Repository;
 
 import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackyweb.drivehistory.domain.RentDriveHistoryDto;
+import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
 
-public interface RentHistoryRepository extends Repository<RentEntity, Long> {
+@Repository
+public interface RentHistoryRepository extends JpaRepository<RentEntity, Long> {
 
 	@Query("""
-		    SELECT new kernel360.trackyweb.drivehistory.domain.RentDriveHistoryDto(
+		    SELECT new kernel360.trackyweb.drivehistory.domain.RentDriveHistory(
 		        r.rentUuid,
 		        r.renterName,
 		        c.mdn,
@@ -22,5 +24,6 @@ public interface RentHistoryRepository extends Repository<RentEntity, Long> {
 		    JOIN r.car c
 		    ORDER BY r.rentStime DESC
 		""")
-	List<RentDriveHistoryDto> findAllRentHistories();
+	List<RentDriveHistory> findAllRentHistories();
+
 }
