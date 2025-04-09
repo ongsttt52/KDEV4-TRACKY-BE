@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
@@ -47,6 +47,7 @@ public class RentService {
 	/**
 	 * 렌트 정보 전체 조회
 	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<List<RentResponse>> getAll() {
 		return ApiResponse.success(rentRepository.findAll().stream()
 			.map(RentResponse::from)
@@ -70,6 +71,7 @@ public class RentService {
 	 * @param rentDate
 	 * @return 검색된 예약 List
 	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<List<RentResponse>> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate,
 		Pageable pageable) {
 		Page<RentEntity> rents = rentRepository.searchByFilters(rentUuid, rentStatus, rentDate, pageable);
@@ -83,6 +85,7 @@ public class RentService {
 	 * @param rentUuid
 	 * @return 수정된 대여 detail
 	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<RentResponse> searchDetailByRentUuid(String rentUuid) {
 		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
 			.orElseThrow(() -> RentException.notFound());
@@ -94,6 +97,7 @@ public class RentService {
 	 * @param
 	 * @return 등록 성공한 대여
 	 */
+	@Transactional
 	public ApiResponse<RentResponse> create(RentRequest rentRequest) {
 		CarEntity car = carRepository.findByMdn(rentRequest.mdn())
 			.orElseThrow(() -> CarException.notFound());
