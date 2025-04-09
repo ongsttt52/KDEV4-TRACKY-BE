@@ -7,21 +7,32 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
 @EnableAsync
+@Slf4j
 public class AsyncConfig {
 
-	// 최대 4개의 스레드, 20개의 작업 대기 가능
+	private ThreadPoolTaskExecutor executor;
+
 	@Bean(name = "taskExecutor")
 	public Executor taskExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(Runtime.getRuntime().availableProcessors() * 10);    // 기본 유지 스레드
-		executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors() * 20);    // 최대 스레드 수
-		// executor.setCorePoolSize(4);	// 기본 유지 스레드
-		// executor.setMaxPoolSize(8);		// 최대 스레드 수
-		executor.setQueueCapacity(20000);    // 큐 용량(작업 수)
-		executor.setThreadNamePrefix("AsyncThread-"); // 생성되는 스레드 접두사
+		executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(Runtime.getRuntime().availableProcessors() * 10);
+		executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors() * 20);
+		executor.setQueueCapacity(20000);
+		executor.setThreadNamePrefix("AsyncThread-");
 		executor.initialize();
 		return executor;
+	}
+
+	@PostConstruct
+	public void showThreadConfiguration() {
+		log.info("Available processors: {}", Runtime.getRuntime().availableProcessors());
+		log.info("Core pool size: {}", executor.getCorePoolSize());
+		log.info("Max pool size: {}", executor.getMaxPoolSize());
+		log.info("Queue capacity: {}", executor.getQueueCapacity());
 	}
 }
