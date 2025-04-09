@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 public record CarDriveHistory(
 	Long driveId,
+	String rentUuid,
+	String mdn,
 	int onLat,
 	int onLon,
 	int offLat,
@@ -14,6 +16,8 @@ public record CarDriveHistory(
 ) {
 	public static CarDriveHistory create(
 		Long driveId,
+		String rentUuid,
+		String mdn,
 		int onLat,
 		int onLon,
 		int offLat,
@@ -23,7 +27,8 @@ public record CarDriveHistory(
 		LocalDateTime driveOffTime
 	) {
 		return new CarDriveHistory(
-			driveId, onLat, onLon, offLat, offLon, sum, driveOnTime, driveOffTime
+			driveId, rentUuid, mdn, onLat, onLon, offLat, offLon, sum,
+			driveOnTime, driveOffTime
 		);
 	}
 }

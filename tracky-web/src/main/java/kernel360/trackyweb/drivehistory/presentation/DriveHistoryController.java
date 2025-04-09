@@ -31,9 +31,9 @@ public class DriveHistoryController implements DriveHistoryApiDocs {
 	}
 
 	@GetMapping("/history/{id}")
-	public ApiResponse<List<DriveHistory>> getDriveHistories(@PathVariable Long id) {
-		List<DriveHistory> histories = driveHistoryService.getDriveHistoriesByDriveid(id);
-		return ApiResponse.success(histories);
+	public ApiResponse<DriveHistory> getDriveHistories(@PathVariable Long id) {
+		DriveHistory history = driveHistoryService.getDriveHistoriesByDriveId(id);
+		return ApiResponse.success(history);
 	}
 
 	@GetMapping("/history/cars")
