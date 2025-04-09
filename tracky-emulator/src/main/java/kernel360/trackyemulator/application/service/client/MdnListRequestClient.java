@@ -20,7 +20,7 @@ public class MdnListRequestClient {
 
 	public List<String> getMdnList() {
 
-		String url = "http://localhost:8082/api/car/mdns"; // 실제 엔드포인트로 수정
+		String url = "http://hub-service.hub1:8082/hub/car/mdns"; // 실제 엔드포인트로 수정
 
 		String[] mdnArray = restTemplate.getForObject(url, String[].class);
 
