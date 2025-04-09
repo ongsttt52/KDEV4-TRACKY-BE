@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.BizEntity;
@@ -15,6 +15,7 @@ import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.BizException;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
+import kernel360.trackyweb.car.application.mapper.CarEvent;
 import kernel360.trackyweb.car.application.mapper.CarMapper;
 import kernel360.trackyweb.car.infrastructure.repository.BizRepository;
 import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
@@ -23,6 +24,7 @@ import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
 import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
 import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import kernel360.trackyweb.car.presentation.dto.CarUpdateRequest;
+import kernel360.trackyweb.emitter.EventEmitterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,11 +37,14 @@ public class CarService {
 	private final DeviceRepository deviceRepository;
 	private final BizRepository bizRepository;
 
+	// sse emitter
+	private final EventEmitterService eventEmitterService;
+
 	/**
 	 * 등록 차량 전체 조회
 	 * @return 전체 차량 List
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> getAll() {
 		return ApiResponse.success(CarResponse.fromList(carRepository.findAll()));
 	}
@@ -49,7 +54,7 @@ public class CarService {
 	 * @param mdn 차량 mdn
 	 * @return 차량 단건 조회
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<Boolean> isMdnExist(String mdn) {
 		return ApiResponse.success(carRepository.existsByMdn(mdn));
 	}
@@ -61,7 +66,7 @@ public class CarService {
 	 * @param purpose
 	 * @return 검색된 차량 List
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> searchByFilter(String mdn, String status, String purpose,
 		Pageable pageable) {
 		Page<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose, pageable);
@@ -76,7 +81,7 @@ public class CarService {
 	 * @param mdn
 	 * @return 단건 차량 데이터
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<CarResponse> searchOneByMdn(String mdn) {
 		CarEntity car = carRepository.findByMdn(mdn)
 			.orElseThrow(() -> CarException.notFound());
@@ -88,7 +93,7 @@ public class CarService {
 	 * @param mdn 차량 MDN
 	 * @return 단건 차량 데이터 + 디바이스 정보
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(String mdn) {
 		CarEntity car = carRepository.findDetailByMdn(mdn)
 			// 천승준 - 공통 에러 처리 해봤어요
@@ -118,6 +123,10 @@ public class CarService {
 		CarEntity savedCar = carRepository.save(car);
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
+
+		CarEvent carEvent = CarEvent.create("car_event", "create", "차량을 등록 하였습니다.");
+		eventEmitterService.sendEvent("car_event", carEvent);
+
 		return ApiResponse.success(response);
 	}
 
@@ -145,6 +154,10 @@ public class CarService {
 		log.info("업데이트 차량 : {}", car);
 
 		CarEntity updatedCar = carRepository.save(car);
+
+		CarEvent carEvent = CarEvent.create("car_event", "update", "차량을 수정 하였습니다.");
+		eventEmitterService.sendEvent("car_event", carEvent);
+
 		return ApiResponse.success(CarDetailResponse.from(updatedCar));
 	}
 
@@ -156,6 +169,10 @@ public class CarService {
 	@Transactional
 	public ApiResponse<String> delete(String mdn) {
 		carRepository.deleteByMdn(mdn);
+
+		CarEvent carEvent = CarEvent.create("car_event", "delete", "차량을 삭제 하였습니다.");
+		eventEmitterService.sendEvent("car_event", carEvent);
+
 		return ApiResponse.success("삭제 완료");
 	}
 }

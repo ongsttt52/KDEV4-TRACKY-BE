@@ -1,18 +1,18 @@
 package kernel360trackybe.trackyhub.application.service;
 
-import kernel360trackybe.trackyhub.infrastructure.repository.CarRepository;
-import kernel360trackybe.trackyhub.presentation.dto.CarOnOffRequest;
-import kernel360trackybe.trackyhub.config.RabbitMQConfig;
-import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
-import kernel360trackybe.trackyhub.presentation.dto.GpsHistoryMessage;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+
+import kernel360trackybe.trackyhub.config.RabbitMQConfig;
+import kernel360trackybe.trackyhub.infrastructure.repository.CarRepository;
+import kernel360trackybe.trackyhub.presentation.dto.CarOnOffRequest;
+import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
+import kernel360trackybe.trackyhub.presentation.dto.GpsHistoryMessage;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor

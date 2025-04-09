@@ -9,14 +9,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.RentException;
+import kernel360.trackyweb.emitter.EventEmitterService;
+import kernel360.trackyweb.rent.application.mapper.RentEvent;
 import kernel360.trackyweb.rent.application.mapper.RentMapper;
 import kernel360.trackyweb.rent.infrastructure.repository.CarRepository;
 import kernel360.trackyweb.rent.infrastructure.repository.RentRepository;
@@ -34,6 +36,9 @@ public class RentService {
 	@Qualifier("carRepositoryForRent") // 4월 1일 공통화 작업
 	private final CarRepository carRepository;
 
+	// sse emitter
+	private final EventEmitterService eventEmitterService;
+
 	// 8자리 UUID 생성 메서드
 	private String generateShortUuid() {
 		return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
@@ -42,10 +47,21 @@ public class RentService {
 	/**
 	 * 렌트 정보 전체 조회
 	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<List<RentResponse>> getAll() {
 		return ApiResponse.success(rentRepository.findAll().stream()
 			.map(RentResponse::from)
 			.collect(Collectors.toList()));
+	}
+
+	/**
+	 * 차량 mdn list 조회
+	 * @return mdn list
+	 */
+	public ApiResponse<List<String>> getAllCars() {
+		List<String> mdns = carRepository.findAllMdns();
+
+		return ApiResponse.success(mdns);
 	}
 
 	/**
@@ -55,6 +71,7 @@ public class RentService {
 	 * @param rentDate
 	 * @return 검색된 예약 List
 	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<List<RentResponse>> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate,
 		Pageable pageable) {
 		Page<RentEntity> rents = rentRepository.searchByFilters(rentUuid, rentStatus, rentDate, pageable);
@@ -68,6 +85,7 @@ public class RentService {
 	 * @param rentUuid
 	 * @return 수정된 대여 detail
 	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<RentResponse> searchDetailByRentUuid(String rentUuid) {
 		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
 			.orElseThrow(() -> RentException.notFound());
@@ -79,6 +97,7 @@ public class RentService {
 	 * @param
 	 * @return 등록 성공한 대여
 	 */
+	@Transactional
 	public ApiResponse<RentResponse> create(RentRequest rentRequest) {
 		CarEntity car = carRepository.findByMdn(rentRequest.mdn())
 			.orElseThrow(() -> CarException.notFound());
@@ -87,11 +106,14 @@ public class RentService {
 		String rentUuid = generateShortUuid();
 
 		// 구지원 - 임시로 예약 등록은 전부 '대여 전'
-		RentEntity rent = rentRequest.toEntity(car, rentUuid, "대여 전");
+		RentEntity rent = rentRequest.toEntity(car, rentUuid, "reserved");
 
 		RentEntity savedRent = rentRepository.save(rent);
 
 		RentResponse response = RentResponse.from(savedRent);
+
+		RentEvent rentEvent = RentEvent.create("rent_event", "create", "예약을 생성 하였습니다.");
+		eventEmitterService.sendEvent("rent_event", rentEvent);
 
 		return ApiResponse.success(response);
 	}
@@ -114,6 +136,10 @@ public class RentService {
 		log.info("업테이트 대여 : {}", rent);
 
 		RentEntity updatedRent = rentRepository.save(rent);
+
+		RentEvent rentEvent = RentEvent.create("rent_event", "update", "예약을 수정 하였습니다.");
+		eventEmitterService.sendEvent("rent_event", rentEvent);
+
 		return ApiResponse.success(RentResponse.from(updatedRent));
 	}
 
@@ -125,6 +151,10 @@ public class RentService {
 	@Transactional
 	public ApiResponse<String> delete(String rentUuid) {
 		rentRepository.deleteByRentUuid(rentUuid);
+
+		RentEvent rentEvent = RentEvent.create("rent_event", "delete", "예약을 삭제 하였습니다.");
+		eventEmitterService.sendEvent("rent_event", rentEvent);
+
 		return ApiResponse.success("삭제 완료");
 	}
 }

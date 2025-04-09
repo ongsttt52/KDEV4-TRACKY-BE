@@ -46,7 +46,9 @@ public class SecurityConfig {
 				// .requestMatchers("/api/**").permitAll() // 오승택 - 요청 테스트용 코드, 모든 API 허용
 				.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
 				.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
+				.requestMatchers("/events/**").permitAll() // sse 관련
 			)
+			.headers(headers -> headers.frameOptions(frame -> frame.disable()))
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}
@@ -65,7 +67,7 @@ public class SecurityConfig {
 		source.registerCorsConfiguration("/**", config);
 		return source;
 	}
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
