@@ -10,8 +10,9 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -27,14 +28,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@IdClass(GpsHistoryId.class)
 public class GpsHistoryEntity {
 
 	@Id
 	@Column(name = "drive_seq", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long driveSeq;    //주행기록 시퀀스
 
-	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "drive_id", nullable = false)
 	private DriveEntity drive;    //주행ID 외래키
