@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackyweb.drivehistory.domain.RentDriveHistoryDto;
+import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
 
 public interface RentHistoryRepository extends Repository<RentEntity, Long> {
 
@@ -22,5 +22,6 @@ public interface RentHistoryRepository extends Repository<RentEntity, Long> {
 		    JOIN r.car c
 		    ORDER BY r.rentStime DESC
 		""")
-	List<RentDriveHistoryDto> findAllRentHistories();
+	List<RentDriveHistory> findAllRentHistories();
+
 }

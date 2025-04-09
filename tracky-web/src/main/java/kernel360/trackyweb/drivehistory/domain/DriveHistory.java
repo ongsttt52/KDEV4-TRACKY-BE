@@ -3,7 +3,7 @@ package kernel360.trackyweb.drivehistory.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record DriveHistoryDto(
+public record DriveHistory(
 	Long driveId,
 	int onLat,
 	int onLon,
