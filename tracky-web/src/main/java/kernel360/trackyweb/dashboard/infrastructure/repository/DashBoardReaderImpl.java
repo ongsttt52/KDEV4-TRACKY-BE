@@ -22,8 +22,8 @@ public class DashBoardReaderImpl implements DashBoardReader {
 		LocalDateTime start = baseDate.atStartOfDay();
 		LocalDateTime end = baseDate.plusDays(1).atStartOfDay();
 
-		return dashRentRepository.findByRentStimeBetween(start, end).stream()
-			.map(rent -> RentDashboardDto.from(rent))
+		return dashRentRepository.findRentsOnDate(start, end).stream()
+			.map(RentDashboardDto::from)
 			.sorted(Comparator.comparing(RentDashboardDto::rentStime))
 			.toList();
 	}

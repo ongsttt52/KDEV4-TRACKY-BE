@@ -95,6 +95,8 @@ public class DashBoardService {
 	public Map<String, Integer> getGeoData() {
 		List<GpsHistoryEntity> gpsList = dashGpsHistoryRepository.findLatestGpsByMdn();
 
+		log.info("gpsList: {} ", gpsList);
+
 		Map<String, Integer> provinceCountMap = new HashMap<>();
 
 		for (GpsHistoryEntity gps : gpsList) {
@@ -106,6 +108,7 @@ public class DashBoardService {
 
 			provinceCountMap.put(province, provinceCountMap.getOrDefault(province, 0) + 1);
 		}
+		log.info("provinceCountMap: {}", provinceCountMap);
 		return provinceCountMap;
 	}
 }
