@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.DriveEntity;
 import kernel360.trackycore.core.common.entity.LocationEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +37,6 @@ public class CarOnOffRequest {
 	public LocationEntity toLocationEntity() {
 
 		return LocationEntity.create(
-			"시작 위치", // 이거 구해야하나? 프론트에서 하는거지?
 			this.lon,
 			this.lat);
 	}

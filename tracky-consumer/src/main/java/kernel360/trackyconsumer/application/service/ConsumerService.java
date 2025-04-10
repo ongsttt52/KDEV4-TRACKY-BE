@@ -68,14 +68,11 @@ public class ConsumerService {
 
 		String mdn = carOnOffRequest.getMdn();
 		CarEntity car = carEntityRepository.findByMdn(mdn);
-		log.info("Car 엔티티: {}", car.toString());
 
 		RentEntity rent = rentEntityRepository.findMyCarAndTime(car, carOnOffRequest.getOnTime());
-		log.info("Rent 엔티티: {}", rent.toString());
 
 		DriveEntity drive = DriveEntity.create(car, rent, location,
 			carOnOffRequest.getOnTime());
-		log.info("Drive 엔티티: {}", drive.toString());
 
 		driveEntityRepository.save(drive);
 	}
