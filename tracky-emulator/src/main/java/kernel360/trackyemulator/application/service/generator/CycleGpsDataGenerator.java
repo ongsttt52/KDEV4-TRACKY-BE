@@ -41,7 +41,7 @@ public class CycleGpsDataGenerator {
 	private int adjustSpeed(int currentSpeed) {
 		int delta = ThreadLocalRandom.current().nextInt(-5, 6);
 		int newSpeed = currentSpeed + delta;
-		return Math.max(10, Math.min(newSpeed, 130));
+		return Math.max(40, Math.min(newSpeed, 130));
 	}
 
 	//랜덤 방향 - 현재 각도에서 ±10도 범위 내에서 변화
