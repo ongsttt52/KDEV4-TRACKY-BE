@@ -16,8 +16,8 @@ public class ProvinceMatcher {
 		this.loader = loader;
 	}
 
-	public String findProvince(double longitude, double latitude) {
-		Point point = new GeometryFactory().createPoint(new Coordinate(longitude, latitude));
+	public String findProvince(double lon, double lat) {
+		Point point = new GeometryFactory().createPoint(new Coordinate(lon, lat));
 		for (ProvincePolygon province : loader.getProvincePolygons()) {
 			if (province.getGeometry().contains(point)) {
 				return province.getName();
