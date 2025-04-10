@@ -1,5 +1,6 @@
 package kernel360.trackyweb.drivehistory.application;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,7 +32,10 @@ public class DriveHistoryService {
 
 	public List<RentDriveHistory> getAllRentHistories(String rentUuid) {
 		// 기본 렌트 정보 (rentUuid, renterName, mdn, rentStime, rentEtime) 조회
-		List<RentDriveHistory> rents = rentHistoryRepository.findAllRentHistories();
+		List<RentDriveHistory> rents = rentHistoryRepository.findAllRentHistories().stream()
+			.sorted(Comparator.comparing(RentDriveHistory::rentStime).reversed())
+			.limit(10)
+			.collect(Collectors.toList());
 
 		if (rentUuid != null && !rentUuid.isEmpty()) {
 			rents = rents.stream()
@@ -47,9 +51,9 @@ public class DriveHistoryService {
 				// drive 리스트를 drivelistDto로 변환
 				List<RentDriveHistory.DrivelistDto> driveList = drives.stream()
 					.map(drive -> {
-						Optional<GpsHistoryEntity> onGps = gpsHistoryRepository.findFirstByDriveIdOrderByDriveSeqAsc(
+						Optional<GpsHistoryEntity> onGps = gpsHistoryRepository.findFirstGpsByDriveId(
 							drive.getId());
-						Optional<GpsHistoryEntity> offGps = gpsHistoryRepository.findFirstByDriveIdOrderByDriveSeqDesc(
+						Optional<GpsHistoryEntity> offGps = gpsHistoryRepository.findLastGpsByDriveId(
 							drive.getId());
 
 						return new RentDriveHistory.DrivelistDto(
@@ -82,9 +86,9 @@ public class DriveHistoryService {
 		DriveEntity drive = driveHistoryRepository.findById(id)
 			.orElseThrow(() -> RentException.notFound());
 
-		Optional<GpsHistoryEntity> onGpsOpt = gpsHistoryRepository.findFirstByDriveIdOrderByDriveSeqAsc(
+		Optional<GpsHistoryEntity> onGpsOpt = gpsHistoryRepository.findFirstGpsByDriveId(
 			drive.getId());
-		Optional<GpsHistoryEntity> offGpsOpt = gpsHistoryRepository.findFirstByDriveIdOrderByDriveSeqDesc(
+		Optional<GpsHistoryEntity> offGpsOpt = gpsHistoryRepository.findLastGpsByDriveId(
 			drive.getId());
 
 		int onLat = onGpsOpt.map(GpsHistoryEntity::getLat).orElse(0);
@@ -125,9 +129,9 @@ public class DriveHistoryService {
 		List<DriveEntity> drives = driveHistoryRepository.findAllByCar_Mdn(mdn);
 		List<CarDriveHistory> results = drives.stream()
 			.map(drive -> {
-				Optional<GpsHistoryEntity> onGpsOpt = gpsHistoryRepository.findFirstByDriveIdOrderByDriveSeqAsc(
+				Optional<GpsHistoryEntity> onGpsOpt = gpsHistoryRepository.findFirstGpsByDriveId(
 					drive.getId());
-				Optional<GpsHistoryEntity> offGpsOpt = gpsHistoryRepository.findFirstByDriveIdOrderByDriveSeqDesc(
+				Optional<GpsHistoryEntity> offGpsOpt = gpsHistoryRepository.findLastGpsByDriveId(
 					drive.getId());
 
 				int onLat = onGpsOpt.map(GpsHistoryEntity::getLat).orElse(0);
