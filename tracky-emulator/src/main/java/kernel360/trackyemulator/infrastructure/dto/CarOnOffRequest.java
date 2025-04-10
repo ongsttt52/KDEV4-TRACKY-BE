@@ -1,11 +1,11 @@
 package kernel360.trackyemulator.infrastructure.dto;
 
-import kernel360.trackyemulator.domain.EmulatorInstance;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import kernel360.trackyemulator.domain.EmulatorInstance;
+import lombok.Getter;
 
 @Getter
 public class CarOnOffRequest {
@@ -82,7 +82,7 @@ public class CarOnOffRequest {
 			"A",
 			car.getCycleLastLat(),
 			car.getCycleLastLon(),
-			car.getCycleLastAng(),
+			car.getAng(),
 			car.getCycleLastSpeed(),
 			car.getSum()
 		);

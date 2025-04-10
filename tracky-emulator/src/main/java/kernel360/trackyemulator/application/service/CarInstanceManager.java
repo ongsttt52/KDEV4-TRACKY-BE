@@ -94,17 +94,16 @@ public class CarInstanceManager {
 		for (EmulatorInstance instance : instances) {
 			instance.setCarOffTime(LocalDateTime.now());
 
-			ApiResponse response = stopRequestClient.sendCarStop(instance);
+			cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
+
+			ApiResponse response = stopRequestClient.sendCarStop(instance);    //시동OFF 데이터 전송
 			log.info("시동 off response : {}", response.getRstMsg());
 
 			result.put(instance.getMdn(), response.getRstMsg());
 
-			cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
 			stoppedMdnSet.add(response.getMdn());
 		}
-
 		removeStoppedInstances(stoppedMdnSet); // 리스트에서 삭제
-
 		return result;
 	}
 

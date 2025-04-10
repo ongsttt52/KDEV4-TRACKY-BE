@@ -1,10 +1,11 @@
 package kernel360.trackyemulator.domain;
 
-import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
-import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
+import lombok.Getter;
 
 @Getter
 public class EmulatorInstance {
@@ -23,7 +24,7 @@ public class EmulatorInstance {
 	private int cycleLastLat;    // 60초 주기 데이터 중 마지막 60번째 GPS 위도
 	private int cycleLastLon;    // 60초 주기 데이터 중 마지막 60번째 GPS 경도
 	private int cycleLastSpeed;    //60초 주기 데이터 중 마지막 속도
-	private int cycleLastAng;        //60초 주기 데이터 중 마지막 방향
+	private int ang;        //방향
 
 	private final LocalDateTime carOnTime;
 	private LocalDateTime carOffTime;
@@ -31,7 +32,7 @@ public class EmulatorInstance {
 	private final List<CycleGpsRequest> cycleBuffer = new ArrayList<>();
 
 	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd, int cycleLastLat,
-		int cycleLastLon, LocalDateTime carOnTime) {
+		int cycleLastLon, LocalDateTime carOnTime, int ang) {
 		this.mdn = mdn;
 		this.tid = tid;
 		this.mid = mid;
@@ -42,11 +43,12 @@ public class EmulatorInstance {
 		this.cycleLastLat = cycleLastLat;
 		this.cycleLastLon = cycleLastLon;
 		this.carOnTime = carOnTime;
+		this.ang = ang;
 	}
 
 	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd,
-		int cycleLastLat, int cycleLastLon, LocalDateTime carOnTime) {
-		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, cycleLastLat, cycleLastLon, carOnTime);
+		int cycleLastLat, int cycleLastLon, LocalDateTime carOnTime, int ang) {
+		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, cycleLastLat, cycleLastLon, carOnTime, ang);
 	}
 
 	//토큰 세팅
@@ -59,17 +61,11 @@ public class EmulatorInstance {
 	}
 
 	// 주기 데이터 정보 & 누적 거리 한번에 업데이트
-	public void updateCycleInfo(int lat, int lon, int speed, int ang, double distance) {
+	public void updateCycleInfo(int lat, int lon, int speed, double distance) {
 		this.sum += distance;
 		this.cycleLastLat = lat;
 		this.cycleLastLon = lon;
 		this.cycleLastSpeed = speed;
-		this.cycleLastAng = ang;
-	}
-
-	public void setInitLocation(int lat, int lon) {
-		this.cycleLastLon = lon;
-		this.cycleLastLat = lat;
 	}
 
 	public void addCycleData(CycleGpsRequest data) {
