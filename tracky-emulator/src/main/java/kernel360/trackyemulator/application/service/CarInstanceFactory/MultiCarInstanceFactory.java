@@ -1,7 +1,11 @@
 package kernel360.trackyemulator.application.service.CarInstanceFactory;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -55,5 +59,9 @@ public class MultiCarInstanceFactory {
 				return mdn;
 			}
 		}
+	}
+
+	public void resetUsedMdns() {
+		usedMdns.clear();
 	}
 }

@@ -1,18 +1,23 @@
 package kernel360.trackyemulator.application.service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
 import kernel360.trackyemulator.application.service.CarInstanceFactory.MultiCarInstanceFactory;
-import kernel360.trackyemulator.application.service.client.MdnListRequestClient;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import kernel360.trackyemulator.application.service.CarInstanceFactory.SingleCarInstanceFactory;
+import kernel360.trackyemulator.application.service.client.MdnListRequestClient;
 import kernel360.trackyemulator.application.service.client.StartRequestClient;
 import kernel360.trackyemulator.application.service.client.StopRequestClient;
 import kernel360.trackyemulator.application.service.client.TokenRequestClient;
 import kernel360.trackyemulator.domain.EmulatorInstance;
+import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +39,7 @@ public class CarInstanceManager {
 	private List<String> mdnList;
 
 	//현재 생성 가능한 에뮬레이터 개수 받아옴
-	public int getAvailableEmulatorCount(){
+	public int getAvailableEmulatorCount() {
 		mdnList = mdnListRequestClient.getMdnList();
 
 		return mdnList.size();
@@ -109,4 +114,10 @@ public class CarInstanceManager {
 		stoppedMdns.forEach(mdn -> log.info("{} 인스턴스 삭제 완료", mdn));
 	}
 
+	//에뮬레이터 인스턴스 모두 삭제(reset)
+	public void resetEmulator() {
+		instances.clear();
+		multiCarInstanceFactory.resetUsedMdns();
+		log.info("모든 인스턴스를 초기화했습니다.");
+	}
 }
