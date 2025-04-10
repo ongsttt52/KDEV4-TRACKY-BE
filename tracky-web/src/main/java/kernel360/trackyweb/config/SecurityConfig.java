@@ -47,6 +47,7 @@ public class SecurityConfig {
 				.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
 				.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
 				.requestMatchers("/events/**").permitAll() // sse 관련
+				.requestMatchers("/actuator/**").permitAll() // ALB HealthCheck 허용
 			)
 			.headers(headers -> headers.frameOptions(frame -> frame.disable()))
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)

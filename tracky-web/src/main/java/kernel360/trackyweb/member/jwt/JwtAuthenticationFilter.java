@@ -41,6 +41,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
+		// ALB HealthCheck 허용
+		if (request.getRequestURI().startsWith("/actuator")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		String token = resolveToken(request);
 
 		if (token != null && jwtTokenProvider.validateToken(token)) {
