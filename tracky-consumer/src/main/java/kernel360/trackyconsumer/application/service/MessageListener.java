@@ -20,21 +20,28 @@ public class MessageListener {
 	@RabbitListener(queues = RabbitMQConfig.ONOFF_QUEUE_NAME)
 	public void receiveCarOnOffMessage(@Payload CarOnOffRequest message,
 		@Header("amqp_receivedRoutingKey") String routingKey) {
-
 		log.info("메시지 수신: {}", message.toString());
-		switch (routingKey) {
-			case "on":
-				consumerService.processOnMessage(message);
-				break;
-			case "off":
-				consumerService.processOffMessage(message);
-				break;
+		try {
+			switch (routingKey) {
+				case "on":
+					consumerService.processOnMessage(message);
+					break;
+				case "off":
+					consumerService.processOffMessage(message);
+					break;
+			}
+		} catch (Exception e) {
+			log.error("Error processing message: {}", e.getMessage());
 		}
 	}
 
 	// GPS 정보 처리 큐
 	@RabbitListener(queues = RabbitMQConfig.GPS_QUEUE_NAME)
 	public void receiveCarMessage(GpsHistoryMessage message) {
-		consumerService.receiveCycleInfo(message);
+		try {
+			consumerService.receiveCycleInfo(message);
+		} catch (Exception e) {
+			log.error("Error processing message: {}", e.getMessage());
+		}
 	}
 }
