@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			// logger.info("Authentication set for memberId: {}", memberId);
 		} else {
-			logger.warn("JWT token is missing or invalid");
+			// logger.warn("JWT token is missing or invalid");
 		}
 
 		filterChain.doFilter(request, response);
