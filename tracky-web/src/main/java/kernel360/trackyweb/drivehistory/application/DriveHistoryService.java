@@ -116,6 +116,8 @@ public class DriveHistoryService {
 			rent.getPurpose(),
 			drive.getDriveOnTime(),
 			drive.getDriveOffTime(),
+			rent.getRentStime(),
+			rent.getRentEtime(),
 			gpsDataList
 		);
 	}

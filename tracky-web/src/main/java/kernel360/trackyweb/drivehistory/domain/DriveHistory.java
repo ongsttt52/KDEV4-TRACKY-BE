@@ -18,6 +18,8 @@ public record DriveHistory(
 	String purpose,
 	LocalDateTime driveOnTime,
 	LocalDateTime driveOffTime,
+	LocalDateTime rentStime,
+	LocalDateTime rentEtime,
 	List<GpsData> gpsDataList
 ) {
 	public static DriveHistory create(
@@ -35,6 +37,8 @@ public record DriveHistory(
 		String purpose,
 		LocalDateTime driveOnTime,
 		LocalDateTime driveOffTime,
+		LocalDateTime rentStime,
+		LocalDateTime rentEtime,
 		List<GpsData> gpsDataList
 	) {
 		return new DriveHistory(
@@ -52,6 +56,8 @@ public record DriveHistory(
 			purpose,
 			driveOnTime,
 			driveOffTime,
+			rentStime,
+			rentEtime,
 			gpsDataList
 		);
 	}
