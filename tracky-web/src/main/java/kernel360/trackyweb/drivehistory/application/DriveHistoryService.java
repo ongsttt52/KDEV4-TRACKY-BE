@@ -31,17 +31,13 @@ public class DriveHistoryService {
 	private final GpsHistoryRepository gpsHistoryRepository;
 
 	public List<RentDriveHistory> getAllRentHistories(String rentUuid) {
-		// 기본 렌트 정보 (rentUuid, renterName, mdn, rentStime, rentEtime) 조회
-		List<RentDriveHistory> rents = rentHistoryRepository.findAllRentHistories().stream()
+		// rentUuid가 null이거나 빈 문자열이면 전체 조회, 아니면 특정 UUID 검색
+		List<RentDriveHistory> rents = rentHistoryRepository.findRentHistoriesByRentUuid(
+				(rentUuid == null || rentUuid.isEmpty()) ? null : rentUuid
+			).stream()
 			.sorted(Comparator.comparing(RentDriveHistory::rentStime).reversed())
 			.limit(10)
 			.collect(Collectors.toList());
-
-		if (rentUuid != null && !rentUuid.isEmpty()) {
-			rents = rents.stream()
-				.filter(r -> r.rentUuid().equals(rentUuid))
-				.collect(Collectors.toList());
-		}
 
 		return rents.stream()
 			.map(rentDto -> {
@@ -51,10 +47,8 @@ public class DriveHistoryService {
 				// drive 리스트를 drivelistDto로 변환
 				List<RentDriveHistory.DrivelistDto> driveList = drives.stream()
 					.map(drive -> {
-						Optional<GpsHistoryEntity> onGps = gpsHistoryRepository.findFirstGpsByDriveId(
-							drive.getId());
-						Optional<GpsHistoryEntity> offGps = gpsHistoryRepository.findLastGpsByDriveId(
-							drive.getId());
+						Optional<GpsHistoryEntity> onGps = gpsHistoryRepository.findFirstGpsByDriveId(drive.getId());
+						Optional<GpsHistoryEntity> offGps = gpsHistoryRepository.findLastGpsByDriveId(drive.getId());
 
 						return new RentDriveHistory.DrivelistDto(
 							drive.getId(),
@@ -69,7 +63,7 @@ public class DriveHistoryService {
 					})
 					.collect(Collectors.toList());
 
-				// rent + drive 요약 리스트를 포함한 DTO 새로 생성해서 리턴
+				// rent + drive 요약 리스트를 포함한 DTO 리턴
 				return new RentDriveHistory(
 					rentDto.rentUuid(),
 					rentDto.renterName(),
