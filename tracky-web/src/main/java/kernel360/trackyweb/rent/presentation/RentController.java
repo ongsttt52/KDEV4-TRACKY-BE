@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackyweb.rent.application.service.RentService;
+import kernel360.trackyweb.rent.application.RentService;
 import kernel360.trackyweb.rent.presentation.dto.RentRequest;
 import kernel360.trackyweb.rent.presentation.dto.RentResponse;
 import lombok.RequiredArgsConstructor;

@@ -15,9 +15,9 @@ import kernel360.trackyweb.drivehistory.domain.CarDriveHistory;
 import kernel360.trackyweb.drivehistory.domain.DriveHistory;
 import kernel360.trackyweb.drivehistory.domain.GpsData;
 import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
-import kernel360.trackyweb.drivehistory.infrastructure.repository.DriveHistoryRepository;
-import kernel360.trackyweb.drivehistory.infrastructure.repository.GpsHistoryRepository;
-import kernel360.trackyweb.drivehistory.infrastructure.repository.RentHistoryRepository;
+import kernel360.trackyweb.drivehistory.infrastructure.repo.DriveHistoryRepository;
+import kernel360.trackyweb.drivehistory.infrastructure.repo.GpsHistoryRepository;
+import kernel360.trackyweb.drivehistory.infrastructure.repo.RentHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

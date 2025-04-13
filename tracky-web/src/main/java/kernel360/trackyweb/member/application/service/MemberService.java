@@ -1,11 +1,11 @@
 package kernel360.trackyweb.member.application.service;
 
-import kernel360.trackyweb.member.infrastructure.entity.MemberEntity;
-import kernel360.trackyweb.member.infrastructure.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import kernel360.trackyweb.member.domain.entity.MemberEntity;
+import kernel360.trackyweb.member.infrastructure.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

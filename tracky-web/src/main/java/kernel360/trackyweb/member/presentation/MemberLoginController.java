@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import kernel360.trackyweb.member.application.dto.LoginRequest;
 import kernel360.trackyweb.member.application.dto.LoginResponse;
 import kernel360.trackyweb.member.application.service.MemberService;
-import kernel360.trackyweb.member.infrastructure.entity.MemberEntity;
-import kernel360.trackyweb.member.jwt.JwtTokenProvider;
+import kernel360.trackyweb.member.domain.entity.MemberEntity;
+import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
