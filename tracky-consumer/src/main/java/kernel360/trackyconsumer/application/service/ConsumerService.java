@@ -34,7 +34,7 @@ public class ConsumerService {
 	private final RentEntityRepository rentEntityRepository;
 	private final CarEntityRepository carEntityRepository;
 
-	@Async("taskExecutor")
+	// @Async("taskExecutor")
 	@Transactional
 	public void receiveCycleInfo(GpsHistoryMessage request) {
 
