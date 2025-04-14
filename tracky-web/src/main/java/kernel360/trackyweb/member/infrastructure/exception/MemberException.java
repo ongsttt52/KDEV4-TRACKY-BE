@@ -9,20 +9,8 @@ public class MemberException extends GlobalException {
 		super(errorCode);
 	}
 
-	public static MemberException notFound() {
-		return new MemberException(ErrorCode.MEMBER_NOT_FOUND);
-	}
-
-	public static MemberException wrongPwd() {
-		return new MemberException(ErrorCode.MEMBER_WRONG_PWD);
-	}
-
-	public static MemberException noJwtToken() {
-		return new MemberException(ErrorCode.MEMBER_NO_JWT_TOKEN);
-	}
-
-	public static MemberException notJwtValid() {
-		return new MemberException(ErrorCode.MEMBER_JWT_NOT_VALID);
+	public static MemberException sendError(ErrorCode errorCode) {
+		return new MemberException(errorCode);
 	}
 }
 

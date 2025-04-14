@@ -51,7 +51,7 @@ public class CarController implements CarApiDocs {
 		return carService.searchOneDetailByMdn(mdn);
 	}
 
-	@PostMapping("/")
+	@PostMapping("")
 	public ApiResponse<CarDetailResponse> create(
 		@RequestBody CarCreateRequest carCreateRequest
 	) {

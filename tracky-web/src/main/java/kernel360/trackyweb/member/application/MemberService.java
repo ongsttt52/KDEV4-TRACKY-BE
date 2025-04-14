@@ -3,6 +3,7 @@ package kernel360.trackyweb.member.application;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import kernel360.trackycore.core.infrastructure.exception.ErrorCode;
 import kernel360.trackyweb.member.domain.entity.MemberEntity;
 import kernel360.trackyweb.member.infrastructure.exception.MemberException;
 import kernel360.trackyweb.member.infrastructure.repository.MemberRepository;
@@ -25,10 +26,10 @@ public class MemberService {
 	public MemberEntity authenticate(String memberId, String pwd) {
 		log.info("Login attempt for memberId: {}", memberId);
 		MemberEntity member = memberRepository.findByMemberId(memberId)
-			.orElseThrow(MemberException::notFound);
+			.orElseThrow(() -> MemberException.sendError(ErrorCode.MEMBER_NOT_FOUND));
 
 		if (!passwordEncoder.matches(pwd, member.getPwd())) {
-			throw MemberException.wrongPwd();
+			throw MemberException.sendError(ErrorCode.MEMBER_WRONG_PWD);
 		}
 
 		return member;

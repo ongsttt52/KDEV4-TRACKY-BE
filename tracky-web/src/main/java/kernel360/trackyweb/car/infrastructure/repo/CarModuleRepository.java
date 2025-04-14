@@ -3,16 +3,13 @@ package kernel360.trackyweb.car.infrastructure.repo;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.infrastructure.repository.CarRepository;
 
-@Repository
-public interface CarRepository extends JpaRepository<CarEntity, Long>, CarRepositoryCustom {
-
+public interface CarModuleRepository extends CarRepository {
 	/**
 	 * Mdn 으로 차량 검색 + 검색어를 포함한 모든 차량 + 결과값의 앞부분이 검색어와 일치할수록 앞으로 정렬
 	 * @param mdn 검색어
