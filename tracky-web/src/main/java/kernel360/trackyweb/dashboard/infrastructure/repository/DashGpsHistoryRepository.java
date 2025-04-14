@@ -13,22 +13,14 @@ import kernel360.trackycore.core.common.entity.GpsHistoryId;
 public interface DashGpsHistoryRepository extends JpaRepository<GpsHistoryEntity, GpsHistoryId> {
 
 	@Query(value = """
-		WITH latest_gps AS (
-		    SELECT 
-		        g.*, 
-		        d.mdn,
-		        ROW_NUMBER() OVER (PARTITION BY d.mdn ORDER BY g.created_at DESC) AS rn
-		    FROM gpshistory g
-		    JOIN drive d ON g.drive_id = d.id
-		    WHERE d.id IN (
-		        SELECT MAX(id)
-		        FROM drive
-		        GROUP BY mdn
-		    )
-		)
 		SELECT *
-		FROM latest_gps
-		WHERE rn = 1
+		FROM (
+		  SELECT g.*, d.mdn,
+		         ROW_NUMBER() OVER (PARTITION BY d.mdn ORDER BY g.created_at DESC) AS rn
+		  FROM gpshistory g
+		  JOIN drive d ON g.drive_id = d.id
+		) t
+		WHERE t.rn = 1
 		""", nativeQuery = true)
 	List<GpsHistoryEntity> findLatestGpsByMdn();
 
