@@ -1,6 +1,5 @@
 package kernel360.trackyemulator.application.service.generator;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
@@ -33,7 +32,7 @@ public class CycleGpsDataGenerator {
 		instance.updateCycleInfo(newLat, newLon, newSpeed, distance);
 
 		// 결과 생성
-		return CycleGpsRequest.of(LocalDateTime.now(), newLat, newLon, fixedAngle, newSpeed, instance.getSum());
+		return CycleGpsRequest.of(newLat, newLon, fixedAngle, newSpeed, instance.getSum());
 	}
 
 	private int adjustSpeed(int currentSpeed) {
