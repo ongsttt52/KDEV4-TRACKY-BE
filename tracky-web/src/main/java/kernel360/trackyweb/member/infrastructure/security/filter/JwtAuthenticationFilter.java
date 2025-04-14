@@ -14,6 +14,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kernel360.trackyweb.member.infrastructure.exception.MemberException;
 import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -21,7 +22,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final JwtTokenProvider jwtTokenProvider;
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-	// 생성자 주입
 	public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
@@ -37,27 +37,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		throws ServletException, IOException {
 
 		// SSE 요청은 토큰 없이 통과시킴
-		if (request.getRequestURI().startsWith("/events")) {
+		if (checkSseEvent(request)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
 		// ALB HealthCheck 허용
-		if (request.getRequestURI().startsWith("/actuator")) {
+		if (checkAlbHealthCheck(request)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
 		String token = resolveToken(request);
 
-		if (token != null && jwtTokenProvider.validateToken(token)) {
-
+		if (isValidToken(token)) {
 			String memberId = jwtTokenProvider.getMemberId(token);
-
 			String role = jwtTokenProvider.getRole(token).toUpperCase();
 			String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
 
-			// 추출한 값을 GrantedAuthority로 변환
 			UsernamePasswordAuthenticationToken authentication =
 				new UsernamePasswordAuthenticationToken(
 					memberId,
@@ -65,14 +62,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 					Collections.singletonList(new SimpleGrantedAuthority(authority))
 				);
 
-			// SecurityContext에 Authentication 객체를 설정합니다.
+			// SecurityContext에 Authentication 객체를 설정
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-			// logger.info("Authentication set for memberId: {}", memberId);
 		} else {
-			// logger.warn("JWT token is missing or invalid");
+			throw MemberException.notJwtValid();
 		}
-
 		filterChain.doFilter(request, response);
 	}
 
@@ -84,9 +78,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	 */
 	private String resolveToken(HttpServletRequest request) {
 		String bearer = request.getHeader("Authorization");
-		if (bearer != null && bearer.startsWith("Bearer ")) {
+
+		if (isValidBearer(bearer)) {
 			return bearer.substring(7);
+		} else {
+			return null;
 		}
-		return null;
 	}
+
+	private boolean isValidBearer(String bearer) {
+		return bearer != null && bearer.startsWith("Bearer ");
+	}
+
+	private boolean isValidToken(String token) {
+		return token != null && jwtTokenProvider.validateToken(token);
+	}
+
+	private boolean checkSseEvent(HttpServletRequest request) {
+		return request.getRequestURI().startsWith("/events");
+	}
+
+	private boolean checkAlbHealthCheck(HttpServletRequest request) {
+		return request.getRequestURI().startsWith("/actuator");
+	}
+
 }
