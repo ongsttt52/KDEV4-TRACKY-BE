@@ -16,15 +16,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kernel360.trackyweb.member.infrastructure.exception.MemberException;
 import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-
-	public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-		this.jwtTokenProvider = jwtTokenProvider;
-	}
 
 	/**
 	 * 요청마다 실행되며, Authorization 헤더에서 JWT 토큰을 추출해 유효성을 검사.

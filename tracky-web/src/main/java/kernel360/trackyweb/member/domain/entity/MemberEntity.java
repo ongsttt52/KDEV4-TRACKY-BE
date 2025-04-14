@@ -35,9 +35,6 @@ public class MemberEntity extends DateBaseEntity {
 	@JoinColumn(name = "biz_id")
 	private BizEntity bizId;
 
-/*	@Column(name = "biz_id")
-	private Long bizId;*/
-
 	@Column(name = "member_id")
 	private String memberId;
 

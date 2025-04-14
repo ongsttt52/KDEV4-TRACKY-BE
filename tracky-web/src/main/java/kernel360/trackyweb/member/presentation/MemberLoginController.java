@@ -23,10 +23,10 @@ public class MemberLoginController {
 	@PostMapping("/login")
 	public ApiResponse<String> login(@RequestBody LoginRequest request) {
 		// DB에서 회원 조회 및 비밀번호 검증 (비밀번호 불일치, 존재하지 않는 회원일 경우 예외 발생)
-		MemberEntity member = memberService.authenticate(request.getMemberId(), request.getPwd());
+		MemberEntity member = memberService.authenticate(request.memberId(), request.pwd());
 
 		String jwtToken = memberService.generateJwtToken(member);
-		log.info("Login success for memberId: {}", request.getMemberId());
+		log.info("Login success for memberId: {}", request.memberId());
 
 		return ApiResponse.success(jwtToken);
 	}
