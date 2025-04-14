@@ -1,12 +1,11 @@
-package kernel360.trackyweb.car.presentation.dto;
+package kernel360.trackyweb.car.application.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.common.entity.DeviceEntity;
 
-public record CarResponse(
+public record CarDetailResponse(
 	String mdn,
 	Long bizId,
 	String carType,
@@ -15,10 +14,11 @@ public record CarResponse(
 	String purpose,
 	String status,
 	double sum,
+	DeviceEntity deviceInfo,
 	LocalDateTime createdAt
 ) {
-	public static CarResponse from(CarEntity car) {
-		return new CarResponse(
+	public static CarDetailResponse from(CarEntity car) {
+		return new CarDetailResponse(
 			car.getMdn(),
 			car.getBiz().getId(),
 			car.getCarType(),
@@ -27,14 +27,8 @@ public record CarResponse(
 			car.getPurpose(),
 			car.getStatus(),
 			car.getSum(),
+			car.getDevice(),
 			car.getCreatedAt()
 		);
 	}
-
-	public static List<CarResponse> fromList(List<CarEntity> cars) {
-		return cars.stream()
-			.map(CarResponse::from)
-			.toList();
-	}
 }
-

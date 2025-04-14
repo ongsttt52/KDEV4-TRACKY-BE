@@ -18,11 +18,11 @@ import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
+import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
+import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
 import kernel360.trackyweb.car.infrastructure.repo.CarRepository;
 import kernel360.trackyweb.car.infrastructure.repo.DeviceRepository;
-import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
-import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
-import kernel360.trackyweb.car.presentation.dto.CarUpdateRequest;
 
 @ExtendWith(MockitoExtension.class)
 class CarServiceTest {

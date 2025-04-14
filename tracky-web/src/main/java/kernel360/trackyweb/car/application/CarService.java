@@ -15,14 +15,14 @@ import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.BizException;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
+import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
+import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
+import kernel360.trackyweb.car.application.dto.response.CarResponse;
+import kernel360.trackyweb.car.application.dto.response.CarSseEvent;
 import kernel360.trackyweb.car.infrastructure.repo.CarBizRepository;
 import kernel360.trackyweb.car.infrastructure.repo.CarRepository;
 import kernel360.trackyweb.car.infrastructure.repo.DeviceRepository;
-import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
-import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
-import kernel360.trackyweb.car.presentation.dto.CarResponse;
-import kernel360.trackyweb.car.presentation.dto.CarUpdateRequest;
-import kernel360.trackyweb.car.presentation.mapper.CarSseEvent;
 import kernel360.trackyweb.emitter.EventEmitterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +82,7 @@ public class CarService {
 	@Transactional(readOnly = true)
 	public ApiResponse<CarResponse> searchOneByMdn(String mdn) {
 		CarEntity car = carRepository.findByMdn(mdn)
-			.orElseThrow(() -> CarException.notFound());
+			.orElseThrow(CarException::notFound);
 		return ApiResponse.success(CarResponse.from(car));
 	}
 
@@ -94,7 +94,7 @@ public class CarService {
 	@Transactional(readOnly = true)
 	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(String mdn) {
 		CarEntity car = carRepository.findDetailByMdn(mdn)
-			.orElseThrow(() -> CarException.notFound());
+			.orElseThrow(CarException::notFound);
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}
 
@@ -106,11 +106,11 @@ public class CarService {
 	@Transactional
 	public ApiResponse<CarDetailResponse> create(CarCreateRequest carCreateRequest) {
 		DeviceEntity device = deviceRepository.findById(1L)
-			.orElseThrow(() -> DeviceException.notFound());
+			.orElseThrow(DeviceException::notFound);
 
 		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
 		BizEntity biz = carBizRepository.findById(1L)
-			.orElseThrow(() -> BizException.notFound());
+			.orElseThrow(BizException::notFound);
 
 		CarEntity car = CarEntity.create(
 			carCreateRequest.mdn(), biz, device, carCreateRequest.carType(), carCreateRequest.carPlate(),

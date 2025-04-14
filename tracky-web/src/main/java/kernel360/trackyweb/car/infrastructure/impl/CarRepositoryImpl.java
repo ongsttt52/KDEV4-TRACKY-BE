@@ -26,33 +26,41 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 	@Override
 	public Page<CarEntity> searchByFilter(String mdn, String status, String purpose, Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-
 		CriteriaQuery<CarEntity> query = cb.createQuery(CarEntity.class);
 		Root<CarEntity> car = query.from(CarEntity.class);
-		List<Predicate> predicates = setPredicates(mdn, status, purpose, cb, car);
 
+		List<Predicate> predicates = setPredicates(mdn, status, purpose, cb, car);
 		query.where(cb.and(predicates.toArray(new Predicate[0])));
 
-		if (!pageable.getSort().isSorted()) {
-			query.orderBy(cb.desc(cb.selectCase()
-				.when(cb.isNotNull(car.get("updatedAt")), car.get("updatedAt"))
-				.otherwise(car.get("createdAt"))
+		// 정렬 처리
+		if (pageable == null || !pageable.getSort().isSorted()) {
+			query.orderBy(cb.desc(
+				cb.selectCase()
+					.when(cb.isNotNull(car.get("updatedAt")), car.get("updatedAt"))
+					.otherwise(car.get("createdAt"))
 			));
 		}
-		List<CarEntity> resultList = em.createQuery(query)
-			.setFirstResult((int)pageable.getOffset())
-			.setMaxResults(pageable.getPageSize())
-			.getResultList();
 
+		// 데이터 조회
+		List<CarEntity> resultList;
+		if (pageable != null) {
+			resultList = em.createQuery(query)
+				.setFirstResult((int)pageable.getOffset())
+				.setMaxResults(pageable.getPageSize())
+				.getResultList();
+		} else {
+			resultList = em.createQuery(query).getResultList();
+		}
+
+		// count 쿼리
 		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
 		Root<CarEntity> countRoot = countQuery.from(CarEntity.class);
 		List<Predicate> countPredicates = setPredicates(mdn, status, purpose, cb, countRoot);
-
 		countQuery.select(cb.count(countRoot))
 			.where(cb.and(countPredicates.toArray(new Predicate[0])));
 		Long total = em.createQuery(countQuery).getSingleResult();
 
-		return new PageImpl<>(resultList, pageable, total);
+		return new PageImpl<>(resultList, pageable != null ? pageable : Pageable.unpaged(), total);
 	}
 
 	private List<Predicate> setPredicates(String mdn, String status, String purpose, CriteriaBuilder cb,
@@ -69,4 +77,5 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 		}
 		return predicates;
 	}
+
 }

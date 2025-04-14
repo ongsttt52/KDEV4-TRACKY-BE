@@ -1,4 +1,4 @@
-package kernel360.trackyweb.car.presentation.mapper;
+package kernel360.trackyweb.car.application.dto.response;
 
 import java.time.LocalDateTime;
 

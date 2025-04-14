@@ -2,7 +2,6 @@ package kernel360.trackyweb.car.presentation;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -10,15 +9,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.car.application.CarService;
-import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
-import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
-import kernel360.trackyweb.car.presentation.dto.CarResponse;
-import kernel360.trackyweb.car.presentation.dto.CarUpdateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
+import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
+import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
+import kernel360.trackyweb.car.application.dto.response.CarResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,11 +29,6 @@ public class CarController implements CarApiDocs {
 
 	private final CarService carService;
 
-	@GetMapping("")
-	public ApiResponse<List<CarResponse>> getAll() {
-		return carService.getAll();
-	}
-
 	@GetMapping("/check/mdn/{mdn}")
 	public ApiResponse<Boolean> isMdnExist(
 		@PathVariable String mdn
@@ -44,37 +38,27 @@ public class CarController implements CarApiDocs {
 
 	@GetMapping("/search")
 	public ApiResponse<List<CarResponse>> searchByFilter(
-		@RequestParam(required = false) String mdn,
-		@RequestParam(required = false) String status,
-		@RequestParam(required = false) String purpose,
-		Pageable pageable
+		CarSearchByFilterRequest carSearchByFilterRequest
 	) {
-		return carService.searchByFilter(mdn, status, purpose, pageable);
+		return carService.searchByFilter(carSearchByFilterRequest.mdn(), carSearchByFilterRequest.status(),
+			carSearchByFilterRequest.purpose(), carSearchByFilterRequest.pageable());
 	}
 
-	@GetMapping("/search/{mdn}")
-	public ApiResponse<CarResponse> searchOneByMdn(
-		@PathVariable String mdn
-	) {
-		return carService.searchOneByMdn(mdn);
-	}
-
-	@GetMapping("/search/{mdn}/detail")
+	@GetMapping("/{mdn}")
 	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(
 		@PathVariable String mdn
 	) {
-		log.info("searchOneDetailByMdn : {}", mdn);
 		return carService.searchOneDetailByMdn(mdn);
 	}
 
-	@PostMapping("/create")
+	@PostMapping("/")
 	public ApiResponse<CarDetailResponse> create(
 		@RequestBody CarCreateRequest carCreateRequest
 	) {
 		return carService.create(carCreateRequest);
 	}
 
-	@PatchMapping("/update/{mdn}")
+	@PatchMapping("/{mdn}")
 	public ApiResponse<CarDetailResponse> update(
 		@PathVariable String mdn,
 		@RequestBody CarUpdateRequest carUpdateRequest
@@ -82,7 +66,7 @@ public class CarController implements CarApiDocs {
 		return carService.update(mdn, carUpdateRequest);
 	}
 
-	@DeleteMapping("/delete/{mdn}")
+	@DeleteMapping("/{mdn}")
 	public ApiResponse<String> delete(
 		@PathVariable String mdn
 	) {
