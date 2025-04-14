@@ -15,8 +15,8 @@ public class CycleGpsRequest {
 	private int spd;
 	private double sum;
 
-	private CycleGpsRequest(LocalDateTime oTime, String gcd, long lat, long lon, int ang, int spd, double sum) {
-		this.oTime = oTime;
+	private CycleGpsRequest(String gcd, long lat, long lon, int ang, int spd, double sum) {
+		this.oTime = LocalDateTime.now();
 		this.gcd = gcd;
 		this.lat = lat;
 		this.lon = lon;
@@ -25,9 +25,8 @@ public class CycleGpsRequest {
 		this.sum = sum;
 	}
 
-	public static CycleGpsRequest of(LocalDateTime oTime, long lat, long lon, int ang, int spd, double sum) {
+	public static CycleGpsRequest of(long lat, long lon, int ang, int spd, double sum) {
 		return new CycleGpsRequest(
-			oTime,
 			"A",
 			lat,
 			lon,
