@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.member.application.MemberService;
-import kernel360.trackyweb.member.application.dto.LoginRequest;
+import kernel360.trackyweb.member.application.dto.request.LoginRequest;
 import kernel360.trackyweb.member.domain.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class MemberLoginController {
+public class MemberController {
 
 	private final MemberService memberService;
 

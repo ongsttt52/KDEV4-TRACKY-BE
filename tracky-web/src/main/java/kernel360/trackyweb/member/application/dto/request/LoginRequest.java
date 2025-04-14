@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.application.dto;
+package kernel360.trackyweb.member.application.dto.request;
 
 public record LoginRequest(
 	String memberId,
