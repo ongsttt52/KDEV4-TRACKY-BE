@@ -15,15 +15,14 @@ import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.exception.BizException;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
 import kernel360.trackycore.core.infrastructure.exception.DeviceException;
-import kernel360.trackyweb.car.infrastructure.repo.BizRepository;
+import kernel360.trackyweb.car.infrastructure.repo.CarBizRepository;
 import kernel360.trackyweb.car.infrastructure.repo.CarRepository;
 import kernel360.trackyweb.car.infrastructure.repo.DeviceRepository;
 import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
 import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
 import kernel360.trackyweb.car.presentation.dto.CarResponse;
 import kernel360.trackyweb.car.presentation.dto.CarUpdateRequest;
-import kernel360.trackyweb.car.presentation.mapper.CarEvent;
-import kernel360.trackyweb.car.presentation.mapper.CarMapper;
+import kernel360.trackyweb.car.presentation.mapper.CarSseEvent;
 import kernel360.trackyweb.emitter.EventEmitterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +34,8 @@ public class CarService {
 
 	private final CarRepository carRepository;
 	private final DeviceRepository deviceRepository;
-	private final BizRepository bizRepository;
+	private final CarBizRepository carBizRepository;
 
-	// sse emitter
 	private final EventEmitterService eventEmitterService;
 
 	/**
@@ -96,7 +94,6 @@ public class CarService {
 	@Transactional(readOnly = true)
 	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(String mdn) {
 		CarEntity car = carRepository.findDetailByMdn(mdn)
-			// 천승준 - 공통 에러 처리 해봤어요
 			.orElseThrow(() -> CarException.notFound());
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}
@@ -111,21 +108,25 @@ public class CarService {
 		DeviceEntity device = deviceRepository.findById(1L)
 			.orElseThrow(() -> DeviceException.notFound());
 
-		BizEntity biz = bizRepository.findById(1L)
+		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
+		BizEntity biz = carBizRepository.findById(1L)
 			.orElseThrow(() -> BizException.notFound());
 
-		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
-		CarEntity car = CarMapper.createCar(carCreateRequest, device, biz);
+		CarEntity car = CarEntity.create(
+			carCreateRequest.mdn(), biz, device, carCreateRequest.carType(), carCreateRequest.carPlate(),
+			carCreateRequest.carYear(), carCreateRequest.purpose(), carCreateRequest.status(), carCreateRequest.sum()
+		);
 
 		if (carRepository.existsByMdn(carCreateRequest.mdn())) {
 			throw CarException.duplicated();
 		}
+
 		CarEntity savedCar = carRepository.save(car);
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
 
-		CarEvent carEvent = CarEvent.create("car_event", "create", "차량을 등록 하였습니다.");
-		eventEmitterService.sendEvent("car_event", carEvent);
+		CarSseEvent carSseEvent = CarSseEvent.create("car_event", "create", "차량을 등록 하였습니다.");
+		eventEmitterService.sendEvent("car_event", carSseEvent);
 
 		return ApiResponse.success(response);
 	}
@@ -141,7 +142,7 @@ public class CarService {
 		CarEntity car = carRepository.findDetailByMdn(mdn)
 			.orElseThrow(() -> CarException.notFound());
 
-		BizEntity biz = bizRepository.findById(1L)
+		BizEntity biz = carBizRepository.findById(1L)
 			.orElseThrow(() -> BizException.notFound());
 
 		// 항상 MDN 1인 디바이스 사용
@@ -149,14 +150,13 @@ public class CarService {
 			.orElseThrow(() -> DeviceException.notFound());
 
 		// update 할 객체 생성
-		CarMapper.updateCar(car, carUpdateRequest, device, biz);
-
-		log.info("업데이트 차량 : {}", car);
+		car.updateFrom(biz, device, carUpdateRequest.carType(), carUpdateRequest.carPlate(),
+			carUpdateRequest.carYear(), carUpdateRequest.purpose(), carUpdateRequest.status(), carUpdateRequest.sum());
 
 		CarEntity updatedCar = carRepository.save(car);
 
-		CarEvent carEvent = CarEvent.create("car_event", "update", "차량을 수정 하였습니다.");
-		eventEmitterService.sendEvent("car_event", carEvent);
+		CarSseEvent carSseEvent = CarSseEvent.create("car_event", "update", "차량을 수정 하였습니다.");
+		eventEmitterService.sendEvent("car_event", carSseEvent);
 
 		return ApiResponse.success(CarDetailResponse.from(updatedCar));
 	}
@@ -170,8 +170,8 @@ public class CarService {
 	public ApiResponse<String> delete(String mdn) {
 		carRepository.deleteByMdn(mdn);
 
-		CarEvent carEvent = CarEvent.create("car_event", "delete", "차량을 삭제 하였습니다.");
-		eventEmitterService.sendEvent("car_event", carEvent);
+		CarSseEvent carSseEvent = CarSseEvent.create("car_event", "delete", "차량을 삭제 하였습니다.");
+		eventEmitterService.sendEvent("car_event", carSseEvent);
 
 		return ApiResponse.success("삭제 완료");
 	}

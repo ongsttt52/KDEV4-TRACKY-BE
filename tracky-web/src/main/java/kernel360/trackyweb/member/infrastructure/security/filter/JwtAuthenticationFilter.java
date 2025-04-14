@@ -14,14 +14,15 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kernel360.trackyweb.member.infrastructure.exception.MemberException;
 import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
+import kernel360.trackyweb.member.infrastructure.security.validation.JwtValidation;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
+	private final JwtValidation jwtValidation;
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
 	/**
@@ -34,21 +35,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		FilterChain filterChain)
 		throws ServletException, IOException {
 
-		// SSE 요청은 토큰 없이 통과시킴
-		if (checkSseEvent(request)) {
-			filterChain.doFilter(request, response);
+		if (jwtValidation.checkSseEvent(request, response, filterChain)) {
 			return;
 		}
 
-		// ALB HealthCheck 허용
-		if (checkAlbHealthCheck(request)) {
-			filterChain.doFilter(request, response);
+		if (jwtValidation.checkAlbHealthCheck(request, response, filterChain)) {
 			return;
 		}
 
-		String token = resolveToken(request);
+		String token = jwtValidation.resolveToken(request);
 
-		if (isValidToken(token)) {
+		if (jwtValidation.isValidToken(token)) {
 			String memberId = jwtTokenProvider.getMemberId(token);
 			String role = jwtTokenProvider.getRole(token).toUpperCase();
 			String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
@@ -62,42 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			// SecurityContext에 Authentication 객체를 설정
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-		} else {
-			throw MemberException.notJwtValid();
 		}
+
 		filterChain.doFilter(request, response);
 	}
-
-	/**
-	 * HTTP Authorization 헤더에서 "Bearer " 접두어를 제거하고 토큰만 반환.
-	 *
-	 * @param request HTTP 요청 객체
-	 * @return JWT 토큰 문자열 또는 null
-	 */
-	private String resolveToken(HttpServletRequest request) {
-		String bearer = request.getHeader("Authorization");
-
-		if (isValidBearer(bearer)) {
-			return bearer.substring(7);
-		} else {
-			return null;
-		}
-	}
-
-	private boolean isValidBearer(String bearer) {
-		return bearer != null && bearer.startsWith("Bearer ");
-	}
-
-	private boolean isValidToken(String token) {
-		return token != null && jwtTokenProvider.validateToken(token);
-	}
-
-	private boolean checkSseEvent(HttpServletRequest request) {
-		return request.getRequestURI().startsWith("/events");
-	}
-
-	private boolean checkAlbHealthCheck(HttpServletRequest request) {
-		return request.getRequestURI().startsWith("/actuator");
-	}
-
 }

@@ -25,7 +25,7 @@ public class MemberService {
 	public MemberEntity authenticate(String memberId, String pwd) {
 		log.info("Login attempt for memberId: {}", memberId);
 		MemberEntity member = memberRepository.findByMemberId(memberId)
-			.orElseThrow(() -> MemberException.notFound());
+			.orElseThrow(MemberException::notFound);
 
 		if (!passwordEncoder.matches(pwd, member.getPwd())) {
 			throw MemberException.wrongPwd();

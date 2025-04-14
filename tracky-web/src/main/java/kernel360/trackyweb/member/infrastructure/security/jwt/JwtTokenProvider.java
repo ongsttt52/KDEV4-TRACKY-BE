@@ -13,9 +13,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import kernel360.trackyweb.member.infrastructure.exception.MemberException;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
 	@Value("${spring.jwt.secret}")
@@ -61,7 +62,7 @@ public class JwtTokenProvider {
 			parseClaims(token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
-			throw MemberException.notJwtValid();
+			return false;
 		}
 	}
 

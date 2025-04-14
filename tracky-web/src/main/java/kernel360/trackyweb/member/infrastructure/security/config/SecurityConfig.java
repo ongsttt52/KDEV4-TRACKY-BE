@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import kernel360.trackyweb.member.infrastructure.security.filter.JwtAuthenticationFilter;
 import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
+import kernel360.trackyweb.member.infrastructure.security.validation.JwtValidation;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -31,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtTokenProvider jwtTokenProvider;
+	private final JwtValidation jwtValidation;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -49,8 +52,9 @@ public class SecurityConfig {
 				.requestMatchers("/events/**").permitAll() // sse 관련
 				.requestMatchers("/actuator/**").permitAll() // ALB HealthCheck 허용
 			)
-			.headers(headers -> headers.frameOptions(frame -> frame.disable()))
-			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+			.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, jwtValidation),
+				UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}
 

@@ -30,12 +30,12 @@ public class CarController implements CarApiDocs {
 
 	private final CarService carService;
 
-	@GetMapping("/all")
+	@GetMapping("")
 	public ApiResponse<List<CarResponse>> getAll() {
 		return carService.getAll();
 	}
 
-	@GetMapping("/check-mdn/{mdn}")
+	@GetMapping("/check/mdn/{mdn}")
 	public ApiResponse<Boolean> isMdnExist(
 		@PathVariable String mdn
 	) {
