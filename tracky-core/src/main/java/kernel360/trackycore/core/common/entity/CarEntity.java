@@ -68,7 +68,7 @@ public class CarEntity extends DateBaseEntity {
 		return new CarEntity(mdn, biz, device, carType, carPlate, carYear, purpose, status, sum);
 	}
 
-	public void update(
+	public void updateFrom(
 		BizEntity biz,
 		DeviceEntity device,
 		String carType,
