@@ -40,15 +40,14 @@ public class CarController implements CarApiDocs {
 	public ApiResponse<List<CarResponse>> searchByFilter(
 		CarSearchByFilterRequest carSearchByFilterRequest
 	) {
-		return carService.searchByFilter(carSearchByFilterRequest.mdn(), carSearchByFilterRequest.status(),
-			carSearchByFilterRequest.purpose(), carSearchByFilterRequest.pageable());
+		return carService.searchByFilter(carSearchByFilterRequest);
 	}
 
 	@GetMapping("/{mdn}")
-	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(
+	public ApiResponse<CarDetailResponse> searchOneByMdn(
 		@PathVariable String mdn
 	) {
-		return carService.searchOneDetailByMdn(mdn);
+		return carService.searchOneByMdn(mdn);
 	}
 
 	@PostMapping("")

@@ -1,4 +1,4 @@
-package kernel360.trackyweb.car.domain.provider;
+package kernel360.trackycore.core.common;
 
 import org.springframework.stereotype.Component;
 

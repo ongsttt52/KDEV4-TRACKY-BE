@@ -1,4 +1,4 @@
-package kernel360.trackyweb.car.infrastructure.repo;
+package kernel360.trackyweb.car.infrastructure.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

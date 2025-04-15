@@ -24,7 +24,7 @@ public interface CarApiDocs {
 	ApiResponse<List<CarResponse>> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest);
 
 	@Operation(summary = "차량 MDN으로 상세 조회", description = "MDN 기준으로 차량 및 디바이스 상세 정보를 조회합니다.")
-	ApiResponse<CarDetailResponse> searchOneDetailByMdn(@PathVariable String mdn);
+	ApiResponse<CarDetailResponse> searchOneByMdn(@PathVariable String mdn);
 
 	@Operation(summary = "차량 신규 등록", description = "차량 신규 등록 API")
 	ApiResponse<CarDetailResponse> create(@RequestBody CarCreateRequest carCreateRequest);
