@@ -65,8 +65,8 @@ public class CarInstanceManager {
 			String token = tokenRequestClient.getToken(instance);
 			instance.setToken(token);
 
-			result.put(instance.getMdn(), "토큰 세팅 성공" + instance.getToken());
-			log.info("{} 토큰 세팅 완료", instance.getMdn());
+			result.put(instance.getEmulatorInfo().getMdn(), "토큰 세팅 성공" + instance.getToken());
+			log.info("{} 토큰 세팅 완료", instance.getEmulatorInfo().getMdn());
 		}
 		return result;
 	}
@@ -77,7 +77,7 @@ public class CarInstanceManager {
 
 		for (EmulatorInstance instance : instances) {
 			ApiResponse response = startRequestClient.sendCarStart(instance);
-			result.put(instance.getMdn(), response.getRstMsg());
+			result.put(instance.getEmulatorInfo().getMdn(), response.getRstMsg());
 
 			cycleDataManager.startSending(instance); // 스케줄 시작
 		}
@@ -99,7 +99,7 @@ public class CarInstanceManager {
 			ApiResponse response = stopRequestClient.sendCarStop(instance);    //시동OFF 데이터 전송
 			log.info("시동 off response : {}", response.getRstMsg());
 
-			result.put(instance.getMdn(), response.getRstMsg());
+			result.put(instance.getEmulatorInfo().getMdn(), response.getRstMsg());
 
 			stoppedMdnSet.add(response.getMdn());
 		}
@@ -109,7 +109,7 @@ public class CarInstanceManager {
 
 	//에뮬레이터 삭제
 	private void removeStoppedInstances(Set<String> stoppedMdns) {
-		instances.removeIf(instance -> stoppedMdns.contains(instance.getMdn()));
+		instances.removeIf(instance -> stoppedMdns.contains(instance.getEmulatorInfo().getMdn()));
 		stoppedMdns.forEach(mdn -> log.info("{} 인스턴스 삭제 완료", mdn));
 	}
 

@@ -4,18 +4,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
 import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import lombok.Getter;
 
 @Getter
 public class EmulatorInstance {
 
-	private final String mdn;    // 차량 식별 Key
-	private final String tid;    // 터미널 아이디 - 'A001'로 고정
-	private final String mid;    // 제조사 아이디 - CNSLink는 '6' 값 사용
-	private final String pv;     // 패킷 버전 - '5' 고정
-	private final String did;    // 디바이스 아이디 - GPS로만 운영함으로 '1'로 고정
-	private final String gcd;    // GPS 상태 - 'A' 고정
+	private final EmulatorInfo emulatorInfo;
 
 	private String token;  // 단말 인증 토큰
 
@@ -31,14 +27,9 @@ public class EmulatorInstance {
 
 	private final List<CycleGpsRequest> cycleBuffer = new ArrayList<>();
 
-	private EmulatorInstance(String mdn, String tid, String mid, String pv, String did, String gcd, int cycleLastLat,
-		int cycleLastLon, LocalDateTime carOnTime, int ang) {
-		this.mdn = mdn;
-		this.tid = tid;
-		this.mid = mid;
-		this.pv = pv;
-		this.did = did;
-		this.gcd = gcd;
+	private EmulatorInstance(EmulatorInfo emulatorInfo, int cycleLastLat, int cycleLastLon, LocalDateTime carOnTime,
+		int ang) {
+		this.emulatorInfo = emulatorInfo;
 		this.sum = 0;
 		this.cycleLastLat = cycleLastLat;
 		this.cycleLastLon = cycleLastLon;
@@ -46,9 +37,9 @@ public class EmulatorInstance {
 		this.ang = ang;
 	}
 
-	public static EmulatorInstance create(String mdn, String tid, String mid, String pv, String did, String gcd,
-		int cycleLastLat, int cycleLastLon, LocalDateTime carOnTime, int ang) {
-		return new EmulatorInstance(mdn, tid, mid, pv, did, gcd, cycleLastLat, cycleLastLon, carOnTime, ang);
+	public static EmulatorInstance create(EmulatorInfo emulatorInfo, int cycleLastLat, int cycleLastLon,
+		LocalDateTime carOnTime, int ang) {
+		return new EmulatorInstance(emulatorInfo, cycleLastLat, cycleLastLon, carOnTime, ang);
 	}
 
 	//토큰 세팅

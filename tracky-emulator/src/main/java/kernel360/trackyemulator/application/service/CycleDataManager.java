@@ -36,14 +36,14 @@ public class CycleDataManager {
 	public void startSending(EmulatorInstance instance) {
 		Runnable task = () -> handlePeriodicData(instance);
 		ScheduledFuture<?> future = executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
-		taskMap.put(instance.getMdn(), future);
+		taskMap.put(instance.getEmulatorInfo().getMdn(), future);
 	}
 
 	/**
 	 * 주기 데이터 생성 스케줄 종료 + 남은 데이터 전송
 	 */
 	public void stopSending(EmulatorInstance instance) {
-		String mdn = instance.getMdn();
+		String mdn = instance.getEmulatorInfo().getMdn();
 
 		Optional.ofNullable(taskMap.remove(mdn)).ifPresent(future -> {
 			future.cancel(true);
@@ -63,16 +63,17 @@ public class CycleDataManager {
 	private void handlePeriodicData(EmulatorInstance instance) {
 		CycleGpsRequest data = gpsDataGenerator.generate(instance);
 		instance.addCycleData(data);
-		log.info("{} → 1초 데이터 생성 완료 (버퍼: {}/{})", instance.getMdn(), instance.getCycleBuffer().size(), 60);
+		log.info("{} → 1초 데이터 생성 완료 (버퍼: {}/{})", instance.getEmulatorInfo().getMdn(), instance.getCycleBuffer().size(),
+			60);
 
 		if (instance.isBufferFull()) {
 			cycleRequestClient.sendCycleData(instance);
-			log.info("{} → 60초 데이터 전송 완료", instance.getMdn());
+			log.info("{} → 60초 데이터 전송 완료", instance.getEmulatorInfo().getMdn());
 			instance.clearBuffer();
 
 			// 뷰에 내려줄 정보
 			CycleLogResponse response = new CycleLogResponse(
-				instance.getMdn(),
+				instance.getEmulatorInfo().getMdn(),
 				instance.getCycleLastLat() / 1e6,
 				instance.getCycleLastLon() / 1e6,
 				instance.getCycleLastSpeed()

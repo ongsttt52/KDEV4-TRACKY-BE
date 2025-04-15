@@ -6,16 +6,13 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
 import lombok.Getter;
 
 @Getter
 public class CycleInfoRequest {
 
-	private String mdn;    // 차량 번호
-	private String tid;    // 터미널 아이디
-	private String mid;    // 제조사 아이디
-	private String pv;     // 패킷 버전
-	private String did;    // 디바이스 아이디
+	private EmulatorInfo emulatorInfo;
 
 	@JsonProperty("cCnt")
 	private final int cCnt;   // 주기 정보 개수
@@ -26,26 +23,16 @@ public class CycleInfoRequest {
 	@JsonProperty("cList")
 	private final List<CycleGpsRequest> cList;  // 주기정보 리스트
 
-	private CycleInfoRequest(String mdn, String tid, String mid, String pv, String did,
-		int cCnt, LocalDateTime oTime, List<CycleGpsRequest> cList) {
-		this.mdn = mdn;
-		this.tid = tid;
-		this.mid = mid;
-		this.pv = pv;
-		this.did = did;
+	private CycleInfoRequest(EmulatorInfo emulatorInfo, int cCnt, LocalDateTime oTime, List<CycleGpsRequest> cList) {
+		this.emulatorInfo = emulatorInfo;
 		this.cCnt = cCnt;
 		this.oTime = oTime;
 		this.cList = cList;
 	}
 
-	public static CycleInfoRequest of(String mdn, String tid, String mid, String pv, String did,
-		LocalDateTime oTime, List<CycleGpsRequest> cList) {
+	public static CycleInfoRequest of(EmulatorInfo emulatorInfo, LocalDateTime oTime, List<CycleGpsRequest> cList) {
 		return new CycleInfoRequest(
-			mdn,
-			tid,
-			mid,
-			pv,
-			did,
+			emulatorInfo,
 			cList.size(),
 			oTime,
 			cList

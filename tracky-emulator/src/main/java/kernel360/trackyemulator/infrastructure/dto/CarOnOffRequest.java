@@ -4,17 +4,14 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.Getter;
 
 @Getter
 public class CarOnOffRequest {
 
-	private String mdn;
-	private String tid;
-	private String mid;
-	private String pv;
-	private String did;
+	private EmulatorInfo emulatorInfo;
 
 	@JsonFormat(pattern = "yyyyMMddHHmm")
 	private LocalDateTime onTime;
@@ -28,14 +25,9 @@ public class CarOnOffRequest {
 	private int spd;
 	private double sum;
 
-	private CarOnOffRequest(String mdn, String tid, String mid, String pv, String did,
-		LocalDateTime onTime, LocalDateTime offTime,
-		String gcd, int lat, int lon, int ang, int spd, double sum) {
-		this.mdn = mdn;
-		this.tid = tid;
-		this.mid = mid;
-		this.pv = pv;
-		this.did = did;
+	private CarOnOffRequest(EmulatorInfo emulatorInfo, LocalDateTime onTime, LocalDateTime offTime, String gcd, int lat,
+		int lon, int ang, int spd, double sum) {
+		this.emulatorInfo = emulatorInfo;
 		this.onTime = onTime;
 		this.offTime = offTime;
 		this.gcd = gcd;
@@ -47,17 +39,13 @@ public class CarOnOffRequest {
 	}
 
 	/**
-	 * 시동 ON DTO 생성 (EmulatorInstance + Random 위치)
+	 * 시동 ON DTO 생성
 	 */
 	public static CarOnOffRequest ofOn(EmulatorInstance car) {
 		return new CarOnOffRequest(
-			car.getMdn(),
-			car.getTid(),
-			car.getMid(),
-			car.getPv(),
-			car.getDid(),
-			car.getCarOnTime(), // onTime
-			null,               // offTime
+			car.getEmulatorInfo(),
+			car.getCarOnTime(),
+			null,               // 시동 ON시 offTime은 null
 			"A",
 			car.getCycleLastLat(),
 			car.getCycleLastLon(),
@@ -72,13 +60,9 @@ public class CarOnOffRequest {
 	 */
 	public static CarOnOffRequest ofOff(EmulatorInstance car) {
 		return new CarOnOffRequest(
-			car.getMdn(),
-			car.getTid(),
-			car.getMid(),
-			car.getPv(),
-			car.getDid(),
-			car.getCarOnTime(),               // onTime
-			car.getCarOffTime(), // offTime
+			car.getEmulatorInfo(),
+			car.getCarOnTime(),
+			car.getCarOffTime(),
 			"A",
 			car.getCycleLastLat(),
 			car.getCycleLastLon(),
