@@ -12,8 +12,6 @@ public enum ErrorCode {
 	RENT_NOT_FOUND("RENT_001", "조회된 대여가 없습니다."),
 
 	MEMBER_NOT_FOUND("MEMBER_001", "존재하지 않은 회원입니다."),
-	MEMBER_NO_JWT_TOKEN("MEMBER_007", "JWT 토큰이 없습니다."),
-	MEMBER_JWT_NOT_VALID("MEMBER_444", "JWT 토큰이 유효하지 않습니다."),
 	MEMBER_WRONG_PWD("MEMBER_486", "비밀번호가 일치하지 않습니다.");
 
 	private final String code;

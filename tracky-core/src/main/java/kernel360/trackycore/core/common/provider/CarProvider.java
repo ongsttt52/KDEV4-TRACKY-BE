@@ -1,55 +1,29 @@
-package kernel360.trackycore.core.common;
+package kernel360.trackycore.core.common.provider;
+
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.sse.GlobalSseEvent;
-import kernel360.trackycore.core.common.sse.SseEvent;
-import kernel360.trackycore.core.infrastructure.exception.CarException;
-import kernel360.trackycore.core.infrastructure.exception.ErrorCode;
-import kernel360.trackyweb.car.infrastructure.repo.CarModuleRepository;
-import kernel360.trackyweb.emitter.EventEmitterService;
+import kernel360.trackycore.core.infrastructure.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class CarProvider {
 
-	private final CarModuleRepository carModuleRepository;
+	private final CarRepository carRepository;
 
-	private final GlobalSseEvent globalSseEvent;
-	private final EventEmitterService eventEmitterService;
-
-	public CarEntity getCar(String mdn) {
-		return carModuleRepository.findByMdn(mdn)
-			.orElseThrow(() -> CarException.sendError(ErrorCode.CAR_NOT_FOUND));
-	}
-
-	public CarEntity getCarDetail(String mdn) {
-		return carModuleRepository.findDetailByMdn(mdn)
-			.orElseThrow(() -> CarException.sendError(ErrorCode.CAR_NOT_FOUND));
-	}
-
-	public CarEntity updateCar(CarEntity car) {
-		CarEntity updatedCar = carModuleRepository.save(car);
-
-		GlobalSseEvent sseEvent = globalSseEvent.sendEvent(SseEvent.CAR_UPDATED);
-		eventEmitterService.sendEvent("car_event", sseEvent);
-		return updatedCar;
-	}
-
+	// save and update
 	public CarEntity saveCar(CarEntity car) {
-		CarEntity savedCar = carModuleRepository.save(car);
-
-		GlobalSseEvent sseEvent = globalSseEvent.sendEvent(SseEvent.CAR_CREATED);
-		eventEmitterService.sendEvent("car_event", sseEvent);
-		return savedCar;
+		return carRepository.save(car);
 	}
 
-	public void deleteCar(String mdn) {
-		carModuleRepository.deleteByMdn(mdn);
+	public Optional<CarEntity> findByMdn(String mdn) {
+		return carRepository.findByMdn(mdn);
+	}
 
-		GlobalSseEvent sseEvent = globalSseEvent.sendEvent(SseEvent.CAR_DELETED);
-		eventEmitterService.sendEvent("car_event", sseEvent);
+	public boolean existsByMdn(String mdn) {
+		return carRepository.existsByMdn(mdn);
 	}
 }

@@ -1,4 +1,4 @@
-package kernel360.trackyweb.car.infrastructure.repo;
+package kernel360.trackycore.core.infrastructure.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
