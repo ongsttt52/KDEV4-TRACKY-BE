@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 
 import kernel360.trackyemulator.application.service.CarInstanceFactory.MultiCarInstanceFactory;
 import kernel360.trackyemulator.application.service.CarInstanceFactory.SingleCarInstanceFactory;
-import kernel360.trackyemulator.application.service.client.MdnListRequestClient;
-import kernel360.trackyemulator.application.service.client.StartRequestClient;
-import kernel360.trackyemulator.application.service.client.StopRequestClient;
-import kernel360.trackyemulator.application.service.client.TokenRequestClient;
+import kernel360.trackyemulator.application.service.client.ControlClient;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 public class CarInstanceManager {
 
 	private final SingleCarInstanceFactory singleCarInstanceFactory;
-	private final TokenRequestClient tokenRequestClient;
-	private final StartRequestClient startRequestClient;
-	private final StopRequestClient stopRequestClient;
-	private final CycleDataManager cycleDataManager;
-	private final MdnListRequestClient mdnListRequestClient;
 	private final MultiCarInstanceFactory multiCarInstanceFactory;
+	private final CycleDataManager cycleDataManager;
+	private final ControlClient controlClient;
 
 	private List<EmulatorInstance> instances = new ArrayList<>();
 
@@ -40,7 +34,7 @@ public class CarInstanceManager {
 
 	//현재 생성 가능한 에뮬레이터 개수 받아옴
 	public int getAvailableEmulatorCount() {
-		mdnList = mdnListRequestClient.getMdnList();
+		mdnList = controlClient.getMdnList();
 
 		return mdnList.size();
 	}
@@ -62,7 +56,7 @@ public class CarInstanceManager {
 		Map<String, String> result = new LinkedHashMap<>(); // 순서 유지
 
 		for (EmulatorInstance instance : instances) {
-			String token = tokenRequestClient.getToken(instance);
+			String token = controlClient.getToken(instance);
 			instance.setToken(token);
 
 			result.put(instance.getEmulatorInfo().getMdn(), "토큰 세팅 성공" + instance.getToken());
@@ -76,7 +70,7 @@ public class CarInstanceManager {
 		Map<String, String> result = new LinkedHashMap<>();
 
 		for (EmulatorInstance instance : instances) {
-			ApiResponse response = startRequestClient.sendCarStart(instance);
+			ApiResponse response = controlClient.sendCarStart(instance);
 			result.put(instance.getEmulatorInfo().getMdn(), response.getRstMsg());
 
 			cycleDataManager.startSending(instance); // 스케줄 시작
@@ -96,7 +90,7 @@ public class CarInstanceManager {
 
 			cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
 
-			ApiResponse response = stopRequestClient.sendCarStop(instance);    //시동OFF 데이터 전송
+			ApiResponse response = controlClient.sendCarStop(instance);    //시동OFF 데이터 전송
 			log.info("시동 off response : {}", response.getRstMsg());
 
 			result.put(instance.getEmulatorInfo().getMdn(), response.getRstMsg());
