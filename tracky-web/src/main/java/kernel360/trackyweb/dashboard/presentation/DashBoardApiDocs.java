@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackyweb.dashboard.domain.RentDashboardDto;
 import kernel360.trackyweb.dashboard.domain.Statistics;
+import kernel360.trackyweb.dashboard.presentation.dto.RentDashboardDto;
 
 @Tag(name = "DashBoard Api", description = "대쉬보드 관련 API")
 public interface DashBoardApiDocs {

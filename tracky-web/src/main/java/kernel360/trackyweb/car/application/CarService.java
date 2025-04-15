@@ -12,18 +12,17 @@ import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
-import kernel360.trackycore.core.infrastructure.exception.BizException;
 import kernel360.trackycore.core.infrastructure.exception.CarException;
-import kernel360.trackycore.core.infrastructure.exception.DeviceException;
-import kernel360.trackyweb.car.application.mapper.CarEvent;
-import kernel360.trackyweb.car.application.mapper.CarMapper;
-import kernel360.trackyweb.car.infrastructure.repository.BizRepository;
-import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
-import kernel360.trackyweb.car.infrastructure.repository.DeviceRepository;
-import kernel360.trackyweb.car.presentation.dto.CarCreateRequest;
-import kernel360.trackyweb.car.presentation.dto.CarDetailResponse;
-import kernel360.trackyweb.car.presentation.dto.CarResponse;
-import kernel360.trackyweb.car.presentation.dto.CarUpdateRequest;
+import kernel360.trackycore.core.infrastructure.exception.ErrorCode;
+import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
+import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
+import kernel360.trackyweb.car.application.dto.response.CarResponse;
+import kernel360.trackyweb.car.domain.provider.BizProvider;
+import kernel360.trackyweb.car.domain.provider.CarProvider;
+import kernel360.trackyweb.car.domain.provider.DeviceProvider;
+import kernel360.trackyweb.car.infrastructure.repo.CarModuleRepository;
+import kernel360.trackyweb.car.infrastructure.repo.CarRepositoryCustom;
 import kernel360.trackyweb.emitter.EventEmitterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CarService {
 
-	private final CarRepository carRepository;
-	private final DeviceRepository deviceRepository;
-	private final BizRepository bizRepository;
+	private final CarModuleRepository carModuleRepository;
+	private final CarRepositoryCustom carRepositoryCustom;
 
-	// sse emitter
 	private final EventEmitterService eventEmitterService;
+
+	private final DeviceProvider deviceProvider;
+	private final BizProvider bizProvider;
+	private final CarProvider carProvider;
 
 	/**
 	 * 등록 차량 전체 조회
@@ -46,7 +47,7 @@ public class CarService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> getAll() {
-		return ApiResponse.success(CarResponse.fromList(carRepository.findAll()));
+		return ApiResponse.success(CarResponse.fromList(carModuleRepository.findAll()));
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class CarService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<Boolean> isMdnExist(String mdn) {
-		return ApiResponse.success(carRepository.existsByMdn(mdn));
+		return ApiResponse.success(carModuleRepository.existsByMdn(mdn));
 	}
 
 	/**
@@ -69,7 +70,7 @@ public class CarService {
 	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> searchByFilter(String mdn, String status, String purpose,
 		Pageable pageable) {
-		Page<CarEntity> cars = carRepository.searchByFilter(mdn, status, purpose, pageable);
+		Page<CarEntity> cars = carRepositoryCustom.searchByFilter(mdn, status, purpose, pageable);
 		Page<CarResponse> carResponses = cars.map(CarResponse::from);
 		PageResponse pageResponse = PageResponse.from(carResponses);
 
@@ -83,8 +84,7 @@ public class CarService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<CarResponse> searchOneByMdn(String mdn) {
-		CarEntity car = carRepository.findByMdn(mdn)
-			.orElseThrow(() -> CarException.notFound());
+		CarEntity car = carProvider.getCar(mdn);
 		return ApiResponse.success(CarResponse.from(car));
 	}
 
@@ -95,9 +95,7 @@ public class CarService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(String mdn) {
-		CarEntity car = carRepository.findDetailByMdn(mdn)
-			// 천승준 - 공통 에러 처리 해봤어요
-			.orElseThrow(() -> CarException.notFound());
+		CarEntity car = carProvider.getCarDetail(mdn);
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}
 
@@ -108,24 +106,23 @@ public class CarService {
 	 */
 	@Transactional
 	public ApiResponse<CarDetailResponse> create(CarCreateRequest carCreateRequest) {
-		DeviceEntity device = deviceRepository.findById(1L)
-			.orElseThrow(() -> DeviceException.notFound());
-
-		BizEntity biz = bizRepository.findById(1L)
-			.orElseThrow(() -> BizException.notFound());
+		DeviceEntity device = deviceProvider.getDevice(1L);
 
 		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
-		CarEntity car = CarMapper.createCar(carCreateRequest, device, biz);
+		BizEntity biz = bizProvider.getBiz(1L);
 
-		if (carRepository.existsByMdn(carCreateRequest.mdn())) {
-			throw CarException.duplicated();
+		CarEntity car = CarEntity.create(
+			carCreateRequest.mdn(), biz, device, carCreateRequest.carType(), carCreateRequest.carPlate(),
+			carCreateRequest.carYear(), carCreateRequest.purpose(), carCreateRequest.status(), carCreateRequest.sum()
+		);
+
+		if (carModuleRepository.existsByMdn(carCreateRequest.mdn())) {
+			throw CarException.sendError(ErrorCode.CAR_DUPLICATED);
 		}
-		CarEntity savedCar = carRepository.save(car);
+
+		CarEntity savedCar = carProvider.saveCar(car);
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
-
-		CarEvent carEvent = CarEvent.create("car_event", "create", "차량을 등록 하였습니다.");
-		eventEmitterService.sendEvent("car_event", carEvent);
 
 		return ApiResponse.success(response);
 	}
@@ -138,25 +135,18 @@ public class CarService {
 	 */
 	@Transactional
 	public ApiResponse<CarDetailResponse> update(String mdn, CarUpdateRequest carUpdateRequest) {
-		CarEntity car = carRepository.findDetailByMdn(mdn)
-			.orElseThrow(() -> CarException.notFound());
+		CarEntity car = carProvider.getCarDetail(mdn);
 
-		BizEntity biz = bizRepository.findById(1L)
-			.orElseThrow(() -> BizException.notFound());
+		BizEntity biz = bizProvider.getBiz(1L);
 
 		// 항상 MDN 1인 디바이스 사용
-		DeviceEntity device = deviceRepository.findById(1L)
-			.orElseThrow(() -> DeviceException.notFound());
+		DeviceEntity device = deviceProvider.getDevice(1L);
 
 		// update 할 객체 생성
-		CarMapper.updateCar(car, carUpdateRequest, device, biz);
+		car.updateFrom(biz, device, carUpdateRequest.carType(), carUpdateRequest.carPlate(),
+			carUpdateRequest.carYear(), carUpdateRequest.purpose(), carUpdateRequest.status(), carUpdateRequest.sum());
 
-		log.info("업데이트 차량 : {}", car);
-
-		CarEntity updatedCar = carRepository.save(car);
-
-		CarEvent carEvent = CarEvent.create("car_event", "update", "차량을 수정 하였습니다.");
-		eventEmitterService.sendEvent("car_event", carEvent);
+		CarEntity updatedCar = carProvider.updateCar(car);
 
 		return ApiResponse.success(CarDetailResponse.from(updatedCar));
 	}
@@ -168,10 +158,7 @@ public class CarService {
 	 */
 	@Transactional
 	public ApiResponse<String> delete(String mdn) {
-		carRepository.deleteByMdn(mdn);
-
-		CarEvent carEvent = CarEvent.create("car_event", "delete", "차량을 삭제 하였습니다.");
-		eventEmitterService.sendEvent("car_event", carEvent);
+		carProvider.deleteCar(mdn);
 
 		return ApiResponse.success("삭제 완료");
 	}
