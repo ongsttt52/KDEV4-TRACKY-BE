@@ -1,21 +1,23 @@
 package kernel360.trackyemulator.application.service;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.stereotype.Component;
+
 import kernel360.trackyemulator.application.service.client.CycleRequestClient;
-import kernel360.trackyemulator.application.service.client.StopRequestClient;
 import kernel360.trackyemulator.application.service.generator.CycleGpsDataGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import kernel360.trackyemulator.presentation.view.dto.CycleLogResponse;
 import kernel360.trackyemulator.presentation.view.service.SseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.*;
 
 @Component
 @RequiredArgsConstructor
@@ -26,8 +28,6 @@ public class CycleDataManager {
 	private final CycleRequestClient cycleRequestClient;
 	private final CycleGpsDataGenerator gpsDataGenerator;
 	private final SseService sseService;
-	private final StopRequestClient stopRequestClient;
-
 	private final Map<String, ScheduledFuture<?>> taskMap = new ConcurrentHashMap<>();
 
 	/**
