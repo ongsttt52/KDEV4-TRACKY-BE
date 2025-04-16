@@ -53,12 +53,12 @@ public class CycleRequestClient {
 
 		// API 응답 처리
 		ApiResponse apiResponse = response.getBody();
-		if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
+		if (apiResponse == null || !("000".equals(apiResponse.rstCd()))) {
 			throw new IllegalStateException(
-				"주기 데이터 전송 실패 " + request.getEmulatorInfo().getMdn());
+				"주기 데이터 전송 실패 " + request.emulatorInfo().getMdn());
 		}
 
-		log.info("{} → 60초 주기 데이터 전송 완료", request.getEmulatorInfo().getMdn());
+		log.info("{} → 60초 주기 데이터 전송 완료", request.emulatorInfo().getMdn());
 
 		return apiResponse;
 	}
