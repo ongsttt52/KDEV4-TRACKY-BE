@@ -45,10 +45,6 @@ public class CarDomainProvider {
 		}
 	}
 
-	public boolean isMdnExist(String mdn) {
-		return carProvider.existsByMdn(mdn);
-	}
-
 	public void delete(String mdn) {
 		carDomainRepository.deleteByMdn(mdn);
 	}

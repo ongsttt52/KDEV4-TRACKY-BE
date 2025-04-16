@@ -12,6 +12,7 @@ import kernel360.trackycore.core.common.entity.BizEntity;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.common.provider.BizProvider;
+import kernel360.trackycore.core.common.provider.CarProvider;
 import kernel360.trackycore.core.common.provider.DeviceProvider;
 import kernel360.trackycore.core.common.sse.GlobalSseEvent;
 import kernel360.trackycore.core.common.sse.SseEvent;
@@ -31,6 +32,7 @@ public class CarService {
 
 	private final DeviceProvider deviceProvider;
 	private final BizProvider bizProvider;
+	private final CarProvider carProvider;
 	private final GlobalSseEvent globalSseEvent;
 
 	private final CarDomainProvider carDomainProvider;
@@ -41,8 +43,8 @@ public class CarService {
 	 * @return 차량 단건 조회
 	 */
 	@Transactional(readOnly = true)
-	public ApiResponse<Boolean> isMdnExist(String mdn) {
-		return ApiResponse.success(carDomainProvider.isMdnExist(mdn));
+	public ApiResponse<Boolean> existsByMdn(String mdn) {
+		return ApiResponse.success(carProvider.existsByMdn(mdn));
 	}
 
 	/**

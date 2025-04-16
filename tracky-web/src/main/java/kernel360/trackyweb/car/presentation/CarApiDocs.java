@@ -18,7 +18,7 @@ import kernel360.trackyweb.car.application.dto.response.CarResponse;
 public interface CarApiDocs {
 
 	@Operation(summary = "mdn 중복 체크", description = "mdn 중복 체크")
-	ApiResponse<Boolean> isMdnExist(@PathVariable String mdn);
+	ApiResponse<Boolean> existsByMdn(@PathVariable String mdn);
 
 	@Operation(summary = "mdn, status, purpose 필터링 검색", description = "mdn, status, purpose 필터링 차량 검색합니다")
 	ApiResponse<List<CarResponse>> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest);
