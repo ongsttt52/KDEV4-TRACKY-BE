@@ -1,4 +1,4 @@
-package kernel360.trackyemulator.infrastructure.dto;
+package kernel360.trackyemulator.application.service.dto.request;
 
 import java.time.LocalDateTime;
 

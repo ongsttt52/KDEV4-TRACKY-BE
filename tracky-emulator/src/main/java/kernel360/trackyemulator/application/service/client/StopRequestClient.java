@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import kernel360.trackyemulator.application.service.dto.request.CarOnOffRequest;
+import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
-import kernel360.trackyemulator.infrastructure.dto.CarOnOffRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

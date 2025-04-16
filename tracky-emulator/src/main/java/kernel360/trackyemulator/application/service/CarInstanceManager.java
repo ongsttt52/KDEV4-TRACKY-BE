@@ -16,8 +16,8 @@ import kernel360.trackyemulator.application.service.client.MdnListRequestClient;
 import kernel360.trackyemulator.application.service.client.StartRequestClient;
 import kernel360.trackyemulator.application.service.client.StopRequestClient;
 import kernel360.trackyemulator.application.service.client.TokenRequestClient;
+import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

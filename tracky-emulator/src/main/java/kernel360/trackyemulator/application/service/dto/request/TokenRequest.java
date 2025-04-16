@@ -1,4 +1,4 @@
-package kernel360.trackyemulator.infrastructure.dto;
+package kernel360.trackyemulator.application.service.dto.request;
 
 import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
 import kernel360.trackyemulator.domain.EmulatorInstance;

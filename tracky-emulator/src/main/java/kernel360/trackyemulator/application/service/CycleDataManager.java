@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackyemulator.application.service.client.CycleRequestClient;
+import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
 import kernel360.trackyemulator.application.service.generator.CycleGpsDataGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import kernel360.trackyemulator.presentation.view.dto.CycleLogResponse;
 import kernel360.trackyemulator.presentation.view.service.SseService;
 import lombok.RequiredArgsConstructor;

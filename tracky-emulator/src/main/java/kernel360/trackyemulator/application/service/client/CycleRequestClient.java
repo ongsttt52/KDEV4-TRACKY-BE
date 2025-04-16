@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
+import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
+import kernel360.trackyemulator.application.service.dto.request.CycleInfoRequest;
+import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
-import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
-import kernel360.trackyemulator.infrastructure.dto.CycleInfoRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
