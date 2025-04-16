@@ -33,11 +33,7 @@ public class CycleRequestClient {
 
 		EmulatorInfo emulatorInfo = instance.getEmulatorInfo();
 
-		CycleInfoRequest request = CycleInfoRequest.of(
-			emulatorInfo,
-			LocalDateTime.now(),
-			buffer
-		);
+		CycleInfoRequest request = CycleInfoRequest.of(instance.getMdn(), emulatorInfo, LocalDateTime.now(), buffer);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -55,10 +51,10 @@ public class CycleRequestClient {
 		ApiResponse apiResponse = response.getBody();
 		if (apiResponse == null || !("000".equals(apiResponse.rstCd()))) {
 			throw new IllegalStateException(
-				"주기 데이터 전송 실패 " + request.emulatorInfo().getMdn());
+				"주기 데이터 전송 실패 " + request.mdn());
 		}
 
-		log.info("{} → 60초 주기 데이터 전송 완료", request.emulatorInfo().getMdn());
+		log.info("{} → 60초 주기 데이터 전송 완료", request.mdn());
 
 		return apiResponse;
 	}

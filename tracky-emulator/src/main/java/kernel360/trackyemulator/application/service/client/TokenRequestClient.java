@@ -21,7 +21,7 @@ public class TokenRequestClient {
 	public String getToken(EmulatorInstance instance) {
 
 		//TokenRequest DTO 생성
-		TokenRequest request = TokenRequest.toRequest(instance.getEmulatorInfo());
+		TokenRequest request = TokenRequest.toRequest(instance.getMdn(), instance.getEmulatorInfo());
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -39,7 +39,7 @@ public class TokenRequestClient {
 		ApiResponse apiResponse = response.getBody();
 		if (apiResponse == null || !("000".equals(apiResponse.rstCd()))) {
 			throw new IllegalStateException(
-				"토큰 요청 실패 " + instance.getEmulatorInfo().getMdn());
+				"토큰 요청 실패 " + instance.getMdn());
 		}
 
 		return apiResponse.token();

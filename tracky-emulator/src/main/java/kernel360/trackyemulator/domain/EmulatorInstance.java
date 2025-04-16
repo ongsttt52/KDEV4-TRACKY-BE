@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
+import kernel360.trackycore.core.common.entity.vo.GpsInfo;
 import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
 import lombok.Getter;
 
@@ -12,34 +13,27 @@ import lombok.Getter;
 public class EmulatorInstance {
 
 	private final EmulatorInfo emulatorInfo;
+	private GpsInfo cycleLastGpsInfo;
 
+	private final String mdn;
 	private String token;  // 단말 인증 토큰
-
-	private double sum;             // 시동 ON 후 총 누적 거리
-
-	private int cycleLastLat;    // 60초 주기 데이터 중 마지막 60번째 GPS 위도
-	private int cycleLastLon;    // 60초 주기 데이터 중 마지막 60번째 GPS 경도
-	private int cycleLastSpeed;    //60초 주기 데이터 중 마지막 속도
-	private int ang;        //방향
+	private double totalSum;    // 시동 ON 후 총 누적 거리
 
 	private final LocalDateTime carOnTime;
 	private LocalDateTime carOffTime;
 
 	private final List<CycleGpsRequest> cycleBuffer = new ArrayList<>();
 
-	private EmulatorInstance(EmulatorInfo emulatorInfo, int cycleLastLat, int cycleLastLon, LocalDateTime carOnTime,
-		int ang) {
+	private EmulatorInstance(String mdn, EmulatorInfo emulatorInfo, GpsInfo cycleLastGpsInfo, LocalDateTime carOnTime) {
+		this.mdn = mdn;
 		this.emulatorInfo = emulatorInfo;
-		this.sum = 0;
-		this.cycleLastLat = cycleLastLat;
-		this.cycleLastLon = cycleLastLon;
+		this.cycleLastGpsInfo = cycleLastGpsInfo;
 		this.carOnTime = carOnTime;
-		this.ang = ang;
 	}
 
-	public static EmulatorInstance create(EmulatorInfo emulatorInfo, int cycleLastLat, int cycleLastLon,
-		LocalDateTime carOnTime, int ang) {
-		return new EmulatorInstance(emulatorInfo, cycleLastLat, cycleLastLon, carOnTime, ang);
+	public static EmulatorInstance create(String mdn, EmulatorInfo emulatorInfo, GpsInfo cycleLastGpsInfo,
+		LocalDateTime carOnTime) {
+		return new EmulatorInstance(mdn, emulatorInfo, cycleLastGpsInfo, carOnTime);
 	}
 
 	//토큰 세팅
@@ -52,11 +46,9 @@ public class EmulatorInstance {
 	}
 
 	// 주기 데이터 정보 & 누적 거리 한번에 업데이트
-	public void updateCycleInfo(int lat, int lon, int speed, double distance) {
-		this.sum += distance;
-		this.cycleLastLat = lat;
-		this.cycleLastLon = lon;
-		this.cycleLastSpeed = speed;
+	public void updateCycleInfo(GpsInfo cycleLastGpsInfo) {
+		this.cycleLastGpsInfo = cycleLastGpsInfo;
+		this.totalSum += cycleLastGpsInfo.getSum();
 	}
 
 	public void addCycleData(CycleGpsRequest data) {
@@ -72,5 +64,10 @@ public class EmulatorInstance {
 		List<CycleGpsRequest> copy = new ArrayList<>(cycleBuffer);
 		cycleBuffer.clear();
 		return copy;
+	}
+
+	public GpsInfo offGpsInfo() {
+		return GpsInfo.create(this.cycleLastGpsInfo.getLat(), this.cycleLastGpsInfo.getLon(),
+			this.cycleLastGpsInfo.getAng(), this.cycleLastGpsInfo.getSpd(), this.totalSum);
 	}
 }

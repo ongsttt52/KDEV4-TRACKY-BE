@@ -5,23 +5,24 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
+import kernel360.trackycore.core.common.entity.vo.GpsInfo;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 
 public record CarOnOffRequest(
 
+	String mdn,
+
 	EmulatorInfo emulatorInfo,
+
+	GpsInfo gpsInfo,
+
+	String gcd,
 
 	@JsonFormat(pattern = "yyyyMMddHHmm")
 	LocalDateTime onTime,
 
 	@JsonFormat(pattern = "yyyyMMddHHmm")
-	LocalDateTime offTime,
-
-	int lat,
-	int lon,
-	int ang,
-	int spd,
-	double sum
+	LocalDateTime offTime
 
 ) {
 
@@ -30,14 +31,12 @@ public record CarOnOffRequest(
 	 */
 	public static CarOnOffRequest ofOn(EmulatorInstance car) {
 		return new CarOnOffRequest(
+			car.getMdn(),
 			car.getEmulatorInfo(),
+			car.getCycleLastGpsInfo(),
+			"A",
 			car.getCarOnTime(),
-			null,
-			car.getCycleLastLat(),
-			car.getCycleLastLon(),
-			0,
-			0,
-			0.0
+			null
 		);
 	}
 
@@ -46,14 +45,12 @@ public record CarOnOffRequest(
 	 */
 	public static CarOnOffRequest ofOff(EmulatorInstance car) {
 		return new CarOnOffRequest(
+			car.getMdn(),
 			car.getEmulatorInfo(),
+			car.offGpsInfo(),
+			"A",
 			car.getCarOnTime(),
-			car.getCarOffTime(),
-			car.getCycleLastLat(),
-			car.getCycleLastLon(),
-			car.getAng(),
-			car.getCycleLastSpeed(),
-			car.getSum()
+			car.getCarOffTime()
 		);
 	}
 }
