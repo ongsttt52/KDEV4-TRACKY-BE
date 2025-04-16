@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import kernel360.trackyemulator.application.service.dto.request.CarOnOffRequest;
+import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
-import kernel360.trackyemulator.infrastructure.dto.CarOnOffRequest;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -37,9 +37,9 @@ public class StartRequestClient {
 
 		//API 응답
 		ApiResponse apiResponse = response.getBody();
-		if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
+		if (apiResponse == null || !("000".equals(apiResponse.rstCd()))) {
 			throw new IllegalStateException(
-				"Start 정보 전송 실패 " + apiResponse.getMdn());
+				"Start 정보 전송 실패 " + apiResponse.mdn());
 		}
 
 		return apiResponse;

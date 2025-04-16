@@ -14,7 +14,6 @@ import kernel360.trackyemulator.application.service.CarInstanceFactory.MultiCarI
 import kernel360.trackyemulator.application.service.CarInstanceFactory.SingleCarInstanceFactory;
 import kernel360.trackyemulator.application.service.client.ControlClient;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,7 +70,7 @@ public class CarInstanceManager {
 
 		for (EmulatorInstance instance : instances) {
 			ApiResponse response = controlClient.sendCarStart(instance);
-			result.put(instance.getEmulatorInfo().getMdn(), response.getRstMsg());
+			result.put(instance.getEmulatorInfo().getMdn(), response.rstMsg());
 
 			cycleDataManager.startSending(instance); // 스케줄 시작
 		}
@@ -91,11 +90,11 @@ public class CarInstanceManager {
 			cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
 
 			ApiResponse response = controlClient.sendCarStop(instance);    //시동OFF 데이터 전송
-			log.info("시동 off response : {}", response.getRstMsg());
+			log.info("시동 off response : {}", response.rstMsg());
 
-			result.put(instance.getEmulatorInfo().getMdn(), response.getRstMsg());
+			result.put(instance.getEmulatorInfo().getMdn(), response.rstMsg());
 
-			stoppedMdnSet.add(response.getMdn());
+			stoppedMdnSet.add(response.mdn());
 		}
 		removeStoppedInstances(stoppedMdnSet); // 리스트에서 삭제
 		return result;

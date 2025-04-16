@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackyweb.car.infrastructure.repository.CarRepository;
 
 public record RentRequest(
 	String mdn,
