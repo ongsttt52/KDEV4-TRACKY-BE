@@ -3,6 +3,7 @@ package kernel360.trackyconsumer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
@@ -15,6 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 	"kernel360.trackycore.core.infrastructure",
 	"kernel360.trackyconsumer.infrastructure"
 })
+@ComponentScan(basePackages = "kernel360")
 public class TrackyConsumerApplication {
 
 	public static void main(String[] args) {
