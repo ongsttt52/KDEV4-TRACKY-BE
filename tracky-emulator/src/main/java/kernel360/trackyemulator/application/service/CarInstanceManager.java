@@ -77,7 +77,7 @@ public class CarInstanceManager {
 
 		for (EmulatorInstance instance : instances) {
 			ApiResponse response = startRequestClient.sendCarStart(instance);
-			result.put(instance.getEmulatorInfo().getMdn(), response.getRstMsg());
+			result.put(instance.getEmulatorInfo().getMdn(), response.rstMsg());
 
 			cycleDataManager.startSending(instance); // 스케줄 시작
 		}
@@ -97,11 +97,11 @@ public class CarInstanceManager {
 			cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
 
 			ApiResponse response = stopRequestClient.sendCarStop(instance);    //시동OFF 데이터 전송
-			log.info("시동 off response : {}", response.getRstMsg());
+			log.info("시동 off response : {}", response.rstMsg());
 
-			result.put(instance.getEmulatorInfo().getMdn(), response.getRstMsg());
+			result.put(instance.getEmulatorInfo().getMdn(), response.rstMsg());
 
-			stoppedMdnSet.add(response.getMdn());
+			stoppedMdnSet.add(response.mdn());
 		}
 		removeStoppedInstances(stoppedMdnSet); // 리스트에서 삭제
 		return result;
