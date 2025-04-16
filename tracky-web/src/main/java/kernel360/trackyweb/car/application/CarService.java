@@ -128,7 +128,7 @@ public class CarService {
 	 */
 	@Transactional
 	public ApiResponse<String> delete(String mdn) {
-		carDomainProvider.deleteCar(mdn);
+		carDomainProvider.delete(mdn);
 		globalSseEvent.sendEvent(SseEvent.CAR_DELETED);
 
 		return ApiResponse.success("삭제 완료");

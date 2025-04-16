@@ -49,7 +49,7 @@ public class CarDomainProvider {
 		return carProvider.existsByMdn(mdn);
 	}
 
-	public void deleteCar(String mdn) {
+	public void delete(String mdn) {
 		carDomainRepository.deleteByMdn(mdn);
 	}
 }
