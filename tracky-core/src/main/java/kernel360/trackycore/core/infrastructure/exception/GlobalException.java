@@ -19,4 +19,8 @@ public class GlobalException extends RuntimeException {
 	public static GlobalException sendError(ErrorCode errorCode) {
 		return new GlobalException(errorCode);
 	}
+
+	public static GlobalException throwError(ErrorCode errorCode) {
+		throw new GlobalException(errorCode);
+	}
 }
