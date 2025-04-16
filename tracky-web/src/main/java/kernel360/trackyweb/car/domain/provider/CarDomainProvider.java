@@ -21,8 +21,7 @@ public class CarDomainProvider {
 	private final CarProvider carProvider;
 
 	public CarEntity getCar(String mdn) {
-		return carProvider.findByMdn(mdn)
-			.orElseThrow(() -> CarException.sendError(ErrorCode.CAR_NOT_FOUND));
+		return carProvider.findByMdn(mdn);
 	}
 
 	public Page<CarEntity> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
