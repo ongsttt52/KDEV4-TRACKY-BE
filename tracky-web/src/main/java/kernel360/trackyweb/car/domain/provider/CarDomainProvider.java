@@ -30,7 +30,7 @@ public class CarDomainProvider {
 			carSearchByFilterRequest.purpose(), carSearchByFilterRequest.pageable());
 	}
 
-	public CarEntity saveCar(CarEntity car) {
+	public CarEntity save(CarEntity car) {
 		return carProvider.saveCar(car);
 	}
 

@@ -88,7 +88,7 @@ public class CarService {
 			carCreateRequest.carYear(), carCreateRequest.purpose(), carCreateRequest.status(), carCreateRequest.sum()
 		);
 
-		CarEntity savedCar = carDomainProvider.saveCar(car);
+		CarEntity savedCar = carDomainProvider.save(car);
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
 
