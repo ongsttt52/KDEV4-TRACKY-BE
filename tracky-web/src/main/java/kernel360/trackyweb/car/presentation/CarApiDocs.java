@@ -18,13 +18,13 @@ import kernel360.trackyweb.car.application.dto.response.CarResponse;
 public interface CarApiDocs {
 
 	@Operation(summary = "mdn 중복 체크", description = "mdn 중복 체크")
-	ApiResponse<Boolean> isMdnExist(@PathVariable String mdn);
+	ApiResponse<Boolean> existsByMdn(@PathVariable String mdn);
 
 	@Operation(summary = "mdn, status, purpose 필터링 검색", description = "mdn, status, purpose 필터링 차량 검색합니다")
-	ApiResponse<List<CarResponse>> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest);
+	ApiResponse<List<CarResponse>> getAllBySearchFilter(CarSearchByFilterRequest carSearchByFilterRequest);
 
 	@Operation(summary = "차량 MDN으로 상세 조회", description = "MDN 기준으로 차량 및 디바이스 상세 정보를 조회합니다.")
-	ApiResponse<CarDetailResponse> searchOneDetailByMdn(@PathVariable String mdn);
+	ApiResponse<CarDetailResponse> searchOne(@PathVariable String mdn);
 
 	@Operation(summary = "차량 신규 등록", description = "차량 신규 등록 API")
 	ApiResponse<CarDetailResponse> create(@RequestBody CarCreateRequest carCreateRequest);

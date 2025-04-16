@@ -1,4 +1,4 @@
-package kernel360.trackyweb.car.infrastructure.repo;
+package kernel360.trackyweb.car.infrastructure.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.infrastructure.repository.CarRepository;
 
-public interface CarModuleRepository extends CarRepository {
+public interface CarDomainRepository extends CarRepository {
 	/**
 	 * Mdn 으로 차량 검색 + 검색어를 포함한 모든 차량 + 결과값의 앞부분이 검색어와 일치할수록 앞으로 정렬
 	 * @param mdn 검색어
@@ -26,20 +26,6 @@ public interface CarModuleRepository extends CarRepository {
 	 */
 	@Query("SELECT c FROM CarEntity c JOIN FETCH c.device WHERE c.mdn = :mdn")
 	Optional<CarEntity> findDetailByMdn(@Param("mdn") String mdn);
-
-	/**
-	 * mdn이 일치하는 차량 찾기
-	 * @param mdn 차량 mdn
-	 * @return 차량 단건 조회
-	 */
-	Optional<CarEntity> findByMdn(String mdn);
-
-	/**
-	 * mdn 차량이 존재하는지 체크
-	 * @param mdn 차량 mdn
-	 * @return Boolean
-	 */
-	Boolean existsByMdn(String mdn);
 
 	/**
 	 * MDN이 일치하는 차량 삭제

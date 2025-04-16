@@ -1,4 +1,4 @@
-package kernel360.trackyweb.car.infrastructure.impl;
+package kernel360.trackyweb.car.infrastructure.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackyweb.car.infrastructure.repo.CarRepositoryCustom;
 
 @Repository
 public class CarRepositoryImpl implements CarRepositoryCustom {

@@ -4,8 +4,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
 
+import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -13,55 +13,48 @@ import lombok.RequiredArgsConstructor;
 public class CycleGpsDataGenerator {
 
 	public CycleGpsRequest generate(EmulatorInstance instance) {
-		int lastLat = instance.getCycleLastLat();
-		int lastLon = instance.getCycleLastLon();
+		// 위/경도 double 변환
+		double lastLat = instance.getCycleLastLat() / 1_000_000.0;
+		double lastLon = instance.getCycleLastLon() / 1_000_000.0;
 		int lastSpeed = instance.getCycleLastSpeed();
-		int lastAng = instance.getCycleLastAng();
+		int fixedAngle = instance.getAng(); // 고정된 방향 (0~359도)
 
-		int newSpeed = adjustSpeed(lastSpeed);  //마지막 속도 기반 새 속도 생성
-		int newAng = adjustAngle(lastAng);  //마지막 방향 기반 새 방향 생성
-
+		// 속도 기준 이동 거리 계산 (m/s)
+		int newSpeed = adjustSpeed(lastSpeed);
 		double distance = (newSpeed * 1000.0) / 3600.0;
 
-		int[] newCoordinates = movePosition(lastLat, lastLon, newAng, distance);
+		// 거리 + 방향 → 정확한 위도/경도 계산
+		double[] newCoordinates = movePosition(lastLat, lastLon, fixedAngle, distance);
+		int newLat = (int)Math.round(newCoordinates[0] * 1_000_000);
+		int newLon = (int)Math.round(newCoordinates[1] * 1_000_000);
 
-		int newLat = newCoordinates[0];
-		int newLon = newCoordinates[1];
+		// 상태 업데이트
+		instance.updateCycleInfo(newLat, newLon, newSpeed, distance);
 
-		instance.updateCycleInfo(newLat, newLon, newSpeed, newAng, distance);
-
-		return CycleGpsRequest.of(newLat, newLon, newAng, newSpeed, instance.getSum());
+		// 결과 생성
+		return CycleGpsRequest.of(newLat, newLon, fixedAngle, newSpeed, instance.getSum());
 	}
 
-    /*
-    내부 계산 메서드들
-     */
-
-	//랜덤 스피드 - 현재 속도에서 5km/h 내에서 변화. 속도 최대 10~130으로 제한
 	private int adjustSpeed(int currentSpeed) {
 		int delta = ThreadLocalRandom.current().nextInt(-5, 6);
 		int newSpeed = currentSpeed + delta;
-		return Math.max(40, Math.min(newSpeed, 130));
+		return Math.max(30, Math.min(newSpeed, 130));
 	}
 
-	//랜덤 방향 - 현재 각도에서 ±10도 범위 내에서 변화
-	private int adjustAngle(int currentAngle) {
-		int delta = ThreadLocalRandom.current().nextInt(-10, 11);
-		int newAngle = (currentAngle + delta + 360) % 360;
-		return newAngle;
-	}
+	// 정확한 위도/경도 이동 계산
+	private double[] movePosition(double lat, double lon, int angleDeg, double distanceMeter) {
+		double earthRadius = 6371e3; // m
+		double angleRad = Math.toRadians(angleDeg);
 
-	//랜덤 위도 및 경도 - 방향과 이동 거리를 기준으로 새로운 위치 계산
-	private int[] movePosition(int lat, int lon, int angle, double distanceMeter) {
-		double earthRadius = 6378137;
+		// 위도/경도 변화량 계산 (라디안 단위)
+		double deltaLat = distanceMeter * Math.cos(angleRad) / earthRadius;
+		double deltaLon = distanceMeter * Math.sin(angleRad) /
+			(earthRadius * Math.cos(Math.toRadians(lat)));
 
-		double dLat = (distanceMeter * Math.cos(Math.toRadians(angle))) / earthRadius;
-		double dLon =
-			(distanceMeter * Math.sin(Math.toRadians(angle))) / (earthRadius * Math.cos(Math.toRadians(lat / 1e6)));
+		// 이동 후 위도/경도 (도 단위로 변환)
+		double newLat = lat + Math.toDegrees(deltaLat);
+		double newLon = lon + Math.toDegrees(deltaLon);
 
-		int newLat = lat + (int)(dLat * 1e6);
-		int newLon = lon + (int)(dLon * 1e6);
-
-		return new int[] {newLat, newLon};
+		return new double[] {newLat, newLon};
 	}
 }

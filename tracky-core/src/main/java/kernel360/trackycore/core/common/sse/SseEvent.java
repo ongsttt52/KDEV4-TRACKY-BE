@@ -1,4 +1,4 @@
-package kernel360.trackycore.core.common.vo;
+package kernel360.trackycore.core.common.sse;
 
 import lombok.Getter;
 
@@ -8,12 +8,12 @@ public enum SseEvent {
 	CAR_UPDATED("car_event", "update", "차량을 수정 하였습니다."),
 	CAR_DELETED("car_event", "delete", "차량을 삭제 하였습니다.");
 
-	private final String code;
+	private final String event;
 	private final String method;
 	private final String message;
 
-	SseEvent(String code, String method, String message) {
-		this.code = code;
+	SseEvent(String event, String method, String message) {
+		this.event = event;
 		this.method = method;
 		this.message = message;
 	}

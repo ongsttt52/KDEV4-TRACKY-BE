@@ -5,7 +5,7 @@ public class BizException extends GlobalException {
 		super(errorCode);
 	}
 
-	public static BizException notFound() {
-		return new BizException(ErrorCode.BIZ_NOT_FOUND);
+	public static BizException sendError(ErrorCode errorCode) {
+		return new BizException(errorCode);
 	}
 }
