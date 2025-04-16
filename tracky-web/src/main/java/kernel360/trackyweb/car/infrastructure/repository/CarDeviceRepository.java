@@ -1,4 +1,4 @@
-package kernel360.trackyweb.car.infrastructure.repo;
+package kernel360.trackyweb.car.infrastructure.repository;
 
 import kernel360.trackycore.core.infrastructure.repository.DeviceRepository;
 

@@ -30,28 +30,27 @@ public class CarController implements CarApiDocs {
 	private final CarService carService;
 
 	@GetMapping("/check/mdn/{mdn}")
-	public ApiResponse<Boolean> isMdnExist(
+	public ApiResponse<Boolean> existsByMdn(
 		@PathVariable String mdn
 	) {
-		return carService.isMdnExist(mdn);
+		return carService.existsByMdn(mdn);
 	}
 
-	@GetMapping("/search")
-	public ApiResponse<List<CarResponse>> searchByFilter(
+	@GetMapping()
+	public ApiResponse<List<CarResponse>> getAllBySearchFilter(
 		CarSearchByFilterRequest carSearchByFilterRequest
 	) {
-		return carService.searchByFilter(carSearchByFilterRequest.mdn(), carSearchByFilterRequest.status(),
-			carSearchByFilterRequest.purpose(), carSearchByFilterRequest.pageable());
+		return carService.getAllBySearchFilter(carSearchByFilterRequest);
 	}
 
 	@GetMapping("/{mdn}")
-	public ApiResponse<CarDetailResponse> searchOneDetailByMdn(
+	public ApiResponse<CarDetailResponse> searchOne(
 		@PathVariable String mdn
 	) {
-		return carService.searchOneDetailByMdn(mdn);
+		return carService.searchOne(mdn);
 	}
 
-	@PostMapping("")
+	@PostMapping()
 	public ApiResponse<CarDetailResponse> create(
 		@RequestBody CarCreateRequest carCreateRequest
 	) {

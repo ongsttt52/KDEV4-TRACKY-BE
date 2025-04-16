@@ -3,7 +3,6 @@ package kernel360.trackyweb.car.application.dto.response;
 import java.time.LocalDateTime;
 
 import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.DeviceEntity;
 
 public record CarDetailResponse(
 	String mdn,
@@ -14,7 +13,7 @@ public record CarDetailResponse(
 	String purpose,
 	String status,
 	double sum,
-	DeviceEntity deviceInfo,
+	DeviceResponse deviceInfo,
 	LocalDateTime createdAt
 ) {
 	public static CarDetailResponse from(CarEntity car) {
@@ -27,7 +26,7 @@ public record CarDetailResponse(
 			car.getPurpose(),
 			car.getStatus(),
 			car.getSum(),
-			car.getDevice(),
+			DeviceResponse.from(car.getDevice()),
 			car.getCreatedAt()
 		);
 	}
