@@ -11,6 +11,10 @@ public enum ErrorCode {
 	BIZ_NOT_FOUND("BIZ_001", "조회된 업체가 없습니다."),
 	RENT_NOT_FOUND("RENT_001", "조회된 대여가 없습니다."),
 
+	LOCATION_NOT_FOUND("LOCATION_001", "조회된 위치가 없습니다."),
+	DRIVE_NOT_FOUND("DRIVE_001", "조회된 주행 정보가 없습니다."),
+	GPS_NOT_FOUND("GPS_001", "조회된 GPS 정보가 없습니다."),
+
 	MEMBER_NOT_FOUND("MEMBER_001", "존재하지 않은 회원입니다."),
 	MEMBER_WRONG_PWD("MEMBER_486", "비밀번호가 일치하지 않습니다.");
 
