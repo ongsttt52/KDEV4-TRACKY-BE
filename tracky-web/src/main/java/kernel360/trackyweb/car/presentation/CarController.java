@@ -36,11 +36,11 @@ public class CarController implements CarApiDocs {
 		return carService.existsByMdn(mdn);
 	}
 
-	@GetMapping("/search")
-	public ApiResponse<List<CarResponse>> searchByFilter(
+	@GetMapping()
+	public ApiResponse<List<CarResponse>> getAllBySearchFilter(
 		CarSearchByFilterRequest carSearchByFilterRequest
 	) {
-		return carService.searchByFilter(carSearchByFilterRequest);
+		return carService.getAllBySearchFilter(carSearchByFilterRequest);
 	}
 
 	@GetMapping("/{mdn}")
@@ -50,7 +50,7 @@ public class CarController implements CarApiDocs {
 		return carService.searchOne(mdn);
 	}
 
-	@PostMapping("")
+	@PostMapping()
 	public ApiResponse<CarDetailResponse> create(
 		@RequestBody CarCreateRequest carCreateRequest
 	) {

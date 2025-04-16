@@ -52,7 +52,7 @@ public class CarService {
 	 * @return 검색된 차량 List
 	 */
 	@Transactional(readOnly = true)
-	public ApiResponse<List<CarResponse>> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
+	public ApiResponse<List<CarResponse>> getAllBySearchFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
 		Page<CarEntity> cars = carDomainProvider.searchByFilter(carSearchByFilterRequest);
 		Page<CarResponse> carResponses = cars.map(CarResponse::from);
 		PageResponse pageResponse = PageResponse.from(carResponses);

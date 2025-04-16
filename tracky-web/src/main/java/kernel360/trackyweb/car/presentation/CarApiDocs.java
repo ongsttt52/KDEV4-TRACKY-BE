@@ -21,7 +21,7 @@ public interface CarApiDocs {
 	ApiResponse<Boolean> existsByMdn(@PathVariable String mdn);
 
 	@Operation(summary = "mdn, status, purpose 필터링 검색", description = "mdn, status, purpose 필터링 차량 검색합니다")
-	ApiResponse<List<CarResponse>> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest);
+	ApiResponse<List<CarResponse>> getAllBySearchFilter(CarSearchByFilterRequest carSearchByFilterRequest);
 
 	@Operation(summary = "차량 MDN으로 상세 조회", description = "MDN 기준으로 차량 및 디바이스 상세 정보를 조회합니다.")
 	ApiResponse<CarDetailResponse> searchOne(@PathVariable String mdn);
