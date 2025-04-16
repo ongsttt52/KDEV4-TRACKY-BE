@@ -20,13 +20,4 @@ public class GpsHistoryMessage {
 	private int cCnt;
 
 	private List<CycleGpsRequest> cList;
-
-	public static GpsHistoryMessage from(String mdn, LocalDateTime otime, int cCnt, List<CycleGpsRequest> cList) {
-		return new GpsHistoryMessage(
-			mdn,
-			otime,
-			cCnt,
-			cList
-		);
-	}
 }
