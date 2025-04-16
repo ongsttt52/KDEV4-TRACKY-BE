@@ -66,7 +66,7 @@ public class CarService {
 	 * @return 단건 차량 데이터 + 디바이스 정보
 	 */
 	@Transactional(readOnly = true)
-	public ApiResponse<CarDetailResponse> searchOneByMdn(String mdn) {
+	public ApiResponse<CarDetailResponse> searchOne(String mdn) {
 		CarEntity car = carDomainProvider.getCarDetail(mdn);
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}

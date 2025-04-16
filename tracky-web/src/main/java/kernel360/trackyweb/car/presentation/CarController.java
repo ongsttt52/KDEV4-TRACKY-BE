@@ -44,10 +44,10 @@ public class CarController implements CarApiDocs {
 	}
 
 	@GetMapping("/{mdn}")
-	public ApiResponse<CarDetailResponse> searchOneByMdn(
+	public ApiResponse<CarDetailResponse> searchOne(
 		@PathVariable String mdn
 	) {
-		return carService.searchOneByMdn(mdn);
+		return carService.searchOne(mdn);
 	}
 
 	@PostMapping("")
