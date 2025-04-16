@@ -16,8 +16,8 @@ import kernel360.trackyemulator.application.service.client.MdnListRequestClient;
 import kernel360.trackyemulator.application.service.client.StartRequestClient;
 import kernel360.trackyemulator.application.service.client.StopRequestClient;
 import kernel360.trackyemulator.application.service.client.TokenRequestClient;
+import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,8 +65,8 @@ public class CarInstanceManager {
 			String token = tokenRequestClient.getToken(instance);
 			instance.setToken(token);
 
-			result.put(instance.getMdn(), "토큰 세팅 성공" + instance.getToken());
-			log.info("{} 토큰 세팅 완료", instance.getMdn());
+			result.put(instance.getEmulatorInfo().getMdn(), "토큰 세팅 성공" + instance.getToken());
+			log.info("{} 토큰 세팅 완료", instance.getEmulatorInfo().getMdn());
 		}
 		return result;
 	}
@@ -77,7 +77,7 @@ public class CarInstanceManager {
 
 		for (EmulatorInstance instance : instances) {
 			ApiResponse response = startRequestClient.sendCarStart(instance);
-			result.put(instance.getMdn(), response.getRstMsg());
+			result.put(instance.getEmulatorInfo().getMdn(), response.rstMsg());
 
 			cycleDataManager.startSending(instance); // 스케줄 시작
 		}
@@ -97,11 +97,11 @@ public class CarInstanceManager {
 			cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
 
 			ApiResponse response = stopRequestClient.sendCarStop(instance);    //시동OFF 데이터 전송
-			log.info("시동 off response : {}", response.getRstMsg());
+			log.info("시동 off response : {}", response.rstMsg());
 
-			result.put(instance.getMdn(), response.getRstMsg());
+			result.put(instance.getEmulatorInfo().getMdn(), response.rstMsg());
 
-			stoppedMdnSet.add(response.getMdn());
+			stoppedMdnSet.add(response.mdn());
 		}
 		removeStoppedInstances(stoppedMdnSet); // 리스트에서 삭제
 		return result;
@@ -109,7 +109,7 @@ public class CarInstanceManager {
 
 	//에뮬레이터 삭제
 	private void removeStoppedInstances(Set<String> stoppedMdns) {
-		instances.removeIf(instance -> stoppedMdns.contains(instance.getMdn()));
+		instances.removeIf(instance -> stoppedMdns.contains(instance.getEmulatorInfo().getMdn()));
 		stoppedMdns.forEach(mdn -> log.info("{} 인스턴스 삭제 완료", mdn));
 	}
 

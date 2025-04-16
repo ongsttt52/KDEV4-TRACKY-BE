@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import kernel360.trackyemulator.application.service.dto.request.TokenRequest;
+import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.ApiResponse;
-import kernel360.trackyemulator.infrastructure.dto.TokenRequest;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -21,7 +21,7 @@ public class TokenRequestClient {
 	public String getToken(EmulatorInstance instance) {
 
 		//TokenRequest DTO 생성
-		TokenRequest request = TokenRequest.from(instance);
+		TokenRequest request = TokenRequest.toRequest(instance.getEmulatorInfo());
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -37,11 +37,11 @@ public class TokenRequestClient {
 
 		//응답
 		ApiResponse apiResponse = response.getBody();
-		if (apiResponse == null || !("000".equals(apiResponse.getRstCd()))) {
+		if (apiResponse == null || !("000".equals(apiResponse.rstCd()))) {
 			throw new IllegalStateException(
-				"토큰 요청 실패 " + instance.getMdn());
+				"토큰 요청 실패 " + instance.getEmulatorInfo().getMdn());
 		}
 
-		return apiResponse.getToken();
+		return apiResponse.token();
 	}
 }

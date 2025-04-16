@@ -4,8 +4,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
 
+import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import kernel360.trackyemulator.infrastructure.dto.CycleGpsRequest;
 import lombok.RequiredArgsConstructor;
 
 @Component
