@@ -1,10 +1,19 @@
 spring:
   config:
-    import: classpath:application-common.yml
-  profiles:
-    include: rabbitmq
+    import:
+      - classpath:application-common.yml
+      - classpath:application-rabbitmq.yml
   application:
     name: tracky-hub
 
+rabbitmq:
+  exchange:
+    car-info: car-info-exchange
+    dlx: dlx-exchange
+  routing:
+    gps-key: gpsKey
+    on-key: onKey
+    off-key: offKey
+    dead-letter-key: deadLetterKey
 server:
   port: 8082

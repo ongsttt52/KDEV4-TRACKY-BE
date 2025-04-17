@@ -34,7 +34,7 @@ public class ConsumerService {
 	private final RentEntityRepository rentEntityRepository;
 	private final CarEntityRepository carEntityRepository;
 
-	// @Async("taskExecutor")
+	@Async("taskExecutor")
 	@Transactional
 	public void receiveCycleInfo(GpsHistoryMessage request) {
 
@@ -53,11 +53,9 @@ public class ConsumerService {
 
 	private void saveCycleInfo(DriveEntity drive, LocalDateTime oTime, double sum, CycleGpsRequest cycleGpsRequest) {
 
-		// long maxSeq = gpsHistoryEntityRepository.findMaxSeqByDrive(drive);
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(drive, oTime, sum);
 
 		gpsHistoryEntityRepository.save(gpsHistoryEntity);
-		log.info("GpsHistory 저장 완료");
 	}
 
 	@Transactional
