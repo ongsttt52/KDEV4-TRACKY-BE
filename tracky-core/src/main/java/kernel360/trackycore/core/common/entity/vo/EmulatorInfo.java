@@ -1,8 +1,10 @@
 package kernel360.trackycore.core.common.entity.vo;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class EmulatorInfo {
 
 	private final String tid;    // 터미널 아이디 - 'A001'로 고정
@@ -18,6 +20,10 @@ public class EmulatorInfo {
 	}
 
 	public static EmulatorInfo create() {
+		return new EmulatorInfo("A001", "6", "5", "1");
+	}
+
+	public static EmulatorInfo create(String tid, String mid, String pv, String did) {
 		return new EmulatorInfo("A001", "6", "5", "1");
 	}
 }

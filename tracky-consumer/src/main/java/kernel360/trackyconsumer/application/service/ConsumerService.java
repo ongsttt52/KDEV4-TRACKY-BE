@@ -7,9 +7,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
-import kernel360.trackyconsumer.application.dto.CycleGpsRequest;
-import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
+import kernel360.trackyconsumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.application.dto.request.CycleGpsRequest;
+import kernel360.trackyconsumer.application.dto.request.GpsHistoryMessage;
 import kernel360.trackyconsumer.domain.provider.DriveDomainProvider;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DriveEntity;
@@ -39,15 +39,15 @@ public class ConsumerService {
 	public void receiveCycleInfo(GpsHistoryMessage request) {
 
 		// 처리 로직
-		List<CycleGpsRequest> cycleGpsRequestList = request.getCList();
+		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
 
-		CarEntity car = carProvider.findByMdn(request.getMdn());
+		CarEntity car = carProvider.findByMdn(request.mdn());
 
-		DriveEntity drive = driveProvider.findByCarAndOtime(car, request.getOTime());
+		DriveEntity drive = driveProvider.findByCarAndOtime(car, request.oTime());
 
 		// GPS 쪼개서 정보 저장
-		for (int i = 0; i < request.getCCnt(); i++) {
-			saveCycleInfo(drive, request.getOTime(), cycleGpsRequestList.get(i).getGpsInfo().getSum(),
+		for (int i = 0; i < request.cCnt(); i++) {
+			saveCycleInfo(drive, request.oTime(), cycleGpsRequestList.get(i).gpsInfo().getSum(),
 				cycleGpsRequestList.get(i));
 		}
 	}
@@ -57,24 +57,21 @@ public class ConsumerService {
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(drive, oTime, sum);
 
 		gpsHistoryProvider.save((gpsHistoryEntity));
-
-		log.info("GpsHistory 저장 완료");
 	}
 
 	@Transactional
 	public void processOnMessage(CarOnOffRequest carOnOffRequest) {
 
-		LocationEntity location = LocationEntity.create(carOnOffRequest.getGpsInfo().getLon(),
-			carOnOffRequest.getGpsInfo().getLat());
-
+		LocationEntity location = LocationEntity.create(carOnOffRequest.gpsInfo().getLon(),
+			carOnOffRequest.gpsInfo().getLat());
 		locationProvider.save(location);
 
-		CarEntity car = carProvider.findByMdn(carOnOffRequest.getMdn());
+		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
-		RentEntity rent = rentProvider.findByCarAndTime(car, carOnOffRequest.getOnTime());
+		RentEntity rent = rentProvider.findByCarAndTime(car, carOnOffRequest.onTime());
 
 		DriveEntity drive = DriveEntity.create(car, rent, location,
-			carOnOffRequest.getOnTime());
+			carOnOffRequest.onTime());
 
 		driveProvider.save(drive);
 	}
@@ -82,21 +79,15 @@ public class ConsumerService {
 	@Transactional
 	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
 
-		/** 시동 off시 다음 동작 수행
-		 * 주행 종료 시간 update(Drive)
-		 * 주행 별 거리 sum으로 update(Drive)
-		 * 차량 주행 거리 += sum update(Car)
-		 * 주행 종료 지점 update(Location)
-		 **/
-		CarEntity car = carProvider.findByMdn(carOnOffRequest.getMdn());
+		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
-		DriveEntity drive = driveProvider.findByCarAndOtime(car, carOnOffRequest.getOnTime());
-		drive.updateDistance(carOnOffRequest.getGpsInfo().getSum());
-		drive.updateOffTime(carOnOffRequest.getOffTime());
+		DriveEntity drive = driveProvider.findByCarAndOtime(car, carOnOffRequest.onTime());
+		drive.updateDistance(carOnOffRequest.gpsInfo().getSum());
+		drive.updateOffTime(carOnOffRequest.offTime());
 
 		car.updateSum(drive.getDriveDistance());
 
 		LocationEntity location = drive.getLocation();
-		location.updateEndLocation(carOnOffRequest.getGpsInfo().getLat(), carOnOffRequest.getGpsInfo().getLon());
+		location.updateEndLocation(carOnOffRequest.gpsInfo().getLat(), carOnOffRequest.gpsInfo().getLon());
 	}
 }
