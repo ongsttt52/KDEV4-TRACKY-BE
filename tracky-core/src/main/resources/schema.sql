@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS `biz`;
 CREATE TABLE `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`biz_name` varchar(100) NULL,
-	`biz_reg_num` varchar(12) NULL,
+	`biz_reg_num` varchar(20) NULL,
 	`biz_admin`	varchar(100) NULL,
 	`biz_phone_num`	varchar(20)	NULL,
 	`created_at` timestamp NOT NULL,
@@ -103,7 +103,6 @@ CREATE TABLE `location` (
 
 CREATE TABLE `drive` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`rent_uuid`	varchar(100) NOT NULL,
 	`mdn` varchar(100) NOT NULL,
 	`drive_loc_id` bigint NOT NULL,
 	`drive_distance` varchar(100) NULL,
@@ -130,7 +129,7 @@ CREATE TABLE `gpshistory` (
 	`lon` varchar(100) NOT NULL,
 	`ang` varchar(100) NOT NULL,
 	`spd` varchar(100) NOT NULL,
-	`sum` varchar(255) NOT NULL,
+	`sum` varchar(100) NOT NULL,
 	`created_at` timestamp	NOT NULL
 );
 
@@ -148,7 +147,7 @@ CREATE TABLE `time_distance` (
 	`id` bigint NOT NULL AUTO_INCREMENT,
 	`mdn` varchar(100) NOT NULL,
 	`hour` timestamp NOT NULL,
-	`distance` varchar(255) NOT NULL,
+	`distance` varchar(100) NOT NULL,
 	PRIMARY KEY (`id`),
     CONSTRAINT `fk_time_distance_car`
         FOREIGN KEY (`mdn`) REFERENCES `car`(`mdn`)
