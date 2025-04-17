@@ -1,4 +1,4 @@
-package kernel360.trackycore.core.infrastructure.exception;
+package kernel360.trackycore.core.common.exception;
 
 import lombok.Getter;
 
