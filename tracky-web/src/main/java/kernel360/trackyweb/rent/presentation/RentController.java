@@ -18,31 +18,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.rent.application.RentService;
-import kernel360.trackyweb.rent.presentation.dto.RentRequest;
-import kernel360.trackyweb.rent.presentation.dto.RentResponse;
+import kernel360.trackyweb.rent.application.dto.request.RentRequest;
+import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-// @PreAuthorize("hasRole('admin')")
 @RequestMapping("/api/rents")
 @RequiredArgsConstructor
 public class RentController implements RentApiDocs {
 
 	private final RentService rentService;
 
-	@GetMapping("/all")
-	public ApiResponse<List<RentResponse>> getAll() {
-		return rentService.getAll();
-	}
-
 	@GetMapping("/cars/all")
 	public ApiResponse<List<String>> getAllCars() {
 		return rentService.getAllCars();
 	}
 
-	@GetMapping("/search")
+	@GetMapping()
 	public ApiResponse<List<RentResponse>> searchByFilter(
 		@RequestParam(required = false) String rentUuid,
 		@RequestParam(required = false, name = "status") String rentStatus,
@@ -55,22 +49,21 @@ public class RentController implements RentApiDocs {
 		return rentService.searchByFilter(rentUuid, rentStatus, rentDateTime, pageable);
 	}
 
-	@GetMapping("/search/{rentUuid}/detail")
-	public ApiResponse<RentResponse> searchDetailByRentUuid(
+	@GetMapping("/{rentUuid}")
+	public ApiResponse<RentResponse> searchOne(
 		@PathVariable String rentUuid
 	) {
-		log.info("searchDetailByRentUuid : {}", rentUuid);
-		return rentService.searchDetailByRentUuid(rentUuid);
+		return rentService.searchOne(rentUuid);
 	}
 
-	@PostMapping("/create")
+	@PostMapping()
 	public ApiResponse<RentResponse> create(
 		@RequestBody RentRequest rentRequest
 	) {
 		return rentService.create(rentRequest);
 	}
 
-	@PatchMapping("/update/{rentUuid}")
+	@PatchMapping("/{rentUuid}")
 	public ApiResponse<RentResponse> update(
 		@PathVariable String rentUuid,
 		@RequestBody RentRequest rentRequest
@@ -78,7 +71,7 @@ public class RentController implements RentApiDocs {
 		return rentService.update(rentUuid, rentRequest);
 	}
 
-	@DeleteMapping("/delete/{rentUuid}")
+	@DeleteMapping("/{rentUuid}")
 	public ApiResponse<String> delete(
 		@PathVariable String rentUuid
 	) {

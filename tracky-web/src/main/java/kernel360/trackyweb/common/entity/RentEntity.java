@@ -1,4 +1,4 @@
-package kernel360.trackycore.core.common.entity;
+package kernel360.trackyweb.common.entity;
 
 import java.time.LocalDateTime;
 
@@ -11,9 +11,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.common.base.DateBaseEntity;
+import kernel360.trackycore.core.common.entity.CarEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

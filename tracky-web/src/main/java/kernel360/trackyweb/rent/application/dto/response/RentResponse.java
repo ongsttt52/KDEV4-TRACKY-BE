@@ -1,10 +1,9 @@
-package kernel360.trackyweb.rent.presentation.dto;
+package kernel360.trackyweb.rent.application.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.RentEntity;
+import kernel360.trackyweb.common.entity.RentEntity;
 
 public record RentResponse(
 	String rent_uuid,

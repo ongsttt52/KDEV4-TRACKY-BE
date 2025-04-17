@@ -1,4 +1,4 @@
-package kernel360.trackyweb.rent.infrastructure.impl;
+package kernel360.trackyweb.rent.infrastructure.repository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,8 +15,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackyweb.rent.infrastructure.repo.RentRepositoryCustom;
+import kernel360.trackyweb.common.entity.RentEntity;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,7 +26,7 @@ public class RentRepositoryImpl implements RentRepositoryCustom {
 	private EntityManager em;
 
 	@Override
-	public Page<RentEntity> searchByFilters(String rentUuid, String rentStatus, LocalDateTime rentDate,
+	public Page<RentEntity> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate,
 		Pageable pageable) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 
