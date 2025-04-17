@@ -20,9 +20,9 @@ public record CarOnOffRequest(
 
 	GpsInfo gpsInfo,
 
-	LocalDateTime onTime,  // 시동 On 시간
+	LocalDateTime onTime,
 
-	LocalDateTime offTime // 시동 Off 시간
+	LocalDateTime offTime
 ) {
 	@JsonCreator
 	public CarOnOffRequest(
@@ -48,19 +48,9 @@ public record CarOnOffRequest(
 			offTime);
 	}
 
-	// 기존 메소드는 record 내부에 그대로 유지할 수 있습니다.
 	public LocationEntity toLocationEntity() {
 		return LocationEntity.create(
 			this.gpsInfo.getLon(),
 			this.gpsInfo.getLat());
 	}
-
-	// 참고: 만약 GpsInfo가 record이고 접근자가 lon(), lat() 이라면 아래처럼 사용합니다.
-    /*
-    public LocationEntity toLocationEntityAlternative() {
-       return LocationEntity.create(
-          this.gpsInfo().lon(), // 또는 gpsInfo().getLon() - GpsInfo 구현에 따라 다름
-          this.gpsInfo().lat()); // 또는 gpsInfo().getLat()
-    }
-    */
 }

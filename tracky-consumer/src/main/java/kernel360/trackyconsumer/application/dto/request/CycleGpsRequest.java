@@ -10,8 +10,8 @@ import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.common.entity.vo.GpsInfo;
 
 public record CycleGpsRequest(
-	int sec,    // 발생시간 '초'
-	String gcd,    // GPS 상태
+	int sec,
+	String gcd,
 	GpsInfo gpsInfo
 ) {
 	@JsonCreator

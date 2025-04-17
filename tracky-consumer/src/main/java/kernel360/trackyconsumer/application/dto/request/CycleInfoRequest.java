@@ -11,14 +11,14 @@ import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
 
 public record CycleInfoRequest(
 	EmulatorInfo emulatorInfo,
-	String mdn,    // 차량 번호
+	String mdn,
 
-	int cCnt,   // 주기 정보 개수
+	int cCnt,
 
 	@JsonFormat(pattern = "yyyyMMddHHmm")
-	LocalDateTime oTime,  // 발생시간
+	LocalDateTime oTime,
 
-	List<CycleGpsRequest> cList  // 주기정보 리스트
+	List<CycleGpsRequest> cList
 ) {
 	@JsonCreator
 	public CycleInfoRequest(

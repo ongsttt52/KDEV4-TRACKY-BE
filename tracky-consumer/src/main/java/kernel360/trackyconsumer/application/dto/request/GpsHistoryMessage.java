@@ -9,7 +9,7 @@ public record GpsHistoryMessage(
 	String mdn,
 
 	@JsonFormat(pattern = "yyyyMMddHHmm")
-	LocalDateTime oTime,  // 발생시간
+	LocalDateTime oTime,
 
 	int cCnt,
 
