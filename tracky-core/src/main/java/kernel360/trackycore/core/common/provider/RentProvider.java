@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackycore.core.infrastructure.exception.ErrorCode;
-import kernel360.trackycore.core.infrastructure.exception.GlobalException;
+import kernel360.trackycore.core.common.exception.ErrorCode;
+import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.infrastructure.repository.RentRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +19,6 @@ public class RentProvider {
 
 	public RentEntity findByCarAndTime(CarEntity car, LocalDateTime onTime) {
 		return rentRepository.findMyCarAndTime(car, onTime)
-			.orElseThrow(() -> GlobalException.sendError(ErrorCode.RENT_NOT_FOUND));
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
 	}
 }

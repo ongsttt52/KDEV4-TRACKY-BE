@@ -5,8 +5,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
-import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
+import kernel360.trackyconsumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.application.dto.request.GpsHistoryMessage;
 import kernel360.trackyconsumer.config.RabbitMQConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

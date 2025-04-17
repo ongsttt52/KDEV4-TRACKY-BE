@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
-import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
+import kernel360.trackyconsumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.application.dto.request.GpsHistoryMessage;
 import kernel360.trackyconsumer.application.service.ConsumerService;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,20 +24,20 @@ public class ConsumerController {
 	public ApiResponse<String> postCarOn(@RequestBody CarOnOffRequest request) {
 
 		ConsumerService.processOnMessage(request);
-		return ApiResponse.success(request.getMdn());
+		return ApiResponse.success(request.mdn());
 	}
 
 	@PostMapping("/off")
 	public ApiResponse<String> postCarOff(@RequestBody CarOnOffRequest request) {
 
 		ConsumerService.processOffMessage(request);
-		return ApiResponse.success(request.getMdn());
+		return ApiResponse.success(request.mdn());
 	}
 
 	@PostMapping("/cycle")
 	public ApiResponse<String> postCarCycle(@RequestBody GpsHistoryMessage request) {
 
 		ConsumerService.receiveCycleInfo(request);
-		return ApiResponse.success(request.getMdn());
+		return ApiResponse.success(request.mdn());
 	}
 }
