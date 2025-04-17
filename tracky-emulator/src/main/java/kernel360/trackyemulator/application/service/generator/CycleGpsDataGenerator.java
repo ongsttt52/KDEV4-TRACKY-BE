@@ -4,6 +4,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
 
+import kernel360.trackycore.core.common.entity.vo.GpsInfo;
 import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,10 @@ public class CycleGpsDataGenerator {
 
 	public CycleGpsRequest generate(EmulatorInstance instance) {
 		// 위/경도 double 변환
-		double lastLat = instance.getCycleLastLat() / 1_000_000.0;
-		double lastLon = instance.getCycleLastLon() / 1_000_000.0;
-		int lastSpeed = instance.getCycleLastSpeed();
-		int fixedAngle = instance.getAng(); // 고정된 방향 (0~359도)
+		double lastLat = instance.getCycleLastGpsInfo().getLat() / 1_000_000.0;
+		double lastLon = instance.getCycleLastGpsInfo().getLon() / 1_000_000.0;
+		int lastSpeed = instance.getCycleLastGpsInfo().getSpd();
+		int fixedAngle = instance.getCycleLastGpsInfo().getAng(); // 고정된 방향 (0~359도)
 
 		// 속도 기준 이동 거리 계산 (m/s)
 		int newSpeed = adjustSpeed(lastSpeed);
@@ -28,11 +29,13 @@ public class CycleGpsDataGenerator {
 		int newLat = (int)Math.round(newCoordinates[0] * 1_000_000);
 		int newLon = (int)Math.round(newCoordinates[1] * 1_000_000);
 
+		GpsInfo newGpsInfo = GpsInfo.create(newLat, newLon, fixedAngle, newSpeed, distance);
+
 		// 상태 업데이트
-		instance.updateCycleInfo(newLat, newLon, newSpeed, distance);
+		instance.updateCycleInfo(newGpsInfo);
 
 		// 결과 생성
-		return CycleGpsRequest.of(newLat, newLon, fixedAngle, newSpeed, instance.getSum());
+		return CycleGpsRequest.of(newGpsInfo);
 	}
 
 	private int adjustSpeed(int currentSpeed) {

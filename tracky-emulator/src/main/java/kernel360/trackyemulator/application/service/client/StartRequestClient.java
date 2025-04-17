@@ -39,7 +39,7 @@ public class StartRequestClient {
 		ApiResponse apiResponse = response.getBody();
 		if (apiResponse == null || !("000".equals(apiResponse.rstCd()))) {
 			throw new IllegalStateException(
-				"Start 정보 전송 실패 " + apiResponse.mdn());
+				"Start 정보 전송 실패 " + request.mdn());
 		}
 
 		return apiResponse;
