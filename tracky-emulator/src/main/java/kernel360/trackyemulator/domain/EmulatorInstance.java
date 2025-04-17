@@ -16,7 +16,7 @@ public class EmulatorInstance {
 	private GpsInfo cycleLastGpsInfo;
 
 	private final String mdn;
-	private String token;  // 단말 인증 토큰
+	private String token;        // 단말 인증 토큰
 	private double totalSum;    // 시동 ON 후 총 누적 거리
 
 	private final LocalDateTime carOnTime;
@@ -67,7 +67,11 @@ public class EmulatorInstance {
 	}
 
 	public GpsInfo offGpsInfo() {
-		return GpsInfo.create(this.cycleLastGpsInfo.getLat(), this.cycleLastGpsInfo.getLon(),
-			this.cycleLastGpsInfo.getAng(), this.cycleLastGpsInfo.getSpd(), this.totalSum);
+		return GpsInfo.create(
+			this.cycleLastGpsInfo.getLat(),
+			this.cycleLastGpsInfo.getLon(),
+			this.cycleLastGpsInfo.getAng(),
+			this.cycleLastGpsInfo.getSpd(),
+			this.totalSum);
 	}
 }
