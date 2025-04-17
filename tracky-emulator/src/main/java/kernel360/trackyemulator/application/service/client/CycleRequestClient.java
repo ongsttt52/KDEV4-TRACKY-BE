@@ -1,8 +1,6 @@
 package kernel360.trackyemulator.application.service.client;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,10 +10,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
-import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
 import kernel360.trackyemulator.application.service.dto.request.CycleInfoRequest;
 import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
+import kernel360.trackyemulator.infrastructure.exception.EmulatorException;
+import kernel360.trackyemulator.infrastructure.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,34 +27,28 @@ public class CycleRequestClient {
 
 	public ApiResponse sendCycleData(EmulatorInstance instance) {
 
+		String url = "http://hub-service.hub1:8082/hub/car/cycle";
+
 		// CycleInfoRequest DTO 생성
-		List<CycleGpsRequest> buffer = new ArrayList<>(instance.getCycleBuffer());
-
 		EmulatorInfo emulatorInfo = instance.getEmulatorInfo();
-
-		CycleInfoRequest request = CycleInfoRequest.of(instance.getMdn(), emulatorInfo, LocalDateTime.now(), buffer);
+		CycleInfoRequest request = CycleInfoRequest.of(instance.getMdn(), emulatorInfo, LocalDateTime.now(),
+			instance.getCycleBuffer());
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-
 		HttpEntity<CycleInfoRequest> entity = new HttpEntity<>(request, headers);
 
-		// Cycle 데이터 전송 API 호출
-		ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
-			"http://hub-service.hub1:8082/hub/car/cycle",
-			entity,
-			ApiResponse.class
-		);
-
-		// API 응답 처리
+		ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url, entity, ApiResponse.class);
 		ApiResponse apiResponse = response.getBody();
-		if (apiResponse == null || !("000".equals(apiResponse.rstCd()))) {
-			throw new IllegalStateException(
-				"주기 데이터 전송 실패 " + request.mdn());
+
+		if (apiResponse == null || !"000".equals(apiResponse.rstCd())) {
+			log.error("주기정보 전송 실패 - mdn: {}, 응답: {}", request.mdn(),
+				apiResponse != null ? apiResponse.rstMsg() : "null");
+			throw EmulatorException.sendError(ErrorCode.CYCLE_SEND_FAILED);
 		}
 
-		log.info("{} → 60초 주기 데이터 전송 완료", request.mdn());
-
+		log.info("주기정보 전송 성공 - mdn: {}", request.mdn());
 		return apiResponse;
+
 	}
 }
