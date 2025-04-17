@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
+import kernel360.trackycore.core.common.entity.vo.GpsInfo;
 import kernel360.trackyemulator.application.service.util.RandomLocationGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,9 @@ public class SingleCarInstanceFactory {
 		int lon = locationGenerator.randomLongitude();
 		int ang = locationGenerator.randomAngle();
 
-		EmulatorInfo emulatorInfo = EmulatorInfo.create(mdn);
-		EmulatorInstance car = EmulatorInstance.create(emulatorInfo, lat, lon, LocalDateTime.now(), ang);
+		EmulatorInfo emulatorInfo = EmulatorInfo.create();
+		GpsInfo gpsInfo = GpsInfo.create(lat, lon, ang, 0, 0.0);
+		EmulatorInstance car = EmulatorInstance.create(mdn, emulatorInfo, gpsInfo, LocalDateTime.now());
 
 		List<EmulatorInstance> instances = new ArrayList<>();
 		instances.add(car);

@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackyemulator.application.service.client.ControlClient;
+import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
 import kernel360.trackyemulator.application.service.generator.CycleGpsDataGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import kernel360.trackyemulator.presentation.view.dto.CycleLogResponse;
@@ -35,14 +36,14 @@ public class CycleDataManager {
 	public void startSending(EmulatorInstance instance) {
 		Runnable task = () -> handlePeriodicData(instance);
 		ScheduledFuture<?> future = executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
-		taskMap.put(instance.getEmulatorInfo().getMdn(), future);
+		taskMap.put(instance.getMdn(), future);
 	}
 
 	/**
 	 * 주기 데이터 생성 스케줄 종료 + 남은 데이터 전송
 	 */
 	public void stopSending(EmulatorInstance instance) {
-		String mdn = instance.getEmulatorInfo().getMdn();
+		String mdn = instance.getMdn();
 
 		Optional.ofNullable(taskMap.remove(mdn)).ifPresent(future -> {
 			future.cancel(true);
@@ -62,20 +63,19 @@ public class CycleDataManager {
 	private void handlePeriodicData(EmulatorInstance instance) {
 		CycleGpsRequest data = gpsDataGenerator.generate(instance);
 		instance.addCycleData(data);
-		log.info("{} → 1초 데이터 생성 완료 (버퍼: {}/{})", instance.getEmulatorInfo().getMdn(), instance.getCycleBuffer().size(),
-			60);
+		log.info("{} → 1초 데이터 생성 완료 (버퍼: {}/{})", instance.getMdn(), instance.getCycleBuffer().size(), 60);
 
 		if (instance.isBufferFull()) {
 			controlClient.sendCycleData(instance);
-			log.info("{} → 60초 데이터 전송 완료", instance.getEmulatorInfo().getMdn());
+			log.info("{} → 60초 데이터 전송 완료", instance.getMdn());
 			instance.clearBuffer();
 
 			// 뷰에 내려줄 정보
 			CycleLogResponse response = new CycleLogResponse(
-				instance.getEmulatorInfo().getMdn(),
-				instance.getCycleLastLat() / 1e6,
-				instance.getCycleLastLon() / 1e6,
-				instance.getCycleLastSpeed()
+				instance.getMdn(),
+				instance.getCycleLastGpsInfo().getLat() / 1e6,
+				instance.getCycleLastGpsInfo().getLon() / 1e6,
+				instance.getCycleLastGpsInfo().getSpd()
 			);
 			sseService.sendMessage(response);
 		}

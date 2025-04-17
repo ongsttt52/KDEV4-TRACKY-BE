@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackyemulator.application.service.CarInstanceFactory.MultiCarInstanceFactory;
 import kernel360.trackyemulator.application.service.CarInstanceFactory.SingleCarInstanceFactory;
 import kernel360.trackyemulator.application.service.client.ControlClient;
+import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,8 +59,8 @@ public class CarInstanceManager {
 			String token = controlClient.getToken(instance);
 			instance.setToken(token);
 
-			result.put(instance.getEmulatorInfo().getMdn(), "토큰 세팅 성공" + instance.getToken());
-			log.info("{} 토큰 세팅 완료", instance.getEmulatorInfo().getMdn());
+			result.put(instance.getMdn(), "토큰 세팅 성공" + instance.getToken());
+			log.info("{} 토큰 세팅 완료", instance.getMdn());
 		}
 		return result;
 	}
@@ -70,7 +71,7 @@ public class CarInstanceManager {
 
 		for (EmulatorInstance instance : instances) {
 			ApiResponse response = controlClient.sendCarStart(instance);
-			result.put(instance.getEmulatorInfo().getMdn(), response.rstMsg());
+			result.put(instance.getMdn(), response.rstMsg());
 
 			cycleDataManager.startSending(instance); // 스케줄 시작
 		}
@@ -92,7 +93,7 @@ public class CarInstanceManager {
 			ApiResponse response = controlClient.sendCarStop(instance);    //시동OFF 데이터 전송
 			log.info("시동 off response : {}", response.rstMsg());
 
-			result.put(instance.getEmulatorInfo().getMdn(), response.rstMsg());
+			result.put(instance.getMdn(), response.rstMsg());
 
 			stoppedMdnSet.add(response.mdn());
 		}
@@ -102,7 +103,7 @@ public class CarInstanceManager {
 
 	//에뮬레이터 삭제
 	private void removeStoppedInstances(Set<String> stoppedMdns) {
-		instances.removeIf(instance -> stoppedMdns.contains(instance.getEmulatorInfo().getMdn()));
+		instances.removeIf(instance -> stoppedMdns.contains(instance.getMdn()));
 		stoppedMdns.forEach(mdn -> log.info("{} 인스턴스 삭제 완료", mdn));
 	}
 
