@@ -30,7 +30,7 @@ public class CarDomainProvider {
 	}
 
 	public CarEntity save(CarEntity car) {
-		return carProvider.save(car);
+		return carDomainRepository.save(car);
 	}
 
 	public CarEntity getCarDetail(String mdn) {
