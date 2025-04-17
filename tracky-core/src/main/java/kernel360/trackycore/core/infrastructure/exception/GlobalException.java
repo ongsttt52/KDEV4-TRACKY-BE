@@ -1,7 +1,7 @@
 package kernel360.trackycore.core.infrastructure.exception;
 
 /**
- * 공통 모듈 Exception
+ * 공통 Exception
  */
 public class GlobalException extends RuntimeException {
 
@@ -12,15 +12,11 @@ public class GlobalException extends RuntimeException {
 		this.errorCode = errorCode;
 	}
 
-	public ErrorCode getErrorCode() {
-		return errorCode;
-	}
-
-	public static GlobalException sendError(ErrorCode errorCode) {
-		return new GlobalException(errorCode);
-	}
-
 	public static GlobalException throwError(ErrorCode errorCode) {
 		throw new GlobalException(errorCode);
+	}
+
+	public ErrorCode getErrorCode() {
+		return errorCode;
 	}
 }
