@@ -18,6 +18,9 @@ import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 @Tag(name = "Rent API", description = "렌트 관련 API")
 public interface RentApiDocs {
 
+	@Operation(summary = "rent 등록시 select 할 차량 전체 목록", description = "rent 등록시 select 할 차량 전체 목록 list")
+	ApiResponse<List<String>> getAllMdns();
+	
 	@Operation(summary = "rent uuid, status, date 필터링 검색", description = "rent uuid, status, date 필터링 검색")
 	ApiResponse<List<RentResponse>> searchByFilter(
 		@RequestParam String rentUuid,

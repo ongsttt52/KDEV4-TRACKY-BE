@@ -3,9 +3,7 @@ package kernel360.trackyweb.rent.application;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,7 +44,7 @@ public class RentService {
 	 * 차량 mdn list 조회
 	 * @return mdn list
 	 */
-	public ApiResponse<List<String>> getAllCars() {
+	public ApiResponse<List<String>> getAllMdns() {
 		List<String> mdns = rentDomainProvider.findAllMdns();
 
 		return ApiResponse.success(mdns);
@@ -75,7 +73,7 @@ public class RentService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<RentResponse> searchOne(String rentUuid) {
-		RentEntity rent = rentDomainProvider.findByRentUuid(rentUuid);
+		RentEntity rent = rentDomainProvider.getRent(rentUuid);
 		return ApiResponse.success(RentResponse.from(rent));
 	}
 
@@ -123,7 +121,7 @@ public class RentService {
 	 */
 	@Transactional
 	public ApiResponse<RentResponse> update(String rentUuid, RentRequest rentRequest) {
-		RentEntity rent = rentDomainProvider.findByRentUuid(rentUuid);
+		RentEntity rent = rentDomainProvider.getRent(rentUuid);
 
 		CarEntity car = carProvider.findByMdn(rentRequest.mdn());
 

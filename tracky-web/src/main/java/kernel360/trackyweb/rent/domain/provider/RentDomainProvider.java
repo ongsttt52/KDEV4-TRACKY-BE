@@ -18,7 +18,7 @@ public class RentDomainProvider {
 	private final CarRentRepository carRentRepository;
 	private final RentProvider rentProvider;
 
-	public RentEntity findByRentUuid(String rentUuid) {
+	public RentEntity getRent(String rentUuid) {
 		return rentProvider.findByRentUuid(rentUuid);
 	}
 

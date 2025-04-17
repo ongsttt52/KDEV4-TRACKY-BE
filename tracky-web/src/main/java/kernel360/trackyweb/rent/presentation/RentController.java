@@ -31,9 +31,9 @@ public class RentController implements RentApiDocs {
 
 	private final RentService rentService;
 
-	@GetMapping("/cars/all")
-	public ApiResponse<List<String>> getAllCars() {
-		return rentService.getAllCars();
+	@GetMapping("/cars")
+	public ApiResponse<List<String>> getAllMdns() {
+		return rentService.getAllMdns();
 	}
 
 	@GetMapping()
