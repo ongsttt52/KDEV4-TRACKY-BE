@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import kernel360.trackycore.core.infrastructure.exception.GlobalException;
+import kernel360.trackycore.core.common.exception.GlobalException;
 
 @RestControllerAdvice
 @io.swagger.v3.oas.annotations.Hidden

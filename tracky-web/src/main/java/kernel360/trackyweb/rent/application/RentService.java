@@ -15,15 +15,15 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackycore.core.infrastructure.exception.CarException;
-import kernel360.trackycore.core.infrastructure.exception.RentException;
+import kernel360.trackycore.core.common.exception.ErrorCode;
+import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackyweb.emitter.EventEmitterService;
-import kernel360.trackyweb.rent.presentation.mapper.RentEvent;
-import kernel360.trackyweb.rent.presentation.mapper.RentMapper;
 import kernel360.trackyweb.rent.infrastructure.repo.CarRepository;
 import kernel360.trackyweb.rent.infrastructure.repo.RentRepository;
 import kernel360.trackyweb.rent.presentation.dto.RentRequest;
 import kernel360.trackyweb.rent.presentation.dto.RentResponse;
+import kernel360.trackyweb.rent.presentation.mapper.RentEvent;
+import kernel360.trackyweb.rent.presentation.mapper.RentMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,7 +88,7 @@ public class RentService {
 	@Transactional(readOnly = true)
 	public ApiResponse<RentResponse> searchDetailByRentUuid(String rentUuid) {
 		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
-			.orElseThrow(() -> RentException.notFound());
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
 		return ApiResponse.success(RentResponse.from(rent));
 	}
 
@@ -100,7 +100,7 @@ public class RentService {
 	@Transactional
 	public ApiResponse<RentResponse> create(RentRequest rentRequest) {
 		CarEntity car = carRepository.findByMdn(rentRequest.mdn())
-			.orElseThrow(() -> CarException.notFound());
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.CAR_NOT_FOUND));
 
 		// RentEntity 생성 (차량과 대여 정보 포함, uuid 만들기 (임시 8자리)
 		String rentUuid = generateShortUuid();
@@ -126,10 +126,10 @@ public class RentService {
 	@Transactional
 	public ApiResponse<RentResponse> update(String rentUuid, RentRequest rentRequest) {
 		RentEntity rent = rentRepository.findDetailByRentUuid(rentUuid)
-			.orElseThrow(() -> RentException.notFound());
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
 
 		CarEntity car = carRepository.findByMdn(rentRequest.mdn())
-			.orElseThrow(() -> CarException.notFound());
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.CAR_NOT_FOUND));
 
 		RentMapper.updateRent(car, rent, rentRequest);
 

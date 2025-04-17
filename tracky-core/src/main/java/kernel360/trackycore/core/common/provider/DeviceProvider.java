@@ -3,8 +3,8 @@ package kernel360.trackycore.core.common.provider;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.entity.DeviceEntity;
-import kernel360.trackycore.core.infrastructure.exception.ErrorCode;
-import kernel360.trackycore.core.infrastructure.exception.GlobalException;
+import kernel360.trackycore.core.common.exception.ErrorCode;
+import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.infrastructure.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +16,6 @@ public class DeviceProvider {
 
 	public DeviceEntity getDevice(Long id) {
 		return deviceRepository.findById(id)
-			.orElseThrow(() -> GlobalException.sendError(ErrorCode.DEVICE_NOT_FOUND));
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DEVICE_NOT_FOUND));
 	}
 }

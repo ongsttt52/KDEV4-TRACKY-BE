@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import kernel360.trackycore.core.common.entity.DriveEntity;
 import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackycore.core.infrastructure.exception.RentException;
+import kernel360.trackycore.core.common.exception.ErrorCode;
+import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackyweb.drivehistory.domain.CarDriveHistory;
 import kernel360.trackyweb.drivehistory.domain.DriveHistory;
 import kernel360.trackyweb.drivehistory.domain.GpsData;
@@ -78,7 +79,7 @@ public class DriveHistoryService {
 
 	public DriveHistory getDriveHistoriesByDriveId(Long id) {
 		DriveEntity drive = driveHistoryRepository.findById(id)
-			.orElseThrow(() -> RentException.notFound());
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
 
 		Optional<GpsHistoryEntity> onGpsOpt = gpsHistoryRepository.findFirstGpsByDriveId(
 			drive.getId());
