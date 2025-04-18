@@ -2,8 +2,8 @@ package kernel360.trackyweb.member.application;
 
 import org.springframework.stereotype.Service;
 
+import kernel360.trackycore.core.domain.entity.MemberEntity;
 import kernel360.trackyweb.member.application.validation.MemberValidator;
-import kernel360.trackyweb.member.domain.entity.MemberEntity;
 import kernel360.trackyweb.member.domain.provider.MemberProvider;
 import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;

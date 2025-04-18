@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.domain.entity;
+package kernel360.trackycore.core.domain.entity;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
