@@ -1,4 +1,4 @@
-package kernel360.trackycore.core.common.sse;
+package kernel360.trackyweb.common.sse;
 
 import java.time.LocalDateTime;
 
