@@ -16,11 +16,6 @@ public class CarProvider {
 
 	private final CarRepository carRepository;
 
-	// save and update
-	public CarEntity save(CarEntity car) {
-		return carRepository.save(car);
-	}
-
 	public Optional<CarEntity> findByMdnOps(String mdn) {
 		return carRepository.findByMdn(mdn);
 	}
