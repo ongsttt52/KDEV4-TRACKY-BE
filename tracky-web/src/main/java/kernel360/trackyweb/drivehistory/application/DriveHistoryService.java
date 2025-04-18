@@ -17,7 +17,7 @@ import kernel360.trackyweb.drivehistory.domain.DriveHistory;
 import kernel360.trackyweb.drivehistory.domain.GpsData;
 import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
 import kernel360.trackyweb.drivehistory.infrastructure.repo.DriveHistoryRepository;
-import kernel360.trackyweb.drivehistory.infrastructure.repo.GpsHistoryRepository;
+import kernel360.trackyweb.drivehistory.infrastructure.repo.GpsHistoryDomainRepository;
 import kernel360.trackyweb.drivehistory.infrastructure.repo.RentHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class DriveHistoryService {
 
 	private final RentHistoryRepository rentHistoryRepository;
 	private final DriveHistoryRepository driveHistoryRepository;
-	private final GpsHistoryRepository gpsHistoryRepository;
+	private final GpsHistoryDomainRepository gpsHistoryRepository;
 
 	public List<RentDriveHistory> getAllRentHistories(String rentUuid) {
 		// rentUuid가 null이거나 빈 문자열이면 전체 조회, 아니면 특정 UUID 검색
@@ -119,6 +119,7 @@ public class DriveHistoryService {
 
 	/**
 	 * 차량 mdn 검색으로 차량에 대한 운행정보 가져오기
+	 *
 	 * @param mdn
 	 * @return 차량 별 운행기록 list
 	 */

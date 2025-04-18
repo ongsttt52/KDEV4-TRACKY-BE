@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import kernel360.trackycore.core.common.entity.LocationEntity;
 
 @Repository
-public interface LocationRepository extends JpaRepository<LocationEntity, Long> {
+public interface LocationDomainRepository extends JpaRepository<LocationEntity, Long> {
 }

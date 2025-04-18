@@ -44,16 +44,18 @@ public class RentService {
 
 	/**
 	 * 차량 mdn list 조회
+	 *
 	 * @return mdn list
 	 */
-	public ApiResponse<List<String>> getAllMdns() {
-		List<String> mdns = rentDomainProvider.findAllMdns();
+	public ApiResponse<List<String>> getAllMdnByBizId(Long bizId) {
+		List<String> mdns = rentDomainProvider.getAllMdnByBizId(bizId);
 
 		return ApiResponse.success(mdns);
 	}
 
 	/**
 	 * 필터링 기반 검색
+	 *
 	 * @param rentUuid
 	 * @param rentStatus
 	 * @param rentDate
@@ -70,6 +72,7 @@ public class RentService {
 
 	/**
 	 * rentUuid 값으로 검색
+	 *
 	 * @param rentUuid
 	 * @return 수정된 대여 detail
 	 */
@@ -81,6 +84,7 @@ public class RentService {
 
 	/**
 	 * 대여 신규 등록
+	 *
 	 * @param
 	 * @return 등록 성공한 대여
 	 */
@@ -118,6 +122,7 @@ public class RentService {
 
 	/**
 	 * 대여 정보 수정
+	 *
 	 * @param rentUuid
 	 * @return 수정된 대여 detail
 	 */
@@ -138,6 +143,7 @@ public class RentService {
 
 	/**
 	 * 대여 삭제 API
+	 *
 	 * @param rentUuid
 	 * @return ApiResponse
 	 */
