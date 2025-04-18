@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+	id 'java-library'
 }
 
 dependencies {
@@ -10,9 +10,16 @@ dependencies {
 
     implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+sourceSets {
+    main.java.srcDirs += 'build/generated/source/apt/main'
 }
 
 tasks.named('test') {
