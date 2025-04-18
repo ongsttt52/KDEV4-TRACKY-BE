@@ -1,8 +1,8 @@
-package kernel360.trackycore.core.common.provider;
+package kernel360.trackycore.core.domain.provider;
 
 import org.springframework.stereotype.Component;
 
-import kernel360.trackycore.core.common.entity.LocationEntity;
+import kernel360.trackycore.core.domain.entity.LocationEntity;
 import kernel360.trackycore.core.infrastructure.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 

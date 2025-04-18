@@ -1,6 +1,6 @@
 package kernel360.trackyweb.reservation.presentation.dto;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
 
 public record CarResponse(
 	String carPlate,   //번호판

@@ -1,6 +1,6 @@
 package kernel360.trackyweb.car.application.dto.response;
 
-import kernel360.trackycore.core.common.entity.DeviceEntity;
+import kernel360.trackycore.core.domain.entity.DeviceEntity;
 
 public record DeviceResponse(
 	Long id,

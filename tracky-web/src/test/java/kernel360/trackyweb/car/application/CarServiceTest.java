@@ -14,9 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.DeviceEntity;
 import kernel360.trackycore.core.common.exception.GlobalException;
+import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.DeviceEntity;
 import kernel360.trackycore.core.infrastructure.repository.CarRepository;
 import kernel360.trackycore.core.infrastructure.repository.DeviceRepository;
 import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;

@@ -1,6 +1,6 @@
 package kernel360.trackyweb.car.application.dto.request;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
 
 public record CarCreateRequest(
 	String mdn,

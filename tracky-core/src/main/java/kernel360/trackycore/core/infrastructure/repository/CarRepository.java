@@ -4,16 +4,16 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
 
 public interface CarRepository extends JpaRepository<CarEntity, Long> {
 
 	/**
 	 * mdn 차량이 존재하는지 체크
 	 * @param mdn 차량 mdn
-	 * @return Boolean
+	 * @return boolean
 	 */
-	Boolean existsByMdn(String mdn);
+	boolean existsByMdn(String mdn);
 
 	/**
 	 * mdn이 일치하는 차량 찾기

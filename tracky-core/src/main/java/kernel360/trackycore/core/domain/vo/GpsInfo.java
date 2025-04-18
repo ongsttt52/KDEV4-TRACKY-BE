@@ -1,4 +1,4 @@
-package kernel360.trackycore.core.common.entity.vo;
+package kernel360.trackycore.core.domain.vo;
 
 import lombok.Getter;
 
