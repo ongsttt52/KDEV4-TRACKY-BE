@@ -16,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
-import kernel360.trackycore.core.infrastructure.exception.CarException;
-import kernel360.trackycore.core.infrastructure.exception.GlobalException;
+import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.infrastructure.repository.CarRepository;
 import kernel360.trackycore.core.infrastructure.repository.DeviceRepository;
 import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
@@ -113,7 +112,7 @@ class CarServiceTest {
 		when(carRepository.existsByMdn(carCreateRequest.mdn())).thenReturn(true);
 
 		// then
-		assertThrows(CarException.class, () -> carService.create(carCreateRequest));
+		assertThrows(GlobalException.class, () -> carService.create(carCreateRequest));
 
 		verify(deviceRepository, times(1)).findById((1L));
 		verify(carRepository, times(1)).existsByMdn(carCreateRequest.mdn());
@@ -149,7 +148,7 @@ class CarServiceTest {
 		when(carRepository.findDetailByMdn(any())).thenReturn(Optional.empty());
 
 		// then
-		assertThrows(CarException.class, () -> carService.update(car.getMdn(), carUpdateRequest));
+		assertThrows(GlobalException.class, () -> carService.update(car.getMdn(), carUpdateRequest));
 
 		verify(carRepository, times(1)).findDetailByMdn(car.getMdn());
 		verify(deviceRepository, never()).findById(any());

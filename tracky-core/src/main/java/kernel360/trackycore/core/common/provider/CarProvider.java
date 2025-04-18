@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.infrastructure.exception.CarException;
-import kernel360.trackycore.core.infrastructure.exception.ErrorCode;
+import kernel360.trackycore.core.common.exception.ErrorCode;
+import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.infrastructure.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +21,7 @@ public class CarProvider {
 	}
 
 	public CarEntity findByMdn(String mdn) {
-		return carRepository.findByMdn(mdn).orElseThrow(() -> CarException.sendError(ErrorCode.CAR_NOT_FOUND));
+		return carRepository.findByMdn(mdn).orElseThrow(() -> GlobalException.throwError(ErrorCode.CAR_NOT_FOUND));
 	}
 
 	public boolean existsByMdn(String mdn) {
