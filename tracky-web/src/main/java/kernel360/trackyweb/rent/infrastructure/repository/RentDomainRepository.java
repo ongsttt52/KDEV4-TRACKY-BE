@@ -3,15 +3,15 @@ package kernel360.trackyweb.rent.infrastructure.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import kernel360.trackycore.core.common.entity.RentEntity;
+import kernel360.trackycore.core.infrastructure.repository.RentRepository;
 
 @Repository
-public interface RentDomainRepository extends JpaRepository<RentEntity, Long> {
+public interface RentDomainRepository extends RentRepository {
 
 	Optional<RentEntity> findByRentUuid(String rentUuid);
 
