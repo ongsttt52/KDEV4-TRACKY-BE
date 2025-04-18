@@ -2,8 +2,8 @@ package kernel360.trackyweb.question.application;
 
 import org.springframework.stereotype.Service;
 
-import kernel360.trackyweb.question.domain.QuestEntity;
-import kernel360.trackyweb.question.infrastructure.QuestRepository;
+import kernel360.trackycore.core.domain.entity.QuestEntity;
+import kernel360.trackycore.core.infrastructure.repository.QuestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
