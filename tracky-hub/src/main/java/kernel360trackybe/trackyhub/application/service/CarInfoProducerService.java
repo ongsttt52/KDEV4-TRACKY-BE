@@ -4,11 +4,10 @@ import java.util.UUID;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
-
-import kernel360trackybe.trackyhub.application.dto.request.CarOnOffRequest;
-import kernel360trackybe.trackyhub.application.dto.request.CycleInfoRequest;
-import kernel360trackybe.trackyhub.application.dto.request.GpsHistoryMessage;
-import kernel360trackybe.trackyhub.config.RabbitMQConfig;
+import kernel360trackybe.trackyhub.config.RabbitMQProperties;
+import kernel360trackybe.trackyhub.presentation.dto.CarOnOffRequest;
+import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
+import kernel360trackybe.trackyhub.presentation.dto.GpsHistoryMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,12 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 public class CarInfoProducerService {
 
 	private final RabbitTemplate rabbitTemplate;
+	private final RabbitMQProperties rabbitMQProperties;
 
 	public void sendCarStart(CarOnOffRequest carOnOffRequest) {
 
 		rabbitTemplate.convertAndSend(
-			RabbitMQConfig.EXCHANGE_NAME,
-			"on",
+			rabbitMQProperties.getExchange().getCarInfo(),
+			rabbitMQProperties.getRouting().getOnKey(),
 			carOnOffRequest
 		);
 	}
@@ -32,8 +32,8 @@ public class CarInfoProducerService {
 		log.info("Car stop requested: {}", carOnOffRequest);
 
 		rabbitTemplate.convertAndSend(
-			RabbitMQConfig.EXCHANGE_NAME,
-			"off",
+			rabbitMQProperties.getExchange().getCarInfo(),
+			rabbitMQProperties.getRouting().getOffKey(),
 			carOnOffRequest
 		);
 	}
@@ -49,8 +49,8 @@ public class CarInfoProducerService {
 
 		log.info("GPS 전송:{}", gpsHistoryMessage.toString());
 		rabbitTemplate.convertAndSend(
-			RabbitMQConfig.EXCHANGE_NAME,
-			"gps",
+			rabbitMQProperties.getExchange().getCarInfo(),
+			rabbitMQProperties.getRouting().getGpsKey(),
 			gpsHistoryMessage
 		);
 	}

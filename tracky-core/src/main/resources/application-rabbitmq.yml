@@ -1,0 +1,13 @@
+# application-rabbitmq.yml - 공통 RabbitMQ 설정
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+
+rabbitmq:
+  queue:
+    gps: gps-queue
+    onoff: on-off-Queue
+    dlq: dead-letter-queue

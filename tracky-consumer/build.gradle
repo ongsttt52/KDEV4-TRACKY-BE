@@ -19,4 +19,4 @@ dependencies {
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
 }
 
-tasks.register("prepareKotlinBuildScriptModel"){}
+tasks.register("prepareKotlinBuildScriptModel") {}
