@@ -14,7 +14,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
 
 @Repository
 public class CarRepositoryImpl implements CarRepositoryCustom {

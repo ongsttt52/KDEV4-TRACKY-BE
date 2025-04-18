@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
-import kernel360.trackyweb.member.domain.entity.MemberEntity;
+import kernel360.trackycore.core.domain.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 
 @Component

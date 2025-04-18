@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import kernel360.trackycore.core.common.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
 
 public interface DriveHistoryRepository extends JpaRepository<DriveEntity, Long> {
 

@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import kernel360.trackycore.core.common.entity.DriveEntity;
-import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
-import kernel360.trackycore.core.common.entity.vo.GpsInfo;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.domain.vo.GpsInfo;
 
 public record CycleGpsRequest(
 	int sec,

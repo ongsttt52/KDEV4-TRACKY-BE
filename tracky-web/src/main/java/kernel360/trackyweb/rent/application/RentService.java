@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackycore.core.common.provider.CarProvider;
-import kernel360.trackycore.core.common.provider.RentProvider;
+import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.provider.CarProvider;
+import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
 import kernel360.trackyweb.rent.application.dto.request.RentRequest;
