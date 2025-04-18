@@ -6,8 +6,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
-import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
+
+import kernel360.trackyconsumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.application.dto.request.GpsHistoryMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +39,6 @@ public class MessageListener {
 	@RabbitListener(queues = "gps-queue", containerFactory = "batchRabbitListenerContainerFactory")
 	public void receiveCarMessages(List<GpsHistoryMessage> messages) {
 		log.info("GPS 메시지 배치 수신: {} 개", messages.size());
-		log.info("GPS 메시지 내용: {}", messages.toString());
 
 		for (GpsHistoryMessage message : messages)
 			consumerService.receiveCycleInfo(message);
