@@ -27,4 +27,10 @@ public class CarProvider {
 	public boolean existsByMdn(String mdn) {
 		return carRepository.existsByMdn(mdn);
 	}
+
+	public void existsByMdnOps(String mdn) {
+		if (carRepository.existsByMdn(mdn)) {
+			throw (GlobalException.throwError(ErrorCode.CAR_NOT_FOUND));
+		}
+	}
 }
