@@ -1,4 +1,4 @@
-package kernel360.trackyweb.rent.presentation.mapper;
+package kernel360.trackyweb.rent.application.dto.response;
 
 import java.time.LocalDateTime;
 
@@ -11,20 +11,20 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class RentEvent {
+public class RentSseEvent {
 	private String event;
 	private String method;
 	private String message;
 	private LocalDateTime createdAt;
 
-	private RentEvent(String event, String method, String message) {
+	private RentSseEvent(String event, String method, String message) {
 		this.event = event;
 		this.method = method;
 		this.message = message;
 		this.createdAt = LocalDateTime.now();
 	}
 
-	public static RentEvent create(String event, String method, String message) {
-		return new RentEvent(event, method, message);
+	public static RentSseEvent create(String event, String method, String message) {
+		return new RentSseEvent(event, method, message);
 	}
 }

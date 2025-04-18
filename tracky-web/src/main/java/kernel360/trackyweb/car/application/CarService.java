@@ -67,7 +67,7 @@ public class CarService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<CarDetailResponse> searchOne(String mdn) {
-		CarEntity car = carDomainProvider.getCarDetail(mdn);
+		CarEntity car = carProvider.findByMdn(mdn);
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}
 
@@ -83,7 +83,7 @@ public class CarService {
 		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
 		BizEntity biz = bizProvider.getBiz(1L);
 
-		carDomainProvider.existsByMdn(carCreateRequest.mdn());
+		carProvider.existsByMdnOps(carCreateRequest.mdn());
 
 		CarEntity car = CarEntity.create(
 			carCreateRequest.mdn(), biz, device, carCreateRequest.carType(), carCreateRequest.carPlate(),
@@ -107,7 +107,7 @@ public class CarService {
 	 */
 	@Transactional
 	public ApiResponse<CarDetailResponse> update(String mdn, CarUpdateRequest carUpdateRequest) {
-		CarEntity car = carDomainProvider.getCar(mdn);
+		CarEntity car = carProvider.findByMdn(mdn);
 
 		BizEntity biz = bizProvider.getBiz(1L);
 

@@ -51,8 +51,7 @@ public class CycleGpsDataGenerator {
 
 		// 위도/경도 변화량 계산 (라디안 단위)
 		double deltaLat = distanceMeter * Math.cos(angleRad) / earthRadius;
-		double deltaLon = distanceMeter * Math.sin(angleRad) /
-			(earthRadius * Math.cos(Math.toRadians(lat)));
+		double deltaLon = distanceMeter * Math.sin(angleRad) / (earthRadius * Math.cos(Math.toRadians(lat)));
 
 		// 이동 후 위도/경도 (도 단위로 변환)
 		double newLat = lat + Math.toDegrees(deltaLat);

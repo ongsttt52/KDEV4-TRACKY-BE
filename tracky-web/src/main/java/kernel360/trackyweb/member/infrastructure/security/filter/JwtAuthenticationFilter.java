@@ -42,6 +42,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
+		if (checkSwagger(request, response, filterChain)) {
+			return;
+		}
+
 		String token = resolveToken(request);
 
 		if (jwtTokenProvider.validateToken(token)) {
@@ -107,6 +111,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		FilterChain filterChain
 	) throws ServletException, IOException {
 		if (request.getRequestURI().startsWith("/actuator")) {
+			filterChain.doFilter(request, response);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * ALB HealthCheck 허용
+	 * @param request
+	 * @return boolean
+	 */
+	private boolean checkSwagger(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		FilterChain filterChain
+	) throws ServletException, IOException {
+		if (request.getRequestURI().startsWith("/swagger-ui.html")) {
 			filterChain.doFilter(request, response);
 			return true;
 		}

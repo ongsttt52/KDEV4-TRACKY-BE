@@ -9,7 +9,7 @@ public enum ErrorCode {
 	CAR_DUPLICATED("CAR_002", "중복된 차량 번호입니다."),
 	DEVICE_NOT_FOUND("DEVICE_001", "조회된 장치가 없습니다."),
 	BIZ_NOT_FOUND("BIZ_001", "조회된 업체가 없습니다."),
-	RENT_NOT_FOUND("RENT_001", "조회된 대여가 없습니다."),
+	RENT_NOT_FOUND("RENT_001", "조회된 렌트가 없습니다."),
 
 	LOCATION_NOT_FOUND("LOCATION_001", "조회된 위치가 없습니다."),
 	DRIVE_NOT_FOUND("DRIVE_001", "조회된 주행 정보가 없습니다."),

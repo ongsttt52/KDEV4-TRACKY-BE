@@ -1,22 +1,20 @@
 package kernel360trackybe.trackyhub.presentation;
 
-import java.util.List;
-
-import kernel360trackybe.trackyhub.presentation.dto.ApiTokenResponse;
-import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
-import kernel360trackybe.trackyhub.presentation.dto.ApiResponse;
-import kernel360trackybe.trackyhub.presentation.dto.CarOnOffRequest;
-import kernel360trackybe.trackyhub.presentation.dto.TokenRequest;
-import kernel360trackybe.trackyhub.application.service.CarInfoProducerService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.MediaType;
+
+import kernel360trackybe.trackyhub.application.dto.request.CarOnOffRequest;
+import kernel360trackybe.trackyhub.application.dto.request.CycleInfoRequest;
+import kernel360trackybe.trackyhub.application.dto.request.TokenRequest;
+import kernel360trackybe.trackyhub.application.dto.response.ApiResponse;
+import kernel360trackybe.trackyhub.application.dto.response.MdnResponse;
+import kernel360trackybe.trackyhub.application.dto.response.TokenResponse;
+import kernel360trackybe.trackyhub.application.service.CarInfoProducerService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping(value = "/hub/car", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,36 +25,31 @@ public class CarInfoController {
 	private final CarInfoProducerService producerService;
 
 	@PostMapping(value = "/cycle")
-	public ApiResponse sendCycleInfo(@RequestBody CycleInfoRequest cycleInfoRequest) {
+	public ApiResponse<MdnResponse> sendCycleInfo(@RequestBody CycleInfoRequest cycleInfoRequest) {
 
 		producerService.sendCycleInfo(cycleInfoRequest);
-        return new ApiResponse("000", "Success", cycleInfoRequest.getMdn());
+		return ApiResponse.success(new MdnResponse(cycleInfoRequest.mdn()));
 	}
 
 	@PostMapping(value = "/on")
-	public ApiResponse sendCarStart(@RequestBody CarOnOffRequest carOnOffRequest) {
+	public ApiResponse<MdnResponse> sendCarStart(@RequestBody CarOnOffRequest carOnOffRequest) {
 
 		producerService.sendCarStart(carOnOffRequest);
-		return new ApiResponse("000", "Success", carOnOffRequest.getMdn());
+		return ApiResponse.success(new MdnResponse(carOnOffRequest.mdn()));
 	}
 
 	@PostMapping(value = "/off")
-	public ApiResponse sendCarStop(@RequestBody CarOnOffRequest carOnOffRequest) {
+	public ApiResponse<MdnResponse> sendCarStop(@RequestBody CarOnOffRequest carOnOffRequest) {
 
 		producerService.sendCarStop(carOnOffRequest);
-		return new ApiResponse("000", "Success", carOnOffRequest.getMdn());
+		return ApiResponse.success(new MdnResponse(carOnOffRequest.mdn()));
 	}
 
 	@PostMapping(value = "/token")
-	public ApiTokenResponse getToken(@RequestBody TokenRequest tokenRequest) {
+	public ApiResponse<TokenResponse> getToken(@RequestBody TokenRequest tokenRequest) {
 
 		String token = producerService.getToken();
-		return new ApiTokenResponse("000", "Success", tokenRequest.getMdn(), token, "4");
-	}
-
-	@GetMapping(value = "/mdns")
-	public List<String> getMdns() {
-
-		return producerService.getMdns();
+		TokenResponse tokenResponse = new TokenResponse(tokenRequest.mdn(), token, "4");
+		return ApiResponse.success(tokenResponse);
 	}
 }

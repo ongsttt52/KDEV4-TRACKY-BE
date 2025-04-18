@@ -3,6 +3,7 @@ package kernel360trackybe.trackyhub.config;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -10,59 +11,51 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
+@RequiredArgsConstructor
 public class RabbitMQConfig {
 
-	public static final String EXCHANGE_NAME = "car-info-exchange";
-	// public static final String QUEUE_NAME = "car-info-queue";
-	public static final String GPS_QUEUE_NAME = "gps-queue";
-	public static final String ONOFF_QUEUE_NAME = "on-off-Queue";
-	// public static final String OFF_QUEUE_NAME = "off-queue";
+	private final RabbitMQProperties properties;
 
 	@Bean
 	public TopicExchange exchange() {
-		return new TopicExchange(EXCHANGE_NAME);
+		return new TopicExchange(properties.getExchange().getCarInfo());
 	}
 
 	@Bean
 	public Queue gpsQueue() {
-		return new Queue(GPS_QUEUE_NAME, true);
+		return QueueBuilder.durable(properties.getQueue().getGps())
+			.withArgument("x-dead-letter-exchange", properties.getExchange().getDlx())
+			.withArgument("x-dead-letter-routing-key", properties.getRouting().getDeadLetterKey())
+			.build();
 	}
 
 	@Bean
 	public Queue onOffQueue() {
-		return new Queue(ONOFF_QUEUE_NAME, true);
+		return new Queue(properties.getQueue().getOnoff(), true);
 	}
 
-	// @Bean
-	// public Queue offQueue() {
-	// 	return new Queue(OFF_QUEUE_NAME, true);
-	// }
+	@Bean
+	public Queue deadLetterQueue() {
+		return new Queue(properties.getQueue().getDlq());
+	}
 
 	@Bean
 	public Binding gpsBinding(Queue gpsQueue, TopicExchange exchange) {
-		return BindingBuilder.bind(gpsQueue).to(exchange).with("gps");
+		return BindingBuilder.bind(gpsQueue).to(exchange).with(properties.getRouting().getGpsKey());
 	}
 
 	@Bean
-	public Binding onOffBinding(Queue onOffQueue, TopicExchange exchange) {
-		return BindingBuilder.bind(onOffQueue).to(exchange).with("on");
+	public Binding onBinding(Queue onOffQueue, TopicExchange exchange) {
+		return BindingBuilder.bind(onOffQueue).to(exchange).with(properties.getRouting().getOnKey());
 	}
 
-	// @Bean
-	// public Binding offBinding(Queue offQueue, TopicExchange exchange) {
-	// 	return BindingBuilder.bind(offQueue).to(exchange).with("off");
-	// }
-
-	// @Bean
-	// public Queue queue() {
-	// 	return new Queue(QUEUE_NAME, true);
-	// }
-
-	// @Bean
-	// public Binding binding(Queue queue, TopicExchange exchange) {
-	// 	return BindingBuilder.bind(queue).to(exchange).with("#");
-	// }
+	@Bean
+	public Binding offBinding(Queue onOffQueue, TopicExchange exchange) {
+		return BindingBuilder.bind(onOffQueue).to(exchange).with(properties.getRouting().getOffKey());
+	}
 
 	@Bean
 	public Jackson2JsonMessageConverter messageConverter() {

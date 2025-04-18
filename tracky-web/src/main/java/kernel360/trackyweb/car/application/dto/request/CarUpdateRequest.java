@@ -1,7 +1,6 @@
 package kernel360.trackyweb.car.application.dto.request;
 
 import kernel360.trackycore.core.common.entity.BizEntity;
-import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DeviceEntity;
 
 public record CarUpdateRequest(
@@ -14,16 +13,4 @@ public record CarUpdateRequest(
 	String status,
 	double sum
 ) {
-	public static CarUpdateRequest from(CarEntity car) {
-		return new CarUpdateRequest(
-			car.getBiz(),
-			car.getDevice(),
-			car.getCarType(),
-			car.getCarPlate(),
-			car.getCarYear(),
-			car.getPurpose(),
-			car.getStatus(),
-			car.getSum()
-		);
-	}
 }

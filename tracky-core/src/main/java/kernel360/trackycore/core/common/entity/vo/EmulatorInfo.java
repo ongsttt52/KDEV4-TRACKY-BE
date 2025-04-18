@@ -22,6 +22,6 @@ public class EmulatorInfo {
 	}
 
 	public static EmulatorInfo create(String tid, String mid, String pv, String did) {
-		return new EmulatorInfo("A001", "6", "5", "1");
+		return new EmulatorInfo(tid, mid, pv, did);
 	}
 }
