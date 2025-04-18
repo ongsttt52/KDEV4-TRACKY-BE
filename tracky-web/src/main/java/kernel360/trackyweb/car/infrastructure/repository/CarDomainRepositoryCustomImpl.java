@@ -30,7 +30,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return queryFactory
 			.select(car.mdn)
 			.from(car)
-			.where(car.biz.id.eq(biz.id))
+			.where(car.biz.id.eq(bizId))
 			.fetch();
 	}
 
