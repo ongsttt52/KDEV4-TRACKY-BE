@@ -15,7 +15,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import kernel360.trackyweb.common.entity.RentEntity;
+import kernel360.trackycore.core.common.entity.RentEntity;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

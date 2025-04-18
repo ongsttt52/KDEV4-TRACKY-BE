@@ -1,11 +1,11 @@
-package kernel360.trackyweb.common.provider;
+package kernel360.trackycore.core.common.provider;
 
 import org.springframework.stereotype.Component;
 
+import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
-import kernel360.trackyweb.common.entity.RentEntity;
-import kernel360.trackyweb.common.repository.RentRepository;
+import kernel360.trackycore.core.infrastructure.repository.RentRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component

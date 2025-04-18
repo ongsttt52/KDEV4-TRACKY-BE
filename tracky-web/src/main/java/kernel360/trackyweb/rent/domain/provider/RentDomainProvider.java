@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import kernel360.trackyweb.common.entity.RentEntity;
-import kernel360.trackyweb.common.provider.RentProvider;
+import kernel360.trackycore.core.common.entity.RentEntity;
+import kernel360.trackycore.core.common.provider.RentProvider;
 import kernel360.trackyweb.rent.infrastructure.repository.CarRentRepository;
 import kernel360.trackyweb.rent.infrastructure.repository.RentDomainRepository;
 import lombok.RequiredArgsConstructor;
