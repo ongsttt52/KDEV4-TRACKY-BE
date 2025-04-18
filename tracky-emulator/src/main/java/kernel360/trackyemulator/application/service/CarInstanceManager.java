@@ -29,7 +29,6 @@ public class CarInstanceManager {
 	private final ControlClient controlClient;
 
 	private List<EmulatorInstance> instances = new ArrayList<>();
-
 	private List<String> mdnList;
 
 	//현재 생성 가능한 에뮬레이터 개수 받아옴
@@ -47,6 +46,7 @@ public class CarInstanceManager {
 			log.info("single car instance factory가 {}개의 인스턴스 생성 완료", instances.size());
 		} else {
 			this.instances = multiCarInstanceFactory.createCarInstances(count, mdnList);
+			log.info("multiCarInstanceFactory가 {}개의 인스턴스 생성 완료", instances.size());
 		}
 		return instances.size();
 	}
@@ -97,14 +97,14 @@ public class CarInstanceManager {
 
 			stoppedMdnSet.add(response.mdn());
 		}
-		removeStoppedInstances(stoppedMdnSet); // 리스트에서 삭제
+		removeStoppedInstances(stoppedMdnSet); // 시동 끈 에뮬레이터들 리스트에서 삭제
 		return result;
 	}
 
-	//에뮬레이터 삭제
+	//시동 끈 에뮬레이터 삭제
 	private void removeStoppedInstances(Set<String> stoppedMdns) {
 		instances.removeIf(instance -> stoppedMdns.contains(instance.getMdn()));
-		stoppedMdns.forEach(mdn -> log.info("{} 인스턴스 삭제 완료", mdn));
+		stoppedMdns.forEach(mdn -> log.info("{} 시동 끈 인스턴스 삭제 완료", mdn));
 	}
 
 	//에뮬레이터 인스턴스 모두 삭제(reset)

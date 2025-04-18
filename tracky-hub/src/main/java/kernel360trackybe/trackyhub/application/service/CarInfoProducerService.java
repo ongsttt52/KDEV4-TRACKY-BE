@@ -1,13 +1,10 @@
 package kernel360trackybe.trackyhub.application.service;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
-
 import kernel360trackybe.trackyhub.config.RabbitMQProperties;
-import kernel360trackybe.trackyhub.infrastructure.repository.CarRepository;
 import kernel360trackybe.trackyhub.presentation.dto.CarOnOffRequest;
 import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
 import kernel360trackybe.trackyhub.presentation.dto.GpsHistoryMessage;
@@ -21,7 +18,6 @@ public class CarInfoProducerService {
 
 	private final RabbitTemplate rabbitTemplate;
 	private final RabbitMQProperties rabbitMQProperties;
-	private final CarRepository carRepository;
 
 	public void sendCarStart(CarOnOffRequest carOnOffRequest) {
 
@@ -47,8 +43,9 @@ public class CarInfoProducerService {
 	 */
 	public void sendCycleInfo(CycleInfoRequest carInfo) {
 
-		GpsHistoryMessage gpsHistoryMessage = GpsHistoryMessage.from(carInfo.getMdn(), carInfo.getOTime(),
-			carInfo.getCCnt(), carInfo.getCList());
+		GpsHistoryMessage gpsHistoryMessage = GpsHistoryMessage.from(carInfo.mdn(),
+			carInfo.oTime(),
+			carInfo.cCnt(), carInfo.cList());
 
 		log.info("GPS 전송:{}", gpsHistoryMessage.toString());
 		rabbitTemplate.convertAndSend(
@@ -60,9 +57,5 @@ public class CarInfoProducerService {
 
 	public String getToken() {
 		return UUID.randomUUID().toString();
-	}
-
-	public List<String> getMdns() {
-		return carRepository.findAllMdn();
 	}
 }

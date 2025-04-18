@@ -10,19 +10,15 @@ import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
 import kernel360.trackycore.core.common.entity.vo.GpsInfo;
 import kernel360.trackyemulator.application.service.util.RandomLocationGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 public class SingleCarInstanceFactory {
-
-	private final RandomLocationGenerator locationGenerator;
 
 	public List<EmulatorInstance> createCarInstances() {
 		String mdn = "0077184075";
-		int lat = locationGenerator.randomLatitude();
-		int lon = locationGenerator.randomLongitude();
-		int ang = locationGenerator.randomAngle();
+		int lat = RandomLocationGenerator.randomLatitude();
+		int lon = RandomLocationGenerator.randomLongitude();
+		int ang = RandomLocationGenerator.randomAngle();
 
 		EmulatorInfo emulatorInfo = EmulatorInfo.create();
 		GpsInfo gpsInfo = GpsInfo.create(lat, lon, ang, 0, 0.0);

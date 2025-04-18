@@ -13,58 +13,63 @@ import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
 import kernel360.trackycore.core.common.entity.vo.GpsInfo;
 import kernel360.trackyemulator.application.service.util.RandomLocationGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
-import lombok.RequiredArgsConstructor;
+import kernel360.trackyemulator.infrastructure.exception.EmulatorException;
+import kernel360.trackyemulator.infrastructure.exception.ErrorCode;
 
 @Component
-@RequiredArgsConstructor
 public class MultiCarInstanceFactory {
 
-	private final RandomLocationGenerator locationGenerator;
-	private final Set<String> usedMdns = new HashSet<>();
-	private static final Random random = new Random();
+    private final Set<String> usedMdns = new HashSet<>();
+    private static final Random random = new Random();
 
-	public List<EmulatorInstance> createCarInstances(int count, List<String> mdnList) {
-		if (mdnList == null || mdnList.isEmpty()) {
-			throw new IllegalStateException("MDN 리스트가 비어있습니다. 먼저 초기화하세요.");
-		}
+    public List<EmulatorInstance> createCarInstances(int count, List<String> mdnList) {
+        if (mdnList == null || mdnList.isEmpty()) {
+            throw EmulatorException.sendError(ErrorCode.MDN_NOT_FOUND);
+        }
 
-		int availableCount = mdnList.size() - usedMdns.size();
-		if (count > availableCount) {
-			throw new IllegalArgumentException("요청한 개수보다 사용 가능한 MDN이 부족합니다. (남은 수: " + availableCount + ")");
-		}
+        if (count > availableMdnCount(mdnList)) {
+            throw EmulatorException.sendError(ErrorCode.MDN_INSUFFICIENT);
+        }
 
-		List<EmulatorInstance> instances = new ArrayList<>();
+        List<EmulatorInstance> instances = new ArrayList<>();
 
-		for (int i = 0; i < count; i++) {
-			String mdn = pickUniqueMdn(mdnList);
+        for (int i = 0; i < count; i++) {
+            String mdn = pickUniqueMdn(mdnList);
 
-			int lat = locationGenerator.randomLatitude();
-			int lon = locationGenerator.randomLongitude();
-			int ang = locationGenerator.randomAngle();
+            int lat = RandomLocationGenerator.randomLatitude();
+            int lon = RandomLocationGenerator.randomLongitude();
+            int ang = RandomLocationGenerator.randomAngle();
 
-			EmulatorInfo emulatorInfo = EmulatorInfo.create();
-			GpsInfo gpsInfo = GpsInfo.create(lat, lon, ang, 0, 0.0);
-			EmulatorInstance car = EmulatorInstance.create(mdn, emulatorInfo, gpsInfo, LocalDateTime.now());
+            EmulatorInfo emulatorInfo = EmulatorInfo.create();
+            GpsInfo gpsInfo = GpsInfo.create(lat, lon, ang, 0, 0.0);
+            EmulatorInstance car = EmulatorInstance.create(mdn, emulatorInfo, gpsInfo, LocalDateTime.now());
 
-			instances.add(car);
-		}
+            instances.add(car);
+        }
 
-		return instances;
-	}
+        return instances;
+    }
 
-	private String pickUniqueMdn(List<String> mdnList) {
-		while (true) {
-			int index = random.nextInt(mdnList.size());
-			String mdn = mdnList.get(index);
+    //세션 초기화 시 인스턴스 리스트 초기화
+    public void resetUsedMdns() {
+        usedMdns.clear();
+    }
 
-			if (!usedMdns.contains(mdn)) {
-				usedMdns.add(mdn);
-				return mdn;
-			}
-		}
-	}
+    //MDN 리스트 중 랜덤으로 한개의 MDN 선택해오는 메소드
+    private String pickUniqueMdn(List<String> mdnList) {
+        while (true) {
+            int index = random.nextInt(mdnList.size());
+            String mdn = mdnList.get(index);
 
-	public void resetUsedMdns() {
-		usedMdns.clear();
-	}
+            if (!usedMdns.contains(mdn)) {
+                usedMdns.add(mdn);
+                return mdn;
+            }
+        }
+    }
+
+    //현재 사용 가능한 MDN 리스트 size
+    private int availableMdnCount(List<String> mdnList) {
+        return mdnList.size() - usedMdns.size();
+    }
 }
