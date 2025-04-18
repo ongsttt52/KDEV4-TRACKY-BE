@@ -32,4 +32,11 @@ public interface CarDomainRepository extends JpaRepository<CarEntity, Long> {
 	 * @param mdn 차량 mdn
 	 */
 	void deleteByMdn(String mdn);
+
+	/**
+	 * 랜트 등록 시, 모든 mdn을 셀렉트 박스로 출력
+	 * @return
+	 */
+	@Query("SELECT c.mdn FROM CarEntity c WHERE c.mdn IS NOT NULL")
+	List<String> findAllMdns();
 }
