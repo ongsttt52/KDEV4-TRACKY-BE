@@ -9,7 +9,6 @@ tasks.jar {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation project(':tracky-core')

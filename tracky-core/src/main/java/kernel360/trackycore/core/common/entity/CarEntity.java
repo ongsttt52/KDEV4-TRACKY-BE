@@ -88,7 +88,7 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public void updateSum(double updateSum) {
-		this.sum += updateSum;
+	public void updateDistance(double additionalDistance) {
+		this.sum += additionalDistance;
 	}
 }

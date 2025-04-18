@@ -6,7 +6,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
 import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
 import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
 import lombok.RequiredArgsConstructor;

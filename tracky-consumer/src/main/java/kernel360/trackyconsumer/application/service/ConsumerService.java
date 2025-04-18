@@ -7,19 +7,19 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kernel360.trackyconsumer.application.dto.CarOnOffRequest;
-import kernel360.trackyconsumer.application.dto.CycleGpsRequest;
-import kernel360.trackyconsumer.application.dto.GpsHistoryMessage;
-import kernel360.trackyconsumer.infrastructure.repository.CarEntityRepository;
-import kernel360.trackyconsumer.infrastructure.repository.DriveEntityRepository;
-import kernel360.trackyconsumer.infrastructure.repository.GpsHistoryEntityRepository;
-import kernel360.trackyconsumer.infrastructure.repository.LocationEntityRepository;
-import kernel360.trackyconsumer.infrastructure.repository.RentEntityRepository;
+import kernel360.trackyconsumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.application.dto.request.CycleGpsRequest;
+import kernel360.trackyconsumer.application.dto.request.GpsHistoryMessage;
+import kernel360.trackyconsumer.domain.provider.DriveDomainProvider;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.DriveEntity;
 import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.common.entity.LocationEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
+import kernel360.trackycore.core.common.provider.CarProvider;
+import kernel360.trackycore.core.common.provider.GpsHistoryProvider;
+import kernel360.trackycore.core.common.provider.LocationProvider;
+import kernel360.trackycore.core.common.provider.RentProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,26 +28,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ConsumerService {
 
-	private final DriveEntityRepository driveEntityRepository;
-	private final GpsHistoryEntityRepository gpsHistoryEntityRepository;
-	private final LocationEntityRepository locationEntityRepository;
-	private final RentEntityRepository rentEntityRepository;
-	private final CarEntityRepository carEntityRepository;
+	private final DriveDomainProvider driveProvider;
+	private final CarProvider carProvider;
+	private final LocationProvider locationProvider;
+	private final GpsHistoryProvider gpsHistoryProvider;
+	private final RentProvider rentProvider;
 
 	@Async("taskExecutor")
 	@Transactional
 	public void receiveCycleInfo(GpsHistoryMessage request) {
 
 		// 처리 로직
-		List<CycleGpsRequest> cycleGpsRequestList = request.getCList();
+		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
 
-		CarEntity car = carEntityRepository.findByMdn(request.getMdn());
+		CarEntity car = carProvider.findByMdn(request.mdn());
 
-		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, request.getOTime());
+		DriveEntity drive = driveProvider.findByCarAndOtime(car, request.oTime());
 
 		// GPS 쪼개서 정보 저장
-		for (int i = 0; i < request.getCCnt(); i++) {
-			saveCycleInfo(drive, request.getOTime(), cycleGpsRequestList.get(i).getSum(), cycleGpsRequestList.get(i));
+		for (int i = 0; i < request.cCnt(); i++) {
+			saveCycleInfo(drive, request.oTime(), cycleGpsRequestList.get(i).gpsInfo().getSum(),
+				cycleGpsRequestList.get(i));
 		}
 	}
 
@@ -55,44 +56,37 @@ public class ConsumerService {
 
 		GpsHistoryEntity gpsHistoryEntity = cycleGpsRequest.toGpsHistoryEntity(drive, oTime, sum);
 
-		gpsHistoryEntityRepository.save(gpsHistoryEntity);
+		gpsHistoryProvider.save((gpsHistoryEntity));
 	}
 
 	@Transactional
 	public void processOnMessage(CarOnOffRequest carOnOffRequest) {
 
-		LocationEntity location = carOnOffRequest.toLocationEntity();
-		locationEntityRepository.save(location);
+		LocationEntity location = LocationEntity.create(carOnOffRequest.gpsInfo().getLon(),
+			carOnOffRequest.gpsInfo().getLat());
+		locationProvider.save(location);
 
-		String mdn = carOnOffRequest.getMdn();
-		CarEntity car = carEntityRepository.findByMdn(mdn);
+		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
-		RentEntity rent = rentEntityRepository.findMyCarAndTime(car, carOnOffRequest.getOnTime());
+		RentEntity rent = rentProvider.findByCarAndTime(car, carOnOffRequest.onTime());
 
 		DriveEntity drive = DriveEntity.create(car, rent, location,
-			carOnOffRequest.getOnTime());
+			carOnOffRequest.onTime());
 
-		driveEntityRepository.save(drive);
+		driveProvider.save(drive);
 	}
 
 	@Transactional
 	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
 
-		/** 시동 off시 다음 동작 수행
-		 * 주행 종료 시간 update(Drive)
-		 * 주행 별 거리 sum으로 update(Drive)
-		 * 차량 주행 거리 += sum update(Car)
-		 * 주행 종료 지점 update(Location)
-		 **/
-		CarEntity car = carEntityRepository.findByMdn(carOnOffRequest.getMdn());
+		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
-		DriveEntity drive = driveEntityRepository.findByCarAndOtime(car, carOnOffRequest.getOnTime());
-		drive.updateDistance(carOnOffRequest.getSum());
-		drive.updateOffTime(carOnOffRequest.getOffTime());
+		DriveEntity drive = driveProvider.findByCarAndOtime(car, carOnOffRequest.onTime());
+		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
 
-		car.updateSum(drive.getDriveDistance());
+		car.updateDistance(drive.getDriveDistance());
 
 		LocationEntity location = drive.getLocation();
-		location.updateEndLocation(carOnOffRequest.getLat(), carOnOffRequest.getLon());
+		location.updateEndLocation(carOnOffRequest.gpsInfo().getLat(), carOnOffRequest.gpsInfo().getLon());
 	}
 }
