@@ -33,6 +33,11 @@ public class CarDomainProvider {
 	}
 
 	public List<CarListResponse> getCar() {
-		return carDomainRepository.findAllCars();
+		List<CarEntity> cars = carDomainRepository.findAll();
+
+		return cars.stream()
+			.map(car -> new CarListResponse(car.getCarPlate(), car.getCarType()))
+			.toList();
 	}
+
 }

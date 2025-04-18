@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.infrastructure.repository.CarRepository;
-import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
 
 public interface CarDomainRepository extends CarRepository {
 	/**
@@ -41,6 +40,5 @@ public interface CarDomainRepository extends CarRepository {
 	@Query("SELECT c.mdn FROM CarEntity c WHERE c.mdn IS NOT NULL")
 	List<String> findAllMdns();
 
-	@Query("SELECT new kernel360.trackyweb.drive.application.dto.response.CarListResponse(c.carPlate, c.carType) FROM CarEntity c")
-	List<CarListResponse> findAllCars();
+	List<CarEntity> findAll();
 }
