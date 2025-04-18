@@ -14,7 +14,7 @@ public class RentProvider {
 
 	private final RentRepository rentRepository;
 
-	public RentEntity findByRentUuid(String rentUuid) {
+	public RentEntity getRent(String rentUuid) {
 		return rentRepository.findByRentUuid(rentUuid)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
 	}

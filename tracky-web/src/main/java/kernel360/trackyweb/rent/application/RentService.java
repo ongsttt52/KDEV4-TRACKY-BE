@@ -14,6 +14,7 @@ import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.common.entity.CarEntity;
 import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.common.provider.CarProvider;
+import kernel360.trackycore.core.common.provider.RentProvider;
 import kernel360.trackycore.core.common.sse.GlobalSseEvent;
 import kernel360.trackycore.core.common.sse.SseEvent;
 import kernel360.trackyweb.rent.application.dto.request.RentRequest;
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RentService {
 
 	private final RentDomainProvider rentDomainProvider;
+	private final RentProvider rentProvider;
 	private final GlobalSseEvent globalSseEvent;
 
 	private final CarProvider carProvider;
@@ -73,7 +75,7 @@ public class RentService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<RentResponse> searchOne(String rentUuid) {
-		RentEntity rent = rentDomainProvider.getRent(rentUuid);
+		RentEntity rent = rentProvider.getRent(rentUuid);
 		return ApiResponse.success(RentResponse.from(rent));
 	}
 
@@ -121,7 +123,7 @@ public class RentService {
 	 */
 	@Transactional
 	public ApiResponse<RentResponse> update(String rentUuid, RentRequest rentRequest) {
-		RentEntity rent = rentDomainProvider.getRent(rentUuid);
+		RentEntity rent = rentProvider.getRent(rentUuid);
 
 		CarEntity car = carProvider.findByMdn(rentRequest.mdn());
 

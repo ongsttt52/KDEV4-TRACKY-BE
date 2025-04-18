@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.entity.RentEntity;
-import kernel360.trackycore.core.common.provider.RentProvider;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.rent.infrastructure.repository.RentDomainRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class RentDomainProvider {
 
 	private final RentDomainRepository rentDomainRepository;
-	private final RentProvider rentProvider;
 	private final CarDomainRepository carDomainRepository;
-
-	public RentEntity getRent(String rentUuid) {
-		return rentProvider.findByRentUuid(rentUuid);
-	}
 
 	public RentEntity save(RentEntity rent) {
 		return rentDomainRepository.save(rent);
