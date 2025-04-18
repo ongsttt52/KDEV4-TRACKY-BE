@@ -34,7 +34,8 @@ public class MemberService {
 
 	public String generateJwtToken(MemberEntity member) {
 		String bizName = member.getBizId().getBizName();
+		Long bizId = member.getBizId().getId();
 
-		return jwtTokenProvider.generateToken(member.getMemberId(), member.getRole(), bizName);
+		return jwtTokenProvider.generateToken(member.getMemberId(), member.getRole(), bizName, bizId);
 	}
 }
