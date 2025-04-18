@@ -56,11 +56,16 @@ public class DriveEntity extends DateBaseEntity {
 	@Column(name = "memo")
 	private String memo;
 
-	public void updateDistance(double sum) {
-		this.driveDistance = sum;
-	}
+	// public void updateDistance(double sum) {
+	// 	this.driveDistance = sum;
+	// }
+	//
+	// public void updateOffTime(LocalDateTime offTime) {
+	// 	this.driveOffTime = offTime;
+	// }
 
-	public void updateOffTime(LocalDateTime offTime) {
+	public void off(double distance, LocalDateTime offTime) {
+		this.driveDistance = distance;
 		this.driveOffTime = offTime;
 	}
 

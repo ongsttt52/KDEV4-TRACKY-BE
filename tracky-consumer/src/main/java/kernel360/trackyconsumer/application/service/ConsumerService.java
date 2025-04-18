@@ -82,10 +82,9 @@ public class ConsumerService {
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
 		DriveEntity drive = driveProvider.findByCarAndOtime(car, carOnOffRequest.onTime());
-		drive.updateDistance(carOnOffRequest.gpsInfo().getSum());
-		drive.updateOffTime(carOnOffRequest.offTime());
+		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
 
-		car.updateSum(drive.getDriveDistance());
+		car.updateDistance(drive.getDriveDistance());
 
 		LocationEntity location = drive.getLocation();
 		location.updateEndLocation(carOnOffRequest.gpsInfo().getLat(), carOnOffRequest.gpsInfo().getLon());
