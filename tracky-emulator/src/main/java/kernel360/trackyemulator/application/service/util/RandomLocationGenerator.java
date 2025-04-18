@@ -17,19 +17,19 @@ public class RandomLocationGenerator {
 	private static final double MAX_LON = 129.5;
 
 	// 랜덤 위도 long 값 생성
-	public int randomLatitude() {
+	public static int randomLatitude() {
 		double lat = ThreadLocalRandom.current().nextDouble(MIN_LAT, MAX_LAT);
 		return (int)(lat * 1_000_000);
 	}
 
 	// 랜덤 경도 long 값 생성
-	public int randomLongitude() {
+	public static int randomLongitude() {
 		double lon = ThreadLocalRandom.current().nextDouble(MIN_LON, MAX_LON);
 		return (int)(lon * 1_000_000);
 	}
 
 	// 0~359도 사이 랜덤 방향 각도 생성
-	public int randomAngle() {
+	public static int randomAngle() {
 		return ThreadLocalRandom.current().nextInt(0, 360);
 	}
 }
