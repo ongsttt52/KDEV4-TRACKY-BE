@@ -2,7 +2,7 @@ package kernel360.trackyweb.car.application.dto.response;
 
 import java.time.LocalDateTime;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
 
 public record CarDetailResponse(
 	String mdn,

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackyweb.dashboard.domain.CarStatus;
 import kernel360.trackyweb.dashboard.domain.Statistics;
 import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackyweb.dashboard.domain.CarStatus;
 
 public interface CarStatusRepository extends JpaRepository<CarEntity, Long> {

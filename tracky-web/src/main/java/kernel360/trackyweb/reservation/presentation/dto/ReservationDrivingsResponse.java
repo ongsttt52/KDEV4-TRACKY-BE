@@ -2,8 +2,8 @@ package kernel360.trackyweb.reservation.presentation.dto;
 
 import java.time.LocalDateTime;
 
-import kernel360.trackycore.core.common.entity.DriveEntity;
-import kernel360.trackycore.core.common.entity.LocationEntity;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.LocationEntity;
 
 public record ReservationDrivingsResponse(
 	LocalDateTime driveOnTime,    //주행 시작시간

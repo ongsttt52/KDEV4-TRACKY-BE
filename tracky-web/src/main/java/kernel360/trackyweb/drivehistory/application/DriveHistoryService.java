@@ -7,17 +7,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import kernel360.trackycore.core.common.entity.DriveEntity;
-import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
-import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackyweb.drivehistory.domain.CarDriveHistory;
 import kernel360.trackyweb.drivehistory.domain.DriveHistory;
 import kernel360.trackyweb.drivehistory.domain.GpsData;
 import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
 import kernel360.trackyweb.drivehistory.infrastructure.repo.DriveHistoryRepository;
-import kernel360.trackyweb.drivehistory.infrastructure.repo.GpsHistoryRepository;
+import kernel360.trackyweb.drivehistory.infrastructure.repo.GpsHistoryDomainRepository;
 import kernel360.trackyweb.drivehistory.infrastructure.repo.RentHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class DriveHistoryService {
 
 	private final RentHistoryRepository rentHistoryRepository;
 	private final DriveHistoryRepository driveHistoryRepository;
-	private final GpsHistoryRepository gpsHistoryRepository;
+	private final GpsHistoryDomainRepository gpsHistoryRepository;
 
 	public List<RentDriveHistory> getAllRentHistories(String rentUuid) {
 		// rentUuid가 null이거나 빈 문자열이면 전체 조회, 아니면 특정 UUID 검색
