@@ -4,9 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.provider.CarProvider;
-import kernel360.trackycore.core.infrastructure.exception.CarException;
-import kernel360.trackycore.core.infrastructure.exception.ErrorCode;
 import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.car.infrastructure.repository.CarRepositoryCustom;
@@ -18,11 +15,6 @@ public class CarDomainProvider {
 
 	private final CarRepositoryCustom carRepositoryCustom;
 	private final CarDomainRepository carDomainRepository;
-	private final CarProvider carProvider;
-
-	public CarEntity getCar(String mdn) {
-		return carProvider.findByMdn(mdn);
-	}
 
 	public Page<CarEntity> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
 		return carRepositoryCustom.searchByFilter(carSearchByFilterRequest.mdn(), carSearchByFilterRequest.status(),
@@ -31,17 +23,6 @@ public class CarDomainProvider {
 
 	public CarEntity save(CarEntity car) {
 		return carDomainRepository.save(car);
-	}
-
-	public CarEntity getCarDetail(String mdn) {
-		return carDomainRepository.findDetailByMdn(mdn)
-			.orElseThrow(() -> CarException.sendError(ErrorCode.CAR_NOT_FOUND));
-	}
-
-	public void existsByMdn(String mdn) {
-		if (carProvider.existsByMdn(mdn)) {
-			throw CarException.sendError(ErrorCode.CAR_DUPLICATED);
-		}
 	}
 
 	public void delete(String mdn) {
