@@ -5,19 +5,22 @@ on:
     types: [opened]
 
 jobs:
-  discord-notify:
+  notify:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Send Discord Notification
+      - name: Send PR info to Discord
         run: |
           curl -X POST -H "Content-Type: application/json" \
-            -d '{
-              "username": "GitHub PR Bot",
-              "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-              "embeds": [{
-                "title": "🚀 새 Pull Request 생성됨!",
-                "description": "**[${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})**\n\n${{ github.event.pull_request.body }}",
-                "color": 5814783
-              }]
-            }' \
-            ${{ secrets.DISCORD_WEBHOOK }}
+          -d @- ${{ secrets.DISCORD_WEBHOOK }} <<EOF
+{
+  "username": "🚀 GitHub PR Bot",
+  "embeds": [
+    {
+      "title": "🔔 새 Pull Request",
+      "description": "**[${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})**\\n\\n${{ github.event.pull_request.body || "설명 없음" }}\\n\\n👤 작성자: @${{ github.event.pull_request.user.login }}",
+      "color": 5814783
+    }
+  ]
+}
+EOF
