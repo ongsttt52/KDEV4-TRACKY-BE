@@ -40,11 +40,11 @@ public class CarController implements CarApiDocs {
 
 	@GetMapping()
 	public ApiResponse<List<CarResponse>> getAllBySearchFilter(
-		@RequestParam String text,
+		@RequestParam(required = false) String search,
 		@RequestParam(required = false) String status,
 		Pageable pageable
 	) {
-		CarSearchByFilterRequest carSearchByFilterRequest = new CarSearchByFilterRequest(text, status, pageable);
+		CarSearchByFilterRequest carSearchByFilterRequest = new CarSearchByFilterRequest(search, status, pageable);
 		return carService.getAllBySearchFilter(carSearchByFilterRequest);
 	}
 
