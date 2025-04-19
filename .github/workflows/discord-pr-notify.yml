@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Send Discord Notification
         run: |
+<<<<<<< HEAD
           curl -X POST -H "Content-Type: application/json" \
             -d '{
               "username": "GitHub PR Bot",
@@ -21,3 +22,20 @@ jobs:
               }]
             }' \
             ${{ secrets.DISCORD_WEBHOOK }}
+=======
+          echo "$(jq -n \
+            --arg title "${{ github.event.pull_request.title }}" \
+            --arg url "${{ github.event.pull_request.html_url }}" \
+            --arg body "${{ github.event.pull_request.body || '설명 없음' }}" \
+            --arg user "${{ github.event.pull_request.user.login }}" \
+            '{
+              username: "🚀 GitHub PR Bot",
+              embeds: [
+                {
+                  title: "🔔 새 Pull Request",
+                  description: "**[\($title)](\($url))**\n\n\($body)\n\n👤 작성자: @\($user)",
+                  color: 5814783
+                }
+              ]
+            }')" | curl -X POST -H "Content-Type: application/json" -d @- ${{ secrets.DISCORD_WEBHOOK }}
+>>>>>>> fe8bc947c0f163f9186d2f267e54c25011c58207
