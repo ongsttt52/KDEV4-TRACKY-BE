@@ -1,0 +1,23 @@
+name: Notify Discord on PR Opened
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  discord-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord Notification
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{
+              "username": "GitHub PR Bot",
+              "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+              "embeds": [{
+                "title": "🚀 새 Pull Request 생성됨!",
+                "description": "**[${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})**\n\n${{ github.event.pull_request.body }}",
+                "color": 5814783
+              }]
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK }}
