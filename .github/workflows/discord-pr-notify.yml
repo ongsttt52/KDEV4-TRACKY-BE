@@ -9,24 +9,12 @@ permissions:
   pull-requests: read
 
 jobs:
-  discord-notify:
+  notify:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Send Discord Notification
+      - name: Send PR info to Discord
         run: |
-<<<<<<< HEAD
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{
-              "username": "GitHub PR Bot",
-              "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-              "embeds": [{
-                "title": "🚀 새 Pull Request 생성됨!",
-                "description": "**[${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})**\n\n${{ github.event.pull_request.body }}",
-                "color": 5814783
-              }]
-            }' \
-            ${{ secrets.DISCORD_WEBHOOK }}
-=======
           echo "$(jq -n \
             --arg title "${{ github.event.pull_request.title }}" \
             --arg url "${{ github.event.pull_request.html_url }}" \
@@ -42,4 +30,3 @@ jobs:
                 }
               ]
             }')" | curl -X POST -H "Content-Type: application/json" -d @- ${{ secrets.DISCORD_WEBHOOK }}
->>>>>>> fe8bc947c0f163f9186d2f267e54c25011c58207
