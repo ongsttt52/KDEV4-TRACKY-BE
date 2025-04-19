@@ -11,9 +11,7 @@ import kernel360.trackycore.core.common.entity.CarEntity;
 public interface CarDomainRepositoryCustom {
 	/**
 	 * 랜트 등록 시, 해당 업체에 맞는 모든 mdn 반환
-	 *
-	 * @return
-	 */
+	 **/
 	List<String> findAllMdnByBizId(@Param("bizId") Long bizId);
 
 	/**
