@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.domain.entity.QuestEntity;
 import kernel360.trackyweb.question.application.QuestService;
-import kernel360.trackyweb.question.domain.QuestEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.infrastructure.repository.DriveRepository;
 
 public interface DriveDomainRepository extends DriveRepository {

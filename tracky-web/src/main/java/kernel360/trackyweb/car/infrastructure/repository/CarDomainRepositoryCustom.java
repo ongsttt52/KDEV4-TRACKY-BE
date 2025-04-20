@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
 
 public interface CarDomainRepositoryCustom {
 	/**
@@ -17,5 +17,5 @@ public interface CarDomainRepositoryCustom {
 	/**
 	 * 필터 조건 기반 검색
 	 */
-	Page<CarEntity> searchByFilter(String text, String status, Pageable pageable);
+	Page<CarEntity> searchByFilter(String search, String status, Pageable pageable);
 }

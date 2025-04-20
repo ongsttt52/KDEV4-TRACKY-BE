@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import kernel360.trackycore.core.common.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.infrastructure.repository.RentRepository;
 
 @Repository

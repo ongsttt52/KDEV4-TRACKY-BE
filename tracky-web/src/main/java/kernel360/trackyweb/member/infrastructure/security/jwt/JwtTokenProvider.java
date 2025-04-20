@@ -32,7 +32,7 @@ public class JwtTokenProvider {
 		this.secretKey = Keys.hmacShaKeyFor(secretKeyRaw.getBytes());
 	}
 
-	public String generateToken(String memberId, String role, String bizName) {
+	public String generateToken(String memberId, String role, String bizName, Long bizId) {
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + expiration);
 
@@ -40,6 +40,7 @@ public class JwtTokenProvider {
 			.setSubject(memberId)
 			.claim("role", role)
 			.claim("bizName", bizName)
+			.claim("bizId", bizId)
 			.setIssuedAt(now)
 			.setExpiration(validity)
 			.signWith(secretKey, SignatureAlgorithm.HS256)

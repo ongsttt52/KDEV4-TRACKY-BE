@@ -2,7 +2,7 @@ package kernel360.trackyweb.dashboard.presentation.dto;
 
 import java.time.LocalDateTime;
 
-import kernel360.trackycore.core.common.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.RentEntity;
 
 public record RentDashboardDto(
 	String rentUuid,

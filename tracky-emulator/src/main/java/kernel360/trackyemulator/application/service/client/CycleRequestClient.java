@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
+import kernel360.trackycore.core.domain.vo.EmulatorInfo;
 import kernel360.trackyemulator.application.service.dto.request.CycleInfoRequest;
 import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;

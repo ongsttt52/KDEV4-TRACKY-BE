@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import kernel360.trackycore.core.common.entity.LocationEntity;
-import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
-import kernel360.trackycore.core.common.entity.vo.GpsInfo;
+import kernel360.trackycore.core.domain.entity.LocationEntity;
+import kernel360.trackycore.core.domain.vo.EmulatorInfo;
+import kernel360.trackycore.core.domain.vo.GpsInfo;
 
 // 필요한 다른 import 문들 (EmulatorInfo, GpsInfo, LocationEntity)
 

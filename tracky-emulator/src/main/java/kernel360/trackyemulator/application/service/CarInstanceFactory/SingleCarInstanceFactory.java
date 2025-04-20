@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
-import kernel360.trackycore.core.common.entity.vo.GpsInfo;
+import kernel360.trackycore.core.domain.vo.EmulatorInfo;
+import kernel360.trackycore.core.domain.vo.GpsInfo;
 import kernel360.trackyemulator.application.service.util.RandomLocationGenerator;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 

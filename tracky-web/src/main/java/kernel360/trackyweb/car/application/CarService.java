@@ -8,20 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
-import kernel360.trackycore.core.common.entity.BizEntity;
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.DeviceEntity;
-import kernel360.trackycore.core.common.provider.BizProvider;
-import kernel360.trackycore.core.common.provider.CarProvider;
-import kernel360.trackycore.core.common.provider.DeviceProvider;
-import kernel360.trackycore.core.common.sse.GlobalSseEvent;
-import kernel360.trackycore.core.common.sse.SseEvent;
+import kernel360.trackycore.core.domain.entity.BizEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.DeviceEntity;
+import kernel360.trackycore.core.domain.provider.BizProvider;
+import kernel360.trackycore.core.domain.provider.CarProvider;
+import kernel360.trackycore.core.domain.provider.DeviceProvider;
 import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
 import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
 import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
 import kernel360.trackyweb.car.application.dto.response.CarResponse;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
+import kernel360.trackyweb.common.sse.GlobalSseEvent;
+import kernel360.trackyweb.common.sse.SseEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

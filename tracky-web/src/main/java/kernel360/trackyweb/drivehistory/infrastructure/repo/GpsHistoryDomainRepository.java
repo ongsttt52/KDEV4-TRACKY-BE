@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 
 public interface GpsHistoryDomainRepository extends JpaRepository<GpsHistoryEntity, Long> {
 

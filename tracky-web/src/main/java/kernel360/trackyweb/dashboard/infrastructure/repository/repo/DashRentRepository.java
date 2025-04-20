@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import kernel360.trackycore.core.common.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.RentEntity;
 
 public interface DashRentRepository extends JpaRepository<RentEntity, Long> {
 	//List<RentEntity> findByRentStimeBetween(LocalDateTime start, LocalDateTime end);

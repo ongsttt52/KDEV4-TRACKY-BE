@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.QBizEntity;
-import kernel360.trackycore.core.common.entity.QCarEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.QBizEntity;
+import kernel360.trackycore.core.domain.entity.QCarEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -36,9 +36,9 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 	//번호판 먼저
 	@Override
-	public Page<CarEntity> searchByFilter(String text, String status, Pageable pageable) {
+	public Page<CarEntity> searchByFilter(String search, String status, Pageable pageable) {
 
-		BooleanBuilder builder = searchByFilterBuilder(text, status, car);
+		BooleanBuilder builder = searchByFilterBuilder(search, status, car);
 
 		List<CarEntity> content = queryFactory
 			.selectFrom(car)
@@ -59,13 +59,13 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return new PageImpl<>(content, pageable, total);
 	}
 
-	private BooleanBuilder searchByFilterBuilder(String text, String status, QCarEntity car) {
+	private BooleanBuilder searchByFilterBuilder(String search, String status, QCarEntity car) {
 		BooleanBuilder builder = new BooleanBuilder();
 
-		if (text != null && !text.isBlank()) {
+		if (search != null && !search.isBlank()) {
 			builder.and(
-				car.mdn.containsIgnoreCase(text)
-					.or(car.carPlate.containsIgnoreCase(text))
+				car.mdn.containsIgnoreCase(search)
+					.or(car.carPlate.containsIgnoreCase(search))
 			);
 		}
 
