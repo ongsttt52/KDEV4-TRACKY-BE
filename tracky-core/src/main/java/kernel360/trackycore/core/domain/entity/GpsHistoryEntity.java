@@ -7,11 +7,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -32,7 +31,8 @@ public class GpsHistoryEntity {
 
 	@Id
 	@Column(name = "drive_seq", nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Tsid
 	private Long driveSeq;    //주행기록 시퀀스
 
 	@ManyToOne(fetch = FetchType.LAZY)
