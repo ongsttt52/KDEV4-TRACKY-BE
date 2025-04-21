@@ -1,36 +1,41 @@
-INSERT INTO biz(biz_name, biz_reg_num, biz_admin, biz_phone_num)
-VALUES('jiwon_company', '19990321', '구지원', '010-5xxx-2xxx');
+INSERT INTO biz(biz_name, biz_reg_num, biz_admin, biz_phone_num, created_at)
+VALUES('jiwon_company', '012-34-56789', '구지원', '010-1234-5678', '2025-04-13 09:00:00');
 
-INSERT INTO member(biz_id, member_id, pwd, email, role)
-VALUES(1, 'jiwon0321', '990321', 'jiwon@gmail.com', 'ADMIN');
+INSERT INTO member(biz_id, member_id, pwd, email, role, created_at)
+VALUES(1, 'jiwon0321', '$2a$10$0EOkcArMlrYPeHSBrrLVAetH2OdLfdEYlD1a5WA1.80RBI1Z8x7Ii', 'jiwon0321@gmail.com', 'ADMIN', '2025-04-14 09:00:00');
 
-INSERT INTO device(tid, mid, did, pv)
-VALUES('A001', '6', '1', '5');
+INSERT INTO device(id, tid, mid, did, pv, created_at)
+VALUES(1, 'A001', '6', '1', '5', '2025-04-14 09:00:00');
 
-INSERT INTO car (mdn,biz_id,device_id,car_type,car_plate,car_year,purpose ,status,sum,created_at,updated_at,deleted_at) VALUES
- 	 ('0488539469',1,1,'소나타','전북 62서 1207','2013','법인','running','23451','2020-05-16 14:30:46',NULL,NULL),
- 	 ('0077184075',1,1,'아반떼','대전 51거 8511','2017','법인','running','25285','2022-09-14 09:03:08',NULL,NULL),
- 	 ('6066499939',1,1,'포르쉐','대전 62서 2153','2020','렌트카','running','14213','2020-05-09 14:27:47',NULL,NULL),
- 	 ('3475930872',1,1,'메르세데스','대구 21도로 5982','2024','렌트카','running','9592','2021-10-03 17:07:06',NULL,NULL),
- 	 ('5492360692',1,1,'람보르기니','대구 79더 4119','2021','렌트카','fixing','23611','2023-09-12 13:59:15',NULL,NULL),
- 	 ('6300450876',1,1,'벤츠','인천 86머 4334','2016','렌트카',null,'17491','2022-03-01 00:04:20',NULL,NULL),
- 	 ('9805137474',1,1,'산타페','경북 16러 6297','2014','렌트카','fixing','9294','2025-01-02 13:23:23',NULL,NULL),
- 	 ('4620865873',1,1,'카니발','경기 33서 1176','2019','카쉐어링','running','13771','2024-03-21 06:30:31',NULL,NULL);
+INSERT INTO car(mdn, biz_id, device_id, car_type, car_plate, car_year, status, purpose, sum, created_at)
+VALUES
+ ('0000000000', '1',  '1', '소나타',   '서울 01가 1001', '2021', 'running',  '렌트',     15000, '2025-04-14 09:00:00'),
+  ('1111111111', '1',  '1', '그랜저',   '부산 02나 2002', '2020', 'waiting',  '카쉐어링', 18000, '2025-04-14 09:00:00'),
+  ('2222222222', '1',  '1', 'K5',      '인천 03다 3003', '2018', 'fixing',   '렌트',     17000, '2025-04-14 09:00:00'),
+  ('3333333333', '1',  '1', '스파크',   '광주 04라 4004', '2022', 'running',  '카쉐어링', 16000, '2025-04-14 09:00:00'),
+  ('4444444444', '1',  '1', 'QM6',     '대구 05마 5005', '2019', 'waiting',  '렌트',     14000, '2025-04-14 09:00:00'),
+  ('5555555555', '1',  '1', '카니발',   '울산 06바 6006', '2020', 'fixing',   '카쉐어링', 22000, '2025-04-14 09:00:00'),
+  ('6666666666', '1',  '1', '모닝',     '경기 07사 7007', '2021', 'running',  '렌트',     13000, '2025-04-14 09:00:00'),
+  ('7777777777', '1',  '1', 'SM6',     '강원 08아 8008', '2022', 'waiting',  '카쉐어링', 21000, '2025-04-14 09:00:00'),
+  ('8888888888', '1', '1', '투싼',     '충남 09자 9009', '2018', 'fixing',   '렌트',     19000, '2025-04-14 09:00:00'),
+  ('9999999999', '1', '1', '싼타페',   '전북 10차 1010', '2019', 'running',  '카쉐어링', 23000, '2025-04-14 09:00:00');
 
-INSERT INTO rent(rent_uuid, mdn, rent_stime, rent_etime, renter_name, renter_phone, purpose, rent_status, rent_loc, rent_lat, rent_lon, return_loc, return_lat, return_lon, created_at, updated_at)
-VALUES ( 'some_uuid', '0488539469', -- 임의의 UUID
-'2024-10-27 12:00:00',-- 임의의 시작 시간
-'2025-03-28 22:40:00', -- 임의의 종료 시간
-'홍길동', -- 임의의 사용자 이름
-'01012345678', -- 임의의 전화번호
-'출장', -- purpose는 NULL 허용
-'대여중', -- 임의의 대여 상태
-'미왕', -- rent_loc는 NULL 허용
-0, -- rent_lat는 NULL 허용
-0, -- rent_lon는 NULL 허용
-'빌딩', -- return_loc는 NULL 허용
-0, -- return_lat는 NULL 허용
-0, -- return_lon는 NULL 허용
-'2024-10-27 09:00:00', -- 임의의 생성 시간
-NULL -- updated_at는 NULL 허용
+INSERT INTO rent(rent_uuid, mdn, rent_stime, rent_etime, renter_name, renter_phone,
+  purpose, rent_status, rent_loc, rent_lat, rent_lon, return_loc, return_lat, return_lon, created_at)
+  VALUES(
+  '550e8400-e29b-41d4-a716-446655440000',  -- 대여 UUID
+  '0000000000',                          -- 차량 MDN (CarEntity 참조)
+  '2025-04-14 09:30:00',                  -- 대여 시작 시간
+  '2025-04-14 12:45:00',                  -- 대여 종료 시간
+  '오승택',                                -- 대여자 이름
+  '010-2364-3047',                          -- 대여자 전화번호
+  '렌트',                                  -- 사용 목적 (렌트 or 카쉐어링)
+  'reserved',                              -- 대여 상태 (running, waiting, fixing)
+  '서울 강남구 역삼동',                     -- 대여 위치
+  37123456,                               -- 대여 경도 (int)
+  12765432,                               -- 대여 위도 (int)
+  '서울 강남구 논현동',                     -- 반납 위치
+  37123500,                               -- 반납 경도 (int)
+  12765500,                                -- 반납 위도 (int)
+  '2025-04-14 09:00:00'
 );
