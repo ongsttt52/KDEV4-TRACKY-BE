@@ -121,8 +121,8 @@ CREATE TABLE `drive` (
 );
 
 CREATE TABLE `gpshistory` (
-	`seq` bigint NOT NULL,
-	`id` bigint NOT NULL,
+	`drive_seq` bigint NOT NULL, -- 기본키, auto_increment -> Tsid로 변경
+	`drive_id` bigint NOT NULL, -- 복합키 -> 외래키로 변경
 	`o_time` varchar(100) NOT NULL,
 	`gcd` varchar(10) NOT NULL,
 	`lat` varchar(100) NOT NULL,
@@ -130,7 +130,10 @@ CREATE TABLE `gpshistory` (
 	`ang` varchar(100) NOT NULL,
 	`spd` varchar(100) NOT NULL,
 	`sum` varchar(100) NOT NULL,
-	`created_at` timestamp	NOT NULL
+	`created_at` timestamp	NOT NULL,
+	PRIMARY KEY (`drive_seq`),
+	CONSTRAINT `fk_gpshistory_drive`
+        FOREIGN KEY (`drive_id`) REFERENCES `drive`(`id`)
 );
 
 CREATE TABLE `car_event` (
