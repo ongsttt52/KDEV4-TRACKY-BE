@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `biz`;
 
 CREATE TABLE `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
+	`biz_uuid` NOT NULL,
 	`biz_name` varchar(100) NULL,
 	`biz_reg_num` varchar(20) NULL,
 	`biz_admin`	varchar(100) NULL,
