@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EntityScan(basePackages = {
-	"kernel360.trackycore.core.common",
+	"kernel360.trackycore.core.domain",
 })
 @EnableJpaRepositories(basePackages = {
 	"kernel360.trackycore.core.infrastructure",

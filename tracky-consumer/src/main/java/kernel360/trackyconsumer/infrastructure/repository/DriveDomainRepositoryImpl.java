@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.DriveEntity;
-import kernel360.trackycore.core.common.entity.QDriveEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.QDriveEntity;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
