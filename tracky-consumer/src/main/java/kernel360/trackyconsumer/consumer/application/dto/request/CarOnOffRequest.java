@@ -1,4 +1,4 @@
-package kernel360.trackyconsumer.application.dto.request;
+package kernel360.trackyconsumer.consumer.application.dto.request;
 
 import java.time.LocalDateTime;
 
@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import kernel360.trackycore.core.domain.entity.LocationEntity;
 import kernel360.trackycore.core.domain.vo.EmulatorInfo;
 import kernel360.trackycore.core.domain.vo.GpsInfo;
-
-// 필요한 다른 import 문들 (EmulatorInfo, GpsInfo, LocationEntity)
 
 public record CarOnOffRequest(
 	String mdn,

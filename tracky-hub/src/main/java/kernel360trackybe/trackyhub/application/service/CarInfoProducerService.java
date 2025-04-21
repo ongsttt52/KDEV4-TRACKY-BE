@@ -4,10 +4,11 @@ import java.util.UUID;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+
+import kernel360trackybe.trackyhub.application.dto.request.CarOnOffRequest;
+import kernel360trackybe.trackyhub.application.dto.request.CycleInfoRequest;
+import kernel360trackybe.trackyhub.application.dto.request.GpsHistoryMessage;
 import kernel360trackybe.trackyhub.config.RabbitMQProperties;
-import kernel360trackybe.trackyhub.presentation.dto.CarOnOffRequest;
-import kernel360trackybe.trackyhub.presentation.dto.CycleInfoRequest;
-import kernel360trackybe.trackyhub.presentation.dto.GpsHistoryMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

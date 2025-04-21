@@ -1,4 +1,4 @@
-package kernel360.trackyconsumer.application.service;
+package kernel360.trackyconsumer.consumer.application.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,10 +7,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kernel360.trackyconsumer.application.dto.request.CarOnOffRequest;
-import kernel360.trackyconsumer.application.dto.request.CycleGpsRequest;
-import kernel360.trackyconsumer.application.dto.request.GpsHistoryMessage;
-import kernel360.trackyconsumer.domain.provider.DriveDomainProvider;
+import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
+import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
+import kernel360.trackyconsumer.drive.domain.provider.DriveDomainProvider;
+import kernel360.trackyconsumer.rent.domain.provider.RentDomainProvider;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
@@ -19,7 +20,6 @@ import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.GpsHistoryProvider;
 import kernel360.trackycore.core.domain.provider.LocationProvider;
-import kernel360.trackycore.core.domain.provider.RentProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +32,7 @@ public class ConsumerService {
 	private final CarProvider carProvider;
 	private final LocationProvider locationProvider;
 	private final GpsHistoryProvider gpsHistoryProvider;
-	private final RentProvider rentProvider;
+	private final RentDomainProvider rentDomainProvider;
 
 	@Async("taskExecutor")
 	@Transactional
@@ -43,7 +43,7 @@ public class ConsumerService {
 
 		CarEntity car = carProvider.findByMdn(request.mdn());
 
-		DriveEntity drive = driveProvider.findByCarAndOtime(car, request.oTime());
+		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < request.cCnt(); i++) {
@@ -68,7 +68,7 @@ public class ConsumerService {
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
-		RentEntity rent = rentProvider.findByCarAndTime(car, carOnOffRequest.onTime());
+		RentEntity rent = rentDomainProvider.getRent(car, carOnOffRequest.onTime());
 
 		DriveEntity drive = DriveEntity.create(car, rent, location,
 			carOnOffRequest.onTime());
@@ -81,7 +81,7 @@ public class ConsumerService {
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
-		DriveEntity drive = driveProvider.findByCarAndOtime(car, carOnOffRequest.onTime());
+		DriveEntity drive = driveProvider.getDrive(car, carOnOffRequest.onTime());
 		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
 
 		car.updateDistance(drive.getDriveDistance());

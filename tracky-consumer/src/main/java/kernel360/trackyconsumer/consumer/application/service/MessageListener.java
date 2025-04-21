@@ -1,4 +1,4 @@
-package kernel360.trackyconsumer.application.service;
+package kernel360.trackyconsumer.consumer.application.service;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import kernel360.trackyconsumer.application.dto.request.CarOnOffRequest;
-import kernel360.trackyconsumer.application.dto.request.GpsHistoryMessage;
+import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
