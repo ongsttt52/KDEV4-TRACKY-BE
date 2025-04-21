@@ -9,10 +9,5 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.infrastructure.repository.DriveRepository;
 
-public interface DriveDomainRepository extends DriveRepository {
-
-	@Query("SELECT d FROM DriveEntity d WHERE d.car = :car " +
-		"AND d.driveOnTime <= :otime " +
-		"ORDER BY d.id DESC LIMIT 1")
-	Optional<DriveEntity> findByCarAndOtime(CarEntity car, LocalDateTime otime);
+public interface DriveDomainRepository extends DriveRepository, DriveRepositoryCustom {
 }

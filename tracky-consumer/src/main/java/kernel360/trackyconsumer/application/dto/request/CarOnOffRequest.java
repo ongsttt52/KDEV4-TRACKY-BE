@@ -10,8 +10,6 @@ import kernel360.trackycore.core.domain.entity.LocationEntity;
 import kernel360.trackycore.core.domain.vo.EmulatorInfo;
 import kernel360.trackycore.core.domain.vo.GpsInfo;
 
-// 필요한 다른 import 문들 (EmulatorInfo, GpsInfo, LocationEntity)
-
 public record CarOnOffRequest(
 	String mdn,
 	String gcd,

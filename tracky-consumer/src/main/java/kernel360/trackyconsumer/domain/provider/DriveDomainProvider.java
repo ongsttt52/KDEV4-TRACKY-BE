@@ -19,8 +19,8 @@ public class DriveDomainProvider {
 	private final DriveDomainRepository driveDomainRepository;
 	private final DriveProvider driveProvider;
 
-	public DriveEntity findByCarAndOtime(CarEntity car, LocalDateTime otime) {
-		return driveDomainRepository.findByCarAndOtime(car, otime)
+	public DriveEntity getDrive(CarEntity car, LocalDateTime otime) {
+		return driveDomainRepository.getDrive(car, otime)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
 	}
 

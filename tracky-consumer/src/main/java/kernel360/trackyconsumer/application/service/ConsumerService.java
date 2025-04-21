@@ -43,7 +43,7 @@ public class ConsumerService {
 
 		CarEntity car = carProvider.findByMdn(request.mdn());
 
-		DriveEntity drive = driveProvider.findByCarAndOtime(car, request.oTime());
+		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
 
 		// GPS 쪼개서 정보 저장
 		for (int i = 0; i < request.cCnt(); i++) {
@@ -68,9 +68,9 @@ public class ConsumerService {
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
-		RentEntity rent = rentProvider.findByCarAndTime(car, carOnOffRequest.onTime());
+		// RentEntity rent = rentProvider.findByCarAndTime(car, carOnOffRequest.onTime());
 
-		DriveEntity drive = DriveEntity.create(car, rent, location,
+		DriveEntity drive = DriveEntity.create(car, null, location,
 			carOnOffRequest.onTime());
 
 		driveProvider.save(drive);
@@ -81,7 +81,7 @@ public class ConsumerService {
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
 
-		DriveEntity drive = driveProvider.findByCarAndOtime(car, carOnOffRequest.onTime());
+		DriveEntity drive = driveProvider.getDrive(car, carOnOffRequest.onTime());
 		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
 
 		car.updateDistance(drive.getDriveDistance());
