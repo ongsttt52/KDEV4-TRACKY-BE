@@ -1,4 +1,4 @@
-package kernel360.trackyweb.drivehistory.infrastructure.repo;
+package kernel360.trackyweb.drive.infrastructure.repository;
 
 import java.util.List;
 import java.util.Optional;
