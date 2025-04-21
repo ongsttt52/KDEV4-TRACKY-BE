@@ -12,12 +12,12 @@ import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackyweb.drive.domain.DriveHistory;
+import kernel360.trackyweb.drive.domain.GpsData;
+import kernel360.trackyweb.drive.infrastructure.repository.GpsHistoryDomainRepository;
 import kernel360.trackyweb.drivehistory.domain.CarDriveHistory;
-import kernel360.trackyweb.drivehistory.domain.DriveHistory;
-import kernel360.trackyweb.drivehistory.domain.GpsData;
 import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
 import kernel360.trackyweb.drivehistory.infrastructure.repo.DriveHistoryRepository;
-import kernel360.trackyweb.drivehistory.infrastructure.repo.GpsHistoryDomainRepository;
 import kernel360.trackyweb.drivehistory.infrastructure.repo.RentHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -119,6 +119,7 @@ public class DriveHistoryService {
 
 	/**
 	 * 차량 mdn 검색으로 차량에 대한 운행정보 가져오기
+	 *
 	 * @param mdn
 	 * @return 차량 별 운행기록 list
 	 */

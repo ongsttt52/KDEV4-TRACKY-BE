@@ -13,3 +13,8 @@ spring:
     secret: "my-super-secret-key-my-super-secret-key-1234567890"
     # 토큰 만료 시간 (밀리초 단위, 예: 3600000 = 1시간)
     expiration: 3600000
+
+  logging:
+    level:
+      org.hibernate.SQL: debug            # SQL 쿼리
+      org.hibernate.type.descriptor.sql: trace   # 파라미터 값까지 출력

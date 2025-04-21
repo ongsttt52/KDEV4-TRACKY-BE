@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackyweb.drive.domain.DriveHistory;
 import kernel360.trackyweb.drivehistory.application.DriveHistoryService;
 import kernel360.trackyweb.drivehistory.domain.CarDriveHistory;
-import kernel360.trackyweb.drivehistory.domain.DriveHistory;
 import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
 import lombok.RequiredArgsConstructor;
 
