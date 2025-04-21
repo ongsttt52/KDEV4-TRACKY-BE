@@ -7,7 +7,7 @@ VALUES(1, 'jiwon0321', '$2a$10$0EOkcArMlrYPeHSBrrLVAetH2OdLfdEYlD1a5WA1.80RBI1Z8
 INSERT INTO device(id, tid, mid, did, pv, created_at)
 VALUES(1, 'A001', '6', '1', '5', '2025-04-14 09:00:00');
 
-INSERT INTO car(mdn, device_id, biz_id, car_type, car_plate, car_year, status, purpose, sum, created_at)
+INSERT INTO car(mdn, biz_id, device_id, car_type, car_plate, car_year, status, purpose, sum, created_at)
 VALUES
  ('0000000000', '1',  '1', '소나타',   '서울 01가 1001', '2021', 'running',  '렌트',     15000, '2025-04-14 09:00:00'),
   ('1111111111', '1',  '1', '그랜저',   '부산 02나 2002', '2020', 'waiting',  '카쉐어링', 18000, '2025-04-14 09:00:00'),
