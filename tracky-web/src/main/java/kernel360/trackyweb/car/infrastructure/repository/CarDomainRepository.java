@@ -2,10 +2,8 @@ package kernel360.trackyweb.car.infrastructure.repository;
 
 import kernel360.trackycore.core.infrastructure.repository.CarRepository;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 
 public interface CarDomainRepository extends CarRepository, CarDomainRepositoryCustom {
