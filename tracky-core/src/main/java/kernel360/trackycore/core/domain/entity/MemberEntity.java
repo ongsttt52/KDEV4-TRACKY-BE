@@ -46,6 +46,8 @@ public class MemberEntity extends DateBaseEntity {
 
 	private String role;
 
+	private String status;
+
 	@Column(name = "lastlogin_at")
 	private LocalDateTime lastLoginAt;
 
