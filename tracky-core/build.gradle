@@ -1,5 +1,5 @@
 plugins {
-	id 'java-library'
+    id 'java-library'
 }
 
 dependencies {
@@ -19,7 +19,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
-
 
 sourceSets {
     main.java.srcDirs += 'build/generated/source/apt/main'

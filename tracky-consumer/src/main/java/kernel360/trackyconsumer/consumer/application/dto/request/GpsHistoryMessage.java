@@ -1,4 +1,4 @@
-package kernel360.trackyconsumer.application.dto.request;
+package kernel360.trackyconsumer.consumer.application.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.List;

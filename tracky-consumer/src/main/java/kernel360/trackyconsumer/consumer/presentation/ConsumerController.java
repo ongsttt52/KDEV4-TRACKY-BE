@@ -1,13 +1,13 @@
-package kernel360.trackyconsumer.presentation;
+package kernel360.trackyconsumer.consumer.presentation;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kernel360.trackyconsumer.application.dto.request.CarOnOffRequest;
-import kernel360.trackyconsumer.application.dto.request.GpsHistoryMessage;
-import kernel360.trackyconsumer.application.service.ConsumerService;
+import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
+import kernel360.trackyconsumer.consumer.application.service.ConsumerService;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,15 +1,14 @@
-package kernel360.trackyconsumer.domain.provider;
+package kernel360.trackyconsumer.drive.domain.provider;
 
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
-import kernel360.trackyconsumer.infrastructure.repository.DriveDomainRepository;
+import kernel360.trackyconsumer.drive.infrastructure.repository.DriveDomainRepository;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
-import kernel360.trackycore.core.domain.provider.DriveProvider;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -17,14 +16,13 @@ import lombok.RequiredArgsConstructor;
 public class DriveDomainProvider {
 
 	private final DriveDomainRepository driveDomainRepository;
-	private final DriveProvider driveProvider;
 
-	public DriveEntity getDrive(CarEntity car, LocalDateTime otime) {
-		return driveDomainRepository.getDrive(car, otime)
+	public DriveEntity getDrive(CarEntity car, LocalDateTime onTime) {
+		return driveDomainRepository.getDrive(car, onTime)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
 	}
 
 	public DriveEntity save(DriveEntity drive) {
-		return driveProvider.save(drive);
+		return driveDomainRepository.save(drive);
 	}
 }
