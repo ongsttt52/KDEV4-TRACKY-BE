@@ -15,19 +15,12 @@ public class DriveDomainRepositoryImpl implements DriveRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 	private final QDriveEntity driveEntity = QDriveEntity.driveEntity;
 
-/*
-	@Query("SELECT d FROM DriveEntity d WHERE d.car = :car " +
-		"AND d.driveOnTime <= :otime " +
-		"ORDER BY d.id DESC LIMIT 1")
-	Optional<DriveEntity> findByCarAndOtime(CarEntity car, LocalDateTime otime);
- */
-
 	@Override
-	public Optional<DriveEntity> getDrive(CarEntity car, LocalDateTime otime) {
+	public Optional<DriveEntity> getDrive(CarEntity car, LocalDateTime onTime) {
 		DriveEntity result = queryFactory
 			.selectFrom(driveEntity)
 			.where(driveEntity.car.eq(car)
-				.and(driveEntity.driveOnTime.loe(otime)))
+				.and(driveEntity.driveOnTime.loe(onTime)))
 			.orderBy(driveEntity.id.desc())
 			.fetchFirst();
 
