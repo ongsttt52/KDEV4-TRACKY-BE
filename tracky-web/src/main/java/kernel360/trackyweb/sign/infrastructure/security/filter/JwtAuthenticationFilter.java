@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.infrastructure.security.filter;
+package kernel360.trackyweb.sign.infrastructure.security.filter;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -14,7 +14,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
+import kernel360.trackyweb.sign.infrastructure.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

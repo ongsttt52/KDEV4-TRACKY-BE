@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.infrastructure.security.config;
+package kernel360.trackyweb.sign.infrastructure.security.config;
 
 import java.util.List;
 
@@ -21,8 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import kernel360.trackyweb.member.infrastructure.security.filter.JwtAuthenticationFilter;
-import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
+import kernel360.trackyweb.sign.infrastructure.security.filter.JwtAuthenticationFilter;
+import kernel360.trackyweb.sign.infrastructure.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

@@ -1,18 +1,18 @@
-package kernel360.trackyweb.member.application;
+package kernel360.trackyweb.sign.application;
 
 import org.springframework.stereotype.Service;
 
 import kernel360.trackycore.core.domain.entity.MemberEntity;
-import kernel360.trackyweb.member.application.validation.MemberValidator;
-import kernel360.trackyweb.member.domain.provider.MemberProvider;
-import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
+import kernel360.trackyweb.sign.application.validation.MemberValidator;
+import kernel360.trackyweb.sign.domain.provider.MemberProvider;
+import kernel360.trackyweb.sign.infrastructure.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class SignService {
 
 	private final MemberProvider memberProvider;
 	private final JwtTokenProvider jwtTokenProvider;

@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.infrastructure.security.jwt;
+package kernel360.trackyweb.sign.infrastructure.security.jwt;
 
 import java.security.Key;
 import java.util.Date;

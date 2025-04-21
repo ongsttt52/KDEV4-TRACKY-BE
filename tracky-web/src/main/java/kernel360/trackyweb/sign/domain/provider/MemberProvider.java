@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.domain.provider;
+package kernel360.trackyweb.sign.domain.provider;
 
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.application.validation;
+package kernel360.trackyweb.sign.application.validation;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
