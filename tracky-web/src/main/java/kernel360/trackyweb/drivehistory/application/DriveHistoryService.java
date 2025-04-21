@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import kernel360.trackycore.core.common.entity.DriveEntity;
-import kernel360.trackycore.core.common.entity.GpsHistoryEntity;
-import kernel360.trackycore.core.common.entity.RentEntity;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackyweb.drive.domain.DriveHistory;
+import kernel360.trackyweb.drive.domain.GpsData;
 import kernel360.trackyweb.drivehistory.domain.CarDriveHistory;
-import kernel360.trackyweb.drivehistory.domain.DriveHistory;
-import kernel360.trackyweb.drivehistory.domain.GpsData;
 import kernel360.trackyweb.drivehistory.domain.RentDriveHistory;
 import kernel360.trackyweb.drivehistory.infrastructure.repo.DriveHistoryRepository;
 import kernel360.trackyweb.drivehistory.infrastructure.repo.GpsHistoryDomainRepository;

@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackycore.core.common.entity.CarEntity;
-import kernel360.trackycore.core.common.entity.DriveEntity;
-import kernel360.trackycore.core.common.entity.LocationEntity;
-import kernel360.trackycore.core.common.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.LocationEntity;
+import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackyweb.reservation.infrastructure.repo.ReservationDriveRepository;
 import kernel360.trackyweb.reservation.infrastructure.repo.ReservationRentRepository;
 import kernel360.trackyweb.reservation.presentation.dto.CarResponse;

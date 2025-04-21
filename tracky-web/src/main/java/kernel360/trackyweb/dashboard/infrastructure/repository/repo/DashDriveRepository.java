@@ -3,7 +3,7 @@ package kernel360.trackyweb.dashboard.infrastructure.repository.repo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import kernel360.trackycore.core.common.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
 
 public interface DashDriveRepository extends JpaRepository<DriveEntity, Long> {
 	@Query("SELECT SUM(d.driveDistance) FROM DriveEntity d")

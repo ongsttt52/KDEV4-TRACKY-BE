@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
+import kernel360.trackycore.core.domain.vo.EmulatorInfo;
 
 public record CycleInfoRequest(String mdn, EmulatorInfo emulatorInfo, int cCnt, LocalDateTime oTime,
 							   List<CycleGpsRequest> cList) {

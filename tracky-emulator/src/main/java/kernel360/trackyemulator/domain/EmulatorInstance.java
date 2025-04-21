@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import kernel360.trackycore.core.common.entity.vo.EmulatorInfo;
-import kernel360.trackycore.core.common.entity.vo.GpsInfo;
+import kernel360.trackycore.core.domain.vo.EmulatorInfo;
+import kernel360.trackycore.core.domain.vo.GpsInfo;
 import kernel360.trackyemulator.application.service.dto.request.CycleGpsRequest;
 import lombok.Getter;
 
