@@ -16,7 +16,7 @@ public class CarDomainProvider {
 
 	public Page<CarEntity> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
 		return carDomainRepository.searchByFilter(
-			carSearchByFilterRequest.text(),
+			carSearchByFilterRequest.search(),
 			carSearchByFilterRequest.status(),
 			carSearchByFilterRequest.pageable());
 	}
