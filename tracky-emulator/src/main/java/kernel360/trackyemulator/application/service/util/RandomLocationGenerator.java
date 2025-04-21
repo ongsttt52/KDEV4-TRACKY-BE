@@ -2,13 +2,10 @@ package kernel360.trackyemulator.application.service.util;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.springframework.stereotype.Component;
-
 /**
  * 에뮬레이터 초기 위치 랜덤 생성기
  * 대한민국 전체 범위 내 위도/경도 생성
  */
-@Component
 public class RandomLocationGenerator {
 
 	private static final double MIN_LAT = 35.0;
