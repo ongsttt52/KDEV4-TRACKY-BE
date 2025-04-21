@@ -31,6 +31,9 @@ public class BizEntity extends DateBaseEntity {
 	@Column(name = "biz_name")
 	private String bizName;
 
+	@Column(name = "biz_uuid")
+	private String bizUuid;
+
 	@Column(name = "biz_reg_num")
 	private String bizRegNum;
 
@@ -44,10 +47,12 @@ public class BizEntity extends DateBaseEntity {
 	private LocalDateTime deleteAt;
 
 	// 생성 메서드만 공개
-	public static BizEntity create(String bizName, String bizRegNum, String bizAdmin, String bizPhoneNum,
+	public static BizEntity create(String bizName, String bizUuid, String bizRegNum, String bizAdmin,
+		String bizPhoneNum,
 		LocalDateTime deleteAt) {
 		BizEntity biz = new BizEntity();
 		biz.bizName = bizName;
+		biz.bizUuid = bizUuid;
 		biz.bizRegNum = bizRegNum;
 		biz.bizAdmin = bizAdmin;
 		biz.bizPhoneNum = bizPhoneNum;

@@ -7,6 +7,7 @@ public record CarUpdateRequest(
 	BizEntity biz,
 	DeviceEntity device,
 	String carType,
+	String carName,
 	String carPlate,
 	String carYear,
 	String purpose,

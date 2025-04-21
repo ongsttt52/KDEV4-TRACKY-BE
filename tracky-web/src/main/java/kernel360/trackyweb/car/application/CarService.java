@@ -86,7 +86,8 @@ public class CarService {
 		carProvider.existsByMdnOps(carCreateRequest.mdn());
 
 		CarEntity car = CarEntity.create(
-			carCreateRequest.mdn(), biz, device, carCreateRequest.carType(), carCreateRequest.carPlate(),
+			carCreateRequest.mdn(), biz, device, carCreateRequest.carType(), carCreateRequest.carName(),
+			carCreateRequest.carPlate(),
 			carCreateRequest.carYear(), carCreateRequest.purpose(), carCreateRequest.status(), carCreateRequest.sum()
 		);
 
@@ -115,7 +116,7 @@ public class CarService {
 		DeviceEntity device = deviceProvider.getDevice(1L);
 
 		// update 할 객체 생성
-		car.updateFrom(biz, device, carUpdateRequest.carType(), carUpdateRequest.carPlate(),
+		car.updateFrom(biz, device, carUpdateRequest.carType(), carUpdateRequest.carName(), carUpdateRequest.carPlate(),
 			carUpdateRequest.carYear(), carUpdateRequest.purpose(), carUpdateRequest.status(), carUpdateRequest.sum());
 
 		globalSseEvent.sendEvent(SseEvent.CAR_UPDATED);
