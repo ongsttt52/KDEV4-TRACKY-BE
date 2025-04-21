@@ -85,6 +85,8 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return new PageImpl<>(content, pageable, total);
 	}
 
+	public BooleanBuilder searchByFilterBuilder(String search, String status, QCarEntity car) {
+
 		BooleanBuilder builder = new BooleanBuilder();
 
 		if (search != null && !search.isBlank()) {
