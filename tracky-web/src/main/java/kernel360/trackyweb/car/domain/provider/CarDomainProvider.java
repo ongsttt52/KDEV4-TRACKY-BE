@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
-import kernel360.trackyweb.car.infrastructure.repository.CarRepositoryCustom;
 import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -16,12 +15,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CarDomainProvider {
 
-	private final CarRepositoryCustom carRepositoryCustom;
 	private final CarDomainRepository carDomainRepository;
 
 	public Page<CarEntity> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
-		return carRepositoryCustom.searchByFilter(carSearchByFilterRequest.mdn(), carSearchByFilterRequest.status(),
-			carSearchByFilterRequest.purpose(), carSearchByFilterRequest.pageable());
+		return carDomainRepository.searchByFilter(
+			carSearchByFilterRequest.text(),
+			carSearchByFilterRequest.status(),
+			carSearchByFilterRequest.pageable());
 	}
 
 	public CarEntity save(CarEntity car) {

@@ -119,6 +119,7 @@ public class DriveHistoryService {
 
 	/**
 	 * 차량 mdn 검색으로 차량에 대한 운행정보 가져오기
+	 *
 	 * @param mdn
 	 * @return 차량 별 운행기록 list
 	 */
