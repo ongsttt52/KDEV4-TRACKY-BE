@@ -36,6 +36,10 @@ public class DriveEntity extends DateBaseEntity {
 	@JoinColumn(name = "mdn")
 	private CarEntity car;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "rent_uuid")
+	private RentEntity rent;
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "drive_loc_id")
 	private LocationEntity location;
@@ -61,6 +65,7 @@ public class DriveEntity extends DateBaseEntity {
 		LocalDateTime onTime) {
 		DriveEntity drive = new DriveEntity();
 		drive.car = car;
+		drive.rent = rent;
 		drive.location = location;
 		drive.driveOnTime = onTime;
 		drive.driveDistance = 0;

@@ -103,6 +103,7 @@ CREATE TABLE `location` (
 
 CREATE TABLE `drive` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
+	`rent_uuid` varchar(100) NOT NULL,
 	`mdn` varchar(100) NOT NULL,
 	`drive_loc_id` bigint NOT NULL,
 	`drive_distance` varchar(100) NULL,
