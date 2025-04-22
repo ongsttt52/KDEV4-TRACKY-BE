@@ -3,7 +3,11 @@ package kernel360.trackyweb.drive.infrastructure.repository;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +58,40 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		return new PageImpl<>(content, effectivePageable, total);
 	}
 
+
+	@Override
+	public Page<DriveEntity> findRunningDriveList(String search, Pageable pageable) {
+
+		// 검색 조건
+		BooleanBuilder builder = new BooleanBuilder()
+			.and(driveEntity.driveOffTime.isNull()) // 아직 종료되지 않은 주행
+			.and(isContainsMdnOrPlate(search));     // 차량 번호판 or mdn 검색
+
+		// 쿼리
+		List<DriveEntity> results = queryFactory
+			.selectFrom(driveEntity)
+			.join(driveEntity.car).fetchJoin()
+			.where(builder)
+			.orderBy(driveEntity.driveOnTime.desc())
+			.fetch();
+
+		// 차량(mdn)당 1개만 유지
+		Map<String, DriveEntity> uniqueByCar = new LinkedHashMap<>();
+		for (DriveEntity drive : results) {
+			String mdn = drive.getCar().getMdn();
+			uniqueByCar.putIfAbsent(mdn, drive);
+		}
+
+		List<DriveEntity> filtered = new ArrayList<>(uniqueByCar.values());
+
+		// Java 단에서 페이징 처리
+		int start = (int) pageable.getOffset();
+		int end = Math.min((start + pageable.getPageSize()), filtered.size());
+		List<DriveEntity> pagedContent = (start < end) ? filtered.subList(start, end) : Collections.emptyList();
+
+		return new PageImpl<>(pagedContent, pageable, filtered.size());
+	}
+
 	private boolean isUnboundedSearch(LocalDateTime start, LocalDateTime end) {
 		return start == null && end == null;
 	}
@@ -72,6 +110,13 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		}
 
 		return builder;
+	}
+
+	private BooleanBuilder isContainsMdnOrPlate(String search) {
+		if (StringUtils.isBlank(search)) return new BooleanBuilder();
+		return new BooleanBuilder()
+			.or(driveEntity.car.mdn.containsIgnoreCase(search))
+			.or(driveEntity.car.carPlate.containsIgnoreCase(search));
 	}
 
 	private long fetchTotalCount(BooleanBuilder condition) {

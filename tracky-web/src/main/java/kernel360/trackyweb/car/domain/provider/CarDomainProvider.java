@@ -28,7 +28,5 @@ public class CarDomainProvider {
 
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
 		return carDomainRepository.searchDriveCarByFilter(bizUuid, search, pageable);
-
 	}
-
 }

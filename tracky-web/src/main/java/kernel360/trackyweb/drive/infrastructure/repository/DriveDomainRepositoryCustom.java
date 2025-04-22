@@ -13,4 +13,9 @@ public interface DriveDomainRepositoryCustom {
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime,
 		Pageable pageable);
+
+	Page<DriveEntity> findRunningDriveList(
+		String search,
+		Pageable pageable
+	);
 }

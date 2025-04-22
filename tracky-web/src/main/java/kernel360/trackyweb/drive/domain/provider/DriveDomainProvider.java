@@ -24,4 +24,11 @@ public class DriveDomainProvider {
 		return driveDomainRepository.searchByFilter(mdn, startDateTime, endDateTime, pageable);
 	}
 
+	public Page<DriveEntity> findRunningDriveList(
+		String search,
+		Pageable pageable
+	) {
+		return driveDomainRepository.findRunningDriveList(search, pageable);
+	}
+
 }
