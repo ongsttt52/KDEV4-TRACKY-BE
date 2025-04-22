@@ -1,12 +1,14 @@
-package kernel360.trackyweb.car.application.dto.request;
+package kernel360.trackyweb.drive.application.dto.request;
+
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-public record CarSearchByFilterRequest(
-	String search,
-	String status,
-	String carType,
+public record DriveListRequest(
+	String mdn,
+	LocalDateTime startDateTime,
+	LocalDateTime endDateTime,
 	Integer page,
 	Integer size
 ) {
@@ -15,4 +17,5 @@ public record CarSearchByFilterRequest(
 		int safeSize = size != null ? size : 20;
 		return PageRequest.of(safePage, safeSize);
 	}
+
 }

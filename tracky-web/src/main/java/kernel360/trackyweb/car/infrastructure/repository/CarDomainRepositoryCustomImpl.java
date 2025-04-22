@@ -1,5 +1,8 @@
 package kernel360.trackyweb.car.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
+import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +21,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
-import kernel360.trackycore.core.domain.entity.QBizEntity;
-import kernel360.trackycore.core.domain.entity.QCarEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -27,86 +28,117 @@ import lombok.RequiredArgsConstructor;
 public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
-	private final QCarEntity car = QCarEntity.carEntity;
 
 	@Override
-	public List<String> findAllMdnByBizId(Long bizId) {
-
+	public List<String> findAllMdnByBizId(String bizUuid) {
 		return queryFactory
-			.select(car.mdn)
-			.from(car)
-			.where(car.biz.id.eq(bizId))
+			.select(carEntity.mdn)
+			.from(carEntity)
+			.join(carEntity.biz, bizEntity)
+			.where(bizEntity.bizUuid.eq(bizUuid))
 			.fetch();
 	}
 
-	//번호판 먼저
 	@Override
-	public Page<CarEntity> searchByFilter(String search, String status, Pageable pageable) {
-
+	public Page<CarEntity> searchCarByFilter(String search, String status, String carType, Pageable pageable) {
 		BooleanBuilder builder = new BooleanBuilder()
-			.and(searchContains(search))
-			.and(statusEquals(status));
+			.and(isContainsCarMdnOrCarPlate(search))
+			.and(isEqualStatus(status))
+			.and(isEqualCarType(carType));
 
 		JPAQuery<CarEntity> query = queryFactory
-			.selectFrom(car)
+			.selectFrom(carEntity)
 			.where(builder)
 			.orderBy(carPlateSort(search));
 
-		List<CarEntity> content = query
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetch();
+		List<CarEntity> content = fetchPagedContent(query, pageable);
 
-		long total = countByFilter(builder);
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(carEntity.count())
+				.from(carEntity)
+				.where(builder)
+				.fetchOne()
+		).orElse(0L);
 
 		return new PageImpl<>(content, pageable, total);
 	}
 
+	@Override
+	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
+		JPAQuery<CarEntity> query = queryFactory
+			.select(carEntity)
+			.from(carEntity)
+			.join(carEntity.biz, bizEntity)
+			.where(bizEntity.bizUuid.eq(bizUuid)
+				.and(isContainsCarMdnOrCarPlate(search)));
 
+		List<CarEntity> content = fetchPagedContent(query, pageable);
+
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(carEntity.count())
+				.from(carEntity)
+				.join(carEntity.biz, bizEntity)
+				.where(bizEntity.bizUuid.eq(bizUuid)
+					.and(isContainsCarMdnOrCarPlate(search)))
+				.fetchOne()
+		).orElse(0L);
+
+		return new PageImpl<>(content, pageable, total);
+	}
+
+	//검색 조건
+	private BooleanExpression isContainsCarMdnOrCarPlate(String search) {
+		if (StringUtils.isBlank(search)) {
+			return null;
+		}
+		return carEntity.mdn.containsIgnoreCase(search)
+			.or(carEntity.carPlate.containsIgnoreCase(search));
+	}
+
+	private BooleanExpression isEqualStatus(String status) {
+		if (StringUtils.isBlank(status)) {
+			return null;
+		}
+		return carEntity.status.eq(status);
+	}
+
+	private BooleanExpression isEqualCarType(String carType) {
+		if (StringUtils.isBlank(carType)) {
+			return null;
+		}
+		return carEntity.carType.eq(carType);
+	}
+
+	//정렬 조건
 	private OrderSpecifier<?>[] carPlateSort(String search) {
 		if (StringUtils.isNotBlank(search)) {
 			NumberTemplate<Integer> carPlatePriority = Expressions.numberTemplate(
 				Integer.class, "CASE WHEN {1} LIKE CONCAT('%', {0}, '%') THEN 0 ELSE 1 END",
-				search, car.carPlate
+				search, carEntity.carPlate
 			);
 
 			NumberTemplate<Integer> carPlatePos = Expressions.numberTemplate(
-				Integer.class, "LOCATE({0}, {1})", search, car.carPlate
+				Integer.class, "LOCATE({0}, {1})", search, carEntity.carPlate
 			);
 
 			return new OrderSpecifier<?>[] {
 				carPlatePriority.asc(),
 				carPlatePos.asc(),
-				car.carPlate.asc()
+				carEntity.carPlate.asc()
 			};
 		}
-		return new OrderSpecifier<?>[] { car.carPlate.asc() };
+		return new OrderSpecifier<?>[] {carEntity.carPlate.asc()};
 	}
 
-	private long countByFilter(BooleanBuilder builder) {
-		return Optional.ofNullable(
-			queryFactory
-				.select(car.count())
-				.from(car)
-				.where(builder)
-				.fetchOne()
-		).orElse(0L);
+	private List<CarEntity> fetchPagedContent(JPAQuery<CarEntity> query, Pageable pageable) {
+		return query
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
 	}
 
-	public BooleanExpression searchContains(String search) {
-		if (StringUtils.isNotBlank(search)) {
-			return car.mdn.containsIgnoreCase(search)
-				.or(car.carPlate.containsIgnoreCase(search));
-		}
-		return null;
-	}
-
-	public BooleanExpression statusEquals(String status) {
-		if (StringUtils.isNotBlank(status)) {
-			return car.status.eq(status);
-		}
-		return null;
-	}
 }
 
 

@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,8 +49,13 @@ public class RentService {
 	 *
 	 * @return mdn list
 	 */
-	public ApiResponse<List<String>> getAllMdnByBizId(Long bizId) {
-		List<String> mdns = rentDomainProvider.getAllMdnByBizId(bizId);
+	public ApiResponse<List<String>> getAllMdnByBizId() {
+		// Long bizUuid = //시큐리티 컨텍스트에서 불러오기..
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String bizUuid = (String)auth.getCredentials();
+
+		List<String> mdns = rentDomainProvider.getAllMdnByBizId(bizUuid);
 
 		return ApiResponse.success(mdns);
 	}

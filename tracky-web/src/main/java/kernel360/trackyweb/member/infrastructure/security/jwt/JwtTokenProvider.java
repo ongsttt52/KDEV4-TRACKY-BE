@@ -32,7 +32,7 @@ public class JwtTokenProvider {
 		this.secretKey = Keys.hmacShaKeyFor(secretKeyRaw.getBytes());
 	}
 
-	public String generateToken(String memberId, String role, String bizName, Long bizId) {
+	public String generateToken(String memberId, String role, String bizName, Long bizId, String bizUuid) {
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + expiration);
 
@@ -41,6 +41,7 @@ public class JwtTokenProvider {
 			.claim("role", role)
 			.claim("bizName", bizName)
 			.claim("bizId", bizId)
+			.claim("bizUuid", bizUuid)
 			.setIssuedAt(now)
 			.setExpiration(validity)
 			.signWith(secretKey, SignatureAlgorithm.HS256)
@@ -53,6 +54,10 @@ public class JwtTokenProvider {
 
 	public String getRole(String token) {
 		return parseClaims(token).getBody().get("role", String.class);
+	}
+
+	public String getBizUuid(String token) {
+		return parseClaims(token).getBody().get("bizUuid", String.class);
 	}
 
 	/**

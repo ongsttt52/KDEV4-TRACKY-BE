@@ -19,7 +19,7 @@ import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 public interface RentApiDocs {
 
 	@Operation(summary = "rent 등록시 select 할 차량 전체 목록", description = "rent 등록시 select 할 차량 전체 목록 list")
-	ApiResponse<List<String>> getAllMdnByBizId(Long bizId);
+	ApiResponse<List<String>> getAllMdnByBizId();
 
 	@Operation(summary = "rent uuid, status, date 필터링 검색", description = "rent uuid, status, date 필터링 검색")
 	ApiResponse<List<RentResponse>> searchByFilter(
