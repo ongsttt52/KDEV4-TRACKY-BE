@@ -46,9 +46,9 @@ public class SignService {
 			passwordEncoder.encode(signupRequest.pwd()),
 			signupRequest.email(),
 			"USER",
-			"wait",
-			null
+			"wait"
 		);
+
 		memberProvider.save(member);
 	}
 
