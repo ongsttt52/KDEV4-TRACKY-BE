@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `biz`;
 
 CREATE TABLE `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
+	`biz_uuid` NOT NULL,
 	`biz_name` varchar(100) NULL,
 	`biz_reg_num` varchar(20) NULL,
 	`biz_admin`	varchar(100) NULL,
@@ -28,6 +29,7 @@ CREATE TABLE `member` (
 	`pwd` varchar(100) NOT NULL,
 	`email`	varchar(100) NOT NULL,
 	`role`	varchar(10) NOT NULL,
+	`status` varchar(20) NOT NULL,
 	`lastlogin_at` timestamp NULL,
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
@@ -53,6 +55,7 @@ CREATE TABLE `car` (
 	`biz_id` bigint NOT NULL,
 	`device_id`	bigint NULL,
 	`car_type` varchar(100) NOT NULL,
+	`car_name` varchar(100) NOT NULL,
 	`car_plate` varchar(100) NOT NULL,
 	`car_year` varchar(100) NOT NULL,
 	`purpose` varchar(100) NOT NULL,
