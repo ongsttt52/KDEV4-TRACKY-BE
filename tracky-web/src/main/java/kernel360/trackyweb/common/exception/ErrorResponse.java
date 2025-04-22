@@ -3,7 +3,7 @@ package kernel360.trackyweb.common.exception;
 import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kernel360.trackycore.core.infrastructure.exception.GlobalException;
+import kernel360.trackycore.core.common.exception.GlobalException;
 import lombok.Getter;
 
 @Getter

@@ -9,8 +9,10 @@ tasks.jar {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 
     implementation project(':tracky-core')
 
@@ -19,4 +21,4 @@ dependencies {
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
 }
 
-tasks.register("prepareKotlinBuildScriptModel"){}
+tasks.register("prepareKotlinBuildScriptModel") {}

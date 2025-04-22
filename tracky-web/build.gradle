@@ -6,6 +6,9 @@ dependencies {
 
     implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
+    implementation 'org.locationtech.jts:jts-core:1.18.2'
+    implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
+
     implementation project(':tracky-core')
 
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -17,6 +20,9 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    //Querydsl 내부 클래스 인식
+    implementation "com.querydsl:querydsl-core:5.0.0"
+    implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
 }
 
 tasks.named('test') {
@@ -30,3 +36,4 @@ tasks.bootJar {
 tasks.jar {
     enabled = true
 }
+

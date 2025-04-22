@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.dashboard.application.DashBoardService;
-import kernel360.trackyweb.dashboard.domain.RentDashboardDto;
 import kernel360.trackyweb.dashboard.domain.Statistics;
+import kernel360.trackyweb.dashboard.presentation.dto.RentDashboardDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -37,5 +37,11 @@ public class DashBoardController implements DashBoardApiDocs {
 	@GetMapping("/statistics")
 	public ApiResponse<Statistics> getStatistics() {
 		return ApiResponse.success(dashBoardService.getStatistics());
+	}
+
+	@GetMapping("/geo")
+	public ApiResponse<Map<String, Integer>> getGeoData() {
+		Map<String, Integer> geoMap = dashBoardService.getGeoData();
+		return ApiResponse.success(geoMap);
 	}
 }
