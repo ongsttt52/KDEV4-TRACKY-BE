@@ -1,5 +1,6 @@
 package kernel360.trackyweb.car.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 
 import java.util.List;
@@ -29,36 +30,62 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<String> findAllMdnByBizId(Long bizId) {
+	public List<String> findAllMdnByBizId(String bizUuid) {
 		return queryFactory
 			.select(carEntity.mdn)
 			.from(carEntity)
-			.where(carEntity.biz.id.eq(bizId))
+			.join(carEntity.biz, bizEntity)
+			.where(bizEntity.bizUuid.eq(bizUuid))
 			.fetch();
 	}
 
 	@Override
-
-	public Page<CarEntity> searchByFilter(String search, String status, String carType, Pageable pageable) {
+	public Page<CarEntity> searchCarByFilter(String search, String status, String carType, Pageable pageable) {
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(isContainsCarMdnOrCarPlate(search))
-			.and(isContainsCarStatus(status))
-			.and(isContainsCarType(carType));
+			.and(isEqualStatus(status))
+			.and(isEqualCarType(carType));
 
 		JPAQuery<CarEntity> query = queryFactory
 			.selectFrom(carEntity)
 			.where(builder)
 			.orderBy(carPlateSort(search));
 
+		List<CarEntity> content = fetchPagedContent(query, pageable);
 
-	private long countByFilter(BooleanBuilder builder) {
-		return Optional.ofNullable(
+		long total = Optional.ofNullable(
 			queryFactory
 				.select(carEntity.count())
 				.from(carEntity)
 				.where(builder)
 				.fetchOne()
 		).orElse(0L);
+
+		return new PageImpl<>(content, pageable, total);
+	}
+
+	@Override
+	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
+		JPAQuery<CarEntity> query = queryFactory
+			.select(carEntity)
+			.from(carEntity)
+			.join(carEntity.biz, bizEntity)
+			.where(bizEntity.bizUuid.eq(bizUuid)
+				.and(isContainsCarMdnOrCarPlate(search)));
+
+		List<CarEntity> content = fetchPagedContent(query, pageable);
+
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(carEntity.count())
+				.from(carEntity)
+				.join(carEntity.biz, bizEntity)
+				.where(bizEntity.bizUuid.eq(bizUuid)
+					.and(isContainsCarMdnOrCarPlate(search)))
+				.fetchOne()
+		).orElse(0L);
+
+		return new PageImpl<>(content, pageable, total);
 	}
 
 	//검색 조건
@@ -70,14 +97,14 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			.or(carEntity.carPlate.containsIgnoreCase(search));
 	}
 
-	private BooleanExpression isContainsCarStatus(String status) {
+	private BooleanExpression isEqualStatus(String status) {
 		if (StringUtils.isBlank(status)) {
 			return null;
 		}
 		return carEntity.status.eq(status);
 	}
 
-	private BooleanExpression isContainsCarType(String carType) {
+	private BooleanExpression isEqualCarType(String carType) {
 		if (StringUtils.isBlank(carType)) {
 			return null;
 		}
@@ -104,6 +131,14 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		}
 		return new OrderSpecifier<?>[] {carEntity.carPlate.asc()};
 	}
+
+	private List<CarEntity> fetchPagedContent(JPAQuery<CarEntity> query, Pageable pageable) {
+		return query
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+	}
+
 }
 
 

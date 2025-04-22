@@ -31,10 +31,9 @@ public class RentController implements RentApiDocs {
 
 	private final RentService rentService;
 
-	@GetMapping("/cars/{bizId}")
-	public ApiResponse<List<String>> getAllMdnByBizId(@PathVariable Long bizId) {
-		log.info("getAllMdnByBizId {}", bizId);
-		return rentService.getAllMdnByBizId(bizId);
+	@GetMapping("/mdns")
+	public ApiResponse<List<String>> getAllMdnByBizId() {
+		return rentService.getAllMdnByBizId();
 	}
 
 	@GetMapping()

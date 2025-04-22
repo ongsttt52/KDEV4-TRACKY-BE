@@ -52,11 +52,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			String memberId = jwtTokenProvider.getMemberId(token);
 			String role = jwtTokenProvider.getRole(token).toUpperCase();
 			String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+			String bizUuid = jwtTokenProvider.getBizUuid(token);
 
 			UsernamePasswordAuthenticationToken authentication =
 				new UsernamePasswordAuthenticationToken(
 					memberId,
-					null,
+					bizUuid,
 					Collections.singletonList(new SimpleGrantedAuthority(authority))
 				);
 
@@ -85,6 +86,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	/**
 	 * SSE 요청은 토큰 없이 통과시킴
+	 *
 	 * @param request
 	 * @return boolean
 	 */
@@ -102,6 +104,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	/**
 	 * ALB HealthCheck 허용
+	 *
 	 * @param request
 	 * @return boolean
 	 */
@@ -119,6 +122,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	/**
 	 * ALB HealthCheck 허용
+	 *
 	 * @param request
 	 * @return boolean
 	 */

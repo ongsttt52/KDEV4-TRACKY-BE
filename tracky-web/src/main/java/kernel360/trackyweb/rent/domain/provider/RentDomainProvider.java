@@ -24,8 +24,8 @@ public class RentDomainProvider {
 		rentDomainRepository.deleteByRentUuid(rentUuid);
 	}
 
-	public List<String> getAllMdnByBizId(Long bizId) {
-		return carDomainRepository.findAllMdnByBizId(bizId);
+	public List<String> getAllMdnByBizId(String bizUuid) {
+		return carDomainRepository.findAllMdnByBizId(bizUuid);
 	}
 
 }

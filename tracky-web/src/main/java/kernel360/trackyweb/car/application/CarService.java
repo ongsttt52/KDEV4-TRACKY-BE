@@ -55,7 +55,7 @@ public class CarService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> getAllBySearchFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
-		Page<CarEntity> cars = carDomainProvider.searchByFilter(
+		Page<CarEntity> cars = carDomainProvider.searchCarByFilter(
 			carSearchByFilterRequest.search(),
 			carSearchByFilterRequest.status(),
 			carSearchByFilterRequest.carType(),
