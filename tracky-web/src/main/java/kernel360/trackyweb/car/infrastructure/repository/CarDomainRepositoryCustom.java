@@ -17,5 +17,9 @@ public interface CarDomainRepositoryCustom {
 	/**
 	 * 필터 조건 기반 검색
 	 */
-	Page<CarEntity> searchByFilter(String search, String status, Pageable pageable);
+	Page<CarEntity> searchByFilter(
+		String search,
+		String status,
+		String carType,
+		Pageable pageable);
 }

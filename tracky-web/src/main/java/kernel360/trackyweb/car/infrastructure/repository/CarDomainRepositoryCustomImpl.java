@@ -1,22 +1,25 @@
 package kernel360.trackyweb.car.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
+
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
-import kernel360.trackycore.core.domain.entity.QBizEntity;
-import kernel360.trackycore.core.domain.entity.QCarEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -24,50 +27,27 @@ import lombok.RequiredArgsConstructor;
 public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
-	private final QCarEntity car = QCarEntity.carEntity;
 
 	@Override
 	public List<String> findAllMdnByBizId(Long bizId) {
-		QBizEntity biz = QBizEntity.bizEntity;
-
 		return queryFactory
-			.select(car.mdn)
-			.from(car)
-			.where(car.biz.id.eq(bizId))
+			.select(carEntity.mdn)
+			.from(carEntity)
+			.where(carEntity.biz.id.eq(bizId))
 			.fetch();
 	}
 
-	//번호판 먼저
 	@Override
-	public Page<CarEntity> searchByFilter(String search, String status, Pageable pageable) {
-
-		BooleanBuilder builder = searchByFilterBuilder(search, status, car);
+	public Page<CarEntity> searchByFilter(String search, String status, String carType, Pageable pageable) {
+		BooleanBuilder builder = new BooleanBuilder()
+			.and(isContainsCarMdnOrCarPlate(search))
+			.and(isContainsCarStatus(status))
+			.and(isContainsCarType(carType));
 
 		JPAQuery<CarEntity> query = queryFactory
-			.selectFrom(car)
-			.where(builder);
-
-		// 검색어가 있을 때 정렬 로직 추가
-		if (search != null && !search.isBlank()) {
-			// 포함 여부: carPlate에 검색어 포함 → 우선순위로 사용
-			NumberTemplate<Integer> carPlatePriority = Expressions.numberTemplate(
-				Integer.class, "CASE WHEN {1} LIKE CONCAT('%', {0}, '%') THEN 0 ELSE 1 END",
-				search, car.carPlate
-			);
-
-			// 포함 위치: 포함된 경우, 앞에 있을수록 우선
-			NumberTemplate<Integer> carPlatePos = Expressions.numberTemplate(
-				Integer.class, "LOCATE({0}, {1})", search, car.carPlate
-			);
-
-			query.orderBy(
-				carPlatePriority.asc(),   // 0 (carPlate 포함) 먼저
-				carPlatePos.asc(),        // 앞쪽 위치 먼저
-				car.carPlate.asc()        // 그 다음 carPlate 순서
-			);
-		} else {
-			query.orderBy(car.carPlate.asc()); // 검색어 없으면 단순 carPlate 정렬
-		}
+			.selectFrom(carEntity)
+			.where(builder)
+			.orderBy(carPlateSort(search));
 
 		List<CarEntity> content = query
 			.offset(pageable.getOffset())
@@ -76,8 +56,8 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 		long total = Optional.ofNullable(
 			queryFactory
-				.select(car.count())
-				.from(car)
+				.select(carEntity.count())
+				.from(carEntity)
 				.where(builder)
 				.fetchOne()
 		).orElse(0L);
@@ -85,22 +65,48 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return new PageImpl<>(content, pageable, total);
 	}
 
-	public BooleanBuilder searchByFilterBuilder(String search, String status, QCarEntity car) {
+	//검색 조건
+	private BooleanExpression isContainsCarMdnOrCarPlate(String search) {
+		if (StringUtils.isBlank(search)) {
+			return null;
+		}
+		return carEntity.mdn.containsIgnoreCase(search)
+			.or(carEntity.carPlate.containsIgnoreCase(search));
+	}
 
-		BooleanBuilder builder = new BooleanBuilder();
+	private BooleanExpression isContainsCarStatus(String status) {
+		if (StringUtils.isBlank(status)) {
+			return null;
+		}
+		return carEntity.status.eq(status);
+	}
 
-		if (search != null && !search.isBlank()) {
-			builder.and(
-				car.mdn.containsIgnoreCase(search)
-					.or(car.carPlate.containsIgnoreCase(search))
+	private BooleanExpression isContainsCarType(String carType) {
+		if (StringUtils.isBlank(carType)) {
+			return null;
+		}
+		return carEntity.carType.eq(carType);
+	}
+
+	//정렬 조건
+	private OrderSpecifier<?>[] carPlateSort(String search) {
+		if (StringUtils.isNotBlank(search)) {
+			NumberTemplate<Integer> carPlatePriority = Expressions.numberTemplate(
+				Integer.class, "CASE WHEN {1} LIKE CONCAT('%', {0}, '%') THEN 0 ELSE 1 END",
+				search, carEntity.carPlate
 			);
-		}
 
-		if (status != null && !status.isBlank()) {
-			builder.and(car.status.eq(status));
-		}
+			NumberTemplate<Integer> carPlatePos = Expressions.numberTemplate(
+				Integer.class, "LOCATE({0}, {1})", search, carEntity.carPlate
+			);
 
-		return builder;
+			return new OrderSpecifier<?>[] {
+				carPlatePriority.asc(),
+				carPlatePos.asc(),
+				carEntity.carPlate.asc()
+			};
+		}
+		return new OrderSpecifier<?>[] {carEntity.carPlate.asc()};
 	}
 
 }

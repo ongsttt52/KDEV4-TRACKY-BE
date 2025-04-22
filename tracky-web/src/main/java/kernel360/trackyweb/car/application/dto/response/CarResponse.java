@@ -13,6 +13,7 @@ public record CarResponse(
 	String carYear,
 	String purpose,
 	String status,
+	String carName,
 	double sum,
 	LocalDateTime createdAt
 ) {
@@ -25,6 +26,7 @@ public record CarResponse(
 			car.getCarYear(),
 			car.getPurpose(),
 			car.getStatus(),
+			car.getCarName(),
 			car.getSum(),
 			car.getCreatedAt()
 		);
