@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
 import kernel360.trackyweb.sign.application.SignService;
 import kernel360.trackyweb.sign.application.dto.request.LoginRequest;
+import kernel360.trackyweb.sign.application.dto.request.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 public class SignController {
 
 	private final SignService signService;
+
+	@PostMapping("/signup")
+	public ApiResponse<String> signup(@RequestBody @Valid SignupRequest request) {
+		signService.signup(request);
+		return ApiResponse.success("회원가입이 완료되었습니다.");
+	}
 
 	@PostMapping("/login")
 	public ApiResponse<String> login(@RequestBody LoginRequest request) {

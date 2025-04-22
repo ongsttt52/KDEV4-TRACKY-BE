@@ -18,4 +18,8 @@ public class MemberProvider {
 		return memberRepository.findByMemberId(memberId)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.MEMBER_NOT_FOUND));
 	}
+
+	public void save(MemberEntity member) {
+		memberRepository.save(member);
+	}
 }
