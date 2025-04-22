@@ -6,6 +6,7 @@ import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
 import kernel360.trackycore.core.infrastructure.repository.MemberRepository;
+import kernel360.trackyweb.sign.infrastructure.repository.MemberDomainRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberProvider {
 
 	private final MemberRepository memberRepository;
+	private final MemberDomainRepository memberDomainRepository;
 
 	public MemberEntity getMember(String memberId) {
 		return memberRepository.findByMemberId(memberId)
@@ -22,4 +24,9 @@ public class MemberProvider {
 	public void save(MemberEntity member) {
 		memberRepository.save(member);
 	}
+	
+	public boolean existsByMemberId(String memberId) {
+		return memberDomainRepository.existsByMemberId(memberId);
+	}
+
 }

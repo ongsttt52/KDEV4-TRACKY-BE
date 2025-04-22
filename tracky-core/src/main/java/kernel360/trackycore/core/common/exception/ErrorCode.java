@@ -16,7 +16,10 @@ public enum ErrorCode {
 	GPS_NOT_FOUND("GPS_001", "조회된 GPS 정보가 없습니다."),
 
 	MEMBER_NOT_FOUND("MEMBER_001", "존재하지 않은 회원입니다."),
-	MEMBER_WRONG_PWD("MEMBER_486", "비밀번호가 일치하지 않습니다.");
+	MEMBER_WRONG_PWD("MEMBER_486", "비밀번호가 일치하지 않습니다."),
+
+	ALREADY_MEMBERID("SIGNUP_001", "이미 존재하는 아이디입니다."),
+	ALREADY_BIZREGNUM("SIGNUP_002", "이미 존재하는 사업자 등록 번호입니다.");
 
 	private final String code;
 	private final String message;

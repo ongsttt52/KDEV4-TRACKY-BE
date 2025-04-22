@@ -16,4 +16,8 @@ public class BizDomainProvider {
 		bizDomainRepository.save(biz);
 	}
 
+	public boolean existsByBizRegNum(String bizRegNum) {
+		return bizDomainRepository.existsByBizRegNum(bizRegNum);
+	}
+
 }

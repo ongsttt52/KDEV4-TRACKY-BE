@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
 import kernel360.trackyweb.sign.application.dto.request.SignupRequest;
-import kernel360.trackyweb.sign.application.validation.MemberValidator;
+import kernel360.trackyweb.sign.application.validation.SignValidator;
 import kernel360.trackyweb.sign.domain.provider.BizDomainProvider;
 import kernel360.trackyweb.sign.domain.provider.MemberProvider;
 import kernel360.trackyweb.sign.infrastructure.security.jwt.JwtTokenProvider;
@@ -23,10 +23,13 @@ public class SignService {
 	private final MemberProvider memberProvider;
 	private final BizDomainProvider bizDomainProvider;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final MemberValidator memberValidator;
+	private final SignValidator signValidator;
 	private final PasswordEncoder passwordEncoder;
 
 	public void signup(SignupRequest signupRequest) {
+
+		signValidator.validateSignup(signupRequest.memberId(), signupRequest.bizRegNum());
+
 		BizEntity biz = BizEntity.create(
 			signupRequest.bizName(),
 			UUID.randomUUID().toString(),
@@ -43,7 +46,7 @@ public class SignService {
 			passwordEncoder.encode(signupRequest.pwd()),
 			signupRequest.email(),
 			"USER",
-			"WAIT",
+			"wait",
 			null
 		);
 		memberProvider.save(member);
@@ -58,7 +61,7 @@ public class SignService {
 
 		MemberEntity member = memberProvider.getMember(memberId);
 
-		memberValidator.validatePassword(pwd, member);
+		signValidator.validatePassword(pwd, member);
 
 		return member;
 	}
