@@ -61,6 +61,7 @@ public class SignService {
 
 		MemberEntity member = memberProvider.getMember(memberId);
 
+		signValidator.validateStatus(member);
 		signValidator.validatePassword(pwd, member);
 
 		return member;

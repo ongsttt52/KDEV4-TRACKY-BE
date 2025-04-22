@@ -34,4 +34,15 @@ public class SignValidator {
 		}
 	}
 
+	public void validateStatus(MemberEntity member) {
+		String status = member.getStatus().toLowerCase();
+
+		if ("wait".equals(status)) {
+			throw GlobalException.throwError(ErrorCode.MEMBER_STATUS_WAIT);
+		}
+
+		if ("deactive".equals(status)) {
+			throw GlobalException.throwError(ErrorCode.MEMBER_STATUS_DEACTIVE);
+		}
+	}
 }
