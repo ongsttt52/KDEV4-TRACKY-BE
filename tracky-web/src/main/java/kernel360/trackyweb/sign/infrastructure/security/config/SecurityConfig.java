@@ -1,4 +1,4 @@
-package kernel360.trackyweb.member.infrastructure.security.config;
+package kernel360.trackyweb.sign.infrastructure.security.config;
 
 import java.util.List;
 
@@ -21,8 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import kernel360.trackyweb.member.infrastructure.security.filter.JwtAuthenticationFilter;
-import kernel360.trackyweb.member.infrastructure.security.jwt.JwtTokenProvider;
+import kernel360.trackyweb.sign.infrastructure.security.filter.JwtAuthenticationFilter;
+import kernel360.trackyweb.sign.infrastructure.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -44,7 +44,7 @@ public class SecurityConfig {
 				session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 쓸 땐 세션 X
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-				// .requestMatchers("/api/**").permitAll() // 오승택 - 요청 테스트용 코드, 모든 API 허용
+				.requestMatchers("/api/signup").permitAll()
 				.requestMatchers("/api/login").permitAll()   // 로그인은 인증 없이 허용
 				.requestMatchers("/api/**").authenticated()  // 나머지 API는 인증 필요
 				.requestMatchers("/events/**").permitAll() // sse 관련

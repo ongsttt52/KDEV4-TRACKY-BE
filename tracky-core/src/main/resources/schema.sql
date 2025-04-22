@@ -1,13 +1,13 @@
-DROP TABLE IF EXISTS `car_event`;
-DROP TABLE IF EXISTS `time_distance`;
-DROP TABLE IF EXISTS `gpshistory`;
-DROP TABLE IF EXISTS `drive`;
-DROP TABLE IF EXISTS `location`;
-DROP TABLE IF EXISTS `rent`;
-DROP TABLE IF EXISTS `car`;
-DROP TABLE IF EXISTS `device`;
-DROP TABLE IF EXISTS `member`;
-DROP TABLE IF EXISTS `biz`;
+--DROP TABLE IF EXISTS `car_event`;
+--DROP TABLE IF EXISTS `time_distance`;
+--DROP TABLE IF EXISTS `gpshistory`;
+--DROP TABLE IF EXISTS `drive`;
+--DROP TABLE IF EXISTS `location`;
+--DROP TABLE IF EXISTS `rent`;
+--DROP TABLE IF EXISTS `car`;
+--DROP TABLE IF EXISTS `device`;
+--DROP TABLE IF EXISTS `member`;
+--DROP TABLE IF EXISTS `biz`;
 
 CREATE TABLE `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
