@@ -38,6 +38,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 	@Override
+
 	public Page<CarEntity> searchByFilter(String search, String status, String carType, Pageable pageable) {
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(isContainsCarMdnOrCarPlate(search))
@@ -49,20 +50,15 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			.where(builder)
 			.orderBy(carPlateSort(search));
 
-		List<CarEntity> content = query
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetch();
 
-		long total = Optional.ofNullable(
+	private long countByFilter(BooleanBuilder builder) {
+		return Optional.ofNullable(
 			queryFactory
 				.select(carEntity.count())
 				.from(carEntity)
 				.where(builder)
 				.fetchOne()
 		).orElse(0L);
-
-		return new PageImpl<>(content, pageable, total);
 	}
 
 	//검색 조건
@@ -108,7 +104,6 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		}
 		return new OrderSpecifier<?>[] {carEntity.carPlate.asc()};
 	}
-
 }
 
 
