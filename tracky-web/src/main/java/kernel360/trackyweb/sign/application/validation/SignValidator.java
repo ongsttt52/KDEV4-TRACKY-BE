@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
-import kernel360.trackyweb.sign.domain.provider.BizDomainProvider;
+import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
 import kernel360.trackyweb.sign.domain.provider.MemberProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -26,11 +26,11 @@ public class SignValidator {
 
 	public void validateSignup(String memberId, String bizRegNum) {
 		if (memberProvider.existsByMemberId(memberId)) {
-			throw GlobalException.throwError(ErrorCode.ALREADY_MEMBERID);
+			throw GlobalException.throwError(ErrorCode.ALREADY_MEMBER_ID);
 		}
 
 		if (bizDomainProvider.existsByBizRegNum(bizRegNum)) {
-			throw GlobalException.throwError(ErrorCode.ALREADY_BIZREGNUM);
+			throw GlobalException.throwError(ErrorCode.ALREADY_BIZ_REG_NUM);
 		}
 	}
 

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
+import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
 import kernel360.trackyweb.sign.application.dto.request.SignupRequest;
 import kernel360.trackyweb.sign.application.validation.SignValidator;
-import kernel360.trackyweb.sign.domain.provider.BizDomainProvider;
 import kernel360.trackyweb.sign.domain.provider.MemberProvider;
 import kernel360.trackyweb.sign.infrastructure.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;

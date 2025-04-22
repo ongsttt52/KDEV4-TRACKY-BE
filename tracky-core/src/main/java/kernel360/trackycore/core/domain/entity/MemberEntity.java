@@ -55,7 +55,7 @@ public class MemberEntity extends DateBaseEntity {
 	private LocalDateTime deleteAt;
 
 	public static MemberEntity create(BizEntity biz, String memberId, String pwd, String email, String role,
-		String status, LocalDateTime lastLoginAt) {
+		String status) {
 		MemberEntity member = new MemberEntity();
 		member.bizId = biz;
 		member.memberId = memberId;
@@ -63,7 +63,6 @@ public class MemberEntity extends DateBaseEntity {
 		member.email = email;
 		member.role = role;
 		member.status = status;
-		member.lastLoginAt = null;
 		return member;
 	}
 
