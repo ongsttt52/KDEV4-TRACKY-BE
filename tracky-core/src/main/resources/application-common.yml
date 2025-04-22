@@ -26,4 +26,10 @@ spring:
       data-locations: classpath:data.sql
 
 management:
-  endpoints.web.exposure.include: "*"
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    prometheus:
+      enabled: true
