@@ -1,9 +1,8 @@
 package kernel360.trackycore.core.common.webhook.discord;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -33,12 +32,7 @@ public class DiscordNotifier implements Notifier {
 	}
 
 	private DiscordMessage createMessage(Exception e) {
-		String stackTrace = getStackTrace(e);
-
-		// 디스코드 메시지 제한때문에 max 값 설정
-		if (stackTrace.length() > 2000) {
-			stackTrace = stackTrace.substring(0, 2000) + "\n... (생략)";
-		}
+		String stackTrace = cutStackTrace(e);
 
 		return new DiscordMessage(
 			List.of(
@@ -48,9 +42,17 @@ public class DiscordNotifier implements Notifier {
 		);
 	}
 
-	private String getStackTrace(Exception e) {
-		StringWriter stringWriter = new StringWriter();
-		e.printStackTrace(new PrintWriter(stringWriter));
-		return stringWriter.toString();
+	private String cutStackTrace(Exception e) {
+		String stackTrace = ExceptionUtils.getStackTrace(e);
+
+		if (isTooLongMessage(stackTrace)) {
+			stackTrace = stackTrace.substring(0, 2000) + "\n... (생략)";
+		}
+
+		return stackTrace;
+	}
+
+	private boolean isTooLongMessage(String stackTrace) {
+		return stackTrace.length() > 2000;
 	}
 }
