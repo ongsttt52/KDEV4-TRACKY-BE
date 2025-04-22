@@ -3,12 +3,15 @@ package kernel360.trackyweb.car.infrastructure.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -28,7 +31,6 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 	@Override
 	public List<String> findAllMdnByBizId(Long bizId) {
-		QBizEntity biz = QBizEntity.bizEntity;
 
 		return queryFactory
 			.select(car.mdn)
@@ -41,68 +43,70 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	@Override
 	public Page<CarEntity> searchByFilter(String search, String status, Pageable pageable) {
 
-		BooleanBuilder builder = searchByFilterBuilder(search, status, car);
+		BooleanBuilder builder = new BooleanBuilder()
+			.and(searchContains(search))
+			.and(statusEquals(status));
 
 		JPAQuery<CarEntity> query = queryFactory
 			.selectFrom(car)
-			.where(builder);
-
-		// 검색어가 있을 때 정렬 로직 추가
-		if (search != null && !search.isBlank()) {
-			// 포함 여부: carPlate에 검색어 포함 → 우선순위로 사용
-			NumberTemplate<Integer> carPlatePriority = Expressions.numberTemplate(
-				Integer.class, "CASE WHEN {1} LIKE CONCAT('%', {0}, '%') THEN 0 ELSE 1 END",
-				search, car.carPlate
-			);
-
-			// 포함 위치: 포함된 경우, 앞에 있을수록 우선
-			NumberTemplate<Integer> carPlatePos = Expressions.numberTemplate(
-				Integer.class, "LOCATE({0}, {1})", search, car.carPlate
-			);
-
-			query.orderBy(
-				carPlatePriority.asc(),   // 0 (carPlate 포함) 먼저
-				carPlatePos.asc(),        // 앞쪽 위치 먼저
-				car.carPlate.asc()        // 그 다음 carPlate 순서
-			);
-		} else {
-			query.orderBy(car.carPlate.asc()); // 검색어 없으면 단순 carPlate 정렬
-		}
+			.where(builder)
+			.orderBy(carPlateSort(search));
 
 		List<CarEntity> content = query
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		long total = Optional.ofNullable(
+		long total = countByFilter(builder);
+
+		return new PageImpl<>(content, pageable, total);
+	}
+
+
+	private OrderSpecifier<?>[] carPlateSort(String search) {
+		if (StringUtils.isNotBlank(search)) {
+			NumberTemplate<Integer> carPlatePriority = Expressions.numberTemplate(
+				Integer.class, "CASE WHEN {1} LIKE CONCAT('%', {0}, '%') THEN 0 ELSE 1 END",
+				search, car.carPlate
+			);
+
+			NumberTemplate<Integer> carPlatePos = Expressions.numberTemplate(
+				Integer.class, "LOCATE({0}, {1})", search, car.carPlate
+			);
+
+			return new OrderSpecifier<?>[] {
+				carPlatePriority.asc(),
+				carPlatePos.asc(),
+				car.carPlate.asc()
+			};
+		}
+		return new OrderSpecifier<?>[] { car.carPlate.asc() };
+	}
+
+	private long countByFilter(BooleanBuilder builder) {
+		return Optional.ofNullable(
 			queryFactory
 				.select(car.count())
 				.from(car)
 				.where(builder)
 				.fetchOne()
 		).orElse(0L);
-
-		return new PageImpl<>(content, pageable, total);
 	}
 
-	public BooleanBuilder searchByFilterBuilder(String search, String status, QCarEntity car) {
-
-		BooleanBuilder builder = new BooleanBuilder();
-
-		if (search != null && !search.isBlank()) {
-			builder.and(
-				car.mdn.containsIgnoreCase(search)
-					.or(car.carPlate.containsIgnoreCase(search))
-			);
+	public BooleanExpression searchContains(String search) {
+		if (StringUtils.isNotBlank(search)) {
+			return car.mdn.containsIgnoreCase(search)
+				.or(car.carPlate.containsIgnoreCase(search));
 		}
-
-		if (status != null && !status.isBlank()) {
-			builder.and(car.status.eq(status));
-		}
-
-		return builder;
+		return null;
 	}
 
+	public BooleanExpression statusEquals(String status) {
+		if (StringUtils.isNotBlank(status)) {
+			return car.status.eq(status);
+		}
+		return null;
+	}
 }
 
 
