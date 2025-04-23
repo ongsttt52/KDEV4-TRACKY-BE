@@ -104,8 +104,6 @@ public class CarService {
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
 
-		globalSseEvent.sendEvent(SseEvent.CAR_CREATED);
-
 		return ApiResponse.success(response);
 	}
 
@@ -129,8 +127,6 @@ public class CarService {
 		car.updateFrom(biz, device, carUpdateRequest.carType(), carUpdateRequest.carName(), carUpdateRequest.carPlate(),
 			carUpdateRequest.carYear(), carUpdateRequest.purpose(), carUpdateRequest.status(), carUpdateRequest.sum());
 
-		globalSseEvent.sendEvent(SseEvent.CAR_UPDATED);
-
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}
 
@@ -143,7 +139,6 @@ public class CarService {
 	@Transactional
 	public ApiResponse<String> delete(String mdn) {
 		carDomainProvider.delete(mdn);
-		globalSseEvent.sendEvent(SseEvent.CAR_DELETED);
 
 		return ApiResponse.success("삭제 완료");
 	}
