@@ -39,6 +39,7 @@ public class CarService {
 
 	/**
 	 * mdn이 일치하는 차량 찾기
+	 *
 	 * @param mdn 차량 mdn
 	 * @return 차량 단건 조회
 	 */
@@ -48,12 +49,18 @@ public class CarService {
 	}
 
 	/**
-	 * 필터링 기반 검색\
+	 * 필터링 기반 검색
+	 *
 	 * @return 검색된 차량 List
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> getAllBySearchFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
-		Page<CarEntity> cars = carDomainProvider.searchByFilter(carSearchByFilterRequest);
+		Page<CarEntity> cars = carDomainProvider.searchCarByFilter(
+			carSearchByFilterRequest.search(),
+			carSearchByFilterRequest.status(),
+			carSearchByFilterRequest.carType(),
+			carSearchByFilterRequest.toPageable());
+
 		Page<CarResponse> carResponses = cars.map(CarResponse::from);
 		PageResponse pageResponse = PageResponse.from(carResponses);
 
@@ -62,6 +69,7 @@ public class CarService {
 
 	/**
 	 * 디바이스 정보를 포함한 차량 MDN 값으로 검색
+	 *
 	 * @param mdn 차량 MDN
 	 * @return 단건 차량 데이터 + 디바이스 정보
 	 */
@@ -73,6 +81,7 @@ public class CarService {
 
 	/**
 	 * 차량 신규 등록 ( device는 기본 device 설정 MDN 1 가져옴 )
+	 *
 	 * @param carCreateRequest
 	 * @return 등록 성공한 차량 detail
 	 */
@@ -95,14 +104,13 @@ public class CarService {
 
 		CarDetailResponse response = CarDetailResponse.from(savedCar);
 
-		globalSseEvent.sendEvent(SseEvent.CAR_CREATED);
-
 		return ApiResponse.success(response);
 	}
 
 	/**
 	 * 차량 정보 수정
-	 * @param mdn 차량 mdn
+	 *
+	 * @param mdn              차량 mdn
 	 * @param carUpdateRequest 차량 정보
 	 * @return 수정된 차량 detail
 	 */
@@ -119,20 +127,18 @@ public class CarService {
 		car.updateFrom(biz, device, carUpdateRequest.carType(), carUpdateRequest.carName(), carUpdateRequest.carPlate(),
 			carUpdateRequest.carYear(), carUpdateRequest.purpose(), carUpdateRequest.status(), carUpdateRequest.sum());
 
-		globalSseEvent.sendEvent(SseEvent.CAR_UPDATED);
-
 		return ApiResponse.success(CarDetailResponse.from(car));
 	}
 
 	/**
 	 * 차량 삭제 API
+	 *
 	 * @param mdn
 	 * @return ApiResponse
 	 */
 	@Transactional
 	public ApiResponse<String> delete(String mdn) {
 		carDomainProvider.delete(mdn);
-		globalSseEvent.sendEvent(SseEvent.CAR_DELETED);
 
 		return ApiResponse.success("삭제 완료");
 	}

@@ -54,4 +54,21 @@ public class MemberEntity extends DateBaseEntity {
 	@Column(name = "deleted_at")
 	private LocalDateTime deleteAt;
 
+	private MemberEntity(BizEntity biz, String memberId, String pwd, String email, String role,
+		String status) {
+		this.bizId = biz;
+		this.memberId = memberId;
+		this.pwd = pwd;
+		this.email = email;
+		this.role = role;
+		this.status = status;
+	}
+
+	public static MemberEntity create(BizEntity biz, String memberId, String pwd, String email, String role,
+		String status) {
+		return new MemberEntity(
+			biz, memberId, pwd, email, role, status
+		);
+	}
+
 }
