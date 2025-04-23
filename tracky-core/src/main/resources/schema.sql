@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`biz_uuid` varchar(100) NOT NULL,
+	`biz_uuid` varchar(100) NOT NULL UNIQUE,
 	`biz_name` varchar(100) NOT NULL,
 	`biz_reg_num` varchar(20) NOT NULL,
 	`biz_admin`	varchar(100) NOT NULL,
