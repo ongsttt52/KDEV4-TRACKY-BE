@@ -21,7 +21,7 @@ import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
 import kernel360.trackyweb.car.application.dto.response.CarResponse;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
-import kernel360.trackyweb.common.sse.SseEvent;
+import kernel360.trackyweb.common.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,7 +55,10 @@ public class CarService {
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<List<CarResponse>> getAllBySearchFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
+		String bizUuid = SecurityUtils.getBizUuid();
+
 		Page<CarEntity> cars = carDomainProvider.searchCarByFilter(
+			bizUuid,
 			carSearchByFilterRequest.search(),
 			carSearchByFilterRequest.status(),
 			carSearchByFilterRequest.carType(),

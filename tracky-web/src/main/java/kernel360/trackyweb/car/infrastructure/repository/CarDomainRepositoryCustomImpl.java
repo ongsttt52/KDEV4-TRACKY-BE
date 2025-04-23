@@ -40,11 +40,13 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 	@Override
-	public Page<CarEntity> searchCarByFilter(String search, String status, String carType, Pageable pageable) {
+	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, String status, String carType,
+		Pageable pageable) {
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(isContainsCarMdnOrCarPlate(search))
 			.and(isEqualStatus(status))
-			.and(isEqualCarType(carType));
+			.and(isEqualCarType(carType))
+			.and(bizEntity.bizUuid.eq(bizUuid));
 
 		JPAQuery<CarEntity> query = queryFactory
 			.selectFrom(carEntity)
