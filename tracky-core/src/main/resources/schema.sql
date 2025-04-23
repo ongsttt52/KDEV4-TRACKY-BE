@@ -1,15 +1,4 @@
---DROP TABLE IF EXISTS `car_event`;
---DROP TABLE IF EXISTS `time_distance`;
---DROP TABLE IF EXISTS `gpshistory`;
---DROP TABLE IF EXISTS `drive`;
---DROP TABLE IF EXISTS `location`;
---DROP TABLE IF EXISTS `rent`;
---DROP TABLE IF EXISTS `car`;
---DROP TABLE IF EXISTS `device`;
---DROP TABLE IF EXISTS `member`;
---DROP TABLE IF EXISTS `biz`;
-
-CREATE TABLE `biz` (
+CREATE TABLE IF NOT EXISTS `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`biz_uuid` varchar(100) NOT NULL,
 	`biz_name` varchar(100) NULL,
@@ -22,7 +11,7 @@ CREATE TABLE `biz` (
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `member` (
+CREATE TABLE IF NOT EXISTS `member` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`biz_id` bigint	NOT NULL,
 	`member_id`	varchar(100) NOT NULL,
@@ -39,7 +28,7 @@ CREATE TABLE `member` (
         FOREIGN KEY (`biz_id`) REFERENCES `biz`(`id`)
 );
 
-CREATE TABLE `device` (
+CREATE TABLE IF NOT EXISTS `device` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`tid` varchar(10) NOT NULL,
 	`mid` varchar(10) NOT NULL,
@@ -50,7 +39,7 @@ CREATE TABLE `device` (
 	PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `car` (
+CREATE TABLE IF NOT EXISTS `car` (
 	`mdn` varchar(100) NOT NULL,
 	`biz_id` bigint NOT NULL,
 	`device_id`	bigint NULL,
@@ -71,7 +60,7 @@ CREATE TABLE `car` (
         FOREIGN KEY (`device_id`) REFERENCES `device`(`id`)
 );
 
-CREATE TABLE `rent` (
+CREATE TABLE IF NOT EXISTS `rent` (
 	`rent_uuid`	varchar(100) NOT NULL,
 	`mdn`	varchar(100) NOT NULL,
 	`rent_stime` timestamp NOT NULL,
@@ -93,7 +82,7 @@ CREATE TABLE `rent` (
         FOREIGN KEY (`mdn`) REFERENCES `car`(`mdn`)
 );
 
-CREATE TABLE `location` (
+CREATE TABLE IF NOT EXISTS `location` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`drive_start_lon` varchar(100) NOT NULL,
 	`drive_start_lat` varchar(100) NOT NULL,
@@ -104,7 +93,7 @@ CREATE TABLE `location` (
 	PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `drive` (
+CREATE TABLE IF NOT EXISTS `drive` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`rent_uuid` varchar(100) NOT NULL,
 	`mdn` varchar(100) NOT NULL,
@@ -124,7 +113,7 @@ CREATE TABLE `drive` (
         FOREIGN KEY (`drive_loc_id`) REFERENCES `location`(`id`)
 );
 
-CREATE TABLE `gpshistory` (
+CREATE TABLE IF NOT EXISTS `gpshistory` (
 	`drive_seq` bigint NOT NULL, -- 기본키, auto_increment -> Tsid로 변경
 	`drive_id` bigint NOT NULL, -- 복합키 -> 외래키로 변경
 	`o_time` varchar(100) NOT NULL,
@@ -140,7 +129,7 @@ CREATE TABLE `gpshistory` (
         FOREIGN KEY (`drive_id`) REFERENCES `drive`(`id`)
 );
 
-CREATE TABLE `car_event` (
+CREATE TABLE IF NOT EXISTS `car_event` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`mdn` varchar(100) NOT NULL,
 	`type` varchar(100) NOT NULL,
@@ -150,7 +139,7 @@ CREATE TABLE `car_event` (
         FOREIGN KEY (`mdn`) REFERENCES `car`(`mdn`)
 );
 
-CREATE TABLE `time_distance` (
+CREATE TABLE IF NOT EXISTS `time_distance` (
 	`id` bigint NOT NULL AUTO_INCREMENT,
 	`mdn` varchar(100) NOT NULL,
 	`hour` timestamp NOT NULL,
