@@ -1,8 +1,5 @@
 package kernel360.trackycore.core.domain.entity;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,32 +7,31 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Getter
 @Entity
 @Table(name = "location")
-@NoArgsConstructor
-@ToString
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LocationEntity extends DateBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
-	@Column(name = "drive_start_lon")
+	@Column(name = "drive_start_lon", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
 	private int driveStartLon;
 
-	@Column(name = "drive_start_lat")
+	@Column(name = "drive_start_lat", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
 	private int driveStartLat;
 
-	@Column(name = "drive_end_lon")
+	@Column(name = "drive_end_lon", length = 100, nullable = true, columnDefinition = "VARCHAR(100)")
 	private int driveEndLon;
 
-	@Column(name = "drive_end_lat")
+	@Column(name = "drive_end_lat", length = 100, nullable = true, columnDefinition = "VARCHAR(100)")
 	private int driveEndLat;
 
 	public void updateEndLocation(int lat, int lon) {

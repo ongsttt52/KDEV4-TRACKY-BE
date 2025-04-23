@@ -2,9 +2,6 @@ package kernel360.trackycore.core.domain.entity;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,60 +10,59 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "rent")
 @Getter
-@NoArgsConstructor
-@ToString
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RentEntity extends DateBaseEntity {
 
 	@Id
-	@Column(name = "rent_uuid")
-	private String rentUuid;    // 대여 고유 UUID
+	@Column(name = "rent_uuid", length = 100, nullable = false, updatable = false)
+	private String rentUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "mdn")
+	@JoinColumn(name = "mdn", nullable = false)
 	private CarEntity car;
 
-	@Column(name = "rent_stime")
-	private LocalDateTime rentStime;    // 대여 시작 시간
+	@Column(name = "rent_stime", nullable = false)
+	private LocalDateTime rentStime;
 
-	@Column(name = "rent_etime")
-	private LocalDateTime rentEtime;    // 대여 종료 시간
+	@Column(name = "rent_etime", nullable = false)
+	private LocalDateTime rentEtime;
 
-	@Column(name = "renter_name")
-	private String renterName;            // 사용자 이름
+	@Column(name = "renter_name", length = 100, nullable = false)
+	private String renterName;
 
-	@Column(name = "renter_phone")
-	private String renterPhone;        // 사용자 전화번호
+	@Column(name = "renter_phone", length = 100, nullable = false)
+	private String renterPhone;
 
-	private String purpose;                // 차량 사용 목적
+	@Column(name = "purpose", length = 100)
+	private String purpose;
 
-	@Column(name = "rent_status")
-	private String rentStatus;            // 대여 상태
+	@Column(name = "rent_status", nullable = false)
+	private String rentStatus;
 
-	@Column(name = "rent_loc")
-	private String rentLoc;            // 대여 위치
+	@Column(name = "rent_loc", length = 100)
+	private String rentLoc;
 
-	@Column(name = "rent_lat")
-	private int rentLat;            // 대여 경도
+	@Column(name = "rent_lat", length = 100, columnDefinition = "VARCHAR(100)")
+	private int rentLat;
 
-	@Column(name = "rent_lon")
-	private int rentLon;            // 대여 위도
+	@Column(name = "rent_lon", length = 100, columnDefinition = "VARCHAR(100)")
+	private int rentLon;
 
-	@Column(name = "return_loc")
-	private String returnLoc;            // 반납 위치
+	@Column(name = "return_loc", length = 100)
+	private String returnLoc;
 
-	@Column(name = "return_lat")
-	private int returnLat;            // 반납 위도
+	@Column(name = "return_lat", length = 100, columnDefinition = "VARCHAR(100)")
+	private int returnLat;
 
-	@Column(name = "return_lon")
-	private int returnLon;            // 반납 경도
+	@Column(name = "return_lon", length = 100, columnDefinition = "VARCHAR(100)")
+	private int returnLon;
 
 	// 생성자: 외부에서 직접 호출하지 못하도록 private 으로 변경
 	private RentEntity(CarEntity car, String rentUuid, LocalDateTime rentStime, LocalDateTime rentEtime,

@@ -2,9 +2,6 @@ package kernel360.trackycore.core.domain.entity;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,35 +9,34 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Getter
 @Entity
 @Table(name = "biz")
-@NoArgsConstructor
-@ToString
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BizEntity extends DateBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
-	@Column(name = "biz_name")
-	private String bizName;
-
-	@Column(name = "biz_uuid")
+	@Column(name = "biz_uuid", length = 100, nullable = false, unique = true)
 	private String bizUuid;
 
-	@Column(name = "biz_reg_num")
+	@Column(name = "biz_name", length = 100, nullable = false)
+	private String bizName;
+
+	@Column(name = "biz_reg_num", length = 20, nullable = false)
 	private String bizRegNum;
 
-	@Column(name = "biz_admin")
+	@Column(name = "biz_admin", length = 100, nullable = false)
 	private String bizAdmin;
 
-	@Column(name = "biz_phone_num")
+	@Column(name = "biz_phone_num", length = 20, nullable = false)
 	private String bizPhoneNum;
 
 	@Column(name = "deleted_at")

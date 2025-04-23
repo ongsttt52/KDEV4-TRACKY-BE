@@ -1,3 +1,16 @@
+DROP TABLE IF EXISTS `notice`;
+DROP TABLE IF EXISTS `daily_total`;
+DROP TABLE IF EXISTS `time_distance`;
+DROP TABLE IF EXISTS `car_event`;
+DROP TABLE IF EXISTS `gpshistory`;
+DROP TABLE IF EXISTS `drive`;
+DROP TABLE IF EXISTS `location`;
+DROP TABLE IF EXISTS `rent`;
+DROP TABLE IF EXISTS `car`;
+DROP TABLE IF EXISTS `device`;
+DROP TABLE IF EXISTS `member`;
+DROP TABLE IF EXISTS `biz`;
+
 CREATE TABLE IF NOT EXISTS `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`biz_uuid` varchar(100) NOT NULL UNIQUE,
@@ -45,11 +58,11 @@ CREATE TABLE IF NOT EXISTS `car` (
 	`device_id`	bigint NOT NULL,
 	`car_type` enum('MINI', 'SEDAN', 'VAN', 'SUV', 'TRUCK', 'BUS', 'SPORTS', 'ETC') NOT NULL,
 	`car_name` varchar(100) NOT NULL,
-	`car_plate` varchar(100) NOT NULL,
-	`car_year` varchar(100) NOT NULL,
-	`purpose` varchar(100) NOT NULL,
+	`car_plate` varchar(20) NOT NULL,
+	`car_year` varchar(20) NOT NULL,
+	`purpose` varchar(20) NOT NULL,
 	`status` enum('RUNNING', 'WAITING', 'FIXING', 'DELETED', 'CLOSED') NOT NULL,
-	`sum` varchar(255) NOT NULL,
+	`sum` varchar(100) NOT NULL,
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
 	`deleted_at` timestamp NULL,
@@ -117,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `gpshistory` (
 	`drive_seq` BINARY(16) NOT NULL,
 	`drive_id` bigint NOT NULL,
 	`o_time` varchar(100) NOT NULL,
-	`sec` int NOT NULL,
+	`sec` varchar(100) NOT NULL,
 	`gcd` varchar(10) NOT NULL,
 	`lat` varchar(100) NOT NULL,
 	`lon` varchar(100) NOT NULL,
@@ -148,4 +161,30 @@ CREATE TABLE IF NOT EXISTS `time_distance` (
 	PRIMARY KEY (`id`),
     CONSTRAINT `fk_time_distance_car`
         FOREIGN KEY (`mdn`) REFERENCES `car`(`mdn`)
+);
+
+CREATE TABLE IF NOT EXISTS `daily_total` (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `mdn` varchar(100) NOT NULL,
+    `date` timestamp NOT NULL,
+    `daily_distance` varchar(100) NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `updated_at` timestamp NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_daily_total_car`
+        FOREIGN KEY (`mdn`) REFERENCES `car`(`mdn`)
+);
+
+CREATE TABLE IF NOT EXISTS `notice` (
+    id bigint NOT NULL AUTO_INCREMENT,
+    member_id bigint NOT NULL,
+    title varchar(100) NOT NULL,
+    content text NOT NULL,
+    is_important boolean NOT NULL DEFAULT false,
+    created_at timestamp NOT NULL,
+    updated_at timestamp NULL,
+    deleted_at timestamp NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_notice_member
+        FOREIGN KEY (member_id) REFERENCES member(id)
 );
