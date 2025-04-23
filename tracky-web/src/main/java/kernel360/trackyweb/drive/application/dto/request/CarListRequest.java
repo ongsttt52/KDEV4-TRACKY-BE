@@ -1,12 +1,10 @@
-package kernel360.trackyweb.car.application.dto.request;
+package kernel360.trackyweb.drive.application.dto.request;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-public record CarSearchByFilterRequest(
+public record CarListRequest(
 	String search,
-	String status,
-	String carType,
 	Integer page,
 	Integer size
 ) {

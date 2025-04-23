@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
+import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.provider.DriveProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
-import kernel360.trackyweb.drive.application.dto.request.DriveSearchFilterRequest;
+import kernel360.trackyweb.common.util.SecurityUtils;
+import kernel360.trackyweb.drive.application.dto.request.CarListRequest;
+import kernel360.trackyweb.drive.application.dto.request.DriveListRequest;
 import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
 import kernel360.trackyweb.drive.application.dto.response.DriveListResponse;
 import kernel360.trackyweb.drive.domain.DriveHistory;
@@ -27,27 +30,40 @@ import lombok.RequiredArgsConstructor;
 public class DriveService {
 
 	private final CarDomainProvider carDomainProvider;
+	private final GpsHistoryDomainRepository gpsHistoryRepository;        // 추후에 분리 및 querydsl 작업해야함
+	private final DriveProvider driveProvider;
 	private final DriveDomainProvider driveDomainProvider;
 
-	// 추후에 분리 및 querydsl 작업해야함
-	private final GpsHistoryDomainRepository gpsHistoryRepository;
+	public ApiResponse<List<CarListResponse>> getCarListBySearchFilter(
+		CarListRequest carListSearchFilterRequest
+	) {
+		String bizUuid = SecurityUtils.getBizUuid();
 
-	private final DriveProvider driveProvider;
+		Page<CarEntity> cars = carDomainProvider.searchDriveCarByFilter(
+			bizUuid,
+			carListSearchFilterRequest.search(),
+			carListSearchFilterRequest.toPageable());
 
-	public ApiResponse<List<CarListResponse>> getCar() {
-		List<CarListResponse> carList = carDomainProvider.getCar();
+		Page<CarListResponse> carResponses = cars.map(CarListResponse::from);
+		PageResponse pageResponse = PageResponse.from(carResponses);
 
-		return ApiResponse.success(carList);
+		return ApiResponse.success(carResponses.getContent(), pageResponse);
+
 	}
 
-	public ApiResponse<List<DriveListResponse>> getBySearchFilter(
-		DriveSearchFilterRequest driveSearchFilterRequest
+	public ApiResponse<List<DriveListResponse>> getDrivesBySearchFilter(
+		DriveListRequest driveListRequest
 	) {
-		Page<DriveEntity> driveList = driveDomainProvider.searchByFilter(driveSearchFilterRequest);
-		Page<DriveListResponse> responses = driveList.map(DriveListResponse::toResponse);
-		PageResponse pageResponse = PageResponse.from(responses);
+		Page<DriveEntity> driveList = driveDomainProvider.searchDrivesByFilter(
+			driveListRequest.mdn(),
+			driveListRequest.startDateTime(),
+			driveListRequest.endDateTime(),
+			driveListRequest.toPageable());
 
-		return ApiResponse.success(responses.getContent(), pageResponse);
+		Page<DriveListResponse> driveListResponses = driveList.map(DriveListResponse::toResponse);
+		PageResponse pageResponse = PageResponse.from(driveListResponses);
+
+		return ApiResponse.success(driveListResponses.getContent(), pageResponse);
 	}
 
 	// 추후에 분리 및 querydsl 작업해야함

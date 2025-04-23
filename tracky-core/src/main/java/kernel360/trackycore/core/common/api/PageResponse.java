@@ -16,27 +16,12 @@ public class PageResponse {
 
 	private int size;
 
-	private int numberOfElements;
-
-	private boolean isFirst;
-
-	private boolean isLast;
-
-	private boolean hasNext;
-
-	private boolean hasPrevious;
-
 	public static PageResponse from(Page page) {
 		return new PageResponse(
 			page.getTotalElements(),
 			page.getTotalPages(),
 			page.getNumber(),
-			page.getSize(),
-			page.getNumberOfElements(),
-			page.isFirst(),
-			page.isLast(),
-			page.hasNext(),
-			page.hasPrevious()
+			page.getSize()
 		);
 	}
 }

@@ -1,10 +1,12 @@
 package kernel360.trackyweb.drive.domain.provider;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
-import kernel360.trackyweb.drive.application.dto.request.DriveSearchFilterRequest;
 import kernel360.trackyweb.drive.infrastructure.repository.DriveDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -14,10 +16,12 @@ public class DriveDomainProvider {
 
 	private final DriveDomainRepository driveDomainRepository;
 
-	public Page<DriveEntity> searchByFilter(DriveSearchFilterRequest driveSearchFilterRequest) {
-		return driveDomainRepository.searchByFilter(
-			driveSearchFilterRequest.search(),
-			driveSearchFilterRequest.pageable()
-		);
+	public Page<DriveEntity> searchDrivesByFilter(
+		String mdn,
+		LocalDateTime startDateTime,
+		LocalDateTime endDateTime,
+		Pageable pageable) {
+		return driveDomainRepository.searchByFilter(mdn, startDateTime, endDateTime, pageable);
 	}
+
 }

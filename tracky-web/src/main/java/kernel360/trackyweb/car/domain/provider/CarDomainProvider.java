@@ -1,12 +1,10 @@
 package kernel360.trackyweb.car.domain.provider;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
-import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
@@ -20,11 +18,8 @@ public class CarDomainProvider {
 	private final CarDomainRepository carDomainRepository;
 	private final GlobalSseEvent globalSseEvent;
 
-	public Page<CarEntity> searchByFilter(CarSearchByFilterRequest carSearchByFilterRequest) {
-		return carDomainRepository.searchByFilter(
-			carSearchByFilterRequest.search(),
-			carSearchByFilterRequest.status(),
-			carSearchByFilterRequest.pageable());
+	public Page<CarEntity> searchCarByFilter(String search, String status, String carType, Pageable pageable) {
+		return carDomainRepository.searchCarByFilter(search, status, carType, pageable);
 	}
 
 	public CarEntity update(CarEntity car) {
@@ -47,12 +42,9 @@ public class CarDomainProvider {
 		carDomainRepository.deleteByMdn(mdn);
 	}
 
-	public List<CarListResponse> getCar() {
-		List<CarEntity> cars = carDomainRepository.findAll();
+	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
+		return carDomainRepository.searchDriveCarByFilter(bizUuid, search, pageable);
 
-		return cars.stream()
-			.map(car -> new CarListResponse(car.getCarPlate(), car.getCarType()))
-			.toList();
 	}
 
 }
