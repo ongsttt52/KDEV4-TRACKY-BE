@@ -15,9 +15,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "notice")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NoticeEntity extends DateBaseEntity {
 
