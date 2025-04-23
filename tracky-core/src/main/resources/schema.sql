@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `drive` (
 );
 
 CREATE TABLE IF NOT EXISTS `gpshistory` (
-	`drive_seq` bigint NOT NULL,
+	`drive_seq` BINARY(16) NOT NULL,
 	`drive_id` bigint NOT NULL,
 	`o_time` varchar(100) NOT NULL,
 	`sec` int NOT NULL,
