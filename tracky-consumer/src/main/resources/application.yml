@@ -17,3 +17,6 @@ rabbitmq:
 
 server:
   port: 8083
+
+discord:
+  webhook-url: ${DISCORD_WEBHOOK_CONSUMER_URL}

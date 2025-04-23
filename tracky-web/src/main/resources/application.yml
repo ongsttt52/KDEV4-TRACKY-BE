@@ -18,3 +18,6 @@ spring:
     level:
       org.hibernate.SQL: debug            # SQL 쿼리
       org.hibernate.type.descriptor.sql: trace   # 파라미터 값까지 출력
+
+discord:
+  webhook-url: ${DISCORD_WEBHOOK_WEB_URL}
