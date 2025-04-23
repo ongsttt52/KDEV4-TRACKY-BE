@@ -2,9 +2,6 @@ package kernel360.trackycore.core.domain.entity;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -15,18 +12,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @Entity
 @Table(name = "notice")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@ToString
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class NoticeEntity extends DateBaseEntity {
 
 	@Id
@@ -45,11 +37,15 @@ public class NoticeEntity extends DateBaseEntity {
 
 	private LocalDateTime deletedAt;
 
-	public static NoticeEntity create(String title, String content, boolean isImportant) {
-		NoticeEntity notice = new NoticeEntity();
-		notice.title = title;
-		notice.content = content;
-		notice.isImportant = isImportant;
+	private NoticeEntity(MemberEntity member, String title, String content, boolean isImportant) {
+		this.member = member;
+		this.title = title;
+		this.content = content;
+		this.isImportant = isImportant;
+	}
+
+	public static NoticeEntity create(MemberEntity member, String title, String content, boolean isImportant) {
+		NoticeEntity notice = new NoticeEntity(member, title, content, isImportant);
 		notice.onCreate();
 		return notice;
 	}
