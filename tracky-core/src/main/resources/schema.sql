@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`biz_uuid` varchar(100) NOT NULL UNIQUE,
-	`biz_name` varchar(100) NOT NULL,
-	`biz_reg_num` varchar(20) NOT NULL,
-	`biz_admin`	varchar(100) NOT NULL,
-	`biz_phone_num`	varchar(20)	NOT NULL,
+	`biz_uuid` varchar(8) NOT NULL UNIQUE,
+	`biz_name` varchar(20) NOT NULL,
+	`biz_reg_num` varchar(12) NOT NULL,
+	`biz_admin`	varchar(20) NOT NULL,
+	`biz_phone_num`	varchar(13)	NOT NULL,
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
 	`deleted_at` timestamp NULL,
@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS `biz` (
 CREATE TABLE IF NOT EXISTS `member` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
 	`biz_id` bigint	NOT NULL,
-	`member_id`	varchar(100) NOT NULL,
+	`member_id`	varchar(20) NOT NULL UNIQUE,
 	`pwd` varchar(100) NOT NULL,
-	`email`	varchar(100) NOT NULL,
+	`email`	varchar(254) NOT NULL,
 	`role`	enum('ADMIN', 'USER') NOT NULL,
 	`status` enum('ACTIVE', 'DEACTIVE', 'WAIT', 'DELETED') NOT NULL,
 	`lastlogin_at` timestamp NULL,
@@ -40,16 +40,16 @@ CREATE TABLE IF NOT EXISTS `device` (
 );
 
 CREATE TABLE IF NOT EXISTS `car` (
-	`mdn` varchar(100) NOT NULL,
+	`mdn` varchar(11) NOT NULL,
 	`biz_id` bigint NOT NULL,
 	`device_id`	bigint NOT NULL,
 	`car_type` enum('MINI', 'SEDAN', 'VAN', 'SUV', 'TRUCK', 'BUS', 'SPORTS', 'ETC') NOT NULL,
-	`car_name` varchar(100) NOT NULL,
+	`car_name` varchar(20) NOT NULL,
 	`car_plate` varchar(20) NOT NULL,
 	`car_year` varchar(20) NOT NULL,
 	`purpose` varchar(20) NOT NULL,
 	`status` enum('RUNNING', 'WAITING', 'FIXING', 'DELETED', 'CLOSED') NOT NULL,
-	`sum` varchar(100) NOT NULL,
+	`sum` double NOT NULL,
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
 	`deleted_at` timestamp NULL,
@@ -61,20 +61,20 @@ CREATE TABLE IF NOT EXISTS `car` (
 );
 
 CREATE TABLE IF NOT EXISTS `rent` (
-	`rent_uuid`	varchar(100) NOT NULL,
-	`mdn`	varchar(100) NOT NULL,
+	`rent_uuid`	varchar(8) NOT NULL,
+	`mdn`	varchar(11) NOT NULL,
 	`rent_stime` timestamp NOT NULL,
 	`rent_etime` timestamp NOT NULL,
-	`renter_name` varchar(100) NOT NULL,
-	`renter_phone` varchar(100) NOT NULL,
-	`purpose` varchar(100) NULL,
+	`renter_name` varchar(20) NOT NULL,
+	`renter_phone` varchar(13) NOT NULL,
+	`purpose` varchar(20) NULL,
 	`rent_status` enum('RENTING', 'RESERVED', 'RETURNED', 'CANCELED', 'DELETED') NOT NULL,
 	`rent_loc` varchar(100) NULL,
-	`rent_lat` varchar(100) NULL,
-	`rent_lon` varchar(100) NULL,
+	`rent_lat` int NULL,
+	`rent_lon` int NULL,
 	`return_loc` varchar(100) NULL,
-	`return_lat` varchar(100) NULL,
-	`return_lon` varchar(100) NULL,
+	`return_lat` int NULL,
+	`return_lon` int NULL,
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
 	PRIMARY KEY (`rent_uuid`),
@@ -84,10 +84,10 @@ CREATE TABLE IF NOT EXISTS `rent` (
 
 CREATE TABLE IF NOT EXISTS `location` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`drive_start_lon` varchar(100) NOT NULL,
-	`drive_start_lat` varchar(100) NOT NULL,
-	`drive_end_lon`	varchar(100) NULL,
-	`drive_end_lat`	varchar(100) NULL,
+	`drive_start_lon` int NOT NULL,
+	`drive_start_lat` int NOT NULL,
+	`drive_end_lon`	int NULL,
+	`drive_end_lat`	int NULL,
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
 	PRIMARY KEY (`id`)
@@ -95,10 +95,10 @@ CREATE TABLE IF NOT EXISTS `location` (
 
 CREATE TABLE IF NOT EXISTS `drive` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`rent_uuid` varchar(100) NOT NULL,
-	`mdn` varchar(100) NOT NULL,
+	`rent_uuid` varchar(8) NOT NULL,
+	`mdn` varchar(11) NOT NULL,
 	`drive_loc_id` bigint NOT NULL,
-	`drive_distance` varchar(100) NULL,
+	`drive_distance` double NULL,
 	`drive_on_time` timestamp NULL,
 	`drive_off_time` timestamp NULL,
 	`created_at` timestamp NOT NULL,
@@ -116,14 +116,14 @@ CREATE TABLE IF NOT EXISTS `drive` (
 CREATE TABLE IF NOT EXISTS `gpshistory` (
 	`drive_seq` BINARY(16) NOT NULL,
 	`drive_id` bigint NOT NULL,
-	`o_time` varchar(100) NOT NULL,
-	`sec` varchar(100) NOT NULL,
+	`o_time` timestamp NOT NULL,
+	`sec` int NOT NULL,
 	`gcd` varchar(10) NOT NULL,
-	`lat` varchar(100) NOT NULL,
-	`lon` varchar(100) NOT NULL,
-	`ang` varchar(100) NOT NULL,
-	`spd` varchar(100) NOT NULL,
-	`sum` varchar(100) NOT NULL,
+	`lat` int NOT NULL,
+	`lon` int NOT NULL,
+	`ang` int NOT NULL,
+	`spd` int NOT NULL,
+	`sum` double NOT NULL,
 	`created_at` timestamp	NOT NULL,
 	PRIMARY KEY (`drive_seq`),
 	CONSTRAINT `fk_gpshistory_drive`
@@ -132,8 +132,8 @@ CREATE TABLE IF NOT EXISTS `gpshistory` (
 
 CREATE TABLE IF NOT EXISTS `car_event` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`mdn` varchar(100) NOT NULL,
-	`type` varchar(100) NOT NULL,
+	`mdn` varchar(11) NOT NULL,
+	`type` varchar(10) NOT NULL,
 	`event_at` timestamp NOT NULL,
 	PRIMARY KEY (`id`),
     CONSTRAINT `fk_car_event_car`
@@ -142,9 +142,9 @@ CREATE TABLE IF NOT EXISTS `car_event` (
 
 CREATE TABLE IF NOT EXISTS `time_distance` (
 	`id` bigint NOT NULL AUTO_INCREMENT,
-	`mdn` varchar(100) NOT NULL,
+	`mdn` varchar(11) NOT NULL,
 	`hour` timestamp NOT NULL,
-	`distance` varchar(100) NOT NULL,
+	`distance` int NOT NULL,
 	PRIMARY KEY (`id`),
     CONSTRAINT `fk_time_distance_car`
         FOREIGN KEY (`mdn`) REFERENCES `car`(`mdn`)
@@ -152,9 +152,9 @@ CREATE TABLE IF NOT EXISTS `time_distance` (
 
 CREATE TABLE IF NOT EXISTS `daily_total` (
     `id` bigint NOT NULL AUTO_INCREMENT,
-    `mdn` varchar(100) NOT NULL,
+    `mdn` varchar(11) NOT NULL,
     `date` timestamp NOT NULL,
-    `daily_distance` varchar(100) NOT NULL,
+    `daily_distance` varchar(20) NOT NULL,
     `created_at` timestamp NOT NULL,
     `updated_at` timestamp NULL,
     PRIMARY KEY (`id`),

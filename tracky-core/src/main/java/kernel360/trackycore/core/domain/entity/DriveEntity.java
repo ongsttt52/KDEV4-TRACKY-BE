@@ -40,7 +40,7 @@ public class DriveEntity extends DateBaseEntity {
 	@JoinColumn(name = "drive_loc_id", nullable = false)
 	private LocationEntity location;
 
-	@Column(name = "drive_distance", columnDefinition = "VARCHAR(100)")
+	@Column(name = "drive_distance")
 	private double driveDistance;
 
 	@Column(name = "drive_on_time")

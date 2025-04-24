@@ -33,28 +33,28 @@ public class GpsHistoryEntity {
 	@JoinColumn(name = "drive_id", nullable = false)
 	private DriveEntity drive;    //주행ID 외래키
 
-	@Column(name = "o_time", length = 100, nullable = false)
+	@Column(name = "o_time", nullable = false)
 	private LocalDateTime oTime;    //발생시간
 
-	@Column(name = "sec", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "sec", nullable = false)
 	private int sec; // 발생시간 - 초
 
 	@Column(name = "gcd", length = 10, nullable = false)
 	private String gcd;        //GPS상태
 
-	@Column(name = "lat", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "lat", nullable = false)
 	private int lat;    //GPS위도
 
-	@Column(name = "lon", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "lon", nullable = false)
 	private int lon;    //GPS경도
 
-	@Column(name = "ang", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "ang", nullable = false)
 	private int ang;    //방향
 
-	@Column(name = "spd", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "spd", nullable = false)
 	private int spd;    //속도
 
-	@Column(name = "sum", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "sum", nullable = false)
 	private double sum;    //단건 주행거리
 
 	@CreationTimestamp

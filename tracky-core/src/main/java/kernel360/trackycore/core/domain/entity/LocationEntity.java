@@ -22,16 +22,16 @@ public class LocationEntity extends DateBaseEntity {
 	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
-	@Column(name = "drive_start_lon", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "drive_start_lon", nullable = false)
 	private int driveStartLon;
 
-	@Column(name = "drive_start_lat", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "drive_start_lat", nullable = false)
 	private int driveStartLat;
 
-	@Column(name = "drive_end_lon", length = 100, nullable = true, columnDefinition = "VARCHAR(100)")
+	@Column(name = "drive_end_lon")
 	private int driveEndLon;
 
-	@Column(name = "drive_end_lat", length = 100, nullable = true, columnDefinition = "VARCHAR(100)")
+	@Column(name = "drive_end_lat")
 	private int driveEndLat;
 
 	public void updateEndLocation(int lat, int lon) {

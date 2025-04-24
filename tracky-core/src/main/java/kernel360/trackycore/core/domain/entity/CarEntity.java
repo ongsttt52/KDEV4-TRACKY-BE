@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class CarEntity extends DateBaseEntity {
 
 	@Id
-	@Column(name = "mdn", length = 100, nullable = false, updatable = false)
+	@Column(name = "mdn", length = 11, nullable = false, updatable = false)
 	private String mdn;           // 차량식별키
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -35,7 +35,7 @@ public class CarEntity extends DateBaseEntity {
 	@Column(name = "car_type", nullable = false)
 	private String carType;       // 차 대분류
 
-	@Column(name = "car_name", length = 100, nullable = false)
+	@Column(name = "car_name", length = 20, nullable = false)
 	private String carName;    //차종
 
 	@Column(name = "car_plate", length = 20, nullable = false)
@@ -50,7 +50,7 @@ public class CarEntity extends DateBaseEntity {
 	@Column(name = "status", nullable = false)
 	private String status;        // 차량상태
 
-	@Column(name = "sum", nullable = false, columnDefinition = "VARCHAR(100)")
+	@Column(name = "sum", nullable = false)
 	private double sum;           // 누적 주행 거리
 
 	@Column(name = "deleted_at")

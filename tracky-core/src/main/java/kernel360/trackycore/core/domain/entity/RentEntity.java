@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class RentEntity extends DateBaseEntity {
 
 	@Id
-	@Column(name = "rent_uuid", length = 100, nullable = false, updatable = false)
+	@Column(name = "rent_uuid", length = 8, nullable = false, updatable = false)
 	private String rentUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -34,13 +34,13 @@ public class RentEntity extends DateBaseEntity {
 	@Column(name = "rent_etime", nullable = false)
 	private LocalDateTime rentEtime;
 
-	@Column(name = "renter_name", length = 100, nullable = false)
+	@Column(name = "renter_name", length = 20, nullable = false)
 	private String renterName;
 
-	@Column(name = "renter_phone", length = 100, nullable = false)
+	@Column(name = "renter_phone", length = 13, nullable = false)
 	private String renterPhone;
 
-	@Column(name = "purpose", length = 100)
+	@Column(name = "purpose", length = 20)
 	private String purpose;
 
 	@Column(name = "rent_status", nullable = false)
@@ -49,19 +49,19 @@ public class RentEntity extends DateBaseEntity {
 	@Column(name = "rent_loc", length = 100)
 	private String rentLoc;
 
-	@Column(name = "rent_lat", length = 100, columnDefinition = "VARCHAR(100)")
+	@Column(name = "rent_lat")
 	private int rentLat;
 
-	@Column(name = "rent_lon", length = 100, columnDefinition = "VARCHAR(100)")
+	@Column(name = "rent_lon")
 	private int rentLon;
 
 	@Column(name = "return_loc", length = 100)
 	private String returnLoc;
 
-	@Column(name = "return_lat", length = 100, columnDefinition = "VARCHAR(100)")
+	@Column(name = "return_lat")
 	private int returnLat;
 
-	@Column(name = "return_lon", length = 100, columnDefinition = "VARCHAR(100)")
+	@Column(name = "return_lon")
 	private int returnLon;
 
 	// 생성자: 외부에서 직접 호출하지 못하도록 private 으로 변경

@@ -22,10 +22,10 @@ public class CarEventEntity {
 	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
-	@Column(name = "mdn", length = 100, nullable = false)
+	@Column(name = "mdn", length = 11, nullable = false)
 	private String mdn;
 
-	@Column(name = "type", length = 100, nullable = false)
+	@Column(name = "type", length = 20, nullable = false)
 	private String type;
 
 	@Column(name = "event_at", nullable = false)

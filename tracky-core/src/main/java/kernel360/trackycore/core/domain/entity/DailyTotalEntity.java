@@ -21,7 +21,7 @@ public class DailyTotalEntity extends DateBaseEntity {
 	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
-	@Column(name = "mdn", length = 100, nullable = false)
+	@Column(name = "mdn", length = 11, nullable = false)
 	private String mdn;
 
 	@Column(name = "date", nullable = false)

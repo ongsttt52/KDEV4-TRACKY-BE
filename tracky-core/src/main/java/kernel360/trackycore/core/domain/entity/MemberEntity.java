@@ -31,13 +31,13 @@ public class MemberEntity extends DateBaseEntity {
 	@JoinColumn(name = "biz_id", nullable = false)
 	private BizEntity biz;
 
-	@Column(name = "member_id", length = 100, nullable = false)
+	@Column(name = "member_id", length = 20, nullable = false, unique = true)
 	private String memberId;
 
 	@Column(name = "pwd", length = 100, nullable = false)
 	private String pwd;
 
-	@Column(name = "email", length = 100, nullable = false)
+	@Column(name = "email", length = 254, nullable = false)
 	private String email;
 
 	@Column(name = "role", columnDefinition = "ENUM('ADMIN','USER')", nullable = false)

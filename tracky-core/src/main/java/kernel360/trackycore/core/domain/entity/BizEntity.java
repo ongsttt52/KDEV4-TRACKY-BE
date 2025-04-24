@@ -24,19 +24,19 @@ public class BizEntity extends DateBaseEntity {
 	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
-	@Column(name = "biz_uuid", length = 100, nullable = false, unique = true)
+	@Column(name = "biz_uuid", length = 8, nullable = false, unique = true)
 	private String bizUuid;
 
-	@Column(name = "biz_name", length = 100, nullable = false)
+	@Column(name = "biz_name", length = 20, nullable = false)
 	private String bizName;
 
-	@Column(name = "biz_reg_num", length = 20, nullable = false)
+	@Column(name = "biz_reg_num", length = 12, nullable = false)
 	private String bizRegNum;
 
-	@Column(name = "biz_admin", length = 100, nullable = false)
+	@Column(name = "biz_admin", length = 20, nullable = false)
 	private String bizAdmin;
 
-	@Column(name = "biz_phone_num", length = 20, nullable = false)
+	@Column(name = "biz_phone_num", length = 13, nullable = false)
 	private String bizPhoneNum;
 
 	@Column(name = "deleted_at")
