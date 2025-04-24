@@ -88,7 +88,7 @@ public class SignController {
 	}
 
 	@PostMapping("/login")
-	public ApiResponse<String> login(@RequestBody LoginRequest request) {
+	public ApiResponse<String> login(@RequestBody @Valid LoginRequest request) {
 		// DB에서 회원 조회 및 비밀번호 검증 (비밀번호 불일치, 존재하지 않는 회원일 경우 예외 발생)
 		MemberEntity member = signService.authenticate(request.memberId(), request.pwd());
 
