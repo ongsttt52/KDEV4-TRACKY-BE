@@ -1,5 +1,6 @@
 package kernel360.trackycore.core.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,25 +10,28 @@ import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Getter
 @Entity
 @Table(name = "device")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class DeviceEntity extends DateBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
+	@Column(name = "tid", length = 10, nullable = false)
 	private String tid;
 
+	@Column(name = "mid", length = 10, nullable = false)
 	private String mid;
 
+	@Column(name = "did", length = 10, nullable = false)
 	private String did;
 
+	@Column(name = "pv", length = 10, nullable = false)
 	private String pv;
 
 	private DeviceEntity(String tid, String mid, String did, String pv) {

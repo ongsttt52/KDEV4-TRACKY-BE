@@ -1,8 +1,5 @@
 package kernel360.trackycore.core.domain.entity;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,26 +7,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Getter
 @Entity
 @Table(name = "location")
-@NoArgsConstructor
-@ToString
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LocationEntity extends DateBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
-	@Column(name = "drive_start_lon")
+	@Column(name = "drive_start_lon", nullable = false)
 	private int driveStartLon;
 
-	@Column(name = "drive_start_lat")
+	@Column(name = "drive_start_lat", nullable = false)
 	private int driveStartLat;
 
 	@Column(name = "drive_end_lon")

@@ -28,7 +28,7 @@ public record CycleGpsRequest(
 	}
 
 	public GpsHistoryEntity toGpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, double sum) {
-		return new GpsHistoryEntity(drive, oTime, this.gcd, this.gpsInfo.getLat(), this.gpsInfo.getLon(),
+		return new GpsHistoryEntity(drive, oTime, this.sec, this.gcd, this.gpsInfo.getLat(), this.gpsInfo.getLon(),
 			this.gpsInfo.getAng(), this.gpsInfo.getSpd(), sum);
 	}
 }
