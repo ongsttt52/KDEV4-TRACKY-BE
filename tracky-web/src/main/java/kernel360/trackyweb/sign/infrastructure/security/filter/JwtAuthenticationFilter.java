@@ -15,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kernel360.trackyweb.sign.infrastructure.security.jwt.JwtTokenProvider;
+import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -53,11 +54,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			String role = jwtTokenProvider.getRole(token).toUpperCase();
 			String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
 			String bizUuid = jwtTokenProvider.getBizUuid(token);
+			MemberPrincipal memberPrincipal = new MemberPrincipal(memberId, bizUuid);
 
 			UsernamePasswordAuthenticationToken authentication =
 				new UsernamePasswordAuthenticationToken(
-					memberId,
-					bizUuid,
+					memberPrincipal,
+					null,
 					Collections.singletonList(new SimpleGrantedAuthority(authority))
 				);
 

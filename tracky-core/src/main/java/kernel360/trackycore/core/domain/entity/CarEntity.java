@@ -13,40 +13,44 @@ import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "car")
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CarEntity extends DateBaseEntity {
 
 	@Id
+	@Column(name = "mdn", length = 11, nullable = false, updatable = false)
 	private String mdn;           // 차량식별키
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "biz_id")
+	@JoinColumn(name = "biz_id", nullable = false)
 	private BizEntity biz;         // 업체 ID 외래키
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "device_id")
+	@JoinColumn(name = "device_id", nullable = false)
 	private DeviceEntity device;    // 디바이스 세팅ID 외래키
 
-	@Column(name = "car_type")
+	@Column(name = "car_type", nullable = false)
 	private String carType;       // 차 대분류
 
-	@Column(name = "car_name")
+	@Column(name = "car_name", length = 20, nullable = false)
 	private String carName;    //차종
 
-	@Column(name = "car_plate")
+	@Column(name = "car_plate", length = 20, nullable = false)
 	private String carPlate;      // 번호판
 
-	@Column(name = "car_year")
+	@Column(name = "car_year", length = 20, nullable = false)
 	private String carYear;       // 연식
 
+	@Column(name = "purpose", length = 20, nullable = false)
 	private String purpose;       // 차량용도
+
+	@Column(name = "status", nullable = false)
 	private String status;        // 차량상태
+
+	@Column(name = "sum", nullable = false)
 	private double sum;           // 누적 주행 거리
 
 	@Column(name = "deleted_at")

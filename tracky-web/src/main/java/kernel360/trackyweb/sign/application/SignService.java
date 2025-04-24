@@ -179,9 +179,9 @@ public class SignService {
 
 	@Transactional
 	public String generateJwtToken(MemberEntity member) {
-		String bizName = member.getBizId().getBizName();
-		Long bizId = member.getBizId().getId();
-		String bizUuid = member.getBizId().getBizUuid();
+		String bizName = member.getBiz().getBizName();
+		Long bizId = member.getBiz().getId();
+		String bizUuid = member.getBiz().getBizUuid();
 
 		return jwtTokenProvider.generateToken(member.getMemberId(), member.getRole(), bizName, bizId, bizUuid);
 	}

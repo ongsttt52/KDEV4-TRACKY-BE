@@ -3,7 +3,7 @@ package kernel360.trackycore.core.common.webhook.discord;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@ConditionalOnExpression("'${discord.webhook‑url}'.length() > 0")
+@ConditionalOnProperty(prefix = "discord", name = "enable", havingValue = "true")
 public class DiscordNotifier implements Notifier {
 	private final RestClient restClient;
 
