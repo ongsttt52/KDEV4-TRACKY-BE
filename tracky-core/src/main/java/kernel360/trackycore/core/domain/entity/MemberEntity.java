@@ -71,4 +71,30 @@ public class MemberEntity extends DateBaseEntity {
 		);
 	}
 
+	public void update(
+		String bizName,
+		String bizRegNum,
+		String bizAdmin,
+		String bizPhoneNum,
+		String email,
+		String role,
+		String status
+	) {
+		this.getBizId().updateBizInfo(bizName, bizRegNum, bizAdmin, bizPhoneNum);
+		this.email =  email;
+		this.role = role;
+		this.status = status;
+	}
+
+	public void updateStatus(
+		String status
+	) {
+		this.status = status;
+	}
+
+	public void delete(
+	) {
+		this.status = "deleted";
+		this.deleteAt = LocalDateTime.now();
+	}
 }

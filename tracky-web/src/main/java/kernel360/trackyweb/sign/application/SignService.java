@@ -1,14 +1,24 @@
 package kernel360.trackyweb.sign.application;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
 import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
+import kernel360.trackyweb.sign.application.dto.request.ApproveRequest;
+import kernel360.trackyweb.sign.application.dto.request.MemberDeleteRequest;
+import kernel360.trackyweb.sign.application.dto.request.MemberSearchByFilter;
+import kernel360.trackyweb.sign.application.dto.request.MemberUpdateRequest;
 import kernel360.trackyweb.sign.application.dto.request.SignupRequest;
+import kernel360.trackyweb.sign.application.dto.response.MemberResponse;
 import kernel360.trackyweb.sign.application.validation.SignValidator;
 import kernel360.trackyweb.sign.domain.provider.MemberProvider;
 import kernel360.trackyweb.sign.infrastructure.security.jwt.JwtTokenProvider;
@@ -26,6 +36,30 @@ public class SignService {
 	private final SignValidator signValidator;
 	private final PasswordEncoder passwordEncoder;
 
+	/**
+	 * 계정 검색
+	 * @param memberSearchByFilter
+	 * @return ApiResponse<List<MemberResponse>>
+	 */
+	@Transactional(readOnly = true)
+	public ApiResponse<List<MemberResponse>> getMembersBySearchFilter(MemberSearchByFilter memberSearchByFilter) {
+
+		Page<MemberEntity> members = memberProvider.getMembersBySearchFilter(
+			memberSearchByFilter.search(),
+			memberSearchByFilter.toPageable()
+		);
+
+		Page<MemberResponse> memberResponses = members.map(MemberResponse::from);
+		PageResponse pageResponse = PageResponse.from(memberResponses);
+
+		return ApiResponse.success(memberResponses.getContent(), pageResponse);
+	}
+
+	/**
+	 * 가입 신청
+	 * @param signupRequest
+	 */
+	@Transactional
 	public void signup(SignupRequest signupRequest) {
 
 		signValidator.validateSignup(signupRequest.memberId(), signupRequest.bizRegNum());
@@ -53,8 +87,84 @@ public class SignService {
 	}
 
 	/**
+	 * 가입 신청 list
+	 * @return List<MemberEntity>
+	 */
+	@Transactional(readOnly = true)
+	public List<MemberEntity> getApproveList() {
+		log.info("Approve attempt for getAppoveList");
+
+		return memberProvider.findOneByStatus("wait");
+	}
+
+	/**
+	 * 계정 삭제
+	 * @param memberDeleteRequest
+	 * @return MemberEntity
+	 */
+	@Transactional
+	public MemberEntity delete(MemberDeleteRequest memberDeleteRequest) {
+		log.info("Delete for memberId: {}", memberDeleteRequest.memberId());
+
+		MemberEntity member = memberProvider.getMember(memberDeleteRequest.memberId());
+
+		member.delete();
+
+		memberProvider.save(member);
+
+		return member;
+	}
+
+	/**
+	 * 계정 수정
+	 * @param memberUpdateRequest
+	 * @return MemberEntity
+	 */
+	@Transactional
+	public MemberEntity update(MemberUpdateRequest memberUpdateRequest) {
+		log.info("Update for memberId: {}", memberUpdateRequest.memberId());
+
+		MemberEntity member = memberProvider.getMember(memberUpdateRequest.memberId());
+
+		member.update(
+			memberUpdateRequest.bizName(),
+			memberUpdateRequest.bizRegNum(),
+			memberUpdateRequest.bizAdmin(),
+			memberUpdateRequest.bizPhoneNum(),
+			memberUpdateRequest.email(),
+			memberUpdateRequest.role(),
+			memberUpdateRequest.status()
+		);
+
+		memberProvider.save(member);
+
+		return member;
+	}
+
+	/**
+	 * 계정 상태 변경
+	 * @param approveRequest
+	 * @param condition
+	 * @return MemberEntity
+	 */
+	@Transactional
+	public MemberEntity updateStatus(ApproveRequest approveRequest, String condition) {
+
+		log.info("Update status for memberId: {}", approveRequest.memberId());
+
+		MemberEntity member = memberProvider.getMember(approveRequest.memberId());
+
+		member.updateStatus(condition);
+
+		memberProvider.save(member);
+
+		return member;
+	}
+
+	/**
 	 * 주어진 memberId와 평문 비밀번호를 통해 회원 인증 처리.
 	 */
+	@Transactional
 	public MemberEntity authenticate(String memberId, String pwd) {
 
 		log.info("Login attempt for memberId: {}", memberId);
@@ -67,6 +177,7 @@ public class SignService {
 		return member;
 	}
 
+	@Transactional
 	public String generateJwtToken(MemberEntity member) {
 		String bizName = member.getBizId().getBizName();
 		Long bizId = member.getBizId().getId();
