@@ -1,6 +1,7 @@
 package kernel360.trackyweb.drive.domain.provider;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,10 @@ public class DriveDomainProvider {
 		Pageable pageable
 	) {
 		return driveDomainRepository.findRunningDriveList(search, pageable);
+	}
+
+	public Optional<DriveEntity> findRunningDriveById(Long driveId) {
+		return driveDomainRepository.findRunningDriveById(driveId);
 	}
 
 }

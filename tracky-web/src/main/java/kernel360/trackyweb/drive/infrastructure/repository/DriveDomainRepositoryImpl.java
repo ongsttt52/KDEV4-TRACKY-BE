@@ -22,6 +22,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.QDriveEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -58,7 +59,6 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		return new PageImpl<>(content, effectivePageable, total);
 	}
 
-
 	@Override
 	public Page<DriveEntity> findRunningDriveList(String search, Pageable pageable) {
 
@@ -85,7 +85,7 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		List<DriveEntity> filtered = new ArrayList<>(uniqueByCar.values());
 
 		// Java 단에서 페이징 처리
-		int start = (int) pageable.getOffset();
+		int start = (int)pageable.getOffset();
 		int end = Math.min((start + pageable.getPageSize()), filtered.size());
 		List<DriveEntity> pagedContent = (start < end) ? filtered.subList(start, end) : Collections.emptyList();
 
@@ -113,7 +113,8 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 	}
 
 	private BooleanBuilder isContainsMdnOrPlate(String search) {
-		if (StringUtils.isBlank(search)) return new BooleanBuilder();
+		if (StringUtils.isBlank(search))
+			return new BooleanBuilder();
 		return new BooleanBuilder()
 			.or(driveEntity.car.mdn.containsIgnoreCase(search))
 			.or(driveEntity.car.carPlate.containsIgnoreCase(search));
@@ -126,6 +127,20 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 			.where(condition)
 			.fetchOne()
 		).orElse(0L);
+	}
+
+	@Override
+	public Optional<DriveEntity> findRunningDriveById(Long driveId) {
+		return Optional.ofNullable(
+			queryFactory.selectFrom(QDriveEntity.driveEntity)
+				.join(QDriveEntity.driveEntity.car).fetchJoin()
+				.join(QDriveEntity.driveEntity.rent).fetchJoin()
+				.where(
+					QDriveEntity.driveEntity.id.eq(driveId),
+					QDriveEntity.driveEntity.driveOffTime.isNull()
+				)
+				.fetchFirst()
+		);
 	}
 
 }
