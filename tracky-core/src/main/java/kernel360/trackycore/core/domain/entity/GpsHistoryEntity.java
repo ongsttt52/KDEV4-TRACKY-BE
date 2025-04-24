@@ -1,69 +1,79 @@
 package kernel360.trackycore.core.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.uuid.Generators;
 
-import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Getter
 @Entity
 @Table(name = "gpshistory")
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GpsHistoryEntity {
 
 	@Id
-	@Column(name = "drive_seq", nullable = false)
-	// @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Tsid
-	private Long driveSeq;    //주행기록 시퀀스
+	@Column(name = "drive_seq", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
+	private UUID driveSeq;    //주행기록 시퀀스
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "drive_id", nullable = false)
 	private DriveEntity drive;    //주행ID 외래키
 
-	@Column(name = "o_time")
+	@Column(name = "o_time", nullable = false)
 	private LocalDateTime oTime;    //발생시간
 
+	@Column(name = "sec", nullable = false)
+	private int sec; // 발생시간 - 초
+
+	@Column(name = "gcd", length = 10, nullable = false)
 	private String gcd;        //GPS상태
 
+	@Column(name = "lat", nullable = false)
 	private int lat;    //GPS위도
 
+	@Column(name = "lon", nullable = false)
 	private int lon;    //GPS경도
 
+	@Column(name = "ang", nullable = false)
 	private int ang;    //방향
 
+	@Column(name = "spd", nullable = false)
 	private int spd;    //속도
 
+	@Column(name = "sum", nullable = false)
 	private double sum;    //단건 주행거리
 
-	@Column(name = "created_at")
 	@CreationTimestamp
+	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt;    //생성시간
 
-	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang,
+	@PrePersist
+	private void ensureId() {
+		if (this.driveSeq == null) {
+			this.driveSeq = Generators.timeBasedEpochGenerator().generate();
+		}
+	}
+
+	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, int sec, String gcd, int lat, int lon, int ang,
 		int spd,
 		double sum) {
-		// this.driveSeq = maxSeq;
 		this.drive = drive;
 		this.oTime = oTime;
+		this.sec = sec;
 		this.gcd = gcd;
 		this.lat = lat;
 		this.lon = lon;
