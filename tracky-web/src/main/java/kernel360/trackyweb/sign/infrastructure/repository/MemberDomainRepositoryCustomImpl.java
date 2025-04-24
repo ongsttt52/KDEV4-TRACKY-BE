@@ -30,7 +30,7 @@ public class MemberDomainRepositoryCustomImpl implements MemberDomainRepositoryC
 
 		List<MemberEntity> content = jpaQueryFactory
 			.selectFrom(memberEntity)
-			.join(memberEntity.bizId, bizEntity).fetchJoin()
+			.join(memberEntity.biz, bizEntity).fetchJoin()
 			.where(condition)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -39,7 +39,7 @@ public class MemberDomainRepositoryCustomImpl implements MemberDomainRepositoryC
 		Long total = jpaQueryFactory
 			.select(memberEntity.count())
 			.from(memberEntity)
-			.join(memberEntity.bizId, bizEntity)
+			.join(memberEntity.biz, bizEntity)
 			.where(condition)
 			.fetchOne();
 

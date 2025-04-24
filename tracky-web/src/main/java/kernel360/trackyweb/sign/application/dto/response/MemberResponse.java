@@ -19,10 +19,10 @@ public record MemberResponse (
 
 	public static MemberResponse from(MemberEntity member) {
 		return new MemberResponse(
-			member.getBizId().getBizName(),
-			member.getBizId().getBizRegNum(),
-			member.getBizId().getBizAdmin(),
-			member.getBizId().getBizPhoneNum(),
+			member.getBiz().getBizName(),
+			member.getBiz().getBizRegNum(),
+			member.getBiz().getBizAdmin(),
+			member.getBiz().getBizPhoneNum(),
 			member.getMemberId(),
 			member.getEmail(),
 			member.getRole(),

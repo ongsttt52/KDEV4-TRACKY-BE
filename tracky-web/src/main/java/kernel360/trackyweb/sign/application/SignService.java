@@ -87,6 +87,16 @@ public class SignService {
 	}
 
 	/**
+	 *	아이디 중복 확인
+	 */
+	@Transactional(readOnly = true)
+	public Boolean isExistMemberId(String memberId) {
+		log.info("Check attempt for isExistMemberId");
+
+		return memberProvider.existsByMemberId(memberId);
+	}
+
+	/**
 	 * 가입 신청 list
 	 * @return List<MemberEntity>
 	 */
