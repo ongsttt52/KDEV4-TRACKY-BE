@@ -13,7 +13,7 @@ public record MemberUpdateRequest(
 	@NotBlank(message = "사업자 등록 번호를 입력해주세요.")
 	String bizRegNum,
 
-	@NotBlank(message = "사업자 등록 번호를 입력해주세요.")
+	@NotBlank(message = "담당자 이름를 입력해주세요.")
 	String bizAdmin,
 
 	@NotBlank(message = "담당자 전화번호를 입력해주세요.")
