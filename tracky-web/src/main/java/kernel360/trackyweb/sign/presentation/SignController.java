@@ -76,18 +76,9 @@ public class SignController {
 	public ApiResponse<MemberResponse> approve(
 		@RequestBody @Valid ApproveRequest approveRequest
 	) {
-		MemberResponse result =  MemberResponse.from(signService.updateStatus(approveRequest, "active"));
+		MemberResponse result =  MemberResponse.from(signService.updateStatus(approveRequest));
 		return ApiResponse.success(result);
 	}
-
-	@PostMapping("/reject")
-	public ApiResponse<MemberResponse> reject(
-		@RequestBody @Valid ApproveRequest approveRequest
-	) {
-		MemberResponse result = MemberResponse.from(signService.updateStatus(approveRequest, "deactive"));
-		return ApiResponse.success(result);
-	}
-
 
 	@PostMapping("/signup")
 	public ApiResponse<String> signup(@RequestBody @Valid SignupRequest request) {

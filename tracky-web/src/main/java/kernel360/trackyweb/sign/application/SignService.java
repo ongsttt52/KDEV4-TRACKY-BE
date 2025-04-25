@@ -154,17 +154,16 @@ public class SignService {
 	/**
 	 * 계정 상태 변경
 	 * @param approveRequest
-	 * @param condition
 	 * @return MemberEntity
 	 */
 	@Transactional
-	public MemberEntity updateStatus(ApproveRequest approveRequest, String condition) {
+	public MemberEntity updateStatus(ApproveRequest approveRequest) {
 
 		log.info("Update status for memberId: {}", approveRequest.memberId());
 
 		MemberEntity member = memberProvider.getMember(approveRequest.memberId());
 
-		member.updateStatus(condition);
+		member.updateStatus(approveRequest.status());
 
 		memberProvider.save(member);
 

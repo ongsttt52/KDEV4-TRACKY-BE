@@ -4,5 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 
 public record ApproveRequest (
 	@NotBlank(message = "ID를  입력해주세요")
-	String memberId
+	String memberId,
+
+	@NotBlank(message = "상태를 입력하세요")
+	String status
 ) {}
