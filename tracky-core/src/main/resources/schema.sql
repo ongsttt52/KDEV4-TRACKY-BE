@@ -117,7 +117,6 @@ CREATE TABLE IF NOT EXISTS `gpshistory` (
 	`drive_seq` BINARY(16) NOT NULL,
 	`drive_id` bigint NOT NULL,
 	`o_time` timestamp NOT NULL,
-	`sec` int NOT NULL,
 	`gcd` varchar(10) NOT NULL,
 	`lat` int NOT NULL,
 	`lon` int NOT NULL,
