@@ -175,3 +175,17 @@ CREATE TABLE IF NOT EXISTS `notice` (
     CONSTRAINT fk_notice_member
         FOREIGN KEY (member_id) REFERENCES member(id)
 );
+
+CREATE TABLE IF NOT EXISTS `daily_statistic` (
+	`id`	bigint	NOT NULL AUTO_INCREMENT,
+	`biz_uuid` varchar(8) NOT NULL,
+	`total_car_count` int NOT NULL DEFAULT 0,
+	`daily_drive_car_count`	int	NOT NULL DEFAULT 0,
+	`avg_operation_rate` int NOT NULL DEFAULT 0,
+	`daily_drive_sec` bigint NOT NULL DEFAULT 0,
+	`daily_drive_count` int	NOT NULL DEFAULT 0,
+	`daily_drive_distance` double NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	CONSTRAINT fk_daily_statistic_biz
+            FOREIGN KEY (biz_uuid) REFERENCES biz(biz_uuid)
+);
