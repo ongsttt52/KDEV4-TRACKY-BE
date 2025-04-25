@@ -15,7 +15,7 @@ import kernel360.trackyweb.realtime.application.dto.request.RealTimeCarListReque
 import kernel360.trackyweb.realtime.application.dto.response.GpsDataResponse;
 import kernel360.trackyweb.realtime.application.dto.response.RunningCarDetailResponse;
 import kernel360.trackyweb.realtime.application.dto.response.RunningCarResponse;
-import kernel360.trackyweb.realtime.domain.provider.GpsHistoryDomainProvider;
+// import kernel360.trackyweb.realtime.domain.provider.GpsHistoryDomainProvider;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class RealTimeService {
 
 	private final DriveDomainProvider driveDomainProvider;
-	private final GpsHistoryDomainProvider gpsHistoryDomainProvider;
+	// private final GpsHistoryDomainProvider gpsHistoryDomainProvider;
 
 	@Transactional(readOnly = true)
 	public ApiResponse<List<RunningCarResponse>> getRunningCars(
@@ -49,15 +49,15 @@ public class RealTimeService {
 		return ApiResponse.success(RunningCarDetailResponse.from(drive));
 	}
 
-	@Transactional(readOnly = true)
-	public GpsDataResponse getOneGps(Long id) {
-		return gpsHistoryDomainProvider.getOneGpsByDriveId(id);
-	}
-
-	public List<GpsDataResponse> getNowGpsPath(Long id, LocalDateTime nowTime) {
-		return gpsHistoryDomainProvider.getGpsListAfterTime(id, nowTime).stream()
-			.map(GpsDataResponse::from)
-			.toList();
-	}
+	// @Transactional(readOnly = true)
+	// public GpsDataResponse getOneGps(Long id) {
+	// 	return gpsHistoryDomainProvider.getOneGpsByDriveId(id);
+	// }
+	//
+	// public List<GpsDataResponse> getNowGpsPath(Long id, LocalDateTime nowTime) {
+	// 	return gpsHistoryDomainProvider.getGpsListAfterTime(id, nowTime).stream()
+	// 		.map(GpsDataResponse::from)
+	// 		.toList();
+	// }
 
 }
