@@ -28,4 +28,7 @@ public interface GpsHistoryDomainRepository extends JpaRepository<GpsHistoryEnti
 	Optional<GpsHistoryEntity> findLastGpsByDriveId(@Param("driveId") Long driveId);
 
 	List<GpsHistoryEntity> findByDriveId(Long driveId);
+
+	Optional<GpsHistoryEntity> findOneGpsByDriveId(Long driveId);
+
 }

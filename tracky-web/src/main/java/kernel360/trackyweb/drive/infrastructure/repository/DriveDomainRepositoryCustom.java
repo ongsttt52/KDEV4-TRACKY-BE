@@ -20,5 +20,5 @@ public interface DriveDomainRepositoryCustom {
 		Pageable pageable
 	);
 
-	Optional<DriveEntity> findRunningDriveById(Long driveId);
+	Optional<DriveEntity> findRunningDriveById(Long id);
 }

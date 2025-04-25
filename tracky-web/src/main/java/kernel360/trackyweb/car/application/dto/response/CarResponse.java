@@ -8,16 +8,16 @@ public record CarResponse(
 	String mdn,
 	String carType,
 	String carPlate,
-	String carYear,
-	String status
+	String status,
+	String carYear
 ) {
 	public static CarResponse from(CarEntity car) {
 		return new CarResponse(
 			car.getMdn(),
 			car.getCarType(),
 			car.getCarPlate(),
-			car.getCarYear(),
-			car.getStatus()
+			car.getStatus(),
+			car.getCarYear()
 		);
 	}
 

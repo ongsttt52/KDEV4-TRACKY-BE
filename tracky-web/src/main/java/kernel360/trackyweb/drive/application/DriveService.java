@@ -14,7 +14,6 @@ import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.provider.DriveProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
-import kernel360.trackyweb.common.util.SecurityUtils;
 import kernel360.trackyweb.drive.application.dto.request.CarListRequest;
 import kernel360.trackyweb.drive.application.dto.request.DriveListRequest;
 import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
@@ -34,11 +33,9 @@ public class DriveService {
 	private final DriveProvider driveProvider;
 	private final DriveDomainProvider driveDomainProvider;
 
-	public ApiResponse<List<CarListResponse>> getCarListBySearchFilter(
+	public ApiResponse<List<CarListResponse>> getCarListBySearchFilter(String bizUuid,
 		CarListRequest carListSearchFilterRequest
 	) {
-		String bizUuid = SecurityUtils.getBizUuid();
-
 		Page<CarEntity> cars = carDomainProvider.searchDriveCarByFilter(
 			bizUuid,
 			carListSearchFilterRequest.search(),

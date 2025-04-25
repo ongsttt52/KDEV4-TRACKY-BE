@@ -14,8 +14,8 @@ public record DriveListResponse(
 	Double driveDistance,
 	LocalDateTime driveOnTime,
 	LocalDateTime driveOffTime,
-	int driveEndLat,
-	int driveEndLon
+	Integer driveEndLat,
+	Integer driveEndLon
 ) {
 	public static DriveListResponse toResponse(DriveEntity drive) {
 		return new DriveListResponse(
