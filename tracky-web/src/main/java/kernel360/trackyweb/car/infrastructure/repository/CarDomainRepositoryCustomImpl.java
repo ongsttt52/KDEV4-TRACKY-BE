@@ -2,6 +2,7 @@ package kernel360.trackyweb.car.infrastructure.repository;
 
 import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
+import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 
 import java.util.List;
 import java.util.Optional;
