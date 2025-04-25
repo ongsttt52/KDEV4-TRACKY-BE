@@ -70,7 +70,6 @@ public class GpsHistoryEntity {
 		double sum) {
 		this.drive = drive;
 		this.oTime = oTime;
-		this.sec = sec;
 		this.gcd = gcd;
 		this.lat = lat;
 		this.lon = lon;
