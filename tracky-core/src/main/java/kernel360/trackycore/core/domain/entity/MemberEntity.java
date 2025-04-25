@@ -78,7 +78,7 @@ public class MemberEntity extends DateBaseEntity {
 		String role,
 		String status
 	) {
-		this.getBiz().updateBizInfo(bizName, bizRegNum, bizAdmin, bizPhoneNum);
+		this.biz.updateBizInfo(bizName, bizRegNum, bizAdmin, bizPhoneNum);
 		this.email =  email;
 		this.role = role;
 		this.status = status;
