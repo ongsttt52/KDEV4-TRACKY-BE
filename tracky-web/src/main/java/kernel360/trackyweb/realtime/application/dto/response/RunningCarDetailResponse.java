@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 
-//구지원 - 일단 detail api 완성 후, gpshistory를 이용해서 위치 가져왕
-
 public record RunningCarDetailResponse(
 	Long id,
 	String mdn,
@@ -18,24 +16,30 @@ public record RunningCarDetailResponse(
 	double distance,
 	String drivingTime,
 	LocalDateTime driveOnTime,
-	String status
+	String status,
+	int lat,
+	int lon
 ) {
-	public static RunningCarDetailResponse from(DriveEntity entity) {
-		Long id = entity.getId();
-		String mdn = entity.getCar().getMdn();
-		String plate = entity.getCar().getCarPlate();
-		String carName = entity.getCar().getCarName();
+	public static RunningCarDetailResponse from(DriveEntity drive) {
+		Long id = drive.getId();
+		String mdn = drive.getCar().getMdn();
+		String plate = drive.getCar().getCarPlate();
+		String carName = drive.getCar().getCarName();
 		LocalDate date = LocalDate.now();
-		String renter = entity.getRent().getRenterName();
-		double distance = entity.getDriveDistance();
+		String renter = drive.getRent().getRenterName();
+		double distance = drive.getDriveDistance();
 
-		LocalDateTime driveOnTime = entity.getDriveOnTime();
+		LocalDateTime driveOnTime = drive.getDriveOnTime();
 		Duration duration = Duration.between(driveOnTime, LocalDateTime.now());
 		String drivingTime = formatDuration(duration);
-		String status = entity.getCar().getStatus();
+		String status = drive.getCar().getStatus();
+
+		int lat = drive.getLocation().getDriveStartLat();
+		int lon = drive.getLocation().getDriveStartLon();
+		;
 
 		return new RunningCarDetailResponse(id, mdn, plate, carName, date, renter, distance, drivingTime, driveOnTime,
-			status);
+			status, lat, lon);
 
 	}
 

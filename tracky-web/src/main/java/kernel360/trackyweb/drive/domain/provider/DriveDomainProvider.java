@@ -1,12 +1,13 @@
 package kernel360.trackyweb.drive.domain.provider;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import kernel360.trackycore.core.common.exception.ErrorCode;
+import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackyweb.drive.infrastructure.repository.DriveDomainRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,9 @@ public class DriveDomainProvider {
 		return driveDomainRepository.findRunningDriveList(search, pageable);
 	}
 
-	public Optional<DriveEntity> findRunningDriveById(Long driveId) {
-		return driveDomainRepository.findRunningDriveById(driveId);
+	public DriveEntity findRunningDriveById(Long driveId) {
+		return driveDomainRepository.findRunningDriveById(driveId)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
 	}
 
 }

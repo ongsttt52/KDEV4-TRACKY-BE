@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -31,12 +33,12 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
+	// MDN 또는 날짜 필터로 주행기록 검색 (날짜 범위 없으면 최신 20건)
 	@Override
 	public Page<DriveEntity> searchByFilter(String mdn, LocalDateTime startDateTime, LocalDateTime endDateTime,
 		Pageable pageable) {
-		// 시작~종료 시간이 지정되지 않을 시 최신 20개 데이터 조회
-		boolean isUnbounded = isUnboundedSearch(startDateTime, endDateTime);
 
+		boolean isUnbounded = isUnboundedSearch(startDateTime, endDateTime);
 		BooleanBuilder condition = buildCondition(mdn, startDateTime, endDateTime, isUnbounded);
 
 		JPAQuery<DriveEntity> query = queryFactory
@@ -59,37 +61,49 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		return new PageImpl<>(content, effectivePageable, total);
 	}
 
+	// 현재 주행중인 차량 목록 조회 (차량별로 하나만 유지 + 검색 포함)
 	@Override
 	public Page<DriveEntity> findRunningDriveList(String search, Pageable pageable) {
 
-		// 검색 조건
-		BooleanBuilder builder = new BooleanBuilder()
-			.and(driveEntity.driveOffTime.isNull()) // 아직 종료되지 않은 주행
-			.and(isContainsMdnOrPlate(search));     // 차량 번호판 or mdn 검색
-
-		// 쿼리
-		List<DriveEntity> results = queryFactory
+		// 주행 중인 차량 리스트 가져오기
+		List<DriveEntity> fetchedDrives = queryFactory
 			.selectFrom(driveEntity)
 			.join(driveEntity.car).fetchJoin()
-			.where(builder)
+			.where(buildRunningDriveCondition(search))
 			.orderBy(driveEntity.driveOnTime.desc())
 			.fetch();
 
-		// 차량(mdn)당 1개만 유지
-		Map<String, DriveEntity> uniqueByCar = new LinkedHashMap<>();
-		for (DriveEntity drive : results) {
-			String mdn = drive.getCar().getMdn();
-			uniqueByCar.putIfAbsent(mdn, drive);
-		}
+		// 차량(mdn) 당 하나만 유지
+		Map<String, DriveEntity> distinctByMdn = fetchedDrives.stream()
+			.collect(Collectors.toMap(
+				drive -> drive.getCar().getMdn(),
+				Function.identity(),
+				(existing, replacement) -> existing,
+				LinkedHashMap::new
+			));
 
-		List<DriveEntity> filtered = new ArrayList<>(uniqueByCar.values());
+		List<DriveEntity> distinctDrives = new ArrayList<>(distinctByMdn.values());
 
-		// Java 단에서 페이징 처리
 		int start = (int)pageable.getOffset();
-		int end = Math.min((start + pageable.getPageSize()), filtered.size());
-		List<DriveEntity> pagedContent = (start < end) ? filtered.subList(start, end) : Collections.emptyList();
+		int end = Math.min(start + pageable.getPageSize(), distinctDrives.size());
+		List<DriveEntity> pagedDrives = (start < end) ? distinctDrives.subList(start, end) : Collections.emptyList();
 
-		return new PageImpl<>(pagedContent, pageable, filtered.size());
+		return new PageImpl<>(pagedDrives, pageable, distinctDrives.size());
+	}
+
+	// 특정 주행 ID로 주행 중인 항목 단건 조회
+	@Override
+	public Optional<DriveEntity> findRunningDriveById(Long driveId) {
+		return Optional.ofNullable(
+			queryFactory.selectFrom(QDriveEntity.driveEntity)
+				.join(QDriveEntity.driveEntity.car).fetchJoin()
+				.join(QDriveEntity.driveEntity.rent).fetchJoin()
+				.where(
+					QDriveEntity.driveEntity.id.eq(driveId),
+					QDriveEntity.driveEntity.driveOffTime.isNull()
+				)
+				.fetchFirst()
+		);
 	}
 
 	private boolean isUnboundedSearch(LocalDateTime start, LocalDateTime end) {
@@ -108,39 +122,31 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 			if (end != null)
 				builder.and(driveEntity.driveOffTime.loe(end));
 		}
-
 		return builder;
 	}
 
-	private BooleanBuilder isContainsMdnOrPlate(String search) {
+	private BooleanBuilder buildRunningDriveCondition(String search) {
+		return new BooleanBuilder()
+			.and(driveEntity.driveOffTime.isNull())
+			.and(buildSearchKeywordCondition(search));
+	}
+
+	private BooleanBuilder buildSearchKeywordCondition(String search) {
 		if (StringUtils.isBlank(search))
 			return new BooleanBuilder();
+
 		return new BooleanBuilder()
 			.or(driveEntity.car.mdn.containsIgnoreCase(search))
 			.or(driveEntity.car.carPlate.containsIgnoreCase(search));
 	}
 
 	private long fetchTotalCount(BooleanBuilder condition) {
-		return Optional.ofNullable(queryFactory
-			.select(driveEntity.count())
-			.from(driveEntity)
-			.where(condition)
-			.fetchOne()
+		return Optional.ofNullable(
+			queryFactory
+				.select(driveEntity.count())
+				.from(driveEntity)
+				.where(condition)
+				.fetchOne()
 		).orElse(0L);
 	}
-
-	@Override
-	public Optional<DriveEntity> findRunningDriveById(Long driveId) {
-		return Optional.ofNullable(
-			queryFactory.selectFrom(QDriveEntity.driveEntity)
-				.join(QDriveEntity.driveEntity.car).fetchJoin()
-				.join(QDriveEntity.driveEntity.rent).fetchJoin()
-				.where(
-					QDriveEntity.driveEntity.id.eq(driveId),
-					QDriveEntity.driveEntity.driveOffTime.isNull()
-				)
-				.fetchFirst()
-		);
-	}
-
 }

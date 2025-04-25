@@ -22,7 +22,9 @@ public enum ErrorCode {
 	ALREADY_BIZ_REG_NUM("SIGNUP_002", "이미 존재하는 사업자 등록 번호입니다."),
 
 	MEMBER_STATUS_WAIT("STATUS_303", "관리자 승인 대기중입니다."),
-	MEMBER_STATUS_DEACTIVE("STATUS_333", "비활성화된 계정입니다.");
+	MEMBER_STATUS_DEACTIVE("STATUS_333", "비활성화된 계정입니다."),
+
+	NOT_REALTIME_DRIVE("DRIVE_007", "현재 주행 중인 차량이 아닙니다.");
 
 	private final String code;
 	private final String message;
