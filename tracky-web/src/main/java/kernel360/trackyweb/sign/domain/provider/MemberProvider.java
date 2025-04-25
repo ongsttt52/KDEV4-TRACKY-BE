@@ -33,7 +33,7 @@ public class MemberProvider {
 		return memberDomainRepository.existsByMemberId(memberId);
 	}
 
-	public List<MemberEntity> findOneByStatus(String status) {
+	public List<MemberEntity> findByStatus(String status) {
 		return memberDomainRepository.findByStatus(status);
 	}
 

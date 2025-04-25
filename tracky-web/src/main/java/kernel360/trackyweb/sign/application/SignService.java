@@ -104,7 +104,7 @@ public class SignService {
 	public List<MemberEntity> getApproveList() {
 		log.info("Approve attempt for getAppoveList");
 
-		return memberProvider.findOneByStatus("wait");
+		return memberProvider.findByStatus("wait");
 	}
 
 	/**

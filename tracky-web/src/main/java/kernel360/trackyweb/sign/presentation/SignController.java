@@ -23,7 +23,6 @@ import kernel360.trackyweb.sign.application.dto.request.MemberSearchByFilter;
 import kernel360.trackyweb.sign.application.dto.request.MemberUpdateRequest;
 import kernel360.trackyweb.sign.application.dto.request.SignupRequest;
 import kernel360.trackyweb.sign.application.dto.response.MemberResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
