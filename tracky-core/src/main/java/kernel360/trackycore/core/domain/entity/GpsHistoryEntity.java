@@ -36,9 +36,6 @@ public class GpsHistoryEntity {
 	@Column(name = "o_time", nullable = false)
 	private LocalDateTime oTime;    //발생시간
 
-	@Column(name = "sec", nullable = false)
-	private int sec; // 발생시간 - 초
-
 	@Column(name = "gcd", length = 10, nullable = false)
 	private String gcd;        //GPS상태
 
@@ -73,7 +70,6 @@ public class GpsHistoryEntity {
 		double sum) {
 		this.drive = drive;
 		this.oTime = oTime;
-		this.sec = sec;
 		this.gcd = gcd;
 		this.lat = lat;
 		this.lon = lon;

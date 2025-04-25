@@ -24,7 +24,9 @@ public enum ErrorCode {
 	MEMBER_STATUS_WAIT("STATUS_303", "관리자 승인 대기중입니다."),
 	MEMBER_STATUS_DEACTIVE("STATUS_333", "비활성화된 계정입니다."),
 
-	NOT_REALTIME_DRIVE("DRIVE_007", "현재 주행 중인 차량이 아닙니다.");
+	NOT_REALTIME_DRIVE("DRIVE_007", "현재 주행 중인 차량이 아닙니다."),
+  
+	NOTICE_NOT_FOUND("NOTICE_001", "존재하지 않는 공지사항입니다.");
 
 	private final String code;
 	private final String message;
