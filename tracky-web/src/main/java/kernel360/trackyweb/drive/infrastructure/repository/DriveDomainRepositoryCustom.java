@@ -1,6 +1,7 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,11 @@ public interface DriveDomainRepositoryCustom {
 		LocalDateTime startDateTime,
 		LocalDateTime endDateTime,
 		Pageable pageable);
+
+	Page<DriveEntity> findRunningDriveList(
+		String search,
+		Pageable pageable
+	);
+
+	Optional<DriveEntity> findRunningDriveById(Long driveId);
 }
