@@ -1,0 +1,24 @@
+server:
+  port: 8084
+
+spring:
+  config:
+    import: classpath:application-common.yml
+
+  application:
+    name: tracky-web
+
+  jwt:
+    # 32??? ?? ??? ??? ? (?: "ThisIsASecretKeyForJwtTokenThatIsLongEnough123!@#")
+    secret: "my-super-secret-key-my-super-secret-key-1234567890"
+    # ?? ?? ?? (??? ??, ?: 3600000 = 1??)
+    expiration: 3600000
+
+  logging:
+    level:
+      org.hibernate.SQL: debug            # SQL ??
+      org.hibernate.type.descriptor.sql: trace   # ???? ??? ??
+
+  discord:
+    enable: ${DISCORD_WEBHOOK_ENABLE:false}
+    webhook-url: ${DISCORD_WEBHOOK_WEB_URL}
