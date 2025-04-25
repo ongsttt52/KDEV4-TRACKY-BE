@@ -8,8 +8,10 @@ public record NoticeDetailResponse(
 	long id,
 	String title,
 	String content,
+
 	@JsonFormat(pattern = "yyyy년 M월 d일")
 	LocalDateTime createdAt,
+  
 	boolean isImportant
 ) {
 	public NoticeDetailResponse(

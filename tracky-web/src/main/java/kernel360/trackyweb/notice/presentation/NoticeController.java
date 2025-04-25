@@ -1,7 +1,6 @@
 package kernel360.trackyweb.notice.presentation;
 
 import java.util.List;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.notice.application.NoticeService;
 import kernel360.trackyweb.notice.application.dto.request.NoticeCreateRequest;
