@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
@@ -52,11 +51,6 @@ public class NoticeController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ApiResponse<NoticeDetailResponse> delete(@PathVariable Long id) {
 		return noticeService.delete(id);
-	}
-
-	@GetMapping("/search")
-	public ApiResponse<List<NoticeDetailResponse>> search(@RequestParam String keyword) {
-		return noticeService.search(keyword);
 	}
 
 	@GetMapping

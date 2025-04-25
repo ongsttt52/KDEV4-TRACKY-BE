@@ -26,19 +26,6 @@ public class NoticeDomainRepositoryCustomImpl implements NoticeDomainRepositoryC
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<NoticeEntity> findByTitleOrContent(String keyword) {
-		return queryFactory
-			.select(noticeEntity)
-			.from(noticeEntity)
-			.where(
-				noticeEntity.title.containsIgnoreCase(keyword)
-					.or(noticeEntity.content.containsIgnoreCase(keyword))
-					.and(noticeEntity.deletedAt.isNull())
-			)
-			.fetch();
-	}
-
-	@Override
 	public Page<NoticeEntity> searchNoticeByFilter(String search, Boolean isImportant, Pageable pageable) {
 		// 조건 생성
 		BooleanBuilder builder = new BooleanBuilder()

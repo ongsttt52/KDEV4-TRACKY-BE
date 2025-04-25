@@ -11,8 +11,8 @@ import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
 import kernel360.trackycore.core.domain.entity.NoticeEntity;
 import kernel360.trackyweb.notice.application.dto.request.NoticeCreateRequest;
-import kernel360.trackyweb.notice.application.dto.request.NoticeUpdateRequest;
 import kernel360.trackyweb.notice.application.dto.request.NoticeSearchByFilterRequest;
+import kernel360.trackyweb.notice.application.dto.request.NoticeUpdateRequest;
 import kernel360.trackyweb.notice.application.dto.response.NoticeDetailResponse;
 import kernel360.trackyweb.notice.application.dto.response.NoticeResponse;
 import kernel360.trackyweb.notice.domain.provider.NoticeProvider;
@@ -65,17 +65,6 @@ public class NoticeService {
 
 		NoticeDetailResponse response = NoticeDetailResponse.from(notice);
 		return ApiResponse.success(response);
-	}
-
-	@Transactional(readOnly = true)
-	public ApiResponse<List<NoticeDetailResponse>> search(String keyword) {
-		List<NoticeEntity> notices = noticeProvider.search(keyword);
-
-		List<NoticeDetailResponse> responses = notices.stream()
-			.map(NoticeDetailResponse::from)
-			.toList();
-
-		return ApiResponse.success(responses);
 	}
 
 	@Transactional(readOnly = true)
