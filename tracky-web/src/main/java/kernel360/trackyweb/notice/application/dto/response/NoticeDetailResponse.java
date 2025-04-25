@@ -1,9 +1,7 @@
 package kernel360.trackyweb.notice.application.dto.response;
 
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import kernel360.trackycore.core.domain.entity.NoticeEntity;
 
 public record NoticeDetailResponse(
