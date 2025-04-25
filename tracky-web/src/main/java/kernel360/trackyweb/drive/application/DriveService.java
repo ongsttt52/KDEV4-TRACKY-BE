@@ -23,7 +23,6 @@ import kernel360.trackyweb.drive.domain.GpsData;
 import kernel360.trackyweb.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyweb.drive.infrastructure.repository.GpsHistoryDomainRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
