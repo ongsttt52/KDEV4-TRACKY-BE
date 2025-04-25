@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
@@ -68,7 +68,7 @@ public class NoticeService {
 		return ApiResponse.success(response);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public ApiResponse<List<NoticeDetailResponse>> search(String keyword) {
 		List<NoticeEntity> notices = noticeProvider.search(keyword);
 
@@ -79,6 +79,7 @@ public class NoticeService {
 		return ApiResponse.success(responses);
 	}
 
+	@Transactional(readOnly = true)
 	public ApiResponse<List<NoticeResponse>> getAllBySearchFilter(
 		NoticeSearchByFilterRequest noticeSearchByFilterRequest) {
 

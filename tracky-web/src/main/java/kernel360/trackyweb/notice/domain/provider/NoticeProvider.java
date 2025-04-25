@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.NoticeEntity;
-import kernel360.trackyweb.notice.infrastructure.NoticeDomainRepository;
+import kernel360.trackyweb.notice.infrastructure.repository.NoticeDomainRepository;
 import lombok.AllArgsConstructor;
 
 @Component

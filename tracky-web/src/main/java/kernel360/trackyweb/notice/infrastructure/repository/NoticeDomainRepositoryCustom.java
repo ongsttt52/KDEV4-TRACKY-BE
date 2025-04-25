@@ -1,4 +1,4 @@
-package kernel360.trackyweb.notice.infrastructure;
+package kernel360.trackyweb.notice.infrastructure.repository;
 
 import java.util.List;
 

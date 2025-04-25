@@ -24,7 +24,7 @@ public class NoticeEntity extends DateBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", updatable = false)
+	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

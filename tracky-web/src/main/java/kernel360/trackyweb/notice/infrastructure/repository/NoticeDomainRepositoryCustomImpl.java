@@ -1,4 +1,6 @@
-package kernel360.trackyweb.notice.infrastructure;
+package kernel360.trackyweb.notice.infrastructure.repository;
+
+import static kernel360.trackycore.core.domain.entity.QNoticeEntity.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +17,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.NoticeEntity;
-import kernel360.trackycore.core.domain.entity.QNoticeEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -23,17 +24,16 @@ import lombok.RequiredArgsConstructor;
 public class NoticeDomainRepositoryCustomImpl implements NoticeDomainRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
-	private final QNoticeEntity notice = QNoticeEntity.noticeEntity;
 
 	@Override
 	public List<NoticeEntity> findByTitleOrContent(String keyword) {
 		return queryFactory
-			.select(notice)
-			.from(notice)
+			.select(noticeEntity)
+			.from(noticeEntity)
 			.where(
-				notice.title.containsIgnoreCase(keyword)
-					.or(notice.content.containsIgnoreCase(keyword))
-					.and(notice.deletedAt.isNull())
+				noticeEntity.title.containsIgnoreCase(keyword)
+					.or(noticeEntity.content.containsIgnoreCase(keyword))
+					.and(noticeEntity.deletedAt.isNull())
 			)
 			.fetch();
 	}
@@ -48,16 +48,16 @@ public class NoticeDomainRepositoryCustomImpl implements NoticeDomainRepositoryC
 
 		// 최근 공지사항 순으로 정렬
 		JPAQuery<NoticeEntity> query = queryFactory
-			.selectFrom(notice)
+			.selectFrom(noticeEntity)
 			.where(builder)
-			.orderBy(notice.createdAt.desc());
+			.orderBy(noticeEntity.createdAt.desc());
 
 		List<NoticeEntity> content = fetchPagedContent(query, pageable);
 
 		long total = Optional.ofNullable(
 			queryFactory
-				.select(notice.count())
-				.from(notice)
+				.select(noticeEntity.count())
+				.from(noticeEntity)
 				.where(builder)
 				.fetchOne()
 		).orElse(0L);
@@ -69,12 +69,12 @@ public class NoticeDomainRepositoryCustomImpl implements NoticeDomainRepositoryC
 		if (StringUtils.isBlank(search)) {
 			return null;
 		}
-		return notice.title.containsIgnoreCase(search)
-			.or(notice.content.containsIgnoreCase(search));
+		return noticeEntity.title.containsIgnoreCase(search)
+			.or(noticeEntity.content.containsIgnoreCase(search));
 	}
 
 	private BooleanExpression isNotDeleted() {
-		return notice.deletedAt.isNull();
+		return noticeEntity.deletedAt.isNull();
 	}
 
 	private BooleanExpression isImportant(Boolean important) {
@@ -82,9 +82,9 @@ public class NoticeDomainRepositoryCustomImpl implements NoticeDomainRepositoryC
 			return null;
 
 		if (important) {
-			return notice.isImportant.isTrue();
+			return noticeEntity.isImportant.isTrue();
 		} else {
-			return notice.isImportant.isFalse();
+			return noticeEntity.isImportant.isFalse();
 		}
 	}
 
