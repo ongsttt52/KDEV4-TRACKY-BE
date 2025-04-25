@@ -17,6 +17,7 @@ public interface CarDomainRepositoryCustom {
 	 * 필터 조건 기반 검색
 	 */
 	Page<CarEntity> searchCarByFilter(
+		String bizUuid,
 		String search,
 		String status,
 		String carType,

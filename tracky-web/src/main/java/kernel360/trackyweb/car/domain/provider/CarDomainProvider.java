@@ -8,7 +8,6 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
-import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -18,8 +17,9 @@ public class CarDomainProvider {
 	private final CarDomainRepository carDomainRepository;
 	private final GlobalSseEvent globalSseEvent;
 
-	public Page<CarEntity> searchCarByFilter(String search, String status, String carType, Pageable pageable) {
-		return carDomainRepository.searchCarByFilter(search, status, carType, pageable);
+	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, String status, String carType,
+		Pageable pageable) {
+		return carDomainRepository.searchCarByFilter(bizUuid, search, status, carType, pageable);
 	}
 
 	public CarEntity update(CarEntity car) {

@@ -12,7 +12,7 @@ public record CarSearchByFilterRequest(
 ) {
 	public Pageable toPageable() {
 		int safePage = page != null ? page : 0;
-		int safeSize = size != null ? size : 20;
+		int safeSize = size != null ? size : 10;
 		return PageRequest.of(safePage, safeSize);
 	}
 }
