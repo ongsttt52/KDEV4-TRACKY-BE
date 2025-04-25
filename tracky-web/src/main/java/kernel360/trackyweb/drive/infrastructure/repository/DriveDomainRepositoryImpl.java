@@ -68,7 +68,8 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		// 주행 중인 차량 리스트 가져오기
 		List<DriveEntity> fetchedDrives = queryFactory
 			.selectFrom(driveEntity)
-			.join(driveEntity.car).fetchJoin()
+			.join(driveEntity.car)
+			.fetchJoin()
 			.where(buildRunningDriveCondition(search))
 			.orderBy(driveEntity.driveOnTime.desc())
 			.fetch();
