@@ -35,13 +35,15 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			.select(carEntity.mdn)
 			.from(carEntity)
 			.join(carEntity.biz, bizEntity)
-			.where(bizEntity.bizUuid.eq(bizUuid))
+			.where(carEntity.biz.bizUuid.eq(bizUuid))
 			.fetch();
 	}
 
 	@Override
-	public Page<CarEntity> searchCarByFilter(String search, String status, String carType, Pageable pageable) {
+	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, String status, String carType,
+		Pageable pageable) {
 		BooleanBuilder builder = new BooleanBuilder()
+			.and(carEntity.biz.bizUuid.eq(bizUuid))
 			.and(isContainsCarMdnOrCarPlate(search))
 			.and(isEqualStatus(status))
 			.and(isEqualCarType(carType));
@@ -70,7 +72,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			.select(carEntity)
 			.from(carEntity)
 			.join(carEntity.biz, bizEntity)
-			.where(bizEntity.bizUuid.eq(bizUuid)
+			.where(carEntity.biz.bizUuid.eq(bizUuid)
 				.and(isContainsCarMdnOrCarPlate(search)));
 
 		List<CarEntity> content = fetchPagedContent(query, pageable);
