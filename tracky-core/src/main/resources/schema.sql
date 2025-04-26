@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `time_distance` (
     `date` timestamp NOT NULL,
 	`hour` int NOT NULL,
 	`distance` double NOT NULL,
-	PRIMARY KEY (`id`),
+	PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `daily_total` (
