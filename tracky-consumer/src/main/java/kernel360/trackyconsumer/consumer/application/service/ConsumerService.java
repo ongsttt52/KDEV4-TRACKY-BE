@@ -1,22 +1,20 @@
 package kernel360.trackyconsumer.consumer.application.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
+import kernel360.trackyconsumer.consumer.application.dto.GpsProcessResult;
+import kernel360.trackycore.core.domain.entity.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
 import kernel360.trackyconsumer.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyconsumer.rent.domain.provider.RentDomainProvider;
-import kernel360.trackycore.core.domain.entity.CarEntity;
-import kernel360.trackycore.core.domain.entity.DriveEntity;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
-import kernel360.trackycore.core.domain.entity.LocationEntity;
-import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackyconsumer.timedistance.domain.provider.TimeDistanceProvider;
 import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.GpsHistoryProvider;
 import kernel360.trackycore.core.domain.provider.LocationProvider;
@@ -33,20 +31,21 @@ public class ConsumerService {
 	private final LocationProvider locationProvider;
 	private final GpsHistoryProvider gpsHistoryProvider;
 	private final RentDomainProvider rentDomainProvider;
+	private final TimeDistanceProvider timeDistanceProvider;
 
 	@Async("taskExecutor")
 	@Transactional
 	public void receiveCycleInfo(GpsHistoryMessage request) {
 
 		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
-
 		CarEntity car = carProvider.findByMdn(request.mdn());
+		LocalDateTime oTime = request.oTime();
+		DriveEntity drive = driveProvider.getDrive(car, oTime);
 
-		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
+		GpsProcessResult processResult = processGpsRequests(cycleGpsRequestList, drive, oTime);
 
-		List<GpsHistoryEntity> gpsHistoryList = toGpsHistoryList(cycleGpsRequestList, drive, request.oTime());
-
-		gpsHistoryProvider.saveAll(gpsHistoryList);
+		saveTimeDistance(oTime.toLocalDate(), oTime.getHour(), car, processResult.totalDistance());
+		gpsHistoryProvider.saveAll(processResult.gpsHistoryList());
 	}
 
 	@Transactional
@@ -80,11 +79,26 @@ public class ConsumerService {
 		location.updateEndLocation(carOnOffRequest.gpsInfo().getLat(), carOnOffRequest.gpsInfo().getLon());
 	}
 
-	private List<GpsHistoryEntity> toGpsHistoryList(List<CycleGpsRequest> cycleGpsRequestList, DriveEntity drive,
-		LocalDateTime oTime) {
+	private GpsProcessResult processGpsRequests(List<CycleGpsRequest> cycleGpsRequestList, DriveEntity drive, LocalDateTime oTime) {
+		double totalDistance = 0.0;
+		List<GpsHistoryEntity> gpsHistoryList = new ArrayList<>();
 
-		return cycleGpsRequestList.stream().map(request -> {
-			return request.toGpsHistoryEntity(drive, oTime, request.gpsInfo().getSum());
-		}).toList();
+		for (CycleGpsRequest cycleRequest : cycleGpsRequestList) {
+			totalDistance += cycleRequest.gpsInfo().getSum();
+			gpsHistoryList.add(cycleRequest.toGpsHistoryEntity(drive, oTime, cycleRequest.gpsInfo().getSum()));
+		}
+
+		return GpsProcessResult.of(gpsHistoryList, totalDistance);
+	}
+
+	private void saveTimeDistance(LocalDate date, int hour, CarEntity car, double totalDistance) {
+
+		timeDistanceProvider.getTimeDistance(date, hour, car)
+			.ifPresentOrElse(
+				timeDistance -> timeDistance.updateDistance(totalDistance),
+				() -> timeDistanceProvider.save(
+					TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance)
+				)
+			);
 	}
 }
