@@ -5,11 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import kernel360.trackycore.core.domain.vo.GpsInfo;
 
-public record CycleGpsRequest(int sec, String gcd, GpsInfo gpsInfo) {
+public record CycleGpsRequest(String gcd, GpsInfo gpsInfo) {
 
 	@JsonCreator
 	public CycleGpsRequest(
-		@JsonProperty int sec,
 		@JsonProperty String gcd,
 		@JsonProperty int lat,
 		@JsonProperty int lon,
@@ -17,6 +16,6 @@ public record CycleGpsRequest(int sec, String gcd, GpsInfo gpsInfo) {
 		@JsonProperty int spd,
 		@JsonProperty double sum
 	) {
-		this(sec, gcd, GpsInfo.create(lat, lon, ang, spd, sum));
+		this(gcd, GpsInfo.create(lat, lon, ang, spd, sum));
 	}
 }

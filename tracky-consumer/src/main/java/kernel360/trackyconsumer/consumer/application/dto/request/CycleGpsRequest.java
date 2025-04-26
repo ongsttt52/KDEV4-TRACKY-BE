@@ -10,13 +10,11 @@ import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.vo.GpsInfo;
 
 public record CycleGpsRequest(
-	int sec,
 	String gcd,
 	GpsInfo gpsInfo
 ) {
 	@JsonCreator
 	public CycleGpsRequest(
-		@JsonProperty int sec,
 		@JsonProperty String gcd,
 		@JsonProperty int lat,
 		@JsonProperty int lon,
@@ -24,11 +22,11 @@ public record CycleGpsRequest(
 		@JsonProperty int spd,
 		@JsonProperty double sum
 	) {
-		this(sec, gcd, GpsInfo.create(lat, lon, ang, spd, sum));
+		this(gcd, GpsInfo.create(lat, lon, ang, spd, sum));
 	}
 
 	public GpsHistoryEntity toGpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, double sum) {
-		return new GpsHistoryEntity(drive, oTime, this.sec, this.gcd, this.gpsInfo.getLat(), this.gpsInfo.getLon(),
+		return new GpsHistoryEntity(drive, oTime, this.gcd, this.gpsInfo.getLat(), this.gpsInfo.getLon(),
 			this.gpsInfo.getAng(), this.gpsInfo.getSpd(), sum);
 	}
 }
