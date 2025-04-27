@@ -146,6 +146,8 @@ CREATE TABLE IF NOT EXISTS `time_distance` (
     `date` timestamp NOT NULL,
 	`hour` int NOT NULL,
 	`distance` double NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `updated_at` timestamp NULL,
 	PRIMARY KEY (`id`)
 );
 
