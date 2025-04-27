@@ -6,19 +6,19 @@ spring:
     import: classpath:application-common.yml
 
   application:
-    name: tracky-web
-
-  jwt:
-    # 32??? ?? ??? ??? ? (?: "ThisIsASecretKeyForJwtTokenThatIsLongEnough123!@#")
-    secret: "my-super-secret-key-my-super-secret-key-1234567890"
-    # ?? ?? ?? (??? ??, ?: 3600000 = 1??)
-    expiration: 3600000
+    name: tracky-batch
 
   logging:
     level:
-      org.hibernate.SQL: debug            # SQL ??
-      org.hibernate.type.descriptor.sql: trace   # ???? ??? ??
+      org.hibernate.SQL: debug
+      org.hibernate.type.descriptor.sql: trace
+      org.springframework.web: DEBUG
+      org.springframework.boot: DEBUG
 
-  discord:
-    enable: ${DISCORD_WEBHOOK_ENABLE:false}
-    webhook-url: ${DISCORD_WEBHOOK_WEB_URL}
+#  batch:
+#    job:
+#      enabled: false  # 애플리케이션 시작 시 모든 배치 작업 자동 실행 방지
+#      names: ${job.name:NONE}  # 특정 작업만 실행할 때 사용 [java -jar your-batch-app.jar --job.name=userImportJob --date=2023-07-01] 잡 네임 + 파라미터
+#    jdbc:
+#      initialize-schema: always  # 개발 환경에서는 always, 운영 환경에서는 never
+

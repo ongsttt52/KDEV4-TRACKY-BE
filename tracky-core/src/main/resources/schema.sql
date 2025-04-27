@@ -179,7 +179,8 @@ CREATE TABLE IF NOT EXISTS `notice` (
 CREATE TABLE IF NOT EXISTS `daily_statistic` (
 	`id`	bigint	NOT NULL AUTO_INCREMENT,
 	`biz_uuid` varchar(8) NOT NULL,
-	`total_car_count` int NOT NULL DEFAULT 0,
+    `date` timestamp NOT NULL,
+    `total_car_count` int NOT NULL DEFAULT 0,
 	`daily_drive_car_count`	int	NOT NULL DEFAULT 0,
 	`avg_operation_rate` int NOT NULL DEFAULT 0,
 	`daily_drive_sec` bigint NOT NULL DEFAULT 0,
