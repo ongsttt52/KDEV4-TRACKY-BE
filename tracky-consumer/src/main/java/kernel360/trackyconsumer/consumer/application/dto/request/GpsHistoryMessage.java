@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public record GpsHistoryMessage(
 	String mdn,
 
-	@JsonFormat(pattern = "yyyyMMddHHmm")
+	@JsonFormat(pattern = "yyyyMMddHHmmss")
 	LocalDateTime oTime,
 
 	int cCnt,

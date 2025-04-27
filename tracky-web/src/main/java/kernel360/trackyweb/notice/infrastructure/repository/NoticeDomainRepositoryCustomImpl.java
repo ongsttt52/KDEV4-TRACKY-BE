@@ -17,6 +17,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.NoticeEntity;
+import kernel360.trackycore.core.domain.entity.QNoticeEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class NoticeDomainRepositoryCustomImpl implements NoticeDomainRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
+	private final QNoticeEntity notice = QNoticeEntity.noticeEntity;
 
 	@Override
 	public Page<NoticeEntity> searchNoticeByFilter(String search, Boolean isImportant, Pageable pageable) {
@@ -79,6 +81,14 @@ public class NoticeDomainRepositoryCustomImpl implements NoticeDomainRepositoryC
 		return query
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
+			.fetch();
+	}
+
+	public List<NoticeEntity> findAllByIsDeletedFalse() {
+		return queryFactory
+			.select(notice)
+			.from(notice)
+			.where(notice.deletedAt.isNull())
 			.fetch();
 	}
 }

@@ -29,10 +29,10 @@ public class LocationEntity extends DateBaseEntity {
 	private int driveStartLat;
 
 	@Column(name = "drive_end_lon")
-	private int driveEndLon;
+	private Integer driveEndLon;
 
 	@Column(name = "drive_end_lat")
-	private int driveEndLat;
+	private Integer driveEndLat;
 
 	public void updateEndLocation(int lat, int lon) {
 		this.driveEndLat = lat;

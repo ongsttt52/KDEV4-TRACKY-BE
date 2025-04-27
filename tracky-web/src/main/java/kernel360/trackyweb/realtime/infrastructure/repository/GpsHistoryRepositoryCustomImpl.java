@@ -33,14 +33,28 @@ public class GpsHistoryRepositoryCustomImpl implements GpsHistoryRepositoryCusto
 	}
 
 	@Override
-	public List<GpsHistoryEntity> findGpsListAfterTime(Long driveId, LocalDateTime afterTime) {
+	public List<GpsHistoryEntity> findGpsPathBeforeTime(Long driveId, LocalDateTime nowTime) {
 		QGpsHistoryEntity gps = QGpsHistoryEntity.gpsHistoryEntity;
 
 		return queryFactory
 			.selectFrom(gps)
 			.where(
 				gps.drive.id.eq(driveId),
-				gps.oTime.goe(afterTime)
+				gps.oTime.loe(nowTime)
+			)
+			.orderBy(gps.oTime.asc())
+			.fetch();
+	}
+
+	@Override
+	public List<GpsHistoryEntity> findGpsPathAfterTime(Long driveId, LocalDateTime nowTime) {
+		QGpsHistoryEntity gps = QGpsHistoryEntity.gpsHistoryEntity;
+
+		return queryFactory
+			.selectFrom(gps)
+			.where(
+				gps.drive.id.eq(driveId),
+				gps.oTime.loe(nowTime)
 			)
 			.orderBy(gps.oTime.asc())
 			.fetch();

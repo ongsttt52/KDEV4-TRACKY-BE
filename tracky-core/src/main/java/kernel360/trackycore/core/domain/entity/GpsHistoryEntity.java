@@ -65,7 +65,7 @@ public class GpsHistoryEntity {
 		}
 	}
 
-	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, int sec, String gcd, int lat, int lon, int ang,
+	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang,
 		int spd,
 		double sum) {
 		this.drive = drive;

@@ -54,8 +54,18 @@ public class RealTimeService {
 		return gpsHistoryDomainProvider.getOneGpsByDriveId(id);
 	}
 
-	public List<GpsDataResponse> getNowGpsPath(Long id, LocalDateTime nowTime) {
-		return gpsHistoryDomainProvider.getGpsListAfterTime(id, nowTime).stream()
+	@Transactional(readOnly = true)
+	public List<GpsDataResponse> getBeforeGpsPath(Long id, LocalDateTime nowTime) {
+		return gpsHistoryDomainProvider.getGpsPathBeforeTime(id, nowTime)
+			.stream()
+			.map(GpsDataResponse::from)
+			.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public List<GpsDataResponse> getAfterGpsPath(Long id, LocalDateTime nowTime) {
+		return gpsHistoryDomainProvider.getGpsPathAfterTime(id, nowTime)
+			.stream()
 			.map(GpsDataResponse::from)
 			.toList();
 	}

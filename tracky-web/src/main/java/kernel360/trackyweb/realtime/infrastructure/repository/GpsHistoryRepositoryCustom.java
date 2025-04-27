@@ -9,6 +9,8 @@ import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 public interface GpsHistoryRepositoryCustom {
 	Optional<GpsHistoryEntity> findOneGpsByDriveId(Long id);
 
-	List<GpsHistoryEntity> findGpsListAfterTime(Long driveId, LocalDateTime afterTime);
+	List<GpsHistoryEntity> findGpsPathBeforeTime(Long driveId, LocalDateTime nowTime);
+
+	List<GpsHistoryEntity> findGpsPathAfterTime(Long driveId, LocalDateTime nowTime);
 
 }

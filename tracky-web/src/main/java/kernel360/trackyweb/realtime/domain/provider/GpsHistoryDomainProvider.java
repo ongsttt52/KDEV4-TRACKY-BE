@@ -34,8 +34,14 @@ public class GpsHistoryDomainProvider {
 			.orElseThrow(() -> new IllegalArgumentException("해당 driveId에 GPS 데이터가 없습니다."));
 	}
 
-	public List<GpsHistoryEntity> getGpsListAfterTime(Long driveId, LocalDateTime nowTime) {
-		return gpsHistoryRepositoryCustom.findGpsListAfterTime(driveId, nowTime);
+	@Transactional(readOnly = true)
+	public List<GpsHistoryEntity> getGpsPathBeforeTime(Long driveId, LocalDateTime nowTime) {
+		return gpsHistoryRepositoryCustom.findGpsPathBeforeTime(driveId, nowTime);
+	}
+
+	@Transactional(readOnly = true)
+	public List<GpsHistoryEntity> getGpsPathAfterTime(Long driveId, LocalDateTime nowTime) {
+		return gpsHistoryRepositoryCustom.findGpsPathAfterTime(driveId, nowTime);
 	}
 
 }
