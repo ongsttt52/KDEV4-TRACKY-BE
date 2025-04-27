@@ -14,15 +14,11 @@ public record CycleGpsRequest(
 	GpsInfo gpsInfo
 ) {
 	@JsonCreator
-	public CycleGpsRequest(
-		@JsonProperty String gcd,
-		@JsonProperty int lat,
-		@JsonProperty int lon,
-		@JsonProperty int ang,
-		@JsonProperty int spd,
-		@JsonProperty double sum
+	public static CycleGpsRequest create(
+			@JsonProperty("gcd") String gcd,
+			@JsonProperty("gpsInfo") GpsInfo gpsInfo
 	) {
-		this(gcd, GpsInfo.create(lat, lon, ang, spd, sum));
+		return new CycleGpsRequest(gcd, gpsInfo);
 	}
 
 	public GpsHistoryEntity toGpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, double sum) {
