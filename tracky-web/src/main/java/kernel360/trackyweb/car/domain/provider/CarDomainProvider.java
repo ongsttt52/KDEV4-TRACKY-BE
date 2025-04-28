@@ -8,7 +8,6 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
-import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
 import lombok.RequiredArgsConstructor;
 
 @Component

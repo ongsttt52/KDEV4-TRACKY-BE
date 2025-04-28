@@ -1,4 +1,4 @@
-package kernel360trackybe.trackybatch.config;
+package kernel360.trackybatch.config;
 
 import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.context.annotation.Configuration;

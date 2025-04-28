@@ -1,4 +1,4 @@
-package kernel360trackybe.trackybatch.job.daily.carData;
+package kernel360.trackybatch.job.daily.carData;
 
 import java.time.LocalDateTime;
 
@@ -12,9 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
-import kernel360trackybe.trackybatch.infrastructure.CarBatchRepository;
-import kernel360trackybe.trackybatch.infrastructure.DriveBatchRepository;
-import kernel360trackybe.trackybatch.job.daily.carData.dto.DailyCarData;
+import kernel360.trackybatch.infrastructure.CarBatchRepository;
+import kernel360.trackybatch.infrastructure.DriveBatchRepository;
+import kernel360.trackybatch.job.daily.carData.dto.DailyCarData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

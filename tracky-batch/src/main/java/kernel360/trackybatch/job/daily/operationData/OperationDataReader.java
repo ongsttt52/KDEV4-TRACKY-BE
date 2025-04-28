@@ -1,4 +1,4 @@
-package kernel360trackybe.trackybatch.job.daily.operationData;
+package kernel360.trackybatch.job.daily.operationData;
 
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
@@ -6,7 +6,7 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.stereotype.Component;
 
-import kernel360trackybe.trackybatch.job.daily.carData.dto.DailyCarData;
+import kernel360.trackybatch.job.daily.carData.dto.DailyCarData;
 
 @Component
 public class OperationDataReader implements ItemReader<DailyCarData> {

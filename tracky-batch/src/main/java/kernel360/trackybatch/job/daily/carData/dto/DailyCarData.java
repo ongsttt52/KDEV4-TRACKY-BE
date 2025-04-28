@@ -1,4 +1,4 @@
-package kernel360trackybe.trackybatch.job.daily.carData.dto;
+package kernel360.trackybatch.job.daily.carData.dto;
 
 import java.time.LocalDateTime;
 

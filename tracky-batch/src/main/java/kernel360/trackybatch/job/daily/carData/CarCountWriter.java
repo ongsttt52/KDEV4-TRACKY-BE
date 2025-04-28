@@ -1,4 +1,4 @@
-package kernel360trackybe.trackybatch.job.daily.carData;
+package kernel360.trackybatch.job.daily.carData;
 
 import java.util.Optional;
 
@@ -7,7 +7,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
-import kernel360trackybe.trackybatch.infrastructure.DailyStatisticsRepository;
+import kernel360.trackybatch.infrastructure.DailyStatisticsRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
