@@ -1,5 +1,7 @@
 package kernel360.trackyweb.car.domain.provider;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -44,5 +46,9 @@ public class CarDomainProvider {
 
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
 		return carDomainRepository.searchDriveCarByFilter(bizUuid, search, pageable);
+	}
+
+	public List<CarEntity> getAllByBizUuid(String bizUuid) {
+		return carDomainRepository.findAllByBizUuid(bizUuid);
 	}
 }
