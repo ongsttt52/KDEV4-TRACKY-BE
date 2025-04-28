@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
@@ -29,10 +30,15 @@ import lombok.RequiredArgsConstructor;
 public class DriveService {
 
 	private final CarDomainProvider carDomainProvider;
-	private final GpsHistoryDomainRepository gpsHistoryRepository;        // 추후에 분리 및 querydsl 작업해야함
-	private final DriveProvider driveProvider;
 	private final DriveDomainProvider driveDomainProvider;
 
+	/**
+	 * 운행 기록을 조회 할 차량 조회
+	 * @param bizUuid
+	 * @param carListSearchFilterRequest
+	 * @return
+	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<List<CarListResponse>> getCarListBySearchFilter(String bizUuid,
 		CarListRequest carListSearchFilterRequest
 	) {
@@ -48,6 +54,12 @@ public class DriveService {
 
 	}
 
+	/**
+	 * 차량에 대한 운행 기록 리스트
+	 * @param driveListRequest
+	 * @return
+	 */
+	@Transactional(readOnly = true)
 	public ApiResponse<List<DriveListResponse>> getDrivesBySearchFilter(
 		DriveListRequest driveListRequest
 	) {
@@ -64,46 +76,16 @@ public class DriveService {
 		return ApiResponse.success(driveListResponses.getContent(), pageResponse);
 	}
 
-	// 추후에 분리 및 querydsl 작업해야함
-	public DriveHistory getDriveHistroy(
+	/**
+	 * gps data를 포함한 단건 조회
+	 * @param driveId
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public DriveHistory getDriveHistory(
 		Long driveId
 	) {
-		DriveEntity drive = driveProvider.findById(driveId);
-
-		Optional<GpsHistoryEntity> onGpsOpt = gpsHistoryRepository.findFirstGpsByDriveId(
-			drive.getId());
-		Optional<GpsHistoryEntity> offGpsOpt = gpsHistoryRepository.findLastGpsByDriveId(
-			drive.getId());
-
-		int onLat = onGpsOpt.map(GpsHistoryEntity::getLat).orElse(0);
-		int onLon = onGpsOpt.map(GpsHistoryEntity::getLon).orElse(0);
-		int offLat = offGpsOpt.map(GpsHistoryEntity::getLat).orElse(0);
-		int offLon = offGpsOpt.map(GpsHistoryEntity::getLon).orElse(0);
-		RentEntity rent = drive.getRent();
-
-		List<GpsHistoryEntity> gpsList = gpsHistoryRepository.findByDriveId(drive.getId());
-		List<GpsData> gpsDataList = gpsList.stream()
-			.map(
-				gps -> GpsData.create(gps.getLat(), gps.getLon(), gps.getSpd(), gps.getOTime()))
-			.toList();
-
-		return DriveHistory.create(
-			drive.getId(),
-			rent.getRentUuid(),
-			drive.getCar().getMdn(),
-			onLat, onLon,
-			offLat, offLon,
-			drive.getDriveDistance(),
-			rent.getRenterName(),
-			rent.getRenterPhone(),
-			rent.getRentStatus(),
-			rent.getPurpose(),
-			drive.getDriveOnTime(),
-			drive.getDriveOffTime(),
-			rent.getRentStime(),
-			rent.getRentEtime(),
-			gpsDataList
-		);
+		return driveDomainProvider.findByDriveId(driveId);
 	}
 }
 

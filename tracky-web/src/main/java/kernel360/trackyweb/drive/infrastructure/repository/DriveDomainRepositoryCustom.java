@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackyweb.drive.domain.DriveHistory;
 
 public interface DriveDomainRepositoryCustom {
 
@@ -24,4 +25,6 @@ public interface DriveDomainRepositoryCustom {
 	);
 
 	Optional<DriveEntity> findRunningDriveById(Long driveId);
+
+	Optional<DriveHistory>  findByDriveId(Long driveId);
 }

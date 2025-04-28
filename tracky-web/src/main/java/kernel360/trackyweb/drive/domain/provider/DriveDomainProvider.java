@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackyweb.drive.domain.DriveHistory;
 import kernel360.trackyweb.drive.infrastructure.repository.DriveDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +39,11 @@ public class DriveDomainProvider {
 	public DriveEntity findRunningDriveById(Long driveId) {
 		return driveDomainRepository.findRunningDriveById(driveId)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
+	}
+
+	public  DriveHistory findByDriveId(Long driveId) {
+		return driveDomainRepository.findByDriveId(driveId)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
 	}
 
 }
