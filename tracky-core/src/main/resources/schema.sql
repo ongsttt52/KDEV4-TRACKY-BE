@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `biz` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`biz_uuid` varchar(8) NOT NULL UNIQUE,
+	`biz_uuid` varchar(16) NOT NULL UNIQUE,
 	`biz_name` varchar(20) NOT NULL,
 	`biz_reg_num` varchar(12) NOT NULL,
 	`biz_admin`	varchar(20) NOT NULL,
@@ -140,15 +140,16 @@ CREATE TABLE IF NOT EXISTS `car_event` (
 );
 
 CREATE TABLE IF NOT EXISTS `time_distance` (
-	`id` bigint NOT NULL AUTO_INCREMENT,
-	`mdn` varchar(11) NOT NULL,
-	`hour` timestamp NOT NULL,
-	`distance` int NOT NULL,
-	PRIMARY KEY (`id`),
-    CONSTRAINT `fk_time_distance_car`
-        FOREIGN KEY (`mdn`) REFERENCES `car`(`mdn`)
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `mdn` varchar(11) NOT NULL,
+    `biz_uuid` varchar(16) NOT NULL,
+    `date` timestamp NOT NULL,
+    `hour` int NOT NULL,
+    `distance` double NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `updated_at` timestamp NULL,
+    PRIMARY KEY (`id`)
 );
-
 CREATE TABLE IF NOT EXISTS `daily_total` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `mdn` varchar(11) NOT NULL,
