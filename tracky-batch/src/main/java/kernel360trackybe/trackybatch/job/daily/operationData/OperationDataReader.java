@@ -19,4 +19,5 @@ public class OperationDataReader implements ItemReader<DailyCarData> {
 		NonTransientResourceException {
 		return null;
 	}
+
 }

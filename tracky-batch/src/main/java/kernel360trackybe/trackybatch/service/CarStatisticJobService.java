@@ -1,4 +1,4 @@
-package kernel360trackybe.trackybatch.runner;
+package kernel360trackybe.trackybatch.service;
 
 import java.time.LocalDateTime;
 

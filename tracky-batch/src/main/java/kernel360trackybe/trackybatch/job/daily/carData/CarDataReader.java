@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.batch.item.ItemReader;
+import org.springframework.beans.factory.annotation.Value;
 
 import kernel360trackybe.trackybatch.infrastructure.CarBatchRepository;
 import kernel360trackybe.trackybatch.infrastructure.DriveBatchRepository;
@@ -16,11 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CarDataReader implements ItemReader<DailyCarData> {
 
-	private final CarBatchRepository carBatchRepository;
-	private final DriveBatchRepository driveBatchRepository;
-	private final LocalDateTime targetDate;
+	private CarBatchRepository carBatchRepository;
+	private DriveBatchRepository driveBatchRepository;
 
-	private List<DailyCarData> companyDataList;
+	@Value("#{jobParameters['targetDate']}")
+	private LocalDateTime targetDate;
+
+	private List<DailyCarData> companyDataList = new ArrayList<>();
 	private int currentIndex = 0;
 	private boolean dataLoaded = false;
 

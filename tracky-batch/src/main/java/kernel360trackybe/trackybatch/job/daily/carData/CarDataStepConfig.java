@@ -28,6 +28,9 @@ public class CarDataStepConfig {
 	private final CarCountProcessor carCountProcessor;
 	private final CarCountWriter carCountWriter;
 
+	private final CarBatchRepository carBatchRepository;
+	private final DriveBatchRepository driveBatchRepository;
+
 	@Bean
 	public Step dailyCarStatsStep(CarDataReader carDataReader) {
 		log.info("Creating dailyCarStatsStep with CarDataReader, CarCountProcessor, and CarCountWriter");
@@ -46,9 +49,8 @@ public class CarDataStepConfig {
 	@Bean
 	@StepScope
 	public CarDataReader carDataReader(
-		@Value("#{jobParameters['targetDate']}") String targetDateStr,
-		CarBatchRepository carBatchRepository,
-		DriveBatchRepository driveBatchRepository) {
+		@Value("#{jobParameters['targetDate']}") String targetDateStr
+	) {
 
 		log.info("Creating CarDataReader with targetDate: {}", targetDateStr);
 		LocalDateTime targetDate = LocalDateTime.parse(targetDateStr);

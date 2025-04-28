@@ -3,9 +3,11 @@ package kernel360trackybe.trackybatch.infrastructure;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import kernel360.trackycore.core.infrastructure.repository.CarRepository;
 
+@Repository
 public interface CarBatchRepository extends CarRepository {
 
 	@Query("SELECT b.bizUuid, COUNT(c) " +
