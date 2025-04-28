@@ -1,4 +1,4 @@
-package kernel360trackybe.trackybatch.presentation;
+package kernel360.trackybatch.presentation;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import kernel360trackybe.trackybatch.service.CarStatisticJobService;
+import kernel360.trackybatch.service.CarStatisticJobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

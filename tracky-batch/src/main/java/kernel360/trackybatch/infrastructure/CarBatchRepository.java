@@ -1,4 +1,4 @@
-package kernel360trackybe.trackybatch.infrastructure;
+package kernel360.trackybatch.infrastructure;
 
 import java.util.List;
 
