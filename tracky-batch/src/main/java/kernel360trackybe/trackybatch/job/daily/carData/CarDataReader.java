@@ -69,7 +69,6 @@ public class CarDataReader implements ItemReader<DailyCarData> {
 			driveBatchRepository.countDailyOperatingCarsGroupedByBizUuid(startDateTime, endDateTime);
 		log.info("Operating car count by company: {}", operatingCarCountList);
 
-		// 운행 차량 데이터를 맵으로 변환하여 조회 성능 향상
 		Map<String, Integer> operatingCarMap = new HashMap<>();
 		for (Object[] operatingData : operatingCarCountList) {
 			String bizUuid = (String)operatingData[0];
