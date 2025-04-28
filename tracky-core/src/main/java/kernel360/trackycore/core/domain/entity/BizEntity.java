@@ -24,7 +24,7 @@ public class BizEntity extends DateBaseEntity {
 	@Column(name = "id", nullable = false, updatable = false)
 	private Long id;
 
-	@Column(name = "biz_uuid", length = 8, nullable = false, unique = true)
+	@Column(name = "biz_uuid", length = 16, nullable = false, unique = true)
 	private String bizUuid;
 
 	@Column(name = "biz_name", length = 20, nullable = false)
