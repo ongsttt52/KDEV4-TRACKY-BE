@@ -24,8 +24,6 @@ public class EmulatorViewController {
 
 	@GetMapping
 	public String showStartForm(Model model, HttpSession session) {
-
-		log.info("hello");
 		model.addAttribute("tokenResults", session.getAttribute("tokenResults"));
 		model.addAttribute("message", session.getAttribute("message"));
 		model.addAttribute("availableCount", session.getAttribute("availableCount"));
