@@ -12,16 +12,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
 import kernel360.trackyemulator.application.service.CarInstanceManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/emulator")
 @RequiredArgsConstructor
+@Slf4j
 public class EmulatorViewController {
 
 	private final CarInstanceManager carInstanceManager;
 
 	@GetMapping
 	public String showStartForm(Model model, HttpSession session) {
+
+		log.info("hello");
 		model.addAttribute("tokenResults", session.getAttribute("tokenResults"));
 		model.addAttribute("message", session.getAttribute("message"));
 		model.addAttribute("availableCount", session.getAttribute("availableCount"));

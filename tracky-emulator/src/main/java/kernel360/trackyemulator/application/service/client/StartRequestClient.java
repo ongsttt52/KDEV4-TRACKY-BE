@@ -1,5 +1,6 @@
 package kernel360.trackyemulator.application.service.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,9 +23,12 @@ public class StartRequestClient {
 
 	private final RestTemplate restTemplate;
 
+	@Value("${url.hub-service}")
+	private String apiUrl;
+
 	public ApiResponse sendCarStart(EmulatorInstance car) {
 
-		String url = "http://hub-service.hub1:8082/hub/car/on";
+		String url = apiUrl + "/on";
 
 		//CarOnOffRequest DTO 생성
 		CarOnOffRequest request = CarOnOffRequest.ofOn(car);
