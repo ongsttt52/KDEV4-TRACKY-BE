@@ -29,11 +29,6 @@ public interface RentApiDocs {
 	ApiResponse<List<RentResponse>> searchRentByFilter(
 		@ModelAttribute RentSearchByFilterRequest rentSearchByFilterRequest,
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
-		/*@RequestParam String rentUuid,
-		@RequestParam(required = false, name = "status") String rentStatus,
-		@RequestParam(required = false, name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rentDate,*/
-		// yyyy-MM-dd
-		//Pageable pageable
 	);
 
 	@Operation(summary = "대여 UUID로 단건 조회", description = "rent_uuid로 단일 대여 조회 API")
