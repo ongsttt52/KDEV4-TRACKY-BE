@@ -38,12 +38,11 @@ public class ConsumerService {
 
 		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
 		CarEntity car = carProvider.findByMdn(request.mdn());
-		LocalDateTime oTime = request.oTime();
-		DriveEntity drive = driveProvider.getDrive(car, oTime);
+		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
 
-		processTimeDistance(cycleGpsRequestList, oTime, car);
+		processTimeDistance(cycleGpsRequestList, car);
 
-		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive, oTime);
+		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive);
 		gpsHistoryProvider.saveAll(gpsHistories);
 	}
 
@@ -79,16 +78,11 @@ public class ConsumerService {
 	}
 
 	private List<GpsHistoryEntity> toGpsHistoryList(List<CycleGpsRequest> cycleGpsRequestList,
-													DriveEntity drive,
-													LocalDateTime oTime) {
-		List<GpsHistoryEntity> gpsHistories = new ArrayList<>();
+													DriveEntity drive) {
 
-		for (int i = 0; i < cycleGpsRequestList.size(); i++) {
-			CycleGpsRequest cycleGpsRequest = cycleGpsRequestList.get(i);
-			gpsHistories.add(cycleGpsRequest.toGpsHistoryEntity(drive, oTime.plusSeconds(i), cycleGpsRequest.gpsInfo().getSum()));
-		}
-
-		return gpsHistories;
+		return cycleGpsRequestList.stream()
+				.map(request -> request.toGpsHistoryEntity(drive, request.gpsInfo().getSum()))
+				.toList();
 	}
 
 	/**
@@ -96,31 +90,29 @@ public class ConsumerService {
 	 * 만약 시간이 바뀌었다면 바뀐 시간으로 TimeDistance를 저장한다.(if (nowHour != newHour))
 	 * DB 접근을 최소화하기 위해 움직이지 않은 경우엔 저장하지 않는다.(if (distance > 0.0))
 	 */
-	private void processTimeDistance(List<CycleGpsRequest> cycleGpsRequests, LocalDateTime startTime, CarEntity car) {
+	private void processTimeDistance(List<CycleGpsRequest> cycleGpsRequests, CarEntity car) {
 
 		double distance = 0.0;
+		LocalDate prevDate = cycleGpsRequests.get(0).oTime().toLocalDate();
+		int prevHour = cycleGpsRequests.get(0).oTime().getHour();
 
-		LocalDate currentDate = startTime.toLocalDate();
-		int currentHour = startTime.getHour();
+        for (CycleGpsRequest cycleGpsRequest : cycleGpsRequests) {
 
-		int sec = 0;
-		for (CycleGpsRequest cycleGpsRequest : cycleGpsRequests) {
+            LocalDate currentDate = cycleGpsRequest.oTime().toLocalDate();
+            int currentHour = cycleGpsRequest.oTime().getHour();
 
-			LocalDateTime nextTime = startTime.plusSeconds(sec++);
-			LocalDate nextDate = nextTime.toLocalDate();
-			int nextHour = nextTime.getHour();
+            if (prevHour != currentHour && distance > 0.0) {
+                if (distance > 0.0) saveTimeDistance(prevDate, prevHour, car, distance);
+                distance = 0.0;
+                prevDate = currentDate;
+                prevHour = currentHour;
+            }
 
-			if (currentHour != nextHour) {
-				if (distance > 0.0) saveTimeDistance(currentDate, currentHour, car, distance);
+            distance += cycleGpsRequest.gpsInfo().getSum();
+        }
 
-				distance = 0.0;
-				currentDate = nextDate;
-				currentHour = nextHour;
-			}
-			distance += cycleGpsRequest.gpsInfo().getSum();
-		}
-
-		if (distance > 0.0) saveTimeDistance(currentDate, currentHour, car, distance);
+		// distance 저장
+		if (distance > 0.0) saveTimeDistance(prevDate, prevHour, car, distance);
 	}
 
 	private void saveTimeDistance(LocalDate date, int hour, CarEntity car, double totalDistance) {
