@@ -1,7 +1,9 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -35,30 +38,34 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 
 	// MDN 또는 날짜 필터로 주행기록 검색 (날짜 범위 없으면 최신 20건)
 	@Override
-	public Page<DriveEntity> searchByFilter(String mdn, LocalDateTime startDateTime, LocalDateTime endDateTime,
+	public Page<DriveEntity> searchByFilter(String search, String mdn, LocalDate startDate, LocalDate endDate,
 		Pageable pageable) {
 
-		boolean isUnbounded = isUnboundedSearch(startDateTime, endDateTime);
-		BooleanBuilder condition = buildCondition(mdn, startDateTime, endDateTime, isUnbounded);
+		BooleanBuilder condition = new BooleanBuilder();
 
-		JPAQuery<DriveEntity> query = queryFactory
+		// 날짜 구간은 무조건 필터링
+		condition.and(driveEntity.driveOnTime.between(startDate.atStartOfDay(), endDate.atStartOfDay()));
+		condition.and(isEqualMdnContainsRenterName(mdn, search));
+
+		// 메인 쿼리
+		List<DriveEntity> content = queryFactory
 			.selectFrom(driveEntity)
 			.where(condition)
-			.orderBy(driveEntity.driveOnTime.desc());
+			.orderBy(driveEntity.driveOnTime.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
 
-		List<DriveEntity> content = isUnbounded
-			? query.offset(0).limit(20).fetch()
-			: query.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+		// 카운트 쿼리
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(driveEntity.count())
+				.from(driveEntity)
+				.where(condition)
+				.fetchOne()
+		).orElse(0L);
 
-		long total = isUnbounded
-			? content.size()
-			: fetchTotalCount(condition);
-
-		Pageable effectivePageable = isUnbounded
-			? PageRequest.of(0, 20)
-			: pageable;
-
-		return new PageImpl<>(content, effectivePageable, total);
+		return new PageImpl<>(content, pageable, total);
 	}
 
 	// 현재 주행중인 차량 목록 조회 (차량별로 하나만 유지 + 검색 포함)
@@ -149,5 +156,14 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 				.where(condition)
 				.fetchOne()
 		).orElse(0L);
+	}
+
+	//검색 조건
+	private BooleanExpression isEqualMdnContainsRenterName(String mdn, String search) {
+		if (StringUtils.isBlank(search)) {
+			return driveEntity.car.mdn.eq(mdn);
+		}
+		return driveEntity.car.mdn.eq(mdn)
+			.and(driveEntity.rent.renterName.containsIgnoreCase(search));
 	}
 }

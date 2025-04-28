@@ -1,5 +1,6 @@
 package kernel360.trackyweb.drive.domain.provider;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
@@ -19,11 +20,12 @@ public class DriveDomainProvider {
 	private final DriveDomainRepository driveDomainRepository;
 
 	public Page<DriveEntity> searchDrivesByFilter(
+		String search,
 		String mdn,
-		LocalDateTime startDateTime,
-		LocalDateTime endDateTime,
+		LocalDate startDateTime,
+		LocalDate endDateTime,
 		Pageable pageable) {
-		return driveDomainRepository.searchByFilter(mdn, startDateTime, endDateTime, pageable);
+		return driveDomainRepository.searchByFilter(search, mdn, startDateTime, endDateTime, pageable);
 	}
 
 	public Page<DriveEntity> findRunningDriveList(

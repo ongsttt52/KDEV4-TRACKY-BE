@@ -1,5 +1,6 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -10,9 +11,11 @@ import kernel360.trackycore.core.domain.entity.DriveEntity;
 
 public interface DriveDomainRepositoryCustom {
 
-	Page<DriveEntity> searchByFilter(String mdn,
-		LocalDateTime startDateTime,
-		LocalDateTime endDateTime,
+	Page<DriveEntity> searchByFilter(
+		String search,
+		String mdn,
+		LocalDate startDateTime,
+		LocalDate endDateTime,
 		Pageable pageable);
 
 	Page<DriveEntity> findRunningDriveList(

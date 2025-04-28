@@ -52,9 +52,10 @@ public class DriveService {
 		DriveListRequest driveListRequest
 	) {
 		Page<DriveEntity> driveList = driveDomainProvider.searchDrivesByFilter(
+			driveListRequest.search(),
 			driveListRequest.mdn(),
-			driveListRequest.startDateTime(),
-			driveListRequest.endDateTime(),
+			driveListRequest.startDate(),
+			driveListRequest.endDate(),
 			driveListRequest.toPageable());
 
 		Page<DriveListResponse> driveListResponses = driveList.map(DriveListResponse::toResponse);
