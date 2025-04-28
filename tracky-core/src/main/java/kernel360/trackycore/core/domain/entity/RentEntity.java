@@ -119,4 +119,8 @@ public class RentEntity extends DateBaseEntity {
 		this.rentLoc = rentLoc;
 		this.returnLoc = returnLoc;
 	}
+
+	public void updateStatus(String rentStatus) {
+		this.rentStatus = rentStatus;
+	}
 }
