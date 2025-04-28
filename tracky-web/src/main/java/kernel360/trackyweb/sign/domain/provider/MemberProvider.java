@@ -1,5 +1,9 @@
 package kernel360.trackyweb.sign.domain.provider;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.exception.ErrorCode;
@@ -27,6 +31,14 @@ public class MemberProvider {
 	
 	public boolean existsByMemberId(String memberId) {
 		return memberDomainRepository.existsByMemberId(memberId);
+	}
+
+	public List<MemberEntity> findByStatus(String status) {
+		return memberDomainRepository.findByStatus(status);
+	}
+
+	public Page<MemberEntity> getMembersBySearchFilter(String search, Pageable pageable) {
+		return memberDomainRepository.findByBizNameOrAdmin(search, pageable);
 	}
 
 }

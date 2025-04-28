@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `daily_total` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `mdn` varchar(11) NOT NULL,
     `date` timestamp NOT NULL,
-    `daily_distance` varchar(20) NOT NULL,
+    `daily_distance` double NOT NULL,
     `created_at` timestamp NOT NULL,
     `updated_at` timestamp NULL,
     PRIMARY KEY (`id`),
