@@ -55,4 +55,16 @@ public class BizEntity extends DateBaseEntity {
 		biz.deleteAt = deleteAt;
 		return biz;
 	}
+
+	public void updateBizInfo(
+		String bizName,
+		String bizRegNum,
+		String bizAdmin,
+		String bizPhoneNum
+	) {
+		this.bizName = bizName;
+		this.bizRegNum = bizRegNum;
+		this.bizAdmin = bizAdmin;
+		this.bizPhoneNum = bizPhoneNum;
+	}
 }
