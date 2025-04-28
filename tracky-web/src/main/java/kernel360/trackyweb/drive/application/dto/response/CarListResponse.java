@@ -5,14 +5,18 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 public record CarListResponse(
 	String mdn,
 	String carPlate,
+	String carName,
 	String carType,
+	String car_year,
 	String status
 ) {
 	public static CarListResponse from(CarEntity car) {
 		return new CarListResponse(
 			car.getMdn(),
 			car.getCarPlate(),
+			car.getCarName(),
 			car.getCarType(),
+			car.getCarYear(),
 			car.getStatus()
 		);
 	}
