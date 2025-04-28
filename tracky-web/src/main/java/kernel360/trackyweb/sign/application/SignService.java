@@ -120,8 +120,6 @@ public class SignService {
 
 		member.delete();
 
-		memberProvider.save(member);
-
 		return member;
 	}
 
@@ -146,8 +144,6 @@ public class SignService {
 			memberUpdateRequest.status()
 		);
 
-		memberProvider.save(member);
-
 		return member;
 	}
 
@@ -164,8 +160,6 @@ public class SignService {
 		MemberEntity member = memberProvider.getMember(approveRequest.memberId());
 
 		member.updateStatus(approveRequest.status());
-
-		memberProvider.save(member);
 
 		return member;
 	}
