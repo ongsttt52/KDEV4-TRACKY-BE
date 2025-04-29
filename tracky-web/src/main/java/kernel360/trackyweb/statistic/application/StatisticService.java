@@ -3,7 +3,6 @@ package kernel360.trackyweb.statistic.application;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ public class StatisticService {
 
 	private final StatisticProvider statisticProvider;
 
-	public ApiResponse<DailyStatisticResponse> getDailyStatistic(UUID bizUuid, LocalDate date) {
+	public ApiResponse<DailyStatisticResponse> getDailyStatistic(String bizUuid, LocalDate date) {
 
 		DailyStatisticEntity dailyStatistic = statisticProvider.getDailyStatistic(bizUuid, date);
 
@@ -34,7 +33,7 @@ public class StatisticService {
 		return ApiResponse.success(response);
 	}
 
-	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(UUID bizUuid, LocalDate date) {
+	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(String bizUuid, LocalDate date) {
 
 		MonthlyStatisticEntity monthlyStatistic = statisticProvider.getMonthlyStatistic(bizUuid, date);
 

@@ -1,7 +1,6 @@
 package kernel360.trackyweb.statistic.domain.provider;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -13,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StatisticProvider {
 
-	public DailyStatisticEntity getDailyStatistic(UUID bizUuid, LocalDate date) {
-		return DailyStatisticEntity.create(bizUuid.toString(), date, 1, 2, 3.5, 4L, 5, 6.7);
+	public DailyStatisticEntity getDailyStatistic(String bizUuid, LocalDate date) {
+		return DailyStatisticEntity.create(bizUuid, date, 1, 2, 3.5, 4L, 5, 6.7);
 	}
 
-	public MonthlyStatisticEntity getMonthlyStatistic(UUID bizUuid, LocalDate date) {
-		return MonthlyStatisticEntity.create(bizUuid.toString(), date, 1, 2, 3.5, 4L, 5, 6.7);
+	public MonthlyStatisticEntity getMonthlyStatistic(String bizUuid, LocalDate date) {
+		return MonthlyStatisticEntity.create(bizUuid, date, 1, 2, 3.5, 4L, 5, 6.7);
 	}
 }
