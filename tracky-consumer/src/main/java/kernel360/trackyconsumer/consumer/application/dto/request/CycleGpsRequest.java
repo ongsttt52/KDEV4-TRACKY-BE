@@ -17,9 +17,9 @@ public record CycleGpsRequest(
 ) {
 	@JsonCreator
 	public static CycleGpsRequest create(
-			@JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime oTime,
-			@JsonProperty("gcd") String gcd,
-			@JsonProperty("gpsInfo") GpsInfo gpsInfo
+		@JsonProperty @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime oTime,
+		@JsonProperty("gcd") String gcd,
+		@JsonProperty("gpsInfo") GpsInfo gpsInfo
 	) {
 		return new CycleGpsRequest(oTime, gcd, gpsInfo);
 	}
