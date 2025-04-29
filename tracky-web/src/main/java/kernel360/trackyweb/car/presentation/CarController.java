@@ -1,7 +1,11 @@
 package kernel360.trackyweb.car.presentation;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,5 +79,28 @@ public class CarController implements CarApiDocs {
 		@RequestBody CarDeleteRequest carDeleteRequest
 	) {
 		return carService.delete(carDeleteRequest);
+	}
+
+	@GetMapping("/excel")
+	public ResponseEntity<byte[]> exportCarToExcel(
+
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
+	) {
+		byte[] res = carService.exportCarListToExcel(memberPrincipal.bizUuid());
+
+		// 파일명 생성 (기본 파일명 + 현재 날짜/시간)
+		String simpleFileName = "car_list_" + LocalDate.now() + ".xlsx";
+
+		// HTTP 응답 헤더 설정
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(
+			MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+		headers.setContentDispositionFormData("attachment", simpleFileName);
+
+		// 엑셀 파일 응답
+		return ResponseEntity
+			.ok()
+			.headers(headers)
+			.body(res);
 	}
 }

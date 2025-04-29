@@ -2,6 +2,7 @@ package kernel360.trackyweb.drive.domain.provider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,10 @@ public class DriveDomainProvider {
 	public DriveEntity findRunningDriveById(Long driveId) {
 		return driveDomainRepository.findRunningDriveById(driveId)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
+	}
+
+	public List<DriveEntity> findByMdn(String mdn) {
+		return driveDomainRepository.findDriveListByMdn(mdn);
 	}
 
 	public  DriveHistory findByDriveId(Long driveId) {

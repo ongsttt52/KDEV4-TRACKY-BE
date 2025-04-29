@@ -29,4 +29,8 @@ public interface CarDomainRepositoryCustom {
 		String bizUuid,
 		String search,
 		Pageable pageable);
+
+	List<CarEntity> findAllByBizUuid(
+		String bizUuid
+	);
 }
