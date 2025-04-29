@@ -2,6 +2,7 @@ package kernel360.trackyweb.drive.infrastructure.repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -25,6 +26,8 @@ public interface DriveDomainRepositoryCustom {
 	);
 
 	Optional<DriveEntity> findRunningDriveById(Long driveId);
+
+	List<DriveEntity> findDriveListByMdn(String mdn);
 
 	Optional<DriveHistory>  findByDriveId(Long driveId);
 }

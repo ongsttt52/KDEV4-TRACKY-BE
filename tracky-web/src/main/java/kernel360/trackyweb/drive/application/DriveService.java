@@ -17,20 +17,25 @@ import kernel360.trackycore.core.domain.provider.DriveProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.drive.application.dto.request.CarListRequest;
 import kernel360.trackyweb.drive.application.dto.request.DriveListRequest;
+import kernel360.trackyweb.drive.application.dto.request.DrivesExportRequest;
 import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
 import kernel360.trackyweb.drive.application.dto.response.DriveListResponse;
 import kernel360.trackyweb.drive.domain.DriveHistory;
 import kernel360.trackyweb.drive.domain.GpsData;
 import kernel360.trackyweb.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyweb.drive.infrastructure.repository.GpsHistoryDomainRepository;
+import kernel360.trackyweb.drive.infrastructure.repository.util.DriveExcelGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DriveService {
 
 	private final CarDomainProvider carDomainProvider;
 	private final DriveDomainProvider driveDomainProvider;
+	private final DriveExcelGenerator driveExcelGenerator;
 
 	/**
 	 * 운행 기록을 조회 할 차량 조회
@@ -86,6 +91,14 @@ public class DriveService {
 		Long driveId
 	) {
 		return driveDomainProvider.findByDriveId(driveId);
+	}
+
+	public byte[] exportExcel(String mdn) {
+
+		List<DriveEntity> drives = driveDomainProvider.findByMdn(mdn);
+		List<DrivesExportRequest> drivesExportRequests = DrivesExportRequest.from(drives);
+
+		return driveExcelGenerator.generateExcel(drivesExportRequests);
 	}
 }
 
