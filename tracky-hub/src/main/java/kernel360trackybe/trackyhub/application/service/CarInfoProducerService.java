@@ -56,8 +56,9 @@ public class CarInfoProducerService {
 
 		log.info("GPS 전송:{}", gpsHistoryMessage.toString());
 		rabbitTemplate.convertAndSend(
-			rabbitMQProperties.getExchange().getCarInfo(),
-			rabbitMQProperties.getRouting().getGpsKey(),
+			rabbitMQProperties.getExchange().getCycleInfo(),
+			// rabbitMQProperties.getRouting().getGpsKey(),
+			"",
 			gpsHistoryMessage
 		);
 	}

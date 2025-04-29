@@ -20,6 +20,7 @@ public class RabbitMQProperties {
 	@Setter
 	public static class Exchange {
 		private String carInfo;
+		private String cycleInfo;
 		private String dlx;
 	}
 
@@ -28,6 +29,7 @@ public class RabbitMQProperties {
 	public static class Queue {
 		private String gps;
 		private String onoff;
+		private String web;
 		private String dlq;
 	}
 
@@ -37,6 +39,7 @@ public class RabbitMQProperties {
 		private String gpsKey;
 		private String onKey;
 		private String offKey;
+		private String webKey;
 		private String deadLetterKey;
 	}
 }
