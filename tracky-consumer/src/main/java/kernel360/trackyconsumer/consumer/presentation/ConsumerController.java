@@ -1,8 +1,5 @@
 package kernel360.trackyconsumer.consumer.presentation;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
-import kernel360.trackyconsumer.consumer.application.dto.response.MdnBizResponse;
 import kernel360.trackyconsumer.consumer.application.service.ConsumerService;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -43,11 +39,5 @@ public class ConsumerController {
 
 		ConsumerService.receiveCycleInfo(request);
 		return ApiResponse.success(request.mdn());
-	}
-
-	@GetMapping(value = "/mdns")
-	public List<MdnBizResponse> getMdnAndBizId() {
-
-		return ConsumerService.getMdnAndBizId();
 	}
 }
