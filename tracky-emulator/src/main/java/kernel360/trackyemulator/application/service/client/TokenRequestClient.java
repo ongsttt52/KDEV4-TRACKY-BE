@@ -1,5 +1,6 @@
 package kernel360.trackyemulator.application.service.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,6 +23,9 @@ public class TokenRequestClient {
 
 	private final RestTemplate restTemplate;
 
+	@Value("${url.hub-service}")
+	private String apiUrl;
+
 	public String getToken(EmulatorInstance instance) {
 
 		//TokenRequest DTO 생성
@@ -31,7 +35,7 @@ public class TokenRequestClient {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<TokenRequest> entity = new HttpEntity<>(request, headers);
 
-		String url = "http://hub-service.hub1:8082/hub/car/token";
+		String url = apiUrl + "/token";
 
 		ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url, entity, ApiResponse.class);
 		ApiResponse apiResponse = response.getBody();
