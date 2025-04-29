@@ -73,7 +73,7 @@ public class CycleDataManager {
 		if (instance.isBufferFull()) {
 			controlClient.sendCycleData(instance);
 			log.info("{} → 60초 데이터 전송 완료", instance.getMdn());
-			log.info(" gps info cycle : {}", instance.getCycleBuffer());
+			log.info("60초 주기 데이터의 gps info cycle : {}", instance.getCycleBuffer());
 			instance.clearBuffer();
 
 			// 뷰에 내려줄 정보
