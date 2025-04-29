@@ -36,8 +36,7 @@ public class StatisticController {
 	@GetMapping("/monthly")
 	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(
 		@AuthenticationPrincipal MemberPrincipal memberPrincipal,
-		@RequestParam("date")
-		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+		@RequestParam(name = "date")
 		LocalDate date
 	) {
 		return statisticService.getMonthlyStatistic(memberPrincipal.bizUuid(), date);
