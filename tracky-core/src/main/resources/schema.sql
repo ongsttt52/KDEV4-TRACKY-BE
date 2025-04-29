@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `car` (
 );
 
 CREATE TABLE IF NOT EXISTS `rent` (
-	`rent_uuid`	varchar(8) NOT NULL,
+	`rent_uuid`	varchar(10) NOT NULL,
 	`mdn`	varchar(11) NOT NULL,
 	`rent_stime` timestamp NOT NULL,
 	`rent_etime` timestamp NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `location` (
 
 CREATE TABLE IF NOT EXISTS `drive` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`rent_uuid` varchar(8) NOT NULL,
+	`rent_uuid` varchar(10) NOT NULL,
 	`mdn` varchar(11) NOT NULL,
 	`drive_loc_id` bigint NOT NULL,
 	`drive_distance` double NULL,
