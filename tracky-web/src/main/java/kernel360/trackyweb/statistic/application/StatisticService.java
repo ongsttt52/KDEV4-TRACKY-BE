@@ -23,8 +23,6 @@ public class StatisticService {
 
 	public ApiResponse<DailyStatisticResponse> getDailyStatistic(String bizUuid, LocalDate date) {
 
-		System.out.println("asdasdasd" + date);
-
 		DailyStatisticEntity dailyStatistic = statisticProvider.getDailyStatistic(bizUuid, date);
 
 		List<Integer> list = new ArrayList<>();
@@ -38,9 +36,9 @@ public class StatisticService {
 
 	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(String bizUuid, YearMonth date) {
 
-		System.out.println("****************************" + date);
+		LocalDate localDate = date.atDay(1);
 
-		MonthlyStatisticEntity monthlyStatistic = statisticProvider.getMonthlyStatistic(bizUuid, date);
+		MonthlyStatisticEntity monthlyStatistic = statisticProvider.getMonthlyStatistic(bizUuid, localDate);
 
 		List<Integer> list = new ArrayList<>();
 		for (int i = 0; i < 12; i++) {

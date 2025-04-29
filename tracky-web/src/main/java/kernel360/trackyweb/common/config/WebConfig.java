@@ -26,7 +26,6 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(String.class, LocalDate.class, source -> {
 			if (source.length() == 7) {
-
 				YearMonth ym = YearMonth.parse(source, DateTimeFormatter.ofPattern("yyyy-MM"));
 				return ym.atDay(1);
 			} else {
