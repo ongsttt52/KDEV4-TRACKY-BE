@@ -25,7 +25,7 @@ public record CycleInfoRequest(
 		@JsonProperty("did") String did,
 		@JsonProperty("pv") String pv,
 		@JsonProperty("cCnt") int cCnt,
-		@JsonProperty("oTime") @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime oTime,
+		@JsonProperty("oTime") @JsonFormat(pattern = "yyyyMMddHHmm") LocalDateTime oTime,
 		@JsonProperty("cList") List<CycleGpsRequest> cList
 	) {
 		this(mdn, EmulatorInfo.create(tid, mid, did, pv), cCnt, oTime, cList);
