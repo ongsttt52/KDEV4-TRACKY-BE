@@ -1,4 +1,4 @@
-package kernel360.trackyweb.dashboard.infrastructure.repository.repo;
+package kernel360.trackyweb.dashboard.infrastructure.repository;
 
 import java.util.List;
 
@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
-import kernel360.trackycore.core.domain.entity.GpsHistoryId;
+import kernel360.trackycore.core.infrastructure.repository.GpsHistoryRepository;
 
 @Repository
-public interface DashGpsHistoryRepository extends JpaRepository<GpsHistoryEntity, GpsHistoryId> {
+public interface DashGpsHistoryRepository extends GpsHistoryRepository {
 
 	@Query(value = """
 		SELECT *
