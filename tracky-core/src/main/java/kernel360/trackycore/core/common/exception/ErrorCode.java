@@ -25,8 +25,11 @@ public enum ErrorCode {
 	MEMBER_STATUS_DEACTIVE("STATUS_333", "비활성화된 계정입니다."),
 
 	NOT_REALTIME_DRIVE("DRIVE_007", "현재 주행 중인 차량이 아닙니다."),
-  
-	NOTICE_NOT_FOUND("NOTICE_001", "존재하지 않는 공지사항입니다.");
+
+	NOTICE_NOT_FOUND("NOTICE_001", "존재하지 않는 공지사항입니다."),
+
+	STATISTIC_NOT_FOUND("STATISTIC_001", "조회된 데이터가 없습니다."),
+	;
 
 	private final String code;
 	private final String message;
