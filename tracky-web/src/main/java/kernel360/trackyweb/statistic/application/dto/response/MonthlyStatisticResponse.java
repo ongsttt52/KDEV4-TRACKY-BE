@@ -31,7 +31,7 @@ public record MonthlyStatisticResponse(
 		List<Long> monthlyDriveDistances
 	) {
 		int currentMonth = e.getDate().getMonthValue();
-		List<MonthlyStat> monthlyStatList = IntStream.range(0, currentMonth)
+		List<MonthlyStat> monthlyStats = IntStream.range(0, currentMonth)
 			.mapToObj(i -> new MonthlyStat(
 				i + 1,
 				monthlyDriveCounts.get(i),
@@ -47,7 +47,7 @@ public record MonthlyStatisticResponse(
 				e.getTotalDriveCount(),
 				e.getTotalDriveDistance()
 			),
-			monthlyStatList
+			monthlyStats
 		);
 	}
 }

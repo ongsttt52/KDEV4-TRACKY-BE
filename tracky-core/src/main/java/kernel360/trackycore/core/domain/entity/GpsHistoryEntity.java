@@ -13,7 +13,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -58,16 +57,10 @@ public class GpsHistoryEntity {
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt;    //생성시간
 
-	@PrePersist
-	private void ensureId() {
-		if (this.driveSeq == null) {
-			this.driveSeq = Generators.timeBasedEpochGenerator().generate();
-		}
-	}
-
 	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang,
 		int spd,
 		double sum) {
+		this.driveSeq = Generators.timeBasedEpochGenerator().generate();
 		this.drive = drive;
 		this.oTime = oTime;
 		this.gcd = gcd;

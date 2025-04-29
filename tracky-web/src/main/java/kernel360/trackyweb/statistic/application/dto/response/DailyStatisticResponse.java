@@ -1,7 +1,7 @@
 package kernel360.trackyweb.statistic.application.dto.response;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
 
@@ -26,11 +26,12 @@ public record DailyStatisticResponse(
 	}
 
 	public static DailyStatisticResponse from(DailyStatisticEntity e, List<Integer> hourlyDriveCounts) {
-		int count = 0;
-		List<HourlyStat> hourlyStatList = new ArrayList<>();
-		for (Integer driveCount : hourlyDriveCounts) {
-			hourlyStatList.add(new HourlyStat(count++, driveCount));
-		}
+		List<DailyStatisticResponse.HourlyStat> hourlyStats = IntStream.range(0, 24)
+			.mapToObj(i -> new DailyStatisticResponse.HourlyStat(
+				i,
+				hourlyDriveCounts.get(i)
+			)).toList();
+
 		return new DailyStatisticResponse(
 			new Summary(
 				e.getTotalCarCount(),
@@ -40,7 +41,7 @@ public record DailyStatisticResponse(
 				e.getDailyDriveCount(),
 				e.getDailyDriveDistance()
 			),
-			hourlyStatList
+			hourlyStats
 		);
 	}
 }

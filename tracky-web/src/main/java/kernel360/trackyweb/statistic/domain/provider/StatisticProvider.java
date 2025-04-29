@@ -14,10 +14,10 @@ import lombok.RequiredArgsConstructor;
 public class StatisticProvider {
 
 	public DailyStatisticEntity getDailyStatistic(UUID bizUuid, LocalDate date) {
-		return null;
+		return DailyStatisticEntity.create(bizUuid.toString(), date, 1, 2, 3.5, 4L, 5, 6.7);
 	}
 
 	public MonthlyStatisticEntity getMonthlyStatistic(UUID bizUuid, LocalDate date) {
-		return null;
+		return MonthlyStatisticEntity.create(bizUuid.toString(), date, 1, 2, 3.5, 4L, 5, 6.7);
 	}
 }
