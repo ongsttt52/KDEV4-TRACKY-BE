@@ -9,7 +9,11 @@ public record RentCreateRequest(
 	LocalDateTime rentStime,
 	LocalDateTime rentEtime,
 	String rentLoc,
+	int rentLat,
+	int rentLon,
 	String returnLoc,
+	int returnLat,
+	int returnLon,
 	String purpose
 ) {
 

@@ -94,11 +94,11 @@ public class RentService {
 			rentCreateRequest.purpose(),
 			"reserved",
 			rentCreateRequest.rentLoc(),
-			0,
-			0,
+			rentCreateRequest.rentLat(),
+			rentCreateRequest.rentLon(),
 			rentCreateRequest.returnLoc(),
-			0,
-			0
+			rentCreateRequest.returnLat(),
+			rentCreateRequest.returnLon()
 		);
 
 		RentEntity savedRent = rentDomainProvider.save(rent);
