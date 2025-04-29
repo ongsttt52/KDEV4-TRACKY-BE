@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `rent` (
 	`renter_name` varchar(20) NOT NULL,
 	`renter_phone` varchar(13) NOT NULL,
 	`purpose` varchar(20) NULL,
-	`rent_status` enum('RENTING', 'RESERVED', 'RETURNED', 'CANCELED', 'DELETED', 'DELAY') NOT NULL,
+	`rent_status` enum('RENTING', 'RESERVED', 'RETURNED', 'CANCELED', 'DELETED') NOT NULL,
 	`rent_loc` varchar(100) NULL,
 	`rent_lat` int NULL,
 	`rent_lon` int NULL,
