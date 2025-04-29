@@ -34,11 +34,8 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 			.and(rentEntity.car.biz.bizUuid.eq(bizUuid))
 			.and(isContainsRentUuid(request.rentUuid()))
 			.and(isEqualRentStatus(request.status()))
-			.and(isOverlapRentDate(request.rentDate()));
-
-		if (request.status() == null || !request.status().equalsIgnoreCase("DELETED")) {
-			builder.and(isNotDeleted());
-		}
+			.and(isOverlapRentDate(request.rentDate()))
+			.and(isNotDeleted(request.status()));
 
 		JPAQuery<RentEntity> query = queryFactory
 			.selectFrom(rentEntity)
@@ -58,7 +55,10 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 		return new PageImpl<>(content, pageable, total);
 	}
 
-	private BooleanBuilder isNotDeleted() {
+	private BooleanBuilder isNotDeleted(String status) {
+		if (status != null && status.equalsIgnoreCase("DELETED")) {
+			return new BooleanBuilder();
+		}
 		return new BooleanBuilder(rentEntity.rentStatus.ne("DELETED"));
 	}
 

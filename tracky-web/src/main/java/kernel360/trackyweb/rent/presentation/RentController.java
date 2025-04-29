@@ -36,7 +36,8 @@ public class RentController implements RentApiDocs {
 	public ApiResponse<List<String>> getAllMdnByBizId(
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
 	) {
-		return rentService.getAllMdnByBizId();
+		String bizUuid = memberPrincipal.bizUuid();
+		return rentService.getAllMdnByBizId(bizUuid);
 	}
 
 	@GetMapping()

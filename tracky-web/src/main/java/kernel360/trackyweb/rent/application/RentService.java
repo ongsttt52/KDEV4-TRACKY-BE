@@ -3,8 +3,6 @@ package kernel360.trackyweb.rent.application;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +20,6 @@ import kernel360.trackyweb.rent.application.dto.request.RentUpdateRequest;
 import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
 import kernel360.trackyweb.rent.domain.util.UuidGenerator;
-import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,14 +38,8 @@ public class RentService {
 	 *
 	 * @return mdn list
 	 */
-	public ApiResponse<List<String>> getAllMdnByBizId() {
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		MemberPrincipal principal = (MemberPrincipal)auth.getPrincipal();
-		String bizUuid = principal.bizUuid();
-
+	public ApiResponse<List<String>> getAllMdnByBizId(String bizUuid) {
 		List<String> mdns = rentDomainProvider.getAllMdnByBizId(bizUuid);
-
 		return ApiResponse.success(mdns);
 	}
 
