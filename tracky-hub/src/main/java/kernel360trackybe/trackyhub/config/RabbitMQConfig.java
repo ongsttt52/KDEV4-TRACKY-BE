@@ -2,6 +2,7 @@ package kernel360trackybe.trackyhub.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
@@ -25,6 +26,11 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
+	public FanoutExchange fanoutExchange() {
+		return new FanoutExchange(properties.getExchange().getCycleInfo());
+	}
+
+	@Bean
 	public Queue gpsQueue() {
 		return QueueBuilder.durable(properties.getQueue().getGps())
 			.withArgument("x-dead-letter-exchange", properties.getExchange().getDlx())
@@ -43,8 +49,18 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	public Binding gpsBinding(Queue gpsQueue, TopicExchange exchange) {
-		return BindingBuilder.bind(gpsQueue).to(exchange).with(properties.getRouting().getGpsKey());
+	public Queue webQueue() {
+		return new Queue(properties.getQueue().getWeb(), true);
+	}
+
+	@Bean
+	public Binding gpsBinding(Queue gpsQueue, FanoutExchange exchange) {
+		return BindingBuilder.bind(gpsQueue).to(exchange);
+	}
+
+	@Bean
+	public Binding webBinding(Queue webQueue, FanoutExchange exchange) {
+		return BindingBuilder.bind(webQueue).to(exchange);
 	}
 
 	@Bean
