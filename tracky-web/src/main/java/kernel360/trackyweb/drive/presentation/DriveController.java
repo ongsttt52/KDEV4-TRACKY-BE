@@ -42,8 +42,8 @@ public class DriveController {
 
 	//운행기록 상세
 	@GetMapping("/{driveId}")
-	public ApiResponse<DriveHistory> getDriveHistroy(@PathVariable Long driveId) {
-		DriveHistory history = driveService.getDriveHistroy(driveId);
+	public ApiResponse<DriveHistory> getDriveHistory(@PathVariable Long driveId) {
+		DriveHistory history = driveService.getDriveHistory(driveId);
 		return ApiResponse.success(history);
 	}
 }
