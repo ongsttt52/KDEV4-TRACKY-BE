@@ -24,28 +24,28 @@ public class MonthlyStatisticEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "biz_uuid", nullable = false, length = 8)
+	@Column(name = "biz_uuid", nullable = false, length = 16)
 	private String bizUuid;
 
-	@Column(name = "date")
+	@Column(name = "date", nullable = false)
 	private LocalDate date;
 
-	@Column(name = "total_car_count")
+	@Column(name = "total_car_count", nullable = false)
 	private Integer totalCarCount;
 
-	@Column(name = "non_operating_car_count")
+	@Column(name = "non_operating_car_count", nullable = false)
 	private Integer nonOperatingCarCount;
 
-	@Column(name = "avg_operation_rate")
+	@Column(name = "avg_operation_rate", nullable = false)
 	private Double avgOperationRate;
 
-	@Column(name = "total_drive_sec")
+	@Column(name = "total_drive_sec", nullable = false)
 	private Long totalDriveSec;
 
-	@Column(name = "total_drive_count")
+	@Column(name = "total_drive_count", nullable = false)
 	private Integer totalDriveCount;
 
-	@Column(name = "total_drive_distance")
+	@Column(name = "total_drive_distance", nullable = false)
 	private Double totalDriveDistance;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -71,7 +71,7 @@ public class MonthlyStatisticEntity {
 		this.totalDriveCount = totalDriveCount;
 		this.totalDriveDistance = totalDriveDistance;
 	}
-	
+
 	public static MonthlyStatisticEntity create(
 		String bizUuid,
 		LocalDate date,

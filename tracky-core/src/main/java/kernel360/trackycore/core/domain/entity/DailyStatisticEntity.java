@@ -25,28 +25,28 @@ public class DailyStatisticEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "biz_uuid", nullable = false, length = 8)
+	@Column(name = "biz_uuid", nullable = false, length = 16)
 	private String bizUuid;
 
-	@Column(name = "date")
+	@Column(name = "date", nullable = false)
 	private LocalDate date;
 
-	@Column(name = "total_car_count")
+	@Column(name = "total_car_count", nullable = false)
 	private Integer totalCarCount;
 
-	@Column(name = "daily_drive_car_count")
+	@Column(name = "daily_drive_car_count", nullable = false)
 	private Integer dailyDriveCarCount;
 
-	@Column(name = "avg_operation_rate")
+	@Column(name = "avg_operation_rate", nullable = false)
 	private Double avgOperationRate;
 
-	@Column(name = "daily_drive_sec")
+	@Column(name = "daily_drive_sec", nullable = false)
 	private Long dailyDriveSec;
 
-	@Column(name = "daily_drive_count")
+	@Column(name = "daily_drive_count", nullable = false)
 	private Integer dailyDriveCount;
 
-	@Column(name = "daily_drive_distance")
+	@Column(name = "daily_drive_distance", nullable = false)
 	private Double dailyDriveDistance;
 
 	@ManyToOne(fetch = FetchType.LAZY)
