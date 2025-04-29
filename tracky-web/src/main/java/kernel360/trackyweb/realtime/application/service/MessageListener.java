@@ -20,7 +20,7 @@ public class MessageListener {
 	@RabbitListener(queues = "web-queue")
 	public void receiveCarMessages(GpsHistoryMessage messages) {
 
-		eventEmitterService.sendEvent(messages.mdn(), messages);
+		eventEmitterService.sendEvent("gps_data", messages);
 		log.info("Web-Queue 메시지 SSE 전송: {}", messages.toString());
 	}
 }
