@@ -1,6 +1,7 @@
 package kernel360.trackyweb.statistic.application;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +34,11 @@ public class StatisticService {
 		return ApiResponse.success(response);
 	}
 
-	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(String bizUuid, LocalDate date) {
+	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(String bizUuid, YearMonth date) {
 
-		MonthlyStatisticEntity monthlyStatistic = statisticProvider.getMonthlyStatistic(bizUuid, date);
+		LocalDate localDate = date.atDay(1);
+
+		MonthlyStatisticEntity monthlyStatistic = statisticProvider.getMonthlyStatistic(bizUuid, localDate);
 
 		List<Integer> list = new ArrayList<>();
 		for (int i = 0; i < 12; i++) {
