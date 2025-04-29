@@ -49,9 +49,9 @@ public class CarDomainProvider {
 		return carDomainRepository.searchDriveCarByFilter(bizUuid, search, pageable);
 	}
 
-
 	public List<CarEntity> getAllByBizUuid(String bizUuid) {
 		return carDomainRepository.findAllByBizUuid(bizUuid);
+	}
 
 	public List<CarStatus> findAllGroupedByStatus() {
 		return carDomainRepository.findAllGroupedByStatus();
