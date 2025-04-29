@@ -1,6 +1,5 @@
 package kernel360.trackycore.core.infrastructure.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +21,4 @@ public interface CarRepository extends JpaRepository<CarEntity, Long> {
 	 * @return 차량 단건 조회
 	 */
 	Optional<CarEntity> findByMdn(String mdn);
-
-	List<CarEntity> findAll();
 }
