@@ -1,6 +1,9 @@
 package kernel360trackybe.trackyhub.presentation;
 
+import java.util.List;
+
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +13,7 @@ import kernel360trackybe.trackyhub.application.dto.request.CarOnOffRequest;
 import kernel360trackybe.trackyhub.application.dto.request.CycleInfoRequest;
 import kernel360trackybe.trackyhub.application.dto.request.TokenRequest;
 import kernel360trackybe.trackyhub.application.dto.response.ApiResponse;
+import kernel360trackybe.trackyhub.application.dto.response.MdnBizResponse;
 import kernel360trackybe.trackyhub.application.dto.response.MdnResponse;
 import kernel360trackybe.trackyhub.application.dto.response.TokenResponse;
 import kernel360trackybe.trackyhub.application.service.CarInfoProducerService;
@@ -51,5 +55,12 @@ public class CarInfoController {
 		String token = producerService.getToken();
 		TokenResponse tokenResponse = new TokenResponse(tokenRequest.mdn(), token, "4");
 		return ApiResponse.success(tokenResponse);
+	}
+
+	@GetMapping("/mdns")
+	public List<MdnBizResponse> getMdnAndBizId() {
+
+		log.info("컨트롤러 접근");
+		return producerService.getMdnAndBizId();
 	}
 }
