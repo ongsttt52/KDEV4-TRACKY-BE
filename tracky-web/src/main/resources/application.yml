@@ -3,7 +3,9 @@ server:
 
 spring:
   config:
-    import: classpath:application-common.yml
+    import:
+      - classpath:application-common.yml
+      - classpath:application-rabbitmq.yml
 
   application:
     name: tracky-web
@@ -22,3 +24,12 @@ spring:
 discord:
   enable: ${DISCORD_WEBHOOK_ENABLE:false}
   webhook-url: ${DISCORD_WEBHOOK_WEB_URL}
+
+rabbitmq:
+  batch:
+    # 배치 리스너 관련 설정
+    default-requeue-rejected: false
+    enabled: true       # 배치 리스너 활성화
+    size: 10            # 배치 크기 (10개 메시지)
+    timeout: 1000      # 타임아웃(ms)
+    consumer-batch-enabled: true  # 내부 배치 처리 기능 활성화
