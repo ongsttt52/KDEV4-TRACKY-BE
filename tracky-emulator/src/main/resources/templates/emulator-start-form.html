@@ -4,86 +4,130 @@
     <meta charset="UTF-8">
     <title>에뮬레이터 시동 설정</title>
     <script>
-        function validateEmulatorCount(event) {
-            const count = parseInt(document.getElementById("emulator-count").value);
-            if (isNaN(count) || count < 1 || count > 15000) {
-                alert("⚠️ 에뮬레이터 개수는 1 이상 15000 이하로 입력해야 합니다.");
-                event.preventDefault();
-                return false;
-            }
-            return true;
-        }
-
         function disableButton(buttonId) {
             const button = document.getElementById(buttonId);
             button.disabled = true;
             button.textContent += " (요청 중)";
         }
+
+        function validateSelection() {
+            const selected = document.querySelectorAll("input[name='selectedMdns']:checked").length;
+            if (selected === 0) {
+                alert("⚠️ 최소 한 개 이상의 항목을 선택해주세요.");
+                return false;
+            }
+            return true;
+        }
+
+        function selectAll() {
+            document.querySelectorAll("input[name='selectedMdns']").forEach(cb => cb.checked = true);
+            updateSelectedCount();
+        }
+
+        function deselectAll() {
+            document.querySelectorAll("input[name='selectedMdns']").forEach(cb => cb.checked = false);
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const count = document.querySelectorAll("input[name='selectedMdns']:checked").length;
+            document.getElementById("selected-count").textContent = count;
+        }
+
+        function validateSelectionAndHide() {
+            const selected = document.querySelectorAll("input[name='selectedMdns']:checked").length;
+            if (selected === 0) {
+                alert("⚠️ 최소 한 개 이상의 항목을 선택해주세요.");
+                return false;
+            }
+
+            // 선택되면 리스트 영역 숨김
+            const listDiv = document.getElementById("available-list-container");
+            if (listDiv) {
+                listDiv.style.display = "none";
+            }
+
+            return true;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("input[name='selectedMdns']").forEach(cb => {
+                cb.addEventListener("change", updateSelectedCount);
+            });
+        });
     </script>
 </head>
 <body>
-<h2>에뮬레이터 수동 시동 설정</h2>
+<h2>에뮬레이터 시동 설정</h2>
 
-<br/>
+<!-- ✅ 생성 가능한 mdn/bizId 확인 요청 -->
 <form th:action="@{/emulator/available}" method="post">
-    <button type="submit">✅ 현재 생성 가능한 에뮬레이터 개수 확인</button>
+    <h3> 1. 현재 생성 가능한 에뮬레이터 확인
+        <button type="submit">✅ 클릭</button>
+    </h3>
 </form>
 
-<p th:if="${availableCount != null}">
-    <strong>📌 현재 생성 가능 에뮬레이터 개수 : </strong> <span th:text="${availableCount}"></span> 대
-</p>
+<hr/>
 
-<!-- ✅ 상태 정보 -->
+<!-- ✅ availableList 보여주고 사용자에게 선택 받기 -->
+<div id="available-list-container">
+    <h3>2. 현재 생성 가능한 차량관리(MDN) 리스트
+        <button type="button" onclick="selectAll()">전체 선택</button>
+        <button type="button" onclick="deselectAll()">전체 해제</button>
+    </h3>
+    <form th:if="${availableMdnAndBizId}" th:action="@{/emulator/configure-selected}" method="post"
+          onsubmit="return validateSelectionAndHide()">
+        <p>✔ 선택된 항목 수: <span id="selected-count">0</span></p>
+
+        <ul>
+            <li th:each="item : ${availableMdnAndBizId}">
+                <label>
+                    <input type="checkbox" name="selectedMdns" th:value="${item.mdn}"/>
+                    <span th:text="${item.mdn}"></span> (BizId: <span th:text="${item.bizId}"></span>)
+                </label>
+            </li>
+        </ul>
+        <button type="submit"> 에뮬레이터 생성</button>
+    </form>
+</div>
+
+<!-- ✅ 생성된 인스턴스 수 표시 -->
 <div>
-    <p><strong>📌 현재 생성된 에뮬레이터 개수: </strong> <span th:text="${instanceCount ?: '설정되지 않음'}"></span></p>
-
+    <h4>📌 현재 생성된 에뮬레이터 개수: </strong> <span th:text="${instanceCount ?: '설정되지 않음'}"></span></h4>
 </div>
 
 <hr/>
 
-<form th:action="@{/emulator/configure}" method="post" onsubmit="return validateEmulatorCount(event)">
-    <label>에뮬레이터 개수:
-        <input type="number" id="emulator-count" name="count" min="1" max="15000" value="1"/>
-    </label>
-    <button type="submit">에뮬레이터 개수 설정</button>
-</form>
-
-<br/>
+<!-- ✅ 토큰 요청 -->
 <form th:action="@{/emulator/fetch-token}" method="post">
-    <button type="submit">토큰 및 초기 정보 받아오기</button>
+    <h3> 3. 토큰 정보 받아오기
+        <button type="submit">✅ 클릭</button>
+    </h3>
 </form>
-
-<br/>
-<form th:action="@{/emulator/start}" method="post" onsubmit="disableButton('start-btn')">
-    <button type="submit" id="start-btn" th:disabled="${engineStatus == 'ON'}">🚗 시동 ON 요청</button>
-</form>
-
-<br/>
-<form th:action="@{/emulator/stop}" method="post" onsubmit="disableButton('stop-btn')">
-    <button type="submit" id="stop-btn"
-            th:disabled="${engineStatus == null}">
-        🛑 시동 OFF 요청
-    </button>
-</form>
-
-<p th:if="${message}" th:text="${message}">결과 메시지</p>
-
-<!-- ✅ 토큰 요청 결과 표시 -->
+<!-- ✅ 토큰 결과 -->
 <div th:if="${tokenResults}">
-    <h3>토큰 요청 결과</h3>
+    <h4>🔐 토큰 요청 결과</h4>
     <ul>
         <li th:each="entry : ${tokenResults}">
-            <span th:text="${entry.key}"></span> →
-            <span th:text="${entry.value}"></span>
+            <span th:text="${entry.key}"></span> 차량 :
+            <span th:text=" ${entry.value}"></span>
         </li>
     </ul>
 </div>
 
 <hr/>
 
-<!-- ✅ 주기 데이터 전송 로그 표시 -->
+<!-- ✅ 시동 ON -->
+<form th:action="@{/emulator/start}" method="post" onsubmit="disableButton('start-btn')">
+    <h3> 4. 시동 ON 요청
+        <button type="submit" id="start-btn" th:disabled="${engineStatus == 'ON'}"> ✅ 클릭</button>
+    </h3>
+
+</form>
+
+<!-- ✅ SSE 주기 로그 -->
 <div id="log">
-    <h3>🚗 주기 데이터 전송 내역</h3>
+    <h5> &nbsp; 🚗 주기 데이터 전송 내역 🚗</h5>
 </div>
 
 <script>
@@ -102,9 +146,27 @@
     };
 </script>
 
+<hr/>
+<!-- ✅ 시동 OFF -->
+<form th:action="@{/emulator/stop}" method="post" onsubmit="disableButton('stop-btn')">
+    <h3>
+        5. 시동 OFF 요청
+        <button type="submit" id="stop-btn" th:disabled="${engineStatus == null}"> ✅ 클릭</button>
+    </h3>
+</form>
+
+<!-- ✅ 메시지 출력 -->
+<p th:if="${message}" th:text="${message}">결과</p>
+
+
+<hr/>
+
+
+<!-- ✅ 세션 초기화 -->
 <br/>
 <form th:action="@{/emulator/reset}" method="post">
     <button type="submit">🧹 세션 정보 초기화</button>
 </form>
 
 </body>
+</html>

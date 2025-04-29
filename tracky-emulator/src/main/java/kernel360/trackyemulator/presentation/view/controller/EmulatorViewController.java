@@ -1,5 +1,6 @@
 package kernel360.trackyemulator.presentation.view.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
 import kernel360.trackyemulator.application.service.CarInstanceManager;
+import kernel360.trackyemulator.application.service.dto.response.MdnBizResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +28,7 @@ public class EmulatorViewController {
 	public String showStartForm(Model model, HttpSession session) {
 		model.addAttribute("tokenResults", session.getAttribute("tokenResults"));
 		model.addAttribute("message", session.getAttribute("message"));
-		model.addAttribute("availableCount", session.getAttribute("availableCount"));
+		model.addAttribute("availableMdnAndBizId", session.getAttribute("availableMdnAndBizId"));
 		model.addAttribute("engineStatus", session.getAttribute("engineStatus"));
 		model.addAttribute("instanceCount", session.getAttribute("instanceCount"));
 		return "emulator-start-form";
@@ -34,17 +36,20 @@ public class EmulatorViewController {
 
 	@PostMapping("/available")
 	public String checkAvailable(HttpSession session) {
-		int availableCount = carInstanceManager.getAvailableEmulatorCount();
-		session.setAttribute("availableCount", availableCount);
-		session.setAttribute("message", "현재 생성 가능한 에뮬레이터 개수: " + availableCount + "대");
+		List<MdnBizResponse> availableMdnAndBizId = carInstanceManager.getAvailableMdnAndBizId();
+		session.setAttribute("availableMdnAndBizId", availableMdnAndBizId);
+		session.setAttribute("message", "현재 생성 가능한 에뮬레이터 개수: " + availableMdnAndBizId.size() + "대");
 		return "redirect:/emulator";
 	}
 
-	@PostMapping("/configure")
-	public String configure(@RequestParam(name = "count") int count, HttpSession session) {
-		int createdInstance = carInstanceManager.createEmulator(count);
+	@PostMapping("/configure-selected")
+	public String configure(@RequestParam("selectedMdns") List<String> mdnList, HttpSession session) {
+		int createdInstance = carInstanceManager.createEmulator(mdnList);
 		session.setAttribute("instanceCount", createdInstance);
 		session.setAttribute("message", createdInstance + "대의 에뮬레이터 생성 완료!");
+
+		// 리스트를 더 이상 보여주지 않기 위해 제거
+		session.removeAttribute("availableMdnAndBizId");
 		return "redirect:/emulator";
 	}
 

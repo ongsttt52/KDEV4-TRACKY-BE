@@ -63,11 +63,17 @@ public class CycleDataManager {
 	private void handlePeriodicData(EmulatorInstance instance) {
 		CycleGpsRequest data = gpsDataGenerator.generate(instance);
 		instance.addCycleData(data);
-		log.info("{} → 1초 데이터 생성 완료 (버퍼: {}/{})", instance.getMdn(), instance.getCycleBuffer().size(), 60);
+		log.info("{} → 1초 데이터 생성 완료 (버퍼: {}/{}), gps info : {}",
+			instance.getMdn(),
+			instance.getCycleBuffer().size(),
+			60,
+			data.gpsInfo()
+		);
 
 		if (instance.isBufferFull()) {
 			controlClient.sendCycleData(instance);
 			log.info("{} → 60초 데이터 전송 완료", instance.getMdn());
+			log.info(" gps info cycle : {}", instance.getCycleBuffer());
 			instance.clearBuffer();
 
 			// 뷰에 내려줄 정보

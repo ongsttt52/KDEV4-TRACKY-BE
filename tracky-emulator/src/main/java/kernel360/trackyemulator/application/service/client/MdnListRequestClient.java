@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import kernel360.trackyemulator.application.service.dto.response.MdnBizResponse;
 import kernel360.trackyemulator.infrastructure.exception.EmulatorException;
 import kernel360.trackyemulator.infrastructure.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +25,17 @@ public class MdnListRequestClient {
 	@Value("${url.hub-service}")
 	private String apiUrl;
 
-	public List<String> getMdnList() {
+	public List<MdnBizResponse> getMdnList() {
 		String url = apiUrl + "/mdns";
 
-		String[] mdnArray = restTemplate.getForObject(url, String[].class);
+		MdnBizResponse[] responseArray = restTemplate.getForObject(url, MdnBizResponse[].class);
 
-		if (mdnArray == null || mdnArray.length == 0) {
+		if (responseArray == null || responseArray.length == 0) {
 			throw EmulatorException.sendError(ErrorCode.MDN_LIST_REQUEST_FAILED);
 		}
 
-		log.info("서버에서 받아온 mdn list : {}", Arrays.toString(mdnArray));
-		return Arrays.asList(mdnArray);
+		List<MdnBizResponse> responses = Arrays.asList(responseArray);
+		log.info("서버에서 받아온 mdn list : {}", responses);
+		return responses;
 	}
 }

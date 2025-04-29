@@ -11,9 +11,9 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackyemulator.application.service.CarInstanceFactory.MultiCarInstanceFactory;
-import kernel360.trackyemulator.application.service.CarInstanceFactory.SingleCarInstanceFactory;
 import kernel360.trackyemulator.application.service.client.ControlClient;
 import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
+import kernel360.trackyemulator.application.service.dto.response.MdnBizResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,44 +22,32 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CarInstanceManager {
-
-	private final SingleCarInstanceFactory singleCarInstanceFactory;
 	private final MultiCarInstanceFactory multiCarInstanceFactory;
 	private final CycleDataManager cycleDataManager;
 	private final ControlClient controlClient;
-
 	private List<EmulatorInstance> instances = new ArrayList<>();
-	private List<String> mdnList;
+	private List<MdnBizResponse> mdnList;    //현재 생성 가능한 에뮬레이터 개수 받아옴
 
-	//현재 생성 가능한 에뮬레이터 개수 받아옴
-	public int getAvailableEmulatorCount() {
+	public List<MdnBizResponse> getAvailableMdnAndBizId() {
 		mdnList = controlClient.getMdnList();
-
-		return mdnList.size();
+		return mdnList;
 	}
 
 	// 뷰에서 입력받은 에뮬레이터 개수만큼 인스턴스 생성
-	public int createEmulator(int count) {
-		if (count == 1) {
-			log.info("카 인스턴스 매니저가 single car instance factory로 1개 인스턴스 생성 요청");
-			this.instances = singleCarInstanceFactory.createCarInstances();
-			log.info("single car instance factory가 {}개의 인스턴스 생성 완료", instances.size());
-		} else {
-			this.instances = multiCarInstanceFactory.createCarInstances(count, mdnList);
-			log.info("multiCarInstanceFactory가 {}개의 인스턴스 생성 완료", instances.size());
-		}
+	public int createEmulator(List<String> mdnList) {
+		this.instances = multiCarInstanceFactory.createCarInstances(mdnList);
+		log.info("multiCarInstanceFactory가 {}개의 인스턴스 생성 완료", instances.size());
 		return instances.size();
 	}
 
 	//에뮬레이터에 토큰 세팅
 	public Map<String, String> fetchAllTokens() {
-		Map<String, String> result = new LinkedHashMap<>(); // 순서 유지
-
+		Map<String, String> result = new LinkedHashMap<>();
+		// 순서 유지
 		for (EmulatorInstance instance : instances) {
 			String token = controlClient.getToken(instance);
 			instance.setToken(token);
-
-			result.put(instance.getMdn(), "토큰 세팅 성공" + instance.getToken());
+			result.put(instance.getMdn(), instance.getToken());
 			log.info("{} 토큰 세팅 완료", instance.getMdn());
 		}
 		return result;
@@ -68,14 +56,11 @@ public class CarInstanceManager {
 	//시동 ON 데이터 전송
 	public Map<String, String> sendStartRequests() {
 		Map<String, String> result = new LinkedHashMap<>();
-
 		for (EmulatorInstance instance : instances) {
 			ApiResponse response = controlClient.sendCarStart(instance);
 			result.put(instance.getMdn(), response.rstMsg());
-
 			cycleDataManager.startSending(instance); // 스케줄 시작
 		}
-
 		return result;
 	}
 
@@ -84,17 +69,13 @@ public class CarInstanceManager {
 		log.info("시동 off manager 들어옴");
 		Map<String, String> result = new LinkedHashMap<>();
 		Set<String> stoppedMdnSet = new HashSet<>();
-
 		for (EmulatorInstance instance : instances) {
 			instance.setCarOffTime(LocalDateTime.now());
-
 			cycleDataManager.stopSending(instance); // 스케줄 종료 + 남은 데이터 전송
-
-			ApiResponse response = controlClient.sendCarStop(instance);    //시동OFF 데이터 전송
+			ApiResponse response = controlClient.sendCarStop(instance);
+			//시동OFF 데이터 전송
 			log.info("시동 off response : {}", response.rstMsg());
-
 			result.put(instance.getMdn(), response.rstMsg());
-
 			stoppedMdnSet.add(response.mdn());
 		}
 		removeStoppedInstances(stoppedMdnSet); // 시동 끈 에뮬레이터들 리스트에서 삭제
