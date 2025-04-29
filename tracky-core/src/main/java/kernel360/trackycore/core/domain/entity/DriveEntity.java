@@ -52,6 +52,9 @@ public class DriveEntity extends DateBaseEntity {
 	@Column(name = "memo", columnDefinition = "TEXT")
 	private String memo;
 
+	@Column(name = "skip_count")
+	private int skipCount;
+
 	public void off(double distance, LocalDateTime offTime) {
 		this.driveDistance = distance;
 		this.driveOffTime = offTime;
@@ -67,5 +70,9 @@ public class DriveEntity extends DateBaseEntity {
 		drive.driveDistance = 0;
 
 		return drive;
+	}
+
+	public void skipCount(int cnt) {
+		this.skipCount += cnt;
 	}
 }

@@ -1,13 +1,8 @@
 package kernel360.trackyweb.rent.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +14,12 @@ import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
-import kernel360.trackyweb.rent.application.dto.request.RentRequest;
+import kernel360.trackyweb.rent.application.dto.request.RentCreateRequest;
+import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
+import kernel360.trackyweb.rent.application.dto.request.RentUpdateRequest;
 import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
-import kernel360.trackyweb.rent.infrastructure.repository.RentRepositoryCustom;
+import kernel360.trackyweb.rent.domain.util.UuidGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,30 +30,16 @@ public class RentService {
 
 	private final RentDomainProvider rentDomainProvider;
 	private final RentProvider rentProvider;
-	private final GlobalSseEvent globalSseEvent;
-
 	private final CarProvider carProvider;
-
-	private final RentRepositoryCustom rentRepositoryCustom;
-
-	// 8자리 UUID 생성 메서드
-	private String generateShortUuid() {
-		return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-	}
+	private final GlobalSseEvent globalSseEvent;
 
 	/**
 	 * 차량 mdn list 조회
 	 *
 	 * @return mdn list
 	 */
-	public ApiResponse<List<String>> getAllMdnByBizId() {
-		// Long bizUuid = //시큐리티 컨텍스트에서 불러오기..
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String bizUuid = (String)auth.getCredentials();
-
+	public ApiResponse<List<String>> getAllMdnByBizId(String bizUuid) {
 		List<String> mdns = rentDomainProvider.getAllMdnByBizId(bizUuid);
-
 		return ApiResponse.success(mdns);
 	}
 
@@ -69,9 +52,9 @@ public class RentService {
 	 * @return 검색된 예약 List
 	 */
 	@Transactional(readOnly = true)
-	public ApiResponse<List<RentResponse>> searchByFilter(String rentUuid, String rentStatus, LocalDateTime rentDate,
-		Pageable pageable) {
-		Page<RentEntity> rents = rentRepositoryCustom.searchByFilter(rentUuid, rentStatus, rentDate, pageable);
+	public ApiResponse<List<RentResponse>> searchRentByFilter(RentSearchByFilterRequest rentSearchByFilterRequest,
+		String bizUuid) {
+		Page<RentEntity> rents = rentDomainProvider.searchRentByFilter(rentSearchByFilterRequest, bizUuid);
 		Page<RentResponse> rentResponses = rents.map(RentResponse::from);
 		PageResponse pageResponse = PageResponse.from(rentResponses);
 		return ApiResponse.success(rentResponses.getContent(), pageResponse);
@@ -96,26 +79,26 @@ public class RentService {
 	 * @return 등록 성공한 대여
 	 */
 	@Transactional
-	public ApiResponse<RentResponse> create(RentRequest rentRequest) {
-		CarEntity car = carProvider.findByMdn(rentRequest.mdn());
+	public ApiResponse<RentResponse> create(RentCreateRequest rentCreateRequest) {
+		CarEntity car = carProvider.findByMdn(rentCreateRequest.mdn());
 
-		String rentUuid = generateShortUuid();
+		String rentUuid = UuidGenerator.generateUuid();
 
 		RentEntity rent = RentEntity.create(
 			car,
 			rentUuid,
-			rentRequest.rentStime(),
-			rentRequest.rentEtime(),
-			rentRequest.renterName(),
-			rentRequest.renterPhone(),
-			rentRequest.purpose(),
+			rentCreateRequest.rentStime(),
+			rentCreateRequest.rentEtime(),
+			rentCreateRequest.renterName(),
+			rentCreateRequest.renterPhone(),
+			rentCreateRequest.purpose(),
 			"reserved",
-			rentRequest.rentLoc(),
-			0,
-			0,
-			rentRequest.returnLoc(),
-			0,
-			0
+			rentCreateRequest.rentLoc(),
+			rentCreateRequest.rentLat(),
+			rentCreateRequest.rentLon(),
+			rentCreateRequest.returnLoc(),
+			rentCreateRequest.returnLat(),
+			rentCreateRequest.returnLon()
 		);
 
 		RentEntity savedRent = rentDomainProvider.save(rent);
@@ -134,14 +117,15 @@ public class RentService {
 	 * @return 수정된 대여 detail
 	 */
 	@Transactional
-	public ApiResponse<RentResponse> update(String rentUuid, RentRequest rentRequest) {
+	public ApiResponse<RentResponse> update(String rentUuid, RentUpdateRequest rentUpdateRequest) {
 		RentEntity rent = rentProvider.getRent(rentUuid);
 
-		CarEntity car = carProvider.findByMdn(rentRequest.mdn());
+		CarEntity car = carProvider.findByMdn(rentUpdateRequest.mdn());
 
-		rent.update(car, rentRequest.rentStime(), rentRequest.rentEtime(), rentRequest.renterName(),
-			rentRequest.renterPhone(),
-			rentRequest.purpose(), rentRequest.rentStatus(), rentRequest.rentLoc(), rentRequest.returnLoc());
+		rent.update(car, rentUpdateRequest.rentStime(), rentUpdateRequest.rentEtime(), rentUpdateRequest.renterName(),
+			rentUpdateRequest.renterPhone(),
+			rentUpdateRequest.purpose(), rentUpdateRequest.rentStatus(), rentUpdateRequest.rentLoc(),
+			rentUpdateRequest.returnLoc());
 
 		globalSseEvent.sendEvent(SseEvent.RENT_UPDATED);
 
@@ -156,7 +140,8 @@ public class RentService {
 	 */
 	@Transactional
 	public ApiResponse<String> delete(String rentUuid) {
-		rentDomainProvider.delete(rentUuid);
+		// rentDomainProvider.delete(rentUuid);
+		rentDomainProvider.softDelete(rentUuid);
 		globalSseEvent.sendEvent(SseEvent.RENT_DELETED);
 
 		return ApiResponse.success("삭제 완료");

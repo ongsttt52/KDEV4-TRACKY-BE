@@ -3,6 +3,7 @@ package kernel360.trackyweb.car.infrastructure.repository;
 import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
+import static kernel360.trackycore.core.domain.entity.QRentEntity.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,8 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			.and(carEntity.biz.bizUuid.eq(bizUuid))
 			.and(isContainsCarMdnOrCarPlate(search))
 			.and(isEqualStatus(status))
-			.and(isEqualCarType(carType));
+			.and(isEqualCarType(carType))
+			.and(isNotDeleted(status));
 
 		JPAQuery<CarEntity> query = queryFactory
 			.selectFrom(carEntity)
@@ -113,6 +115,14 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		}
 		return carEntity.carType.eq(carType);
 	}
+
+	private BooleanExpression isNotDeleted(String status) {
+		if (status != null && status.equalsIgnoreCase("DELETED")) {
+			return null;
+		}
+		return carEntity.status.ne("DELETED");
+	}
+
 
 	//정렬 조건
 	private OrderSpecifier<?>[] carPlateSort(String search) {

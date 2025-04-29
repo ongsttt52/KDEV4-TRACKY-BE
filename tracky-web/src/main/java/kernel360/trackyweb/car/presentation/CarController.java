@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.car.application.CarService;
 import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarDeleteRequest;
 import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
 import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
@@ -55,25 +56,24 @@ public class CarController implements CarApiDocs {
 		return carService.searchOne(mdn);
 	}
 
-	@PostMapping()
+	@PostMapping("")
 	public ApiResponse<CarDetailResponse> create(
 		@RequestBody CarCreateRequest carCreateRequest
 	) {
 		return carService.create(carCreateRequest);
 	}
 
-	@PatchMapping("/{mdn}")
+	@PatchMapping("")
 	public ApiResponse<CarDetailResponse> update(
-		@PathVariable String mdn,
 		@RequestBody CarUpdateRequest carUpdateRequest
 	) {
-		return carService.update(mdn, carUpdateRequest);
+		return carService.update(carUpdateRequest);
 	}
 
-	@DeleteMapping("/{mdn}")
-	public ApiResponse<String> delete(
-		@PathVariable String mdn
+	@DeleteMapping("")
+	public ApiResponse<CarDetailResponse> delete(
+		@RequestBody CarDeleteRequest carDeleteRequest
 	) {
-		return carService.delete(mdn);
+		return carService.delete(carDeleteRequest);
 	}
 }

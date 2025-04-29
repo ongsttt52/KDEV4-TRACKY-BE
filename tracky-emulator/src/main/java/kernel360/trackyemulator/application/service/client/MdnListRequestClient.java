@@ -3,6 +3,7 @@ package kernel360.trackyemulator.application.service.client;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,8 +21,11 @@ public class MdnListRequestClient {
 
 	private final RestTemplate restTemplate;
 
+	@Value("${url.hub-service}")
+	private String apiUrl;
+
 	public List<String> getMdnList() {
-		String url = "http://hub-service.hub1:8082/hub/car/mdns";
+		String url = apiUrl + "/mdns";
 
 		String[] mdnArray = restTemplate.getForObject(url, String[].class);
 

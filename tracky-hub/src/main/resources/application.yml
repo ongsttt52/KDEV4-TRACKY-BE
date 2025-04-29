@@ -9,9 +9,9 @@ spring:
 rabbitmq:
   exchange:
     car-info: car-info-exchange
+    cycle-info: cycle-info-exchange
     dlx: dlx-exchange
   routing:
-    gps-key: gpsKey
     on-key: onKey
     off-key: offKey
     dead-letter-key: deadLetterKey

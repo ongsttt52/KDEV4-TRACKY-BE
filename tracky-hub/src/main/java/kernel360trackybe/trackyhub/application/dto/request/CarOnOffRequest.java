@@ -30,8 +30,8 @@ public record CarOnOffRequest(
 		@JsonProperty int ang,
 		@JsonProperty int spd,
 		@JsonProperty double sum,
-		@JsonProperty @JsonFormat(pattern = "yyyyMMddHHmm") LocalDateTime onTime,
-		@JsonProperty @JsonFormat(pattern = "yyyyMMddHHmm") LocalDateTime offTime
+		@JsonProperty @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime onTime,
+		@JsonProperty @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime offTime
 	) {
 		this(mdn, gcd, EmulatorInfo.create(tid, mid, did, pv), GpsInfo.create(lat, lon, ang, spd, sum), onTime,
 			offTime);

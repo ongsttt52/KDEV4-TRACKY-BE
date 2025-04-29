@@ -31,8 +31,8 @@ public record CarOnOffRequest(
 		@JsonProperty("ang") int ang,
 		@JsonProperty("spd") int spd,
 		@JsonProperty("sum") double sum,
-		@JsonProperty("onTime") @JsonFormat(pattern = "yyyyMMddHHmm") LocalDateTime onTime,
-		@JsonProperty("offTime") @JsonFormat(pattern = "yyyyMMddHHmm") LocalDateTime offTime
+		@JsonProperty("onTime") @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime onTime,
+		@JsonProperty("offTime") @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime offTime
 	) {
 		this(
 			mdn,

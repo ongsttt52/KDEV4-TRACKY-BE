@@ -1,19 +1,24 @@
 package kernel360.trackyconsumer.consumer.application.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import kernel360.trackycore.core.domain.entity.*;
+
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
 import kernel360.trackyconsumer.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyconsumer.rent.domain.provider.RentDomainProvider;
 import kernel360.trackyconsumer.timedistance.domain.provider.TimeDistanceProvider;
+import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.domain.entity.LocationEntity;
+import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.TimeDistanceEntity;
 import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.GpsHistoryProvider;
 import kernel360.trackycore.core.domain.provider.LocationProvider;
@@ -38,12 +43,14 @@ public class ConsumerService {
 
 		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
 		CarEntity car = carProvider.findByMdn(request.mdn());
-		LocalDateTime oTime = request.oTime();
-		DriveEntity drive = driveProvider.getDrive(car, oTime);
+		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
 
-		processTimeDistance(cycleGpsRequestList, oTime, car);
+		drive.skipCount(removeOverDistance(cycleGpsRequestList));
 
-		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive, oTime);
+		if (!cycleGpsRequestList.isEmpty())
+			processTimeDistance(cycleGpsRequestList, car);
+
+		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive);
 		gpsHistoryProvider.saveAll(gpsHistories);
 	}
 
@@ -68,6 +75,7 @@ public class ConsumerService {
 	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
+		car.lastDrive(carOnOffRequest.offTime());
 
 		DriveEntity drive = driveProvider.getDrive(car, carOnOffRequest.onTime());
 		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
@@ -79,16 +87,23 @@ public class ConsumerService {
 	}
 
 	private List<GpsHistoryEntity> toGpsHistoryList(List<CycleGpsRequest> cycleGpsRequestList,
-													DriveEntity drive,
-													LocalDateTime oTime) {
-		List<GpsHistoryEntity> gpsHistories = new ArrayList<>();
+		DriveEntity drive) {
 
-		for (int i = 0; i < cycleGpsRequestList.size(); i++) {
-			CycleGpsRequest cycleGpsRequest = cycleGpsRequestList.get(i);
-			gpsHistories.add(cycleGpsRequest.toGpsHistoryEntity(drive, oTime.plusSeconds(i), cycleGpsRequest.gpsInfo().getSum()));
+		return cycleGpsRequestList.stream()
+			.map(request -> request.toGpsHistoryEntity(drive, request.gpsInfo().getSum()))
+			.toList();
+	}
+
+	private int removeOverDistance(List<CycleGpsRequest> cycleGpsRequests) {
+
+		int count = 0;
+		for (int i = cycleGpsRequests.size() - 1; i >= 0; i--) {
+			if (cycleGpsRequests.get(i).gpsInfo().getSum() > 80) {
+				cycleGpsRequests.remove(i);
+				count++;
+			}
 		}
-
-		return gpsHistories;
+		return count;
 	}
 
 	/**
@@ -96,41 +111,40 @@ public class ConsumerService {
 	 * 만약 시간이 바뀌었다면 바뀐 시간으로 TimeDistance를 저장한다.(if (nowHour != newHour))
 	 * DB 접근을 최소화하기 위해 움직이지 않은 경우엔 저장하지 않는다.(if (distance > 0.0))
 	 */
-	private void processTimeDistance(List<CycleGpsRequest> cycleGpsRequests, LocalDateTime startTime, CarEntity car) {
+	private void processTimeDistance(List<CycleGpsRequest> cycleGpsRequests, CarEntity car) {
 
 		double distance = 0.0;
+		LocalDate prevDate = cycleGpsRequests.get(0).oTime().toLocalDate();
+		int prevHour = cycleGpsRequests.get(0).oTime().getHour();
 
-		LocalDate currentDate = startTime.toLocalDate();
-		int currentHour = startTime.getHour();
-
-		int sec = 0;
 		for (CycleGpsRequest cycleGpsRequest : cycleGpsRequests) {
 
-			LocalDateTime nextTime = startTime.plusSeconds(sec++);
-			LocalDate nextDate = nextTime.toLocalDate();
-			int nextHour = nextTime.getHour();
+			LocalDate currentDate = cycleGpsRequest.oTime().toLocalDate();
+			int currentHour = cycleGpsRequest.oTime().getHour();
 
-			if (currentHour != nextHour) {
-				if (distance > 0.0) saveTimeDistance(currentDate, currentHour, car, distance);
-
+			if (prevHour != currentHour) {
+				if (distance > 0.0)
+					saveTimeDistance(prevDate, prevHour, car, distance);
 				distance = 0.0;
-				currentDate = nextDate;
-				currentHour = nextHour;
+				prevDate = currentDate;
+				prevHour = currentHour;
 			}
+
 			distance += cycleGpsRequest.gpsInfo().getSum();
 		}
 
-		if (distance > 0.0) saveTimeDistance(currentDate, currentHour, car, distance);
+		if (distance > 0.0)
+			saveTimeDistance(prevDate, prevHour, car, distance);
 	}
 
 	private void saveTimeDistance(LocalDate date, int hour, CarEntity car, double totalDistance) {
 
 		timeDistanceProvider.getTimeDistance(date, hour, car)
-				.ifPresentOrElse(
-						timeDistance -> timeDistance.updateDistance(totalDistance),
-						() -> timeDistanceProvider.save(
-								TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance)
-						)
-				);
+			.ifPresentOrElse(
+				timeDistance -> timeDistance.updateDistance(totalDistance),
+				() -> timeDistanceProvider.save(
+					TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance)
+				)
+			);
 	}
 }

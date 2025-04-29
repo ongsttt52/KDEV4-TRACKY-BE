@@ -53,6 +53,9 @@ public class CarEntity extends DateBaseEntity {
 	@Column(name = "sum", nullable = false)
 	private double sum;           // 누적 주행 거리
 
+	@Column(name = "last_drive")
+	private LocalDateTime lastDrive;
+
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
@@ -102,5 +105,15 @@ public class CarEntity extends DateBaseEntity {
 
 	public void updateDistance(double additionalDistance) {
 		this.sum += additionalDistance;
+	}
+
+	public void lastDrive(LocalDateTime lastDrive) {
+		this.lastDrive = lastDrive;
+	}
+
+	public void delete(
+	) {
+		this.status = "deleted";
+		this.deletedAt = LocalDateTime.now();
 	}
 }

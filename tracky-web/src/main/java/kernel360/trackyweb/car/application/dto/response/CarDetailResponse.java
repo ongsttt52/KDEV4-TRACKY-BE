@@ -6,7 +6,7 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 
 public record CarDetailResponse(
 	String mdn,
-	Long bizId,
+	BizResponse bizInfo,
 	String carType,
 	String carPlate,
 	String carYear,
@@ -19,7 +19,7 @@ public record CarDetailResponse(
 	public static CarDetailResponse from(CarEntity car) {
 		return new CarDetailResponse(
 			car.getMdn(),
-			car.getBiz().getId(),
+			BizResponse.from(car.getBiz()),
 			car.getCarType(),
 			car.getCarPlate(),
 			car.getCarYear(),
