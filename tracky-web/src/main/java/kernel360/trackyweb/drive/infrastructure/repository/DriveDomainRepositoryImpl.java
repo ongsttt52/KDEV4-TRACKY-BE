@@ -1,8 +1,9 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
+import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -15,16 +16,18 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.QDriveEntity;
+import kernel360.trackyweb.drive.domain.DriveHistory;
+import kernel360.trackyweb.drive.domain.GpsData;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -35,30 +38,34 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 
 	// MDN 또는 날짜 필터로 주행기록 검색 (날짜 범위 없으면 최신 20건)
 	@Override
-	public Page<DriveEntity> searchByFilter(String mdn, LocalDateTime startDateTime, LocalDateTime endDateTime,
+	public Page<DriveEntity> searchByFilter(String search, String mdn, LocalDate startDate, LocalDate endDate,
 		Pageable pageable) {
 
-		boolean isUnbounded = isUnboundedSearch(startDateTime, endDateTime);
-		BooleanBuilder condition = buildCondition(mdn, startDateTime, endDateTime, isUnbounded);
+		BooleanBuilder condition = new BooleanBuilder();
 
-		JPAQuery<DriveEntity> query = queryFactory
+		// 날짜 구간은 무조건 필터링
+		condition.and(driveEntity.driveOnTime.between(startDate.atStartOfDay(), endDate.atStartOfDay()));
+		condition.and(isEqualMdnContainsRenterName(mdn, search));
+
+		// 메인 쿼리
+		List<DriveEntity> content = queryFactory
 			.selectFrom(driveEntity)
 			.where(condition)
-			.orderBy(driveEntity.driveOnTime.desc());
+			.orderBy(driveEntity.driveOnTime.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
 
-		List<DriveEntity> content = isUnbounded
-			? query.offset(0).limit(20).fetch()
-			: query.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
+		// 카운트 쿼리
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(driveEntity.count())
+				.from(driveEntity)
+				.where(condition)
+				.fetchOne()
+		).orElse(0L);
 
-		long total = isUnbounded
-			? content.size()
-			: fetchTotalCount(condition);
-
-		Pageable effectivePageable = isUnbounded
-			? PageRequest.of(0, 20)
-			: pageable;
-
-		return new PageImpl<>(content, effectivePageable, total);
+		return new PageImpl<>(content, pageable, total);
 	}
 
 	// 현재 주행중인 차량 목록 조회 (차량별로 하나만 유지 + 검색 포함)
@@ -107,23 +114,44 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		);
 	}
 
-	private boolean isUnboundedSearch(LocalDateTime start, LocalDateTime end) {
-		return start == null && end == null;
-	}
+	@Override
+	public Optional<DriveHistory> findByDriveId(Long driveId) {
 
-	private BooleanBuilder buildCondition(String mdn, LocalDateTime start, LocalDateTime end, boolean isUnbounded) {
-		BooleanBuilder builder = new BooleanBuilder();
+		// drive 기본 정보 조회
+		DriveEntity drive = queryFactory
+			.selectFrom(driveEntity)
+			.distinct()
+			.join(driveEntity.car).fetchJoin()
+			.join(driveEntity.rent).fetchJoin()
+			.join(driveEntity.location).fetchJoin()
+			.where(driveEntity.id.eq(driveId))
+			.fetchOne();
 
-		if (StringUtils.isNotBlank(mdn)) {
-			builder.and(driveEntity.car.mdn.eq(mdn));
+		if (drive == null) {
+			return Optional.empty();
 		}
-		if (!isUnbounded) {
-			if (start != null)
-				builder.and(driveEntity.driveOnTime.goe(start));
-			if (end != null)
-				builder.and(driveEntity.driveOffTime.loe(end));
-		}
-		return builder;
+
+		// gps 이력 리스트 조회
+		List<GpsData> gpsDataList = queryFactory
+			.selectFrom(gpsHistoryEntity)
+			.where(gpsHistoryEntity.drive.id.eq(driveId))
+			.orderBy(gpsHistoryEntity.oTime.asc())
+			.fetch()
+			.stream()
+			.map(gps -> GpsData.create(
+				gps.getLat(),
+				gps.getLon(),
+				gps.getSpd(),
+				gps.getAng(),
+				gps.getOTime()
+			))
+			.toList();
+
+		DriveHistory driveHistory = DriveHistory.create(
+			drive, gpsDataList
+		);
+
+		return Optional.of(driveHistory);
 	}
 
 	private BooleanBuilder buildRunningDriveCondition(String search) {
@@ -149,5 +177,14 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 				.where(condition)
 				.fetchOne()
 		).orElse(0L);
+	}
+
+	//검색 조건
+	private BooleanExpression isEqualMdnContainsRenterName(String mdn, String search) {
+		if (StringUtils.isBlank(search)) {
+			return driveEntity.car.mdn.eq(mdn);
+		}
+		return driveEntity.car.mdn.eq(mdn)
+			.and(driveEntity.rent.renterName.containsIgnoreCase(search));
 	}
 }

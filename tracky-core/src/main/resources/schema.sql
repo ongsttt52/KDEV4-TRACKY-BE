@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS `car` (
 	`purpose` varchar(20) NOT NULL,
 	`status` enum('RUNNING', 'WAITING', 'FIXING', 'DELETED', 'CLOSED') NOT NULL,
 	`sum` double NOT NULL,
+    	`last_drive` timestamp NULL,
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
 	`deleted_at` timestamp NULL,
@@ -104,6 +105,7 @@ CREATE TABLE IF NOT EXISTS `drive` (
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
 	`memo` text NULL,
+    `skip_count` int NULL,
 	PRIMARY KEY (`id`),
     CONSTRAINT `fk_drive_rent`
         FOREIGN KEY (`rent_uuid`) REFERENCES `rent`(`rent_uuid`),

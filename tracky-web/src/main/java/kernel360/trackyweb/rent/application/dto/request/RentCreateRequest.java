@@ -2,7 +2,7 @@ package kernel360.trackyweb.rent.application.dto.request;
 
 import java.time.LocalDateTime;
 
-public record RentRequest(
+public record RentCreateRequest(
 	String mdn,
 	String renterName,
 	String renterPhone,
@@ -10,8 +10,7 @@ public record RentRequest(
 	LocalDateTime rentEtime,
 	String rentLoc,
 	String returnLoc,
-	String purpose,
-	String rentStatus
+	String purpose
 ) {
 
 }

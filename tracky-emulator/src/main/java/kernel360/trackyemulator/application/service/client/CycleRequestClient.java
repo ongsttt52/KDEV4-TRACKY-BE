@@ -2,6 +2,7 @@ package kernel360.trackyemulator.application.service.client;
 
 import java.time.LocalDateTime;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,9 +26,12 @@ public class CycleRequestClient {
 
 	private final RestTemplate restTemplate;
 
+	@Value("${url.hub-service}")
+	private String apiUrl;
+
 	public ApiResponse sendCycleData(EmulatorInstance instance) {
 
-		String url = "http://hub-service.hub1:8082/hub/car/cycle";
+		String url = apiUrl + "/cycle";
 
 		// CycleInfoRequest DTO 생성
 		EmulatorInfo emulatorInfo = instance.getEmulatorInfo();

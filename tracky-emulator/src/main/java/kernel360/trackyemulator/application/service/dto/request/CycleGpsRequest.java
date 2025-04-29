@@ -3,6 +3,7 @@ package kernel360.trackyemulator.application.service.dto.request;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import kernel360.trackycore.core.domain.vo.GpsInfo;
@@ -15,7 +16,7 @@ public record CycleGpsRequest(
 
 	@JsonCreator
 	public CycleGpsRequest(
-		@JsonProperty("oTime") LocalDateTime oTime,
+		@JsonProperty("oTime") @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime oTime,
 		@JsonProperty("lat") int lat,
 		@JsonProperty("lon") int lon,
 		@JsonProperty("ang") int ang,
