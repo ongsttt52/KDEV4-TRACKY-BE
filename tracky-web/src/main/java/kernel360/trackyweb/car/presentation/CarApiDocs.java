@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarDeleteRequest;
 import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
 import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
@@ -37,8 +38,8 @@ public interface CarApiDocs {
 	ApiResponse<CarDetailResponse> create(@RequestBody CarCreateRequest carCreateRequest);
 
 	@Operation(summary = "차량 정보 수정", description = "차량 정보를 수정하는 API")
-	ApiResponse<CarDetailResponse> update(@PathVariable String mdn, @RequestBody CarUpdateRequest carUpdateRequest);
+	ApiResponse<CarDetailResponse> update(@RequestBody CarUpdateRequest carUpdateRequest);
 
 	@Operation(summary = "차량 삭제", description = "차량 정보 삭제 API")
-	ApiResponse<String> delete(@PathVariable String mdn);
+	ApiResponse<CarDetailResponse> delete(@RequestBody CarDeleteRequest carDeleteRequest);
 }

@@ -15,6 +15,7 @@ import kernel360.trackycore.core.domain.provider.BizProvider;
 import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.DeviceProvider;
 import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarDeleteRequest;
 import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
 import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
@@ -111,14 +112,12 @@ public class CarService {
 
 	/**
 	 * 차량 정보 수정
-	 *
-	 * @param mdn              차량 mdn
 	 * @param carUpdateRequest 차량 정보
 	 * @return 수정된 차량 detail
 	 */
 	@Transactional
-	public ApiResponse<CarDetailResponse> update(String mdn, CarUpdateRequest carUpdateRequest) {
-		CarEntity car = carProvider.findByMdn(mdn);
+	public ApiResponse<CarDetailResponse> update( CarUpdateRequest carUpdateRequest) {
+		CarEntity car = carProvider.findByMdn(carUpdateRequest.mdn());
 
 		BizEntity biz = bizProvider.getBiz(1L);
 
@@ -139,9 +138,11 @@ public class CarService {
 	 * @return ApiResponse
 	 */
 	@Transactional
-	public ApiResponse<String> delete(String mdn) {
-		carDomainProvider.delete(mdn);
+	public ApiResponse<CarDetailResponse> delete(CarDeleteRequest carDeleteRequest) {
+		CarEntity car = carProvider.findByMdn(carDeleteRequest.mdn());
 
-		return ApiResponse.success("삭제 완료");
+		car.delete();
+
+		return ApiResponse.success(CarDetailResponse.from(car));
 	}
 }
