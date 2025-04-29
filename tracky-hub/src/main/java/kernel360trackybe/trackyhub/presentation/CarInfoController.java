@@ -57,7 +57,7 @@ public class CarInfoController {
 		return ApiResponse.success(tokenResponse);
 	}
 
-	@GetMapping("/mdn")
+	@GetMapping("/mdns")
 	public List<MdnBizResponse> getMdnAndBizId() {
 
 		log.info("컨트롤러 접근");
