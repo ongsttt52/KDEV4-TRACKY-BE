@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
+import kernel360.trackyconsumer.consumer.application.dto.response.MdnBizResponse;
 import kernel360.trackyconsumer.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyconsumer.rent.domain.provider.RentDomainProvider;
 import kernel360.trackyconsumer.timedistance.domain.provider.TimeDistanceProvider;
@@ -84,6 +85,14 @@ public class ConsumerService {
 
 		LocationEntity location = drive.getLocation();
 		location.updateEndLocation(carOnOffRequest.gpsInfo().getLat(), carOnOffRequest.gpsInfo().getLon());
+	}
+
+	@Transactional(readOnly = true)
+	public List<MdnBizResponse> getMdnAndBizId() {
+		List<CarEntity> cars = carProvider.findAll();
+		return cars.stream()
+			.map(car -> MdnBizResponse.of(car.getMdn(), carProvider.findByMdn(car.getMdn()).getBiz().getId()))
+			.toList();
 	}
 
 	private List<GpsHistoryEntity> toGpsHistoryList(List<CycleGpsRequest> cycleGpsRequestList,
