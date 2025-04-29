@@ -14,13 +14,12 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.provider.CarProvider;
-import kernel360.trackycore.core.domain.provider.RentProvider;
-import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
 import kernel360.trackyweb.dashboard.domain.CarStatus;
 import kernel360.trackyweb.dashboard.domain.Statistics;
 import kernel360.trackyweb.dashboard.domain.provider.DashGpsHistoryProvider;
 import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
+import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
 import lombok.RequiredArgsConstructor;
@@ -30,21 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class DashBoardService {
-	/*
-
-		private final DashBoardReader dashBoardReader;
-		private final CarStatusRepository carStatusRepository;
-		private final DashDriveRepository dashDriveRepository;
-		//private final DashCarRepository dashCarRepository;
-		private final DashRentRepository dashRentRepository;
-
-		private final RentProvider rentProvider;
-		private final CarProvider carProvider;
-		private final DriveDomainProvider driveDomainProvider;
-
-		private final ProvinceMatcher provinceMatcher;
-
-	*/
 	private final DashGpsHistoryProvider dashGpsHistoryProvider;
 	private final CarProvider carProvider;
 	private final CarDomainProvider carDomainProvider;
@@ -88,7 +72,7 @@ public class DashBoardService {
 	 */
 	@Transactional(readOnly = true)
 	public Map<String, Long> getAllCarStatus() {
-		List<CarStatus> grouped = carDomainProvider.findAllGroupedByStatus();
+		List<CarStatus> grouped = carDomainProvider.getAllGroupedByStatus();
 
 		Map<String, Long> carStatusMap = new HashMap<>();
 		for (CarStatus carStatus : grouped) {

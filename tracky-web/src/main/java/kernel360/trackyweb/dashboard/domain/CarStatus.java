@@ -6,15 +6,15 @@ import lombok.Data;
 public class CarStatus {
 
 	private String status;
-	private long count;
+	private Long count;
 
 	// 천승준 - jpa @Query 때문에 private -> public
-	public CarStatus(String status, long count) {
+	public CarStatus(String status, Long count) {
 		this.status = status;
 		this.count = count;
 	}
 
-	public static CarStatus create(String status, long count) {
+	public static CarStatus create(String status, Long count) {
 		return new CarStatus(status, count);
 	}
 

@@ -52,8 +52,9 @@ public class CarDomainProvider {
 
 	public List<CarEntity> getAllByBizUuid(String bizUuid) {
 		return carDomainRepository.findAllByBizUuid(bizUuid);
+	}
 
-	public List<CarStatus> findAllGroupedByStatus() {
+	public List<CarStatus> getAllGroupedByStatus() {
 		return carDomainRepository.findAllGroupedByStatus();
 	}
 }
