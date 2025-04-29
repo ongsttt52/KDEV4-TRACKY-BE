@@ -51,4 +51,12 @@ public class DriveDomainProvider {
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
 	}
 
+	public Double getTotalDriveDistance() {
+		return driveDomainRepository.getTotalDriveDistance();
+	}
+
+	public Long getTotalDriveDurationInMinutes() {
+		return driveDomainRepository.getTotalDriveDurationInMinutes();
+	}
+
 }

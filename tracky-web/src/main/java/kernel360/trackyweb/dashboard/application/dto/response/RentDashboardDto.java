@@ -1,4 +1,4 @@
-package kernel360.trackyweb.dashboard.presentation.dto;
+package kernel360.trackyweb.dashboard.application.dto.response;
 
 import java.time.LocalDateTime;
 

@@ -33,4 +33,12 @@ public class CarProvider {
 			throw (GlobalException.throwError(ErrorCode.CAR_NOT_FOUND));
 		}
 	}
+
+	public List<CarEntity> findAll() {
+		return carRepository.findAll();
+	}
+
+	public Long count() {
+		return carRepository.count();
+	}
 }

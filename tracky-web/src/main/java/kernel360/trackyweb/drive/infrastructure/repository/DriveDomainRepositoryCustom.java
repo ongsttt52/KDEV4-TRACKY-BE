@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackyweb.drive.domain.DriveHistory;

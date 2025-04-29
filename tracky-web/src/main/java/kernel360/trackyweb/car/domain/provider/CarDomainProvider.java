@@ -10,6 +10,7 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
+import kernel360.trackyweb.dashboard.domain.CarStatus;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -48,7 +49,11 @@ public class CarDomainProvider {
 		return carDomainRepository.searchDriveCarByFilter(bizUuid, search, pageable);
 	}
 
+
 	public List<CarEntity> getAllByBizUuid(String bizUuid) {
 		return carDomainRepository.findAllByBizUuid(bizUuid);
+
+	public List<CarStatus> findAllGroupedByStatus() {
+		return carDomainRepository.findAllGroupedByStatus();
 	}
 }
