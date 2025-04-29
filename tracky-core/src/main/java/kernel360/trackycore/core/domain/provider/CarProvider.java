@@ -1,6 +1,5 @@
 package kernel360.trackycore.core.domain.provider;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -33,9 +32,5 @@ public class CarProvider {
 		if (carRepository.existsByMdn(mdn)) {
 			throw (GlobalException.throwError(ErrorCode.CAR_NOT_FOUND));
 		}
-	}
-
-	public List<CarEntity> findAll() {
-		return carRepository.findAll();
 	}
 }

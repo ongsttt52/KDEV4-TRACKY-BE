@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.provider.CarProvider;
+import kernel360trackybe.trackyhub.application.domain.provider.CarHubDomainProvider;
 import kernel360trackybe.trackyhub.application.dto.request.CarOnOffRequest;
 import kernel360trackybe.trackyhub.application.dto.request.CycleInfoRequest;
 import kernel360trackybe.trackyhub.application.dto.request.GpsHistoryMessage;
@@ -25,6 +26,7 @@ public class CarInfoProducerService {
 	private final RabbitTemplate rabbitTemplate;
 	private final RabbitMQProperties rabbitMQProperties;
 	private final CarProvider carProvider;
+	private final CarHubDomainProvider carHubDomainProvider;
 
 	public void sendCarStart(CarOnOffRequest carOnOffRequest) {
 
@@ -69,7 +71,7 @@ public class CarInfoProducerService {
 
 	@Transactional(readOnly = true)
 	public List<MdnBizResponse> getMdnAndBizId() {
-		List<CarEntity> cars = carProvider.findAll();
+		List<CarEntity> cars = carHubDomainProvider.findAllByAvailableRent();
 		return cars.stream()
 			.map(car -> MdnBizResponse.of(car.getMdn(), carProvider.findByMdn(car.getMdn()).getBiz().getId()))
 			.toList();
