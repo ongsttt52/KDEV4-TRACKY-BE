@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {
 	"kernel360.trackycore.core.infrastructure",
 })
-@ComponentScan(basePackages = "kernel360")
+@ComponentScan(basePackages = {"kernel360", "kernel360trackybe"})
 public class TrackyHubApplication {
 
 	public static void main(String[] args) {
