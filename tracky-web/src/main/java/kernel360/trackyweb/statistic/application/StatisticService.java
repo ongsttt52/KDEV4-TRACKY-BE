@@ -1,6 +1,8 @@
 package kernel360.trackyweb.statistic.application;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,10 @@ public class StatisticService {
 
 		DailyStatisticEntity dailyStatistic = statisticProvider.getDailyStatistic(bizUuid, date);
 
+		List<Integer> list = new ArrayList<>();
+		for (int i = 0; i < 24; i++) {
+			list.add(1);
+		}
 		DailyStatisticResponse response = DailyStatisticResponse.from(dailyStatistic, list);
 
 		return ApiResponse.success(response);
@@ -31,6 +37,14 @@ public class StatisticService {
 
 		MonthlyStatisticEntity monthlyStatistic = statisticProvider.getMonthlyStatistic(bizUuid, date);
 
+		List<Integer> list = new ArrayList<>();
+		for (int i = 0; i < 12; i++) {
+			list.add(1);
+		}
+		List<Long> list2 = new ArrayList<>();
+		for (int i = 0; i < 12; i++) {
+			list2.add(1L);
+		}
 		MonthlyStatisticResponse response = MonthlyStatisticResponse.from(monthlyStatistic, list, list2);
 
 		return ApiResponse.success(response);
