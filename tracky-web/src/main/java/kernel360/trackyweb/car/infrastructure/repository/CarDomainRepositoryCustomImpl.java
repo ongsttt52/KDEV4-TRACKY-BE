@@ -93,6 +93,15 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return new PageImpl<>(content, pageable, total);
 	}
 
+	@Override
+	public List<CarEntity> findAllByBizUuid(String bizUuid) {
+		return queryFactory
+			.selectFrom(carEntity)
+			.join(carEntity.biz, bizEntity)
+			.where(bizEntity.bizUuid.eq(bizUuid))
+			.fetch();
+	}
+
 	//검색 조건
 	private BooleanExpression isContainsCarMdnOrCarPlate(String search) {
 		if (StringUtils.isBlank(search)) {

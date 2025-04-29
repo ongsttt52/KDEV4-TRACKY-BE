@@ -28,6 +28,8 @@ public enum ErrorCode {
 
 	NOTICE_NOT_FOUND("NOTICE_001", "존재하지 않는 공지사항입니다."),
 
+	EXCEL_GENERATION_FAIL("EXCEL_001", "엑셀 파일 생성 중 오류가 발생했습니다."),
+
 	STATISTIC_NOT_FOUND("STATISTIC_001", "조회된 데이터가 없습니다."),
 	;
 

@@ -18,9 +18,11 @@ import kernel360.trackyweb.car.application.dto.request.CarCreateRequest;
 import kernel360.trackyweb.car.application.dto.request.CarDeleteRequest;
 import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
+import kernel360.trackyweb.car.application.dto.request.CarsExportRequest;
 import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
 import kernel360.trackyweb.car.application.dto.response.CarResponse;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
+import kernel360.trackyweb.car.infrastructure.util.ExcelGenerator;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +36,8 @@ public class CarService {
 	private final BizProvider bizProvider;
 	private final CarProvider carProvider;
 	private final GlobalSseEvent globalSseEvent;
-
 	private final CarDomainProvider carDomainProvider;
+	private final ExcelGenerator excelGenerator;
 
 	/**
 	 * mdn이 일치하는 차량 찾기
@@ -144,5 +146,12 @@ public class CarService {
 		car.delete();
 
 		return ApiResponse.success(CarDetailResponse.from(car));
+	}
+
+	public byte[] exportCarListToExcel(String bizUuid) {
+		List<CarEntity> carList = carDomainProvider.getAllByBizUuid(bizUuid);
+		List<CarsExportRequest> carsExportRequestList = CarsExportRequest.from(carList);
+
+		return excelGenerator.generateExcel(carsExportRequestList);
 	}
 }

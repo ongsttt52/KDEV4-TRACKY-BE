@@ -4,6 +4,7 @@ import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -114,6 +115,17 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		);
 	}
 
+	@Override
+	public List<DriveEntity> findDriveListByMdn(String mdn) {
+		return queryFactory
+			.selectFrom(driveEntity)
+			.where(driveEntity.car.mdn.eq(mdn))
+			.fetch();
+	}
+
+	private boolean isUnboundedSearch(LocalDateTime start, LocalDateTime end) {
+		return start == null && end == null;
+	}
 	@Override
 	public Optional<DriveHistory> findByDriveId(Long driveId) {
 
