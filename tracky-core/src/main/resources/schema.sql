@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS `drive` (
 	`created_at` timestamp NOT NULL,
 	`updated_at` timestamp NULL,
 	`memo` text NULL,
+    `skip_count` int NULL,
 	PRIMARY KEY (`id`),
     CONSTRAINT `fk_drive_rent`
         FOREIGN KEY (`rent_uuid`) REFERENCES `rent`(`rent_uuid`),

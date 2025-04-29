@@ -48,6 +48,7 @@ public class ConsumerService {
 		LocalDateTime oTime = request.oTime();
 		DriveEntity drive = driveProvider.getDrive(car, oTime);
 
+		drive.skipCount(removeOverDistance(cycleGpsRequestList));
 		processTimeDistance(cycleGpsRequestList, oTime, car);
 
 		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive, oTime);
@@ -98,6 +99,18 @@ public class ConsumerService {
 		}
 
 		return gpsHistories;
+	}
+
+	private int removeOverDistance(List<CycleGpsRequest> cycleGpsRequests) {
+
+		int count = 0;
+		for (int i = cycleGpsRequests.size() - 1; i >= 0; i--) {
+			if (cycleGpsRequests.get(i).gpsInfo().getSum() > 80) {
+				cycleGpsRequests.remove(i);
+				count++;
+			}
+		}
+		return count;
 	}
 
 	/**
