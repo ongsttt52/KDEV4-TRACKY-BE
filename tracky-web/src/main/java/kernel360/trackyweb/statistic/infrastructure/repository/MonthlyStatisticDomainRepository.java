@@ -1,6 +1,6 @@
 package kernel360.trackyweb.statistic.infrastructure.repository;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Optional;
 
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
@@ -8,5 +8,5 @@ import kernel360.trackycore.core.infrastructure.repository.MonthlyStatisticRepos
 
 public interface MonthlyStatisticDomainRepository extends MonthlyStatisticRepository {
 
-	Optional<MonthlyStatisticEntity> findByBizUuidAndDate(String bizUuid, LocalDate date);
+	Optional<MonthlyStatisticEntity> findByBizUuidAndDate(String bizUuid, YearMonth date);
 }

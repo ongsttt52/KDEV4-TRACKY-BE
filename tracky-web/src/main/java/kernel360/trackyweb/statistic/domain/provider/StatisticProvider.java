@@ -1,6 +1,7 @@
 package kernel360.trackyweb.statistic.domain.provider;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public class StatisticProvider {
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.STATISTIC_NOT_FOUND));
 	}
 
-	public MonthlyStatisticEntity getMonthlyStatistic(String bizUuid, LocalDate date) {
+	public MonthlyStatisticEntity getMonthlyStatistic(String bizUuid, YearMonth date) {
 
 		return monthlyStatisticRepository.findByBizUuidAndDate(bizUuid, date)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.STATISTIC_NOT_FOUND));

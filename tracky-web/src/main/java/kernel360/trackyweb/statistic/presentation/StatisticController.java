@@ -1,6 +1,7 @@
 package kernel360.trackyweb.statistic.presentation;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +27,7 @@ public class StatisticController {
 	@GetMapping("/daily")
 	public ApiResponse<DailyStatisticResponse> getDailyStatistic(
 		@AuthenticationPrincipal MemberPrincipal memberPrincipal,
-		@RequestParam("date")
+		@RequestParam(name = "date")
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 		LocalDate date
 	) {
@@ -37,7 +38,7 @@ public class StatisticController {
 	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(
 		@AuthenticationPrincipal MemberPrincipal memberPrincipal,
 		@RequestParam(name = "date")
-		LocalDate date
+		YearMonth date
 	) {
 		return statisticService.getMonthlyStatistic(memberPrincipal.bizUuid(), date);
 	}
