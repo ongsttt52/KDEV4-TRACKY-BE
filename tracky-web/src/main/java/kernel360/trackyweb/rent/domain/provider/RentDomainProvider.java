@@ -3,6 +3,7 @@ package kernel360.trackyweb.rent.domain.provider;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -44,4 +45,11 @@ public class RentDomainProvider {
 		return rentDomainRepository.findDelayedRents(bizUuid, now);
 	}
 
+	public Long getTotalRentDurationInMinutes() {
+		return rentDomainRepository.getTotalRentDurationInMinutes();
+	}
+
+	public Long count() {
+		return rentDomainRepository.count();
+	}
 }

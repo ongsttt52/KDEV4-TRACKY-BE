@@ -38,4 +38,8 @@ public class CarProvider {
 	public List<CarEntity> findAll() {
 		return carRepository.findAll();
 	}
+
+	public Long count() {
+		return carRepository.count();
+	}
 }
