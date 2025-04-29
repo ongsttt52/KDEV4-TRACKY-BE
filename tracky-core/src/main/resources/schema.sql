@@ -62,14 +62,14 @@ CREATE TABLE IF NOT EXISTS `car` (
 );
 
 CREATE TABLE IF NOT EXISTS `rent` (
-	`rent_uuid`	varchar(8) NOT NULL,
+	`rent_uuid`	varchar(10) NOT NULL,
 	`mdn`	varchar(11) NOT NULL,
 	`rent_stime` timestamp NOT NULL,
 	`rent_etime` timestamp NOT NULL,
 	`renter_name` varchar(20) NOT NULL,
 	`renter_phone` varchar(13) NOT NULL,
 	`purpose` varchar(20) NULL,
-	`rent_status` enum('RENTING', 'RESERVED', 'RETURNED', 'CANCELED', 'DELETED') NOT NULL,
+	`rent_status` enum('RENTING', 'RESERVED', 'RETURNED', 'CANCELED', 'DELETED', 'DELAY') NOT NULL,
 	`rent_loc` varchar(100) NULL,
 	`rent_lat` int NULL,
 	`rent_lon` int NULL,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `location` (
 
 CREATE TABLE IF NOT EXISTS `drive` (
 	`id` bigint	NOT NULL AUTO_INCREMENT,
-	`rent_uuid` varchar(8) NOT NULL,
+	`rent_uuid` varchar(10) NOT NULL,
 	`mdn` varchar(11) NOT NULL,
 	`drive_loc_id` bigint NOT NULL,
 	`drive_distance` double NULL,
