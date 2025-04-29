@@ -110,4 +110,10 @@ public class CarEntity extends DateBaseEntity {
 	public void lastDrive(LocalDateTime lastDrive) {
 		this.lastDrive = lastDrive;
 	}
+
+	public void delete(
+	) {
+		this.status = "deleted";
+		this.deletedAt = LocalDateTime.now();
+	}
 }
