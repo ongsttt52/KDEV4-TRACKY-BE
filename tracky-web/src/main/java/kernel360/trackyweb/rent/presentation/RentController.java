@@ -1,25 +1,26 @@
 package kernel360.trackyweb.rent.presentation;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.rent.application.RentService;
-import kernel360.trackyweb.rent.application.dto.request.RentRequest;
+import kernel360.trackyweb.rent.application.dto.request.RentCreateRequest;
+import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
+import kernel360.trackyweb.rent.application.dto.request.RentUpdateRequest;
 import kernel360.trackyweb.rent.application.dto.response.RentResponse;
+import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,21 +33,21 @@ public class RentController implements RentApiDocs {
 	private final RentService rentService;
 
 	@GetMapping("/mdns")
-	public ApiResponse<List<String>> getAllMdnByBizId() {
-		return rentService.getAllMdnByBizId();
+	public ApiResponse<List<String>> getAllMdnByBizId(
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
+	) {
+		String bizUuid = memberPrincipal.bizUuid();
+		return rentService.getAllMdnByBizId(bizUuid);
 	}
 
 	@GetMapping()
-	public ApiResponse<List<RentResponse>> searchByFilter(
-		@RequestParam(required = false) String rentUuid,
-		@RequestParam(required = false, name = "status") String rentStatus,
-		@RequestParam(required = false, name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate rentDate,
-		// yyyy-MM-dd
-		Pageable pageable
+	public ApiResponse<List<RentResponse>> searchRentByFilter(
+		@ModelAttribute RentSearchByFilterRequest rentSearchByFilterRequest,
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
 	) {
-		// LocalDate를 LocalDateTime으로 변환
-		LocalDateTime rentDateTime = rentDate != null ? rentDate.atStartOfDay() : null;
-		return rentService.searchByFilter(rentUuid, rentStatus, rentDateTime, pageable);
+		String bizUuid = memberPrincipal.bizUuid();
+
+		return rentService.searchRentByFilter(rentSearchByFilterRequest, bizUuid);
 	}
 
 	@GetMapping("/{rentUuid}")
@@ -58,17 +59,17 @@ public class RentController implements RentApiDocs {
 
 	@PostMapping()
 	public ApiResponse<RentResponse> create(
-		@RequestBody RentRequest rentRequest
+		@RequestBody RentCreateRequest rentCreateRequest
 	) {
-		return rentService.create(rentRequest);
+		return rentService.create(rentCreateRequest);
 	}
 
 	@PatchMapping("/{rentUuid}")
 	public ApiResponse<RentResponse> update(
 		@PathVariable String rentUuid,
-		@RequestBody RentRequest rentRequest
+		@RequestBody RentUpdateRequest rentUpdateRequest
 	) {
-		return rentService.update(rentUuid, rentRequest);
+		return rentService.update(rentUuid, rentUpdateRequest);
 	}
 
 	@DeleteMapping("/{rentUuid}")
