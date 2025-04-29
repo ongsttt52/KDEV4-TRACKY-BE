@@ -1,4 +1,5 @@
-package kernel360.trackyweb.dashboard.infrastructure.repository.repo;
+/*
+package kernel360.trackyweb.dashboard.infrastructure.repository;
 
 import java.util.List;
 
@@ -14,3 +15,4 @@ public interface CarStatusRepository extends JpaRepository<CarEntity, Long> {
 	List<CarStatus> findAllGroupedByStatus();
 
 }
+*/

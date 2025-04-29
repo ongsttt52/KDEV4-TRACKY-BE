@@ -1,5 +1,6 @@
 package kernel360.trackyweb.rent.domain.provider;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -37,6 +38,10 @@ public class RentDomainProvider {
 
 	public List<String> getAllMdnByBizId(String bizUuid) {
 		return carDomainRepository.findAllMdnByBizId(bizUuid);
+	}
+
+	public List<RentEntity> findDelayedRentList(String bizUuid, LocalDateTime now) {
+		return rentDomainRepository.findDelayedRents(bizUuid, now);
 	}
 
 }

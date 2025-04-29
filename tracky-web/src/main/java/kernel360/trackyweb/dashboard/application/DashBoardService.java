@@ -1,25 +1,18 @@
 package kernel360.trackyweb.dashboard.application;
 
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
-import kernel360.trackyweb.dashboard.domain.CarStatus;
-import kernel360.trackyweb.dashboard.domain.Statistics;
-import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
-import kernel360.trackyweb.dashboard.infrastructure.repository.repo.CarStatusRepository;
-import kernel360.trackyweb.dashboard.infrastructure.repository.repo.DashCarRepository;
-import kernel360.trackyweb.dashboard.infrastructure.repository.repo.DashDriveRepository;
-import kernel360.trackyweb.dashboard.infrastructure.repository.repo.DashGpsHistoryRepository;
-import kernel360.trackyweb.dashboard.infrastructure.repository.repo.DashRentRepository;
-import kernel360.trackyweb.dashboard.presentation.dto.RentDashboardDto;
+import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.provider.CarProvider;
+import kernel360.trackycore.core.domain.provider.RentProvider;
+import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
+import kernel360.trackyweb.drive.domain.provider.DriveDomainProvider;
+import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,23 +20,32 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class DashBoardService {
+	/*
 
-	private final DashBoardReader dashBoardReader;
-	private final CarStatusRepository carStatusRepository;
-	private final DashDriveRepository dashDriveRepository;
-	private final DashCarRepository dashCarRepository;
-	private final DashRentRepository dashRentRepository;
+		private final DashBoardReader dashBoardReader;
+		private final CarStatusRepository carStatusRepository;
+		private final DashDriveRepository dashDriveRepository;
+		//private final DashCarRepository dashCarRepository;
+		private final DashRentRepository dashRentRepository;
 
-	private final ProvinceMatcher provinceMatcher;
+		private final RentProvider rentProvider;
+		private final CarProvider carProvider;
+		private final DriveDomainProvider driveDomainProvider;
 
-	private final DashGpsHistoryRepository dashGpsHistoryRepository;
+		private final ProvinceMatcher provinceMatcher;
+
+	*/
+	private final RentProvider rentProvider;
+	private final CarProvider carProvider;
+	private final RentDomainProvider rentDomainProvider;
+	private final DriveDomainProvider driveDomainProvider;
 
 	/**
 	 * 예약 현황 조회( 어제/오늘/내일 )
 	 * @param date
 	 * @return 예약 list
 	 */
-	@Transactional(readOnly = true)
+/*	@Transactional(readOnly = true)
 	public ApiResponse<List<RentDashboardDto>> findRents(String date) {
 		LocalDate baseDate = switch (date.toLowerCase()) {
 			case "yesterday" -> LocalDate.now().minusDays(1);
@@ -52,13 +54,41 @@ public class DashBoardService {
 		};
 		List<RentDashboardDto> rents = dashBoardReader.findRentsByDate(baseDate);
 		return ApiResponse.success(rents);
+	}*/
+
+	/**
+	 * 반납 조회( 지연된 반납 )
+	 * @param
+	 * @return 지연된 반납 list
+	 */
+
+	public ApiResponse<List<ReturnResponse>> getDelayedReturn(String bizUuid) {
+		LocalDateTime now = LocalDateTime.now();
+		List<RentEntity> delayedRents = rentDomainProvider.findDelayedRentList(bizUuid, now);
+
+		return ApiResponse.success(
+			delayedRents.stream()
+				.map(rent -> {
+					var car = rent.getCar();
+					return new ReturnResponse(
+						rent.getRentUuid(),
+						rent.getRenterName(),
+						rent.getRentStatus(),
+						rent.getRentEtime(),
+						car.getMdn(),
+						car.getCarPlate(),
+						car.getCarType()
+					);
+				})
+				.collect(Collectors.toList())
+		);
 	}
 
 	/**
 	 * 차량 상태 통계 api
 	 * @return hashmap(status, count)
 	 */
-	@Transactional(readOnly = true)
+/*	@Transactional(readOnly = true)
 	public Map<String, Long> getAllCarStatus() {
 		List<CarStatus> grouped = carStatusRepository.findAllGroupedByStatus();
 
@@ -68,29 +98,29 @@ public class DashBoardService {
 		}
 
 		return carStatusMap;
-	}
+	}*/
 
 	/**
 	 * 대시보드용 통계 데이터
 	 * @return Statistics 통계 데이터
 	 */
-	@Transactional(readOnly = true)
+/*	@Transactional(readOnly = true)
 	public Statistics getStatistics() {
 		double totalDriveDistance = Optional.ofNullable(dashDriveRepository.getTotalDriveDistance()).orElse(0.0);
 		long totalRentCount = dashRentRepository.count();
-		long totalCarCount = dashCarRepository.count();
+		long totalCarCount = carProvider.count();
 		long totalRentDuration = Optional.ofNullable(dashRentRepository.getTotalRentDurationInMinutes()).orElse(0L);
 		long totalDriveDuration = Optional.ofNullable(dashDriveRepository.getTotalDriveDurationInMinutes()).orElse(0L);
 
 		return Statistics.create(totalDriveDistance, totalRentCount, totalCarCount, totalRentDuration,
 			totalDriveDuration);
-	}
+	}*/
 
 	/**
 	 * geo 기반 영역 안의 차량 수 hashmap 구하기
 	 * @return 구역 : 차량 수 map
 	 */
-	@Transactional(readOnly = true)
+	/*@Transactional(readOnly = true)
 	public Map<String, Integer> getGeoData() {
 		List<GpsHistoryEntity> gpsList = dashGpsHistoryRepository.findLatestGpsByMdn();
 
@@ -109,5 +139,5 @@ public class DashBoardService {
 		}
 		log.info("provinceCountMap: {}", provinceCountMap);
 		return provinceCountMap;
-	}
+	}*/
 }

@@ -1,4 +1,5 @@
-package kernel360.trackyweb.dashboard.infrastructure.repository.repo;
+/*
+package kernel360.trackyweb.dashboard.infrastructure.repository;
 
 import java.util.Optional;
 
@@ -9,3 +10,4 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 public interface DashCarRepository extends JpaRepository<CarEntity, Long> {
 	Optional<CarEntity> findByMdn(String mdn);
 }
+*/

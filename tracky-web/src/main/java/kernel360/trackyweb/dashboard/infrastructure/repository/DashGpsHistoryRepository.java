@@ -1,4 +1,5 @@
-package kernel360.trackyweb.dashboard.infrastructure.repository.repo;
+/*
+package kernel360.trackyweb.dashboard.infrastructure.repository;
 
 import java.util.List;
 
@@ -25,3 +26,4 @@ public interface DashGpsHistoryRepository extends JpaRepository<GpsHistoryEntity
 	List<GpsHistoryEntity> findLatestGpsByMdn();
 
 }
+*/

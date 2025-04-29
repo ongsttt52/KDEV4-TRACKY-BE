@@ -1,4 +1,5 @@
-package kernel360.trackyweb.dashboard.infrastructure.repository.repo;
+/*
+package kernel360.trackyweb.dashboard.infrastructure.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,3 +20,4 @@ public interface DashRentRepository extends JpaRepository<RentEntity, Long> {
 	List<RentEntity> findRentsOnDate(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
 }
+*/

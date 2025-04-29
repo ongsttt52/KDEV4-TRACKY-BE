@@ -16,6 +16,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import lombok.RequiredArgsConstructor;
@@ -95,4 +96,19 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 			.limit(pageable.getPageSize())
 			.fetch();
 	}
+
+	@Override
+	public List<RentEntity> findDelayedRents(String bizUuid, LocalDateTime now) {
+		QRentEntity rent = QRentEntity.rentEntity;
+
+		return queryFactory
+			.selectFrom(rent)
+			.where(
+				rent.rentStatus.eq("RENTING"),
+				rent.rentEtime.before(now),
+				rent.car.biz.bizUuid.eq(bizUuid)
+			)
+			.fetch();
+	}
+
 }
