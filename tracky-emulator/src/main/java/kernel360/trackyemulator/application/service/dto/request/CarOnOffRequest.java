@@ -1,15 +1,19 @@
 package kernel360.trackyemulator.application.service.dto.request;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import kernel360.trackycore.core.domain.vo.EmulatorInfo;
 import kernel360.trackycore.core.domain.vo.GpsInfo;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 
+@JsonIgnoreProperties(value = {"emulatorInfo", "gpsInfo"})
 public record CarOnOffRequest(
 	String mdn,
 	String gcd,
@@ -70,5 +74,70 @@ public record CarOnOffRequest(
 			car.getCarOnTime(),
 			car.getCarOffTime()
 		);
+	}
+
+	// EmulatorInfo의 필드들을 평면화하기 위한 JsonGetter 메서드들
+	@JsonGetter("tid")
+	public String getTid() {
+		return emulatorInfo.getTid();
+	}
+
+	@JsonGetter("mid")
+	public String getMid() {
+		return emulatorInfo.getMid();
+	}
+
+	@JsonGetter("did")
+	public String getDid() {
+		return emulatorInfo.getDid();
+	}
+
+	@JsonGetter("pv")
+	public String getPv() {
+		return emulatorInfo.getPv();
+	}
+
+	// GpsInfo의 필드들을 평면화하기 위한 JsonGetter 메서드들
+	@JsonGetter("lat")
+	public int getLat() {
+		return gpsInfo.getLat();
+	}
+
+	@JsonGetter("lon")
+	public int getLon() {
+		return gpsInfo.getLon();
+	}
+
+	@JsonGetter("ang")
+	public int getAng() {
+		return gpsInfo.getAng();
+	}
+
+	@JsonGetter("spd")
+	public int getSpd() {
+		return gpsInfo.getSpd();
+	}
+
+	@JsonGetter("sum")
+	public double getSum() {
+		return gpsInfo.getSum();
+	}
+
+	// onTime을 원하는 포맷으로 직렬화
+	@JsonGetter("onTime")
+	public String getFormattedOnTime() {
+		if (onTime != null) {
+			return onTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		}
+		return null;
+	}
+
+	// offTime을 원하는 포맷으로 직렬화
+	@JsonGetter("offTime")
+	public String getFormattedOffTime() {
+		if (offTime != null) {
+			return offTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		}
+		return null;
 	}
 }
