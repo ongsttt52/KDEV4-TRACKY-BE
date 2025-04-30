@@ -2,8 +2,8 @@ package kernel360.trackyweb.rent.domain.provider;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -52,4 +52,17 @@ public class RentDomainProvider {
 	public Long count() {
 		return rentDomainRepository.count();
 	}
+
+	public void validateOverlappingRent(String mdn, LocalDateTime rentStime, LocalDateTime rentEtime) {
+		List<RentEntity> overlaps = rentDomainRepository.findOverlappingRent(mdn, rentStime, rentEtime);
+		
+		if (!overlaps.isEmpty()) {
+			String conflictTime = overlaps.stream()
+				.map(r -> "[" + r.getRentStime() + " ~ " + r.getRentEtime() + "]")
+				.collect(Collectors.joining("\n"));
+
+			throw ErrorCode.RENT_OVERLAP.withDetail("\n" + conflictTime);
+		}
+	}
+
 }

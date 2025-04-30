@@ -19,9 +19,17 @@ public class ErrorResponse {
 	@Schema(description = "에러 메세지")
 	private String message;
 
+	@Schema(description = "에러 상세 메세지")
+	private String detailMessage;
+
 	public ErrorResponse(String code, String message) {
+		this(code, message, null);
+	}
+
+	public ErrorResponse(String code, String message, String detailMessage) {
 		this.code = code;
 		this.message = message;
+		this.detailMessage = detailMessage;
 		this.errorTime = LocalDateTime.now();
 	}
 
@@ -29,6 +37,14 @@ public class ErrorResponse {
 		return new ErrorResponse(
 			e.getErrorCode().getCode(),
 			e.getErrorCode().getMessage()
+		);
+	}
+
+	public static ErrorResponse withDetail(GlobalException e) {
+		return new ErrorResponse(
+			e.getErrorCode().getCode(),
+			e.getErrorCode().getMessage(),
+			e.getMessage()
 		);
 	}
 }

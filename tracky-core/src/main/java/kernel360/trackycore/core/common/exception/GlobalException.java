@@ -12,6 +12,11 @@ public class GlobalException extends RuntimeException {
 		this.errorCode = errorCode;
 	}
 
+	protected GlobalException(ErrorCode errorCode, String detailMessage) {
+		super(detailMessage);
+		this.errorCode = errorCode;
+	}
+
 	public static GlobalException throwError(ErrorCode errorCode) {
 		throw new GlobalException(errorCode);
 	}
