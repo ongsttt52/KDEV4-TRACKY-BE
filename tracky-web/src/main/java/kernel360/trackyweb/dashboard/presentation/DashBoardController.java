@@ -23,7 +23,7 @@ public class DashBoardController implements DashBoardApiDocs {
 
 	private final DashBoardService dashBoardService;
 
-	@GetMapping("return/status")
+	@GetMapping("/return/status")
 	public ApiResponse<List<ReturnResponse>> getdelayedReturn(
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 		return dashBoardService.getDelayedReturn(memberPrincipal.bizUuid());
