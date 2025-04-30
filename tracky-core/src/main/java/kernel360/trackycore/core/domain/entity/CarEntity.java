@@ -130,6 +130,12 @@ public class CarEntity extends DateBaseEntity {
 		this.lastDrive = lastDrive;
 	}
 
+	public void updateStatus(
+		String status
+	) {
+		this.status = status;
+	}
+
 	public void delete(
 	) {
 		this.status = CarStatus.DELETED;

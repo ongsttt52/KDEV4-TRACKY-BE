@@ -62,6 +62,7 @@ public class ConsumerService {
 		locationProvider.save(location);
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
+		car.updateStatus("RUNNING");
 
 		RentEntity rent = rentDomainProvider.getRent(car, carOnOffRequest.onTime());
 
@@ -75,12 +76,13 @@ public class ConsumerService {
 	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
-		car.lastDrive(carOnOffRequest.offTime());
 
 		DriveEntity drive = driveProvider.getDrive(car, carOnOffRequest.onTime());
 		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
 
 		car.updateDistance(drive.getDriveDistance());
+		car.lastDrive(carOnOffRequest.offTime());
+		car.updateStatus("WAITING");
 
 		LocationEntity location = drive.getLocation();
 		location.updateEndLocation(carOnOffRequest.gpsInfo().getLat(), carOnOffRequest.gpsInfo().getLon());
