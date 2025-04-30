@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackyemulator.application.service.dto.response.ApiResponse;
+import kernel360.trackyemulator.application.service.dto.response.MdnBizResponse;
 import kernel360.trackyemulator.domain.EmulatorInstance;
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +23,7 @@ public class ControlClient {
 		return cycleRequestClient.sendCycleData(instance);
 	}
 
-	public List<String> getMdnList() {
+	public List<MdnBizResponse> getMdnList() {
 		return mdnListRequestClient.getMdnList();
 	}
 
