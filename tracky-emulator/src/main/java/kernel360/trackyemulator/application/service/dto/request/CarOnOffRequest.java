@@ -76,7 +76,6 @@ public record CarOnOffRequest(
 		);
 	}
 
-	// EmulatorInfo의 필드들을 평면화하기 위한 JsonGetter 메서드들
 	@JsonGetter("tid")
 	public String getTid() {
 		return emulatorInfo.getTid();
@@ -97,7 +96,6 @@ public record CarOnOffRequest(
 		return emulatorInfo.getPv();
 	}
 
-	// GpsInfo의 필드들을 평면화하기 위한 JsonGetter 메서드들
 	@JsonGetter("lat")
 	public int getLat() {
 		return gpsInfo.getLat();
@@ -123,7 +121,6 @@ public record CarOnOffRequest(
 		return gpsInfo.getSum();
 	}
 
-	// onTime을 원하는 포맷으로 직렬화
 	@JsonGetter("onTime")
 	public String getFormattedOnTime() {
 		if (onTime != null) {
@@ -132,7 +129,6 @@ public record CarOnOffRequest(
 		return null;
 	}
 
-	// offTime을 원하는 포맷으로 직렬화
 	@JsonGetter("offTime")
 	public String getFormattedOffTime() {
 		if (offTime != null) {

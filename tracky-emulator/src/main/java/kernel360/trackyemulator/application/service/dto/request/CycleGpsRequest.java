@@ -43,7 +43,6 @@ public record CycleGpsRequest(
 		);
 	}
 
-	// GpsInfo의 필드들을 평면화하기 위한 JsonGetter 메서드들
 	@JsonGetter("lat")
 	public int getLat() {
 		return gpsInfo.getLat();
@@ -69,7 +68,6 @@ public record CycleGpsRequest(
 		return gpsInfo.getSum();
 	}
 
-	// oTime을 원하는 포맷으로 직렬화
 	@JsonGetter("oTime")
 	public String getFormattedOTime() {
 		if (oTime != null) {

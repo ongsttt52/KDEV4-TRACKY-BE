@@ -28,10 +28,9 @@ public record TokenRequest(String mdn, EmulatorInfo emulatorInfo) {
 		return new TokenRequest(mdn, emulatorInfo);
 	}
 
-	// EmulatorInfo의 필드들을 평면화하기 위한 JsonGetter 메서드들
 	@JsonGetter("tid")
 	public String getTid() {
-		return emulatorInfo.getTid(); // Lombok @Getter 메서드 사용
+		return emulatorInfo.getTid();
 	}
 
 	@JsonGetter("mid")

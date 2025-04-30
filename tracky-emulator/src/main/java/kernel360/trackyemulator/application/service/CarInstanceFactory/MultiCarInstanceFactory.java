@@ -30,8 +30,7 @@ public class MultiCarInstanceFactory {
 			int lat = RandomLocationGenerator.randomLatitude();
 			int lon = RandomLocationGenerator.randomLongitude();
 			int ang = RandomLocationGenerator.randomAngle();
-			log.info("creating lat, lon, ang: {}, {}, {}", lat, lon, ang);
-			
+
 			EmulatorInfo emulatorInfo = EmulatorInfo.create();
 			GpsInfo gpsInfo = GpsInfo.create(lat, lon, ang, 0, 0.0);
 			EmulatorInstance car = EmulatorInstance.create(mdn, emulatorInfo, gpsInfo, LocalDateTime.now());
