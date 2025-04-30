@@ -118,16 +118,14 @@ public class CarService {
 	 * @return 수정된 차량 detail
 	 */
 	@Transactional
-	public ApiResponse<CarDetailResponse> update( CarUpdateRequest carUpdateRequest) {
+	public ApiResponse<CarDetailResponse> update(CarUpdateRequest carUpdateRequest) {
 		CarEntity car = carProvider.findByMdn(carUpdateRequest.mdn());
-
-		BizEntity biz = bizProvider.getBiz(1L);
 
 		// 항상 MDN 1인 디바이스 사용
 		DeviceEntity device = deviceProvider.getDevice(1L);
 
 		// update 할 객체 생성
-		car.updateFrom(biz, device, carUpdateRequest.carType(), carUpdateRequest.carName(), carUpdateRequest.carPlate(),
+		car.updateFrom(device, carUpdateRequest.carType(), carUpdateRequest.carName(), carUpdateRequest.carPlate(),
 			carUpdateRequest.carYear(), carUpdateRequest.purpose(), carUpdateRequest.status(), carUpdateRequest.sum());
 
 		return ApiResponse.success(CarDetailResponse.from(car));

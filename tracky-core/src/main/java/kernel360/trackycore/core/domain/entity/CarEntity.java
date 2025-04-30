@@ -82,7 +82,6 @@ public class CarEntity extends DateBaseEntity {
 	}
 
 	public void updateFrom(
-		BizEntity biz,
 		DeviceEntity device,
 		String carType,
 		String carName,
@@ -92,7 +91,6 @@ public class CarEntity extends DateBaseEntity {
 		String status,
 		double sum
 	) {
-		this.biz = biz;
 		this.device = device;
 		this.carType = carType;
 		this.carName = carName;
