@@ -128,6 +128,12 @@ public class RentService {
 
 		CarEntity car = carProvider.findByMdn(rentUpdateRequest.mdn());
 
+		rentDomainProvider.validateOverlappingRent(
+			car.getMdn(),
+			rentUpdateRequest.rentStime(),
+			rentUpdateRequest.rentEtime()
+		);
+
 		rent.update(car, rentUpdateRequest.rentStime(), rentUpdateRequest.rentEtime(), rentUpdateRequest.renterName(),
 			rentUpdateRequest.renterPhone(),
 			rentUpdateRequest.purpose(), rentUpdateRequest.rentStatus(), rentUpdateRequest.rentLoc(),
