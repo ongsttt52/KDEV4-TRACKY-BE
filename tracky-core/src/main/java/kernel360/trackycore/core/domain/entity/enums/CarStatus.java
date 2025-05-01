@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum CarStatus {
 	RUNNING("운행중"),
-	FIXING("정비중"),
 	WAITING("대기중"),
+	FIXING("정비중"),
 	CLOSED("폐차"),
 	DELETED("삭제됨");
 
