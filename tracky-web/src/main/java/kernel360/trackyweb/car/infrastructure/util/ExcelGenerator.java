@@ -130,13 +130,13 @@ public class ExcelGenerator {
 	 */
 	private void fillDriveDataRow(CarsExportRequest car, Row row, CellStyle style) {
 		// 상태
-		createCell(row, 0, car.status(), style);
+		createCell(row, 0, car.status().name(), style);
 
 		// 차량 번호
 		createCell(row, 1, car.carPlate(), style);
 
 		// 종류
-		createCell(row, 2, car.carType(), style);
+		createCell(row, 2, car.carType().name(), style);
 
 		// 차량 관리번호
 		createCell(row, 3, car.mdn(), style);

@@ -10,6 +10,7 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
@@ -46,9 +47,8 @@ public class RentService {
 	/**
 	 * 필터링 기반 검색
 	 *
-	 * @param rentUuid
-	 * @param rentStatus
-	 * @param rentDate
+	 * @param rentSearchByFilterRequest 예약 검색 조건 및 페이지 정보
+	 * @param bizUuid 업체 UUID
 	 * @return 검색된 예약 List
 	 */
 	@Transactional(readOnly = true)
@@ -63,7 +63,7 @@ public class RentService {
 	/**
 	 * rentUuid 값으로 검색
 	 *
-	 * @param rentUuid
+	 * @param rentUuid 대여 UUID
 	 * @return 수정된 대여 detail
 	 */
 	@Transactional(readOnly = true)
@@ -75,7 +75,7 @@ public class RentService {
 	/**
 	 * 대여 신규 등록
 	 *
-	 * @param
+	 * @param rentCreateRequest 대여 등록 요청
 	 * @return 등록 성공한 대여
 	 */
 	@Transactional
@@ -92,7 +92,7 @@ public class RentService {
 			rentCreateRequest.renterName(),
 			rentCreateRequest.renterPhone(),
 			rentCreateRequest.purpose(),
-			"reserved",
+			RentStatus.RESERVED,
 			rentCreateRequest.rentLoc(),
 			rentCreateRequest.rentLat(),
 			rentCreateRequest.rentLon(),
@@ -113,7 +113,7 @@ public class RentService {
 	/**
 	 * 대여 정보 수정
 	 *
-	 * @param rentUuid
+	 * @param rentUuid 대여 UUID
 	 * @return 수정된 대여 detail
 	 */
 	@Transactional
@@ -135,7 +135,7 @@ public class RentService {
 	/**
 	 * 대여 삭제 API
 	 *
-	 * @param rentUuid
+	 * @param rentUuid 대여 UUID
 	 * @return ApiResponse
 	 */
 	@Transactional

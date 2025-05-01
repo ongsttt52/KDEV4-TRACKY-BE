@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 
 public record RentResponse(
 	String rent_uuid,
@@ -15,7 +16,7 @@ public record RentResponse(
 	String rentLoc,
 	String returnLoc,
 	String purpose,
-	String rentStatus
+	RentStatus rentStatus
 ) {
 	public static RentResponse from(RentEntity rent) {
 		return new RentResponse(

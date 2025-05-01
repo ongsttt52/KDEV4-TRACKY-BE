@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
-import kernel360.trackyweb.dashboard.domain.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.CarType;
 
 public interface CarDomainRepositoryCustom {
 	/**
@@ -21,8 +21,8 @@ public interface CarDomainRepositoryCustom {
 	Page<CarEntity> searchCarByFilter(
 		String bizUuid,
 		String search,
-		String status,
-		String carType,
+		CarStatus status,
+		CarType carType,
 		Pageable pageable);
 
 	Page<CarEntity> searchDriveCarByFilter(

@@ -3,10 +3,13 @@ package kernel360.trackyweb.car.application.dto.request;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.CarType;
+
 public record CarSearchByFilterRequest(
 	String search,
-	String status,
-	String carType,
+	CarStatus status,
+	CarType carType,
 	Integer page,
 	Integer size
 ) {

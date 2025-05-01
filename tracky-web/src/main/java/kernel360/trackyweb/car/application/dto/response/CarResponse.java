@@ -3,15 +3,17 @@ package kernel360.trackyweb.car.application.dto.response;
 import java.util.List;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.CarType;
 
 public record CarResponse(
 	String mdn,
-	String carType,
+	CarType carType,
 	String carName,
 	String carPlate,
 	String carYear,
 	String purpose,
-	String status
+	CarStatus status
 ) {
 	public static CarResponse from(CarEntity car) {
 		return new CarResponse(

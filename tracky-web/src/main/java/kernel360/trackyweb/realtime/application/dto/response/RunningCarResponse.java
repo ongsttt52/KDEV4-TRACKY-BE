@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 
 public record RunningCarResponse(
 	Long id,
@@ -12,7 +13,7 @@ public record RunningCarResponse(
 	String renterName,
 	double distance,
 	String drivingTime,
-	String status
+	CarStatus status
 ) {
 	public static RunningCarResponse from(DriveEntity entity) {
 		Long id = entity.getId();
@@ -25,7 +26,7 @@ public record RunningCarResponse(
 		Duration duration = Duration.between(driveOn, LocalDateTime.now());
 		String drivingTime = formatDuration(duration);
 
-		String status = entity.getCar().getStatus();
+		CarStatus status = entity.getCar().getStatus();
 
 		return new RunningCarResponse(id, mdn, plate, renter, distance, drivingTime, status);
 

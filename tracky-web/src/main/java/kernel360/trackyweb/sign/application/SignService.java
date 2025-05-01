@@ -12,6 +12,8 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
+import kernel360.trackycore.core.domain.entity.enums.MemberStatus;
+import kernel360.trackycore.core.domain.entity.enums.Role;
 import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
 import kernel360.trackyweb.sign.application.dto.request.ApproveRequest;
 import kernel360.trackyweb.sign.application.dto.request.MemberDeleteRequest;
@@ -39,7 +41,7 @@ public class SignService {
 	/**
 	 * 계정 검색
 	 * @param memberSearchByFilter
-	 * @return ApiResponse<List<MemberResponse>>
+	 * @return ApiResponse<List < MemberResponse>>
 	 */
 	@Transactional(readOnly = true)
 	public ApiResponse<List<MemberResponse>> getMembersBySearchFilter(MemberSearchByFilter memberSearchByFilter) {
@@ -79,8 +81,8 @@ public class SignService {
 			signupRequest.memberId(),
 			passwordEncoder.encode(signupRequest.pwd()),
 			signupRequest.email(),
-			"USER",
-			"wait"
+			Role.USER,
+			MemberStatus.WAIT
 		);
 
 		memberProvider.save(member);

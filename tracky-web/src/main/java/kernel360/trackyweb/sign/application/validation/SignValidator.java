@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
+import kernel360.trackycore.core.domain.entity.enums.MemberStatus;
 import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
 import kernel360.trackyweb.sign.domain.provider.MemberProvider;
 import lombok.RequiredArgsConstructor;
@@ -35,13 +36,11 @@ public class SignValidator {
 	}
 
 	public void validateStatus(MemberEntity member) {
-		String status = member.getStatus().toLowerCase();
-
-		if ("wait".equals(status)) {
+		if (member.getStatus() == MemberStatus.WAIT) {
 			throw GlobalException.throwError(ErrorCode.MEMBER_STATUS_WAIT);
 		}
 
-		if ("deactive".equals(status)) {
+		if (member.getStatus() == MemberStatus.DEACTIVE) {
 			throw GlobalException.throwError(ErrorCode.MEMBER_STATUS_DEACTIVE);
 		}
 	}
