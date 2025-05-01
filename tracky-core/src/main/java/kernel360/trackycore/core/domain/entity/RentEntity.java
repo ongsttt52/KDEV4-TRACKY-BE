@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,8 +46,9 @@ public class RentEntity extends DateBaseEntity {
 	@Column(name = "purpose", length = 20)
 	private String purpose;
 
+	@Enumerated(value = EnumType.STRING)
 	@Column(name = "rent_status", nullable = false)
-	private String rentStatus;
+	private RentStatus rentStatus;
 
 	@Column(name = "rent_loc", length = 100)
 	private String rentLoc;
@@ -65,9 +69,22 @@ public class RentEntity extends DateBaseEntity {
 	private int returnLon;
 
 	// 생성자: 외부에서 직접 호출하지 못하도록 private 으로 변경
-	private RentEntity(CarEntity car, String rentUuid, LocalDateTime rentStime, LocalDateTime rentEtime,
-		String renterName, String renterPhone, String purpose, String rentStatus, String rentLoc, int rentLat,
-		int rentLon, String returnLoc, int returnLat, int returnLon) {
+	private RentEntity(
+		CarEntity car,
+		String rentUuid,
+		LocalDateTime rentStime,
+		LocalDateTime rentEtime,
+		String renterName,
+		String renterPhone,
+		String purpose,
+		RentStatus rentStatus,
+		String rentLoc,
+		int rentLat,
+		int rentLon,
+		String returnLoc,
+		int returnLat,
+		int returnLon
+	) {
 		this.car = car;
 		this.rentUuid = rentUuid;
 		this.rentStime = rentStime;
@@ -85,9 +102,21 @@ public class RentEntity extends DateBaseEntity {
 	}
 
 	// 정적 팩토리 메서드
-	public static RentEntity create(CarEntity car, String rentUuid, LocalDateTime rentStime, LocalDateTime rentEtime,
-		String renterName, String renterPhone, String purpose, String rentStatus, String rentLoc, int rentLat,
-		int rentLon, String returnLoc, int returnLat, int returnLon) {
+	public static RentEntity create(CarEntity car,
+		String rentUuid,
+		LocalDateTime rentStime,
+		LocalDateTime rentEtime,
+		String renterName,
+		String renterPhone,
+		String purpose,
+		RentStatus rentStatus,
+		String rentLoc,
+		int rentLat,
+		int rentLon,
+		String returnLoc,
+		int returnLat,
+		int returnLon
+	) {
 		return new RentEntity(
 			car,
 			rentUuid,
@@ -106,9 +135,16 @@ public class RentEntity extends DateBaseEntity {
 		);
 	}
 
-	public void update(CarEntity car, LocalDateTime rentStime, LocalDateTime rentEtime,
-		String renterName, String renterPhone, String purpose, String rentStatus,
-		String rentLoc, String returnLoc) {
+	public void update(CarEntity car,
+		LocalDateTime rentStime,
+		LocalDateTime rentEtime,
+		String renterName,
+		String renterPhone,
+		String purpose,
+		RentStatus rentStatus,
+		String rentLoc,
+		String returnLoc
+	) {
 		this.car = car;
 		this.rentStime = rentStime;
 		this.rentEtime = rentEtime;
@@ -120,7 +156,7 @@ public class RentEntity extends DateBaseEntity {
 		this.returnLoc = returnLoc;
 	}
 
-	public void updateStatus(String rentStatus) {
+	public void updateStatus(RentStatus rentStatus) {
 		this.rentStatus = rentStatus;
 	}
 }

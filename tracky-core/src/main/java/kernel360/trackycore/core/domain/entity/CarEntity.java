@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.CarType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,8 +36,9 @@ public class CarEntity extends DateBaseEntity {
 	@JoinColumn(name = "device_id", nullable = false)
 	private DeviceEntity device;    // 디바이스 세팅ID 외래키
 
+	@Enumerated(value = EnumType.STRING)
 	@Column(name = "car_type", nullable = false)
-	private String carType;       // 차 대분류
+	private CarType carType;       // 차 대분류
 
 	@Column(name = "car_name", length = 20, nullable = false)
 	private String carName;    //차종
@@ -47,8 +52,9 @@ public class CarEntity extends DateBaseEntity {
 	@Column(name = "purpose", length = 20, nullable = false)
 	private String purpose;       // 차량용도
 
+	@Enumerated(value = EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	private String status;        // 차량상태
+	private CarStatus status;        // 차량상태
 
 	@Column(name = "sum", nullable = false)
 	private double sum;           // 누적 주행 거리
@@ -59,10 +65,17 @@ public class CarEntity extends DateBaseEntity {
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;   // 삭제 시간
 
-	private CarEntity(String mdn, BizEntity biz, DeviceEntity device, String carType, String carName, String carPlate,
+	private CarEntity(String mdn,
+		BizEntity biz,
+		DeviceEntity device,
+		CarType carType,
+		String carName,
+		String carPlate,
 		String carYear,
-		String purpose, String status, double sum) {
-
+		String purpose,
+		CarStatus status,
+		double sum
+	) {
 		this.mdn = mdn;
 		this.biz = biz;
 		this.device = device;
@@ -75,20 +88,28 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public static CarEntity create(String mdn, BizEntity biz, DeviceEntity device, String carType, String carName,
+	public static CarEntity create(String mdn,
+		BizEntity biz,
+		DeviceEntity device,
+		CarType carType,
+		String carName,
 		String carPlate,
-		String carYear, String purpose, String status, double sum) {
+		String carYear,
+		String purpose,
+		CarStatus status,
+		double sum
+	) {
 		return new CarEntity(mdn, biz, device, carType, carName, carPlate, carYear, purpose, status, sum);
 	}
 
 	public void updateFrom(
 		DeviceEntity device,
-		String carType,
+		CarType carType,
 		String carName,
 		String carPlate,
 		String carYear,
 		String purpose,
-		String status,
+		CarStatus status,
 		double sum
 	) {
 		this.device = device;
@@ -111,7 +132,7 @@ public class CarEntity extends DateBaseEntity {
 
 	public void delete(
 	) {
-		this.status = "deleted";
+		this.status = CarStatus.DELETED;
 		this.deletedAt = LocalDateTime.now();
 	}
 }
