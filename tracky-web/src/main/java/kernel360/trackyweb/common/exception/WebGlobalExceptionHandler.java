@@ -19,7 +19,6 @@ public class WebGlobalExceptionHandler {
 		return ResponseEntity
 			.badRequest()
 			.body(ErrorResponse.withDetail(e));
-		//.body(ErrorResponse.from(e));
 	}
 
 	@ExceptionHandler(Exception.class)
