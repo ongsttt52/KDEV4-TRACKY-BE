@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+
 import kernel360.trackyconsumer.timedistance.infrastructure.repository.TimeDistanceDomainRepository;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.TimeDistanceEntity;
@@ -11,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class TimeDistanceProvider {
+public class TimeDistanceDomainProvider {
 
 	private final TimeDistanceDomainRepository timeDistanceDomainRepository;
 
