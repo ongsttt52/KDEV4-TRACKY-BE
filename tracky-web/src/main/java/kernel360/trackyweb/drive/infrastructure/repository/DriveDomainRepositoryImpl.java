@@ -1,5 +1,6 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
@@ -21,12 +22,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.QDriveEntity;
+import kernel360.trackyweb.drive.application.dto.internal.OperationCarCount;
 import kernel360.trackyweb.drive.domain.DriveHistory;
 import kernel360.trackyweb.drive.domain.GpsData;
 import lombok.RequiredArgsConstructor;
@@ -164,6 +166,24 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		);
 
 		return Optional.of(driveHistory);
+	}
+
+	@Override
+	public List<OperationCarCount> findOperationMdnGroupedByBizId(LocalDate targetDate) {
+		LocalDateTime start = targetDate.atStartOfDay();
+		LocalDateTime end = targetDate.plusDays(1).atStartOfDay();
+
+		return queryFactory
+			.select(Projections.constructor(
+				OperationCarCount.class,
+				carEntity.biz.id,
+				driveEntity.car.mdn.countDistinct()
+			))
+			.from(driveEntity)
+			.join(carEntity).on(driveEntity.car.mdn.eq(carEntity.mdn))
+			.where(driveEntity.driveOnTime.between(start, end.minusNanos(1)))
+			.groupBy(carEntity.biz.id)
+			.fetch();
 	}
 
 	private BooleanBuilder buildRunningDriveCondition(String search) {

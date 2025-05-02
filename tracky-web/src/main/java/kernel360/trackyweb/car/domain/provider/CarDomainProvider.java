@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
+import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
@@ -62,5 +63,9 @@ public class CarDomainProvider {
 
 	public List<CarStatusTemp> getAllGroupedByStatus() {
 		return carDomainRepository.findAllGroupedByStatus();
+	}
+
+	public List<CarCountWithBizId> coundAllCarGroupedByBizId() {
+		return carDomainRepository.findTotalMdnsGroupedByBizId();
 	}
 }

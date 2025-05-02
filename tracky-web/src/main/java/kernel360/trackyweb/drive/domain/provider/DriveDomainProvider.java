@@ -1,7 +1,6 @@
 package kernel360.trackyweb.drive.domain.provider;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
+import kernel360.trackyweb.drive.application.dto.internal.OperationCarCount;
 import kernel360.trackyweb.drive.domain.DriveHistory;
 import kernel360.trackyweb.drive.infrastructure.repository.DriveDomainRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,13 +42,14 @@ public class DriveDomainProvider {
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
 	}
 
-	public List<DriveEntity> findByMdn(String mdn) {
-		return driveDomainRepository.findDriveListByMdn(mdn);
-	}
-
-	public  DriveHistory findByDriveId(Long driveId) {
+	public DriveHistory findByDriveId(Long driveId) {
 		return driveDomainRepository.findByDriveId(driveId)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
+	}
+
+	//일일 통계 - 당일 운행 차량 수 (distinct mdn)
+	public List<OperationCarCount> countOperationCarGroupedByBizId(LocalDate targetDate) {
+		return driveDomainRepository.findOperationMdnGroupedByBizId(targetDate);
 	}
 
 	public Double getTotalDriveDistance() {

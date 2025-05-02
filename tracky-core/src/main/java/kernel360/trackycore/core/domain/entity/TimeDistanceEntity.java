@@ -34,7 +34,7 @@ public class TimeDistanceEntity extends DateBaseEntity {
 	private CarEntity car;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "biz_uuid", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "biz_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private BizEntity biz;
 
 	@Column(name = "date", nullable = false)
