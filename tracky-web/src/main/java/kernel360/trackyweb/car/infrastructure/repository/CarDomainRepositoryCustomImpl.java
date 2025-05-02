@@ -112,7 +112,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 	private BooleanExpression isEqualStatus(CarStatus status) {
-		if (StringUtils.isBlank(status.getLabel())) {
+		if (status == null) {
 			return null;
 		}
 		return carEntity.status.eq(status);
