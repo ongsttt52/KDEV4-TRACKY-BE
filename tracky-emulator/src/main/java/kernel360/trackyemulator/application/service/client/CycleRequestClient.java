@@ -51,7 +51,7 @@ public class CycleRequestClient {
 			throw EmulatorException.sendError(ErrorCode.CYCLE_SEND_FAILED);
 		}
 
-		log.info("주기정보 전송 성공 - mdn: {}", request.mdn());
+		log.info("주기정보 전송 성공 - mdn: {}// 전송된 주기 정보의 cycle data : {}", request.mdn(), request.cList());
 		return apiResponse;
 
 	}
