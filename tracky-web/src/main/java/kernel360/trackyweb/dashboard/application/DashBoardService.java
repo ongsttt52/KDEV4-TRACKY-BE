@@ -13,13 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.provider.CarProvider;
+import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
-import kernel360.trackyweb.dashboard.domain.CarStatus;
+import kernel360.trackyweb.dashboard.domain.CarStatusTemp;
 import kernel360.trackyweb.dashboard.domain.Statistics;
 import kernel360.trackyweb.dashboard.domain.provider.DashGpsHistoryProvider;
 import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
-import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,6 @@ public class DashBoardService {
 	private final DriveDomainProvider driveDomainProvider;
 
 	private final ProvinceMatcher provinceMatcher;
-
 
 	/**
 	 * 반납 조회( 지연된 반납 )
@@ -71,11 +71,11 @@ public class DashBoardService {
 	 * @return hashmap(status, count)
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Long> getAllCarStatus() {
-		List<CarStatus> grouped = carDomainProvider.getAllGroupedByStatus();
+	public Map<CarStatus, Long> getAllCarStatus() {
+		List<CarStatusTemp> grouped = carDomainProvider.getAllGroupedByStatus();
 
-		Map<String, Long> carStatusMap = new HashMap<>();
-		for (CarStatus carStatus : grouped) {
+		Map<CarStatus, Long> carStatusMap = new HashMap<>();
+		for (CarStatusTemp carStatus : grouped) {
 			carStatusMap.put(carStatus.getStatus(), carStatus.getCount());
 		}
 
@@ -104,7 +104,7 @@ public class DashBoardService {
 	 */
 	@Transactional(readOnly = true)
 	public Map<String, Integer> getGeoData() {
-		List<GpsHistoryEntity> gpsList =dashGpsHistoryProvider.findLatestGpsByMdn();
+		List<GpsHistoryEntity> gpsList = dashGpsHistoryProvider.findLatestGpsByMdn();
 
 		log.info("gpsList: {} ", gpsList);
 

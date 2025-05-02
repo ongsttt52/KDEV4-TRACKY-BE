@@ -12,6 +12,7 @@ import kernel360.trackycore.core.domain.entity.enums.CarType;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
+import kernel360.trackyweb.dashboard.domain.CarStatusTemp;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -59,7 +60,7 @@ public class CarDomainProvider {
 		return carDomainRepository.findAllByBizUuid(bizUuid);
 	}
 
-	public List<CarStatus> getAllGroupedByStatus() {
+	public List<CarStatusTemp> getAllGroupedByStatus() {
 		return carDomainRepository.findAllGroupedByStatus();
 	}
 }

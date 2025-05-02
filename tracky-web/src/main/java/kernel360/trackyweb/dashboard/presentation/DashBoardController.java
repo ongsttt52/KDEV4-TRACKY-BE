@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackyweb.dashboard.application.DashBoardService;
 import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
 import kernel360.trackyweb.dashboard.domain.Statistics;
@@ -30,8 +31,8 @@ public class DashBoardController implements DashBoardApiDocs {
 	}
 
 	@GetMapping("/cars/status")
-	public ApiResponse<Map<String, Long>> getAllCarStatus() {
-		Map<String, Long> statusMap = dashBoardService.getAllCarStatus();
+	public ApiResponse<Map<CarStatus, Long>> getAllCarStatus() {
+		Map<CarStatus, Long> statusMap = dashBoardService.getAllCarStatus();
 		return ApiResponse.success(statusMap);
 	}
 
