@@ -14,6 +14,7 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.rent.application.dto.request.RentCreateRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentUpdateRequest;
+import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 
@@ -21,7 +22,7 @@ import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipa
 public interface RentApiDocs {
 
 	@Operation(summary = "rent 등록시 select 할 차량 전체 목록", description = "rent 등록시 select 할 차량 전체 목록 list")
-	ApiResponse<List<String>> getAllMdnByBizId(
+	ApiResponse<List<RentMdnResponse>> getAllMdnByBizId(
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
 	);
 
