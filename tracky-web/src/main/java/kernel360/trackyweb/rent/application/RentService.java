@@ -39,8 +39,8 @@ public class RentService {
 	 *
 	 * @return mdn list
 	 */
-	public ApiResponse<List<String>> getAllMdnByBizId(String bizUuid) {
-		List<String> mdns = rentDomainProvider.getAllMdnByBizId(bizUuid);
+	public ApiResponse<List<String>> getAllMdnByBizUuid(String bizUuid) {
+		List<String> mdns = carProvider.getAllMdnByBizUuid(bizUuid);
 		return ApiResponse.success(mdns);
 	}
 
@@ -140,7 +140,6 @@ public class RentService {
 	 */
 	@Transactional
 	public ApiResponse<String> delete(String rentUuid) {
-		// rentDomainProvider.delete(rentUuid);
 		rentDomainProvider.softDelete(rentUuid);
 		globalSseEvent.sendEvent(SseEvent.RENT_DELETED);
 
