@@ -19,32 +19,21 @@ public class ErrorResponse {
 	@Schema(description = "에러 메세지")
 	private String message;
 
-	@Schema(description = "에러 상세 메세지")
-	private String detailMessage;
+	@Schema(description = "에러 데이터")
+	private Object data;
 
-	public ErrorResponse(String code, String message) {
-		this(code, message, null);
-	}
-
-	public ErrorResponse(String code, String message, String detailMessage) {
+	public ErrorResponse(String code, String message, Object data) {
 		this.code = code;
 		this.message = message;
-		this.detailMessage = detailMessage;
 		this.errorTime = LocalDateTime.now();
+		this.data = data;
 	}
 
 	public static ErrorResponse from(GlobalException e) {
 		return new ErrorResponse(
 			e.getErrorCode().getCode(),
-			e.getErrorCode().getMessage()
-		);
-	}
-
-	public static ErrorResponse withDetail(GlobalException e) {
-		return new ErrorResponse(
-			e.getErrorCode().getCode(),
 			e.getErrorCode().getMessage(),
-			e.getMessage()
+			e.getData()
 		);
 	}
 }

@@ -18,7 +18,7 @@ public class WebGlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleWebGlobalException(GlobalException e) {
 		return ResponseEntity
 			.badRequest()
-			.body(ErrorResponse.withDetail(e));
+			.body(ErrorResponse.from(e));
 	}
 
 	@ExceptionHandler(Exception.class)
@@ -27,7 +27,8 @@ public class WebGlobalExceptionHandler {
 
 		ErrorResponse errorResponse = new ErrorResponse(
 			String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
-			e.getMessage()
+			e.getMessage() != null ? e.getMessage() : "알 수 없는 서버 오류가 발생했습니다.",
+			null
 		);
 
 		return ResponseEntity

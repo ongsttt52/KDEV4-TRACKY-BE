@@ -12,6 +12,7 @@ import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
+import kernel360.trackyweb.rent.application.dto.response.OverlappingRentResponse;
 import kernel360.trackyweb.rent.infrastructure.repository.RentDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -55,14 +56,13 @@ public class RentDomainProvider {
 
 	public void validateOverlappingRent(String mdn, LocalDateTime rentStime, LocalDateTime rentEtime) {
 		List<RentEntity> overlaps = rentDomainRepository.findOverlappingRent(mdn, rentStime, rentEtime);
-		
-		if (!overlaps.isEmpty()) {
-			String conflictTime = overlaps.stream()
-				.map(r -> "[" + r.getRentStime() + " ~ " + r.getRentEtime() + "]")
-				.collect(Collectors.joining("\n"));
 
-			throw ErrorCode.RENT_OVERLAP.withDetail("\n" + conflictTime);
+		if (!overlaps.isEmpty()) {
+			List<OverlappingRentResponse> conflictList = overlaps.stream()
+				.map(OverlappingRentResponse::from)
+				.collect(Collectors.toList());
+
+			throw GlobalException.throwError(ErrorCode.RENT_OVERLAP, conflictList);
 		}
 	}
-
 }

@@ -32,7 +32,7 @@ public enum ErrorCode {
 
 	STATISTIC_NOT_FOUND("STATISTIC_001", "조회된 데이터가 없습니다."),
 
-	RENT_OVERLAP("RENT_007", "해당 차량은 요청된 시간에 이미 예약되어 있습니다. \n겹치는 예약 시간\n ");
+	RENT_OVERLAP("RENT_007", "해당 차량은 요청된 시간에 이미 예약되어 있습니다.");
 
 	private final String code;
 	private final String message;
@@ -41,9 +41,4 @@ public enum ErrorCode {
 		this.code = code;
 		this.message = message;
 	}
-
-	public GlobalException withDetail(String detail) {
-		return new GlobalException(this, this.message + detail);
-	}
-
 }
