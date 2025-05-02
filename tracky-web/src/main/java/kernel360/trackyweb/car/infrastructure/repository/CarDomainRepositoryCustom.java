@@ -11,9 +11,11 @@ import kernel360.trackycore.core.domain.entity.enums.CarType;
 
 public interface CarDomainRepositoryCustom {
 	/**
-	 * 랜트 등록 시, 해당 업체에 맞는 모든 mdn 반환
+	 * 렌트 등록 시, 해당 업체에 맞는 모든 mdn 반환
 	 **/
 	List<String> findAllMdnByBizId(String bizUuid);
+
+	List<CarEntity> findAllByBizUuid(String bizUuid);
 
 	/**
 	 * 에뮬레이터에서 운행 차량 조회
@@ -34,8 +36,4 @@ public interface CarDomainRepositoryCustom {
 		String bizUuid,
 		String search,
 		Pageable pageable);
-
-	List<CarEntity> findAllByBizUuid(
-		String bizUuid
-	);
 }

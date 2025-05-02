@@ -22,6 +22,13 @@ public class CarDomainProvider {
 	private final CarDomainRepository carDomainRepository;
 	private final GlobalSseEvent globalSseEvent;
 
+	public CarEntity save(CarEntity car) {
+
+		globalSseEvent.sendEvent(SseEvent.CAR_CREATED);
+
+		return carDomainRepository.save(car);
+	}
+
 	public Page<CarEntity> searchCarByFilter(
 		String bizUuid,
 		String search,
@@ -30,26 +37,6 @@ public class CarDomainProvider {
 		Pageable pageable
 	) {
 		return carDomainRepository.searchCarByFilter(bizUuid, search, status, carType, pageable);
-	}
-
-	public CarEntity update(CarEntity car) {
-
-		globalSseEvent.sendEvent(SseEvent.CAR_UPDATED);
-
-		return carDomainRepository.save(car);
-	}
-
-	public CarEntity save(CarEntity car) {
-
-		globalSseEvent.sendEvent(SseEvent.CAR_CREATED);
-
-		return carDomainRepository.save(car);
-	}
-
-	public void delete(String mdn) {
-		globalSseEvent.sendEvent(SseEvent.CAR_DELETED);
-
-		carDomainRepository.deleteByMdn(mdn);
 	}
 
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
@@ -66,5 +53,18 @@ public class CarDomainProvider {
 
 	public List<CarEntity> findAllByAvailableEmulate(String bizUuid) {
 		return carDomainRepository.availableEmulate(bizUuid);
+	}
+
+	public CarEntity update(CarEntity car) {
+
+		globalSseEvent.sendEvent(SseEvent.CAR_UPDATED);
+
+		return carDomainRepository.save(car);
+	}
+
+	public void delete(String mdn) {
+		globalSseEvent.sendEvent(SseEvent.CAR_DELETED);
+
+		carDomainRepository.deleteByMdn(mdn);
 	}
 }

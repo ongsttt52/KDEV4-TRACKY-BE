@@ -46,7 +46,7 @@ public class DashBoardService {
 
 	public ApiResponse<List<ReturnResponse>> getDelayedReturn(String bizUuid) {
 		LocalDateTime now = LocalDateTime.now();
-		List<RentEntity> delayedRents = rentDomainProvider.findDelayedRentList(bizUuid, now);
+		List<RentEntity> delayedRents = rentDomainProvider.getDelayedRentList(bizUuid, now);
 
 		return ApiResponse.success(
 			delayedRents.stream()

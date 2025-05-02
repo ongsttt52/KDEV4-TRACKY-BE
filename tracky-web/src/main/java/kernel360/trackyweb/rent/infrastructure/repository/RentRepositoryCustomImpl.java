@@ -13,11 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +57,36 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 		).orElse(0L);
 
 		return new PageImpl<>(content, pageable, total);
+	}
+
+	@Override
+	public List<Tuple> findRentableMdn(String bizUuid) {
+		QRentEntity rent = QRentEntity.rentEntity;
+
+		return queryFactory
+			.select(rent.car.mdn, rent.car.status)
+			.distinct()
+			.from(rent)
+			.where(
+				rent.car.biz.bizUuid.eq(bizUuid),
+				rent.car.status.ne(CarStatus.CLOSED),
+				rent.car.status.ne(CarStatus.DELETED)
+			)
+			.fetch();
+	}
+
+	@Override
+	public List<RentEntity> findDelayedRents(String bizUuid, LocalDateTime now) {
+		QRentEntity rent = QRentEntity.rentEntity;
+
+		return queryFactory
+			.selectFrom(rent)
+			.where(
+				rent.rentStatus.eq(RentStatus.RENTING),
+				rent.rentEtime.before(now),
+				rent.car.biz.bizUuid.eq(bizUuid)
+			)
+			.fetch();
 	}
 
 	private BooleanBuilder isNotDeleted(RentStatus status) {
@@ -97,19 +129,4 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 			.limit(pageable.getPageSize())
 			.fetch();
 	}
-
-	@Override
-	public List<RentEntity> findDelayedRents(String bizUuid, LocalDateTime now) {
-		QRentEntity rent = QRentEntity.rentEntity;
-
-		return queryFactory
-			.selectFrom(rent)
-			.where(
-				rent.rentStatus.eq(RentStatus.RENTING),
-				rent.rentEtime.before(now),
-				rent.car.biz.bizUuid.eq(bizUuid)
-			)
-			.fetch();
-	}
-
 }
