@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.CarType;
 
 public record CarsExportRequest(
-	String status,
+	CarStatus status,
 	String carPlate,
-	String carType,
+	CarType carType,
 	String mdn,
 	String carYear
 ) {

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +14,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
+import kernel360.trackycore.core.domain.entity.enums.MemberStatus;
+import kernel360.trackycore.core.domain.entity.enums.Role;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,11 +44,13 @@ public class MemberEntity extends DateBaseEntity {
 	@Column(name = "email", length = 254, nullable = false)
 	private String email;
 
-	@Column(name = "role", columnDefinition = "ENUM('ADMIN','USER')", nullable = false)
-	private String role;
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "role", nullable = false)
+	private Role role;
 
-	@Column(name = "status", columnDefinition = "ENUM('ACTIVE','DEACTIVE','WAIT','DELETED')", nullable = false)
-	private String status;
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "status", nullable = false)
+	private MemberStatus status;
 
 	@Column(name = "lastlogin_at")
 	private LocalDateTime lastLoginAt;
@@ -52,8 +58,13 @@ public class MemberEntity extends DateBaseEntity {
 	@Column(name = "deleted_at")
 	private LocalDateTime deleteAt;
 
-	private MemberEntity(BizEntity biz, String memberId, String pwd, String email, String role,
-		String status) {
+	private MemberEntity(BizEntity biz,
+		String memberId,
+		String pwd,
+		String email,
+		Role role,
+		MemberStatus status
+	) {
 		this.biz = biz;
 		this.memberId = memberId;
 		this.pwd = pwd;
@@ -62,8 +73,13 @@ public class MemberEntity extends DateBaseEntity {
 		this.status = status;
 	}
 
-	public static MemberEntity create(BizEntity biz, String memberId, String pwd, String email, String role,
-		String status) {
+	public static MemberEntity create(BizEntity biz,
+		String memberId,
+		String pwd,
+		String email,
+		Role role,
+		MemberStatus status
+	) {
 		return new MemberEntity(
 			biz, memberId, pwd, email, role, status
 		);
@@ -75,24 +91,24 @@ public class MemberEntity extends DateBaseEntity {
 		String bizAdmin,
 		String bizPhoneNum,
 		String email,
-		String role,
-		String status
+		Role role,
+		MemberStatus status
 	) {
 		this.biz.updateBizInfo(bizName, bizRegNum, bizAdmin, bizPhoneNum);
-		this.email =  email;
+		this.email = email;
 		this.role = role;
 		this.status = status;
 	}
 
 	public void updateStatus(
-		String status
+		MemberStatus status
 	) {
 		this.status = status;
 	}
 
 	public void delete(
 	) {
-		this.status = "deleted";
+		this.status = MemberStatus.DELETED;
 		this.deleteAt = LocalDateTime.now();
 	}
 }

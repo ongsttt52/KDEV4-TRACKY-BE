@@ -87,7 +87,7 @@ public class CarService {
 	/**
 	 * 차량 신규 등록 ( device는 기본 device 설정 MDN 1 가져옴 )
 	 *
-	 * @param carCreateRequest
+	 * @param carCreateRequest 등록할 차량 정보
 	 * @return 등록 성공한 차량 detail
 	 */
 	@Transactional
@@ -114,7 +114,7 @@ public class CarService {
 
 	/**
 	 * 차량 정보 수정
-	 * @param carUpdateRequest 차량 정보
+	 * @param carUpdateRequest 수정할 차량 정보
 	 * @return 수정된 차량 detail
 	 */
 	@Transactional
@@ -134,7 +134,7 @@ public class CarService {
 	/**
 	 * 차량 삭제 API
 	 *
-	 * @param mdn
+	 * @param carDeleteRequest 삭제할 차량 식별자
 	 * @return ApiResponse
 	 */
 	@Transactional

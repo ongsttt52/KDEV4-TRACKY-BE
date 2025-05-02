@@ -4,16 +4,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import kernel360.trackycore.core.domain.entity.MemberEntity;
+import kernel360.trackycore.core.domain.entity.enums.MemberStatus;
+import kernel360.trackycore.core.domain.entity.enums.Role;
 
-public record MemberResponse (
+public record MemberResponse(
 	String bizName,
 	String bizRegNum,
 	String bizAdmin,
 	String bizPhoneNum,
 	String memberId,
 	String email,
-	String role,
-	String status,
+	Role role,
+	MemberStatus status,
 	LocalDateTime createAt
 ) {
 
@@ -31,7 +33,7 @@ public record MemberResponse (
 		);
 	}
 
-	public static List<MemberResponse> fromList (List<MemberEntity> memberList) {
+	public static List<MemberResponse> fromList(List<MemberEntity> memberList) {
 		return memberList.stream()
 			.map(MemberResponse::from).toList();
 	}

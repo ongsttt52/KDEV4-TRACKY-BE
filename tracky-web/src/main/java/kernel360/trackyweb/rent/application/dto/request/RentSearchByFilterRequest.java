@@ -6,10 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
+
 public record RentSearchByFilterRequest(
 	String rentUuid,
 	String search,
-	String status,
+	RentStatus status,
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	LocalDate rentDate,
 	Integer page,

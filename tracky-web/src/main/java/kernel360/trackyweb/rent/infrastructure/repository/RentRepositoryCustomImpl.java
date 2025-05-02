@@ -18,6 +18,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -56,11 +57,11 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 		return new PageImpl<>(content, pageable, total);
 	}
 
-	private BooleanBuilder isNotDeleted(String status) {
-		if (status != null && status.equalsIgnoreCase("DELETED")) {
+	private BooleanBuilder isNotDeleted(RentStatus status) {
+		if (status == RentStatus.DELETED) {
 			return new BooleanBuilder();
 		}
-		return new BooleanBuilder(rentEntity.rentStatus.ne("DELETED"));
+		return new BooleanBuilder(rentEntity.rentStatus.ne(RentStatus.DELETED));
 	}
 
 	private BooleanBuilder isContainsRentUuid(String rentUuid) {
@@ -70,8 +71,8 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 		return new BooleanBuilder(rentEntity.rentUuid.contains(rentUuid));
 	}
 
-	private BooleanBuilder isEqualRentStatus(String rentStatus) {
-		if (rentStatus == null || rentStatus.isBlank()) {
+	private BooleanBuilder isEqualRentStatus(RentStatus rentStatus) {
+		if (rentStatus == null) {
 			return null;
 		}
 		return new BooleanBuilder(rentEntity.rentStatus.eq(rentStatus));
@@ -104,7 +105,7 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 		return queryFactory
 			.selectFrom(rent)
 			.where(
-				rent.rentStatus.eq("RENTING"),
+				rent.rentStatus.eq(RentStatus.RENTING),
 				rent.rentEtime.before(now),
 				rent.car.biz.bizUuid.eq(bizUuid)
 			)

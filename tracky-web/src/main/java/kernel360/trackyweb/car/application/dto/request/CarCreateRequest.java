@@ -1,17 +1,19 @@
 package kernel360.trackyweb.car.application.dto.request;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.CarType;
 
 public record CarCreateRequest(
 	String mdn,
 	Long bizId,
 	Long device,
-	String carType,
+	CarType carType,
 	String carName,
 	String carPlate,
 	String carYear,
 	String purpose,
-	String status,
+	CarStatus status,
 	double sum
 ) {
 	public static CarCreateRequest from(CarEntity car) {

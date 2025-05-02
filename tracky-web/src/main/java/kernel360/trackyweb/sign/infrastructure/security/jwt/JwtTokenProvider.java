@@ -13,6 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import kernel360.trackycore.core.domain.entity.enums.Role;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -32,7 +33,7 @@ public class JwtTokenProvider {
 		this.secretKey = Keys.hmacShaKeyFor(secretKeyRaw.getBytes());
 	}
 
-	public String generateToken(String memberId, String role, String bizName, Long bizId, String bizUuid) {
+	public String generateToken(String memberId, Role role, String bizName, Long bizId, String bizUuid) {
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + expiration);
 

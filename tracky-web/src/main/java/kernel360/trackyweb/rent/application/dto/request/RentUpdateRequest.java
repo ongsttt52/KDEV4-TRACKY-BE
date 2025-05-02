@@ -2,6 +2,8 @@ package kernel360.trackyweb.rent.application.dto.request;
 
 import java.time.LocalDateTime;
 
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
+
 public record RentUpdateRequest(
 	String mdn,
 	String renterName,
@@ -11,7 +13,7 @@ public record RentUpdateRequest(
 	String rentLoc,
 	String returnLoc,
 	String purpose,
-	String rentStatus
+	RentStatus rentStatus
 ) {
 
 }

@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 
 public record DriveHistory(
 	Long driveId,
@@ -18,8 +19,8 @@ public record DriveHistory(
 	double driveDistance,
 	String renterName,
 	String renterPhone,
-	String rentStatus,
-	String status,
+	RentStatus rentStatus,
+	CarStatus carStatus,
 	String purpose,
 	LocalDateTime driveOnTime,
 	LocalDateTime driveOffTime,

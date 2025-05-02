@@ -7,10 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import kernel360.trackycore.core.domain.entity.enums.CarType;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
-import kernel360.trackyweb.dashboard.domain.CarStatus;
+import kernel360.trackyweb.dashboard.domain.CarStatusTemp;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -20,8 +22,13 @@ public class CarDomainProvider {
 	private final CarDomainRepository carDomainRepository;
 	private final GlobalSseEvent globalSseEvent;
 
-	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, String status, String carType,
-		Pageable pageable) {
+	public Page<CarEntity> searchCarByFilter(
+		String bizUuid,
+		String search,
+		CarStatus status,
+		CarType carType,
+		Pageable pageable
+	) {
 		return carDomainRepository.searchCarByFilter(bizUuid, search, status, carType, pageable);
 	}
 
@@ -53,7 +60,7 @@ public class CarDomainProvider {
 		return carDomainRepository.findAllByBizUuid(bizUuid);
 	}
 
-	public List<CarStatus> getAllGroupedByStatus() {
+	public List<CarStatusTemp> getAllGroupedByStatus() {
 		return carDomainRepository.findAllGroupedByStatus();
 	}
 }

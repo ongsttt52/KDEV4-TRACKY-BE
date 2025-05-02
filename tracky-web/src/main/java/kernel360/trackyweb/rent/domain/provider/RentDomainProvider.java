@@ -3,13 +3,13 @@ package kernel360.trackyweb.rent.domain.provider;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.infrastructure.repository.RentDomainRepository;
@@ -34,7 +34,7 @@ public class RentDomainProvider {
 	public void softDelete(String rentUuid) {
 		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
-		rent.updateStatus("DELETED");
+		rent.updateStatus(RentStatus.DELETED);
 	}
 
 	public List<String> getAllMdnByBizId(String bizUuid) {
