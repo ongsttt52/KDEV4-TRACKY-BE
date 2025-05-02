@@ -16,6 +16,11 @@ public interface CarDomainRepositoryCustom {
 	List<String> findAllMdnByBizId(String bizUuid);
 
 	/**
+	 * 에뮬레이터에서 운행 차량 조회
+	 */
+	List<CarEntity> availableEmulate(String bizUuid);
+
+	/**
 	 * 필터 조건 기반 검색
 	 */
 	Page<CarEntity> searchCarByFilter(

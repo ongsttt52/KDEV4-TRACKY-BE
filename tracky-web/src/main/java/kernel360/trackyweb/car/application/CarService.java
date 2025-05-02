@@ -21,9 +21,12 @@ import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
 import kernel360.trackyweb.car.application.dto.request.CarsExportRequest;
 import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
 import kernel360.trackyweb.car.application.dto.response.CarResponse;
+import kernel360.trackyweb.car.application.dto.response.MdnWithBizResponse;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
+import kernel360.trackyweb.car.domain.provider.MdnStatus;
 import kernel360.trackyweb.car.infrastructure.util.ExcelGenerator;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
+import kernel360.trackyweb.dashboard.domain.CarStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -151,5 +154,11 @@ public class CarService {
 		List<CarsExportRequest> carsExportRequestList = CarsExportRequest.from(carList);
 
 		return excelGenerator.generateExcel(carsExportRequestList);
+	}
+
+	@Transactional(readOnly = true)
+	public ApiResponse<List<MdnWithBizResponse>> getMdnAndBizId(String bizUuid) {
+		List<CarEntity> cars = carDomainProvider.findAllByAvailableEmulate(bizUuid);
+		return ApiResponse.success(MdnWithBizResponse.ofList(cars));
 	}
 }
