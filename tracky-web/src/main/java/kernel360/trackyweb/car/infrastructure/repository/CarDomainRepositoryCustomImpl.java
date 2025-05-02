@@ -3,6 +3,7 @@ package kernel360.trackyweb.car.infrastructure.repository;
 import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,6 +100,21 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			.selectFrom(carEntity)
 			.join(carEntity.biz, bizEntity)
 			.where(bizEntity.bizUuid.eq(bizUuid))
+			.fetch();
+	}
+
+	@Override
+	public List<CarEntity> availableEmulate(String bizUuid) {
+		LocalDateTime now = LocalDateTime.now();
+		return queryFactory
+			.select(carEntity)
+			.from(carEntity)
+			.join(rentEntity).on(rentEntity.car.eq(carEntity)) // 반드시 rent가 연결된 경우만
+			.where(
+				carEntity.biz.bizUuid.eq(bizUuid),
+				rentEntity.rentStime.loe(now),
+				rentEntity.rentEtime.goe(now)
+			)
 			.fetch();
 	}
 

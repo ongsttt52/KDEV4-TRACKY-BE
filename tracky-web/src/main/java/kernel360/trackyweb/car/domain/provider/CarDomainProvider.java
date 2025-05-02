@@ -63,4 +63,8 @@ public class CarDomainProvider {
 	public List<CarStatusTemp> getAllGroupedByStatus() {
 		return carDomainRepository.findAllGroupedByStatus();
 	}
+
+	public List<CarEntity> findAllByAvailableEmulate(String bizUuid) {
+		return carDomainRepository.availableEmulate(bizUuid);
+	}
 }
