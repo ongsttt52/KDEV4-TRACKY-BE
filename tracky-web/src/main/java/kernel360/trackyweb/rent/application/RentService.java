@@ -41,8 +41,8 @@ public class RentService {
 	 *
 	 * @return mdn list
 	 */
-	public ApiResponse<List<String>> getAllMdnByBizId(String bizUuid) {
-		List<String> mdns = rentDomainProvider.getAllMdnByBizId(bizUuid);
+	public ApiResponse<List<String>> getAllMdnByBizUuid(String bizUuid) {
+		List<String> mdns = carProvider.getAllMdnByBizUuid(bizUuid);
 		return ApiResponse.success(mdns);
 	}
 

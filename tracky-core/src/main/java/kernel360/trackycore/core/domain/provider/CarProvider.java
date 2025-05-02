@@ -25,6 +25,10 @@ public class CarProvider {
 		return carRepository.findByMdn(mdn).orElseThrow(() -> GlobalException.throwError(ErrorCode.CAR_NOT_FOUND));
 	}
 
+	public List<String> getAllMdnByBizUuid(String bizUuid) {
+		return carRepository.findByBizUuid(bizUuid);
+	}
+
 	public boolean existsByMdn(String mdn) {
 		return carRepository.existsByMdn(mdn);
 	}
