@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
@@ -25,6 +26,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
+import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -119,6 +121,19 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			.fetch();
 	}
 
+	@Override
+	public List<CarCountWithBizId> findTotalMdnsGroupedByBizId() {
+		return queryFactory
+			.select(Projections.constructor(
+				CarCountWithBizId.class,
+				carEntity.biz.id,
+				carEntity.count()
+			))
+			.from(carEntity)
+			.groupBy(carEntity.biz.id)
+			.fetch();
+	}
+
 	//검색 조건
 	private BooleanExpression isContainsCarMdnOrCarPlate(String search) {
 		if (StringUtils.isBlank(search)) {
@@ -178,5 +193,3 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 }
-
-

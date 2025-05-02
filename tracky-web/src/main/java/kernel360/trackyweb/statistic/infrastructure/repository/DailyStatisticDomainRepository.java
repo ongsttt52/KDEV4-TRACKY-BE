@@ -9,4 +9,5 @@ import kernel360.trackycore.core.infrastructure.repository.DailyStatisticReposit
 public interface DailyStatisticDomainRepository extends DailyStatisticRepository {
 	
 	Optional<DailyStatisticEntity> findByBizUuidAndDate(String bizUuid, LocalDate date);
+
 }
