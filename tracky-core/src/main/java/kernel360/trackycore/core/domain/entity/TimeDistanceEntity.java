@@ -46,22 +46,29 @@ public class TimeDistanceEntity extends DateBaseEntity {
 	@Column(name = "distance", nullable = false)
 	private double distance;
 
+	@Column(name = "seconds", nullable = false)
+	private int seconds;
+
 	private TimeDistanceEntity(
 		CarEntity car,
 		BizEntity biz,
 		LocalDate date,
 		int hour,
-		double distance
+		double distance,
+		int seconds
 	) {
+
 		this.car = car;
 		this.biz = biz;
 		this.date = date;
 		this.hour = hour;
 		this.distance = distance;
+		this.seconds = seconds;
 	}
 
-	public static TimeDistanceEntity create(CarEntity car,  BizEntity biz,  LocalDate date, int hour, double distance) {
-		return new TimeDistanceEntity(car, biz, date, hour, distance);
+	public static TimeDistanceEntity create(CarEntity car, BizEntity biz, LocalDate date, int hour, double distance,
+		int seconds) {
+		return new TimeDistanceEntity(car, biz, date, hour, distance, seconds);
 	}
 
 	public void updateDistance(double distance) {
