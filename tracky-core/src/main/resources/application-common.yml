@@ -39,3 +39,7 @@ management:
       exposure:
         include:
           - "*"
+logging:
+  level:
+    org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer: ERROR
+    org.springframework.amqp.rabbit.connection.CachingConnectionFactory: ERROR
