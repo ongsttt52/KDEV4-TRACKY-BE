@@ -42,12 +42,6 @@ public class DashBoardController implements DashBoardApiDocs {
 	public ApiResponse<Statistics> getStatistics() {
 		return ApiResponse.success(dashBoardService.getStatistics());
 	}
-/*
-	@GetMapping("/geo")
-	public ApiResponse<Map<String, Integer>> getGeoData() {
-		Map<String, Integer> geoMap = dashBoardService.getGeoData();
-		return ApiResponse.success(geoMap);
-	}*/
 
 	@PatchMapping("/return/status/{rentUuid}")
 	public ApiResponse<String> updateStatusToReturn(@PathVariable String rentUuid) {
