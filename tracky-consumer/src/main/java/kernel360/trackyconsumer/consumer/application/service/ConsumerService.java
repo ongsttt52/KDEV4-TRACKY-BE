@@ -2,11 +2,10 @@ package kernel360.trackyconsumer.consumer.application.service;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
@@ -62,7 +61,7 @@ public class ConsumerService {
 		locationProvider.save(location);
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
-		car.updateStatus("RUNNING");
+		car.updateStatusToRunning();
 
 		RentEntity rent = rentDomainProvider.getRent(car, carOnOffRequest.onTime());
 
@@ -76,13 +75,10 @@ public class ConsumerService {
 	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
-
 		DriveEntity drive = driveProvider.getDrive(car, carOnOffRequest.onTime());
-		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
 
-		car.updateDistance(drive.getDriveDistance());
-		car.lastDrive(carOnOffRequest.offTime());
-		car.updateStatus("WAITING");
+		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
+		car.off(drive.getDriveDistance(), carOnOffRequest.offTime());
 
 		LocationEntity location = drive.getLocation();
 		location.updateEndLocation(carOnOffRequest.gpsInfo().getLat(), carOnOffRequest.gpsInfo().getLon());
