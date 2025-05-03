@@ -1,8 +1,10 @@
 package kernel360.trackyweb.rent.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -140,10 +142,24 @@ public class RentService {
 	 */
 	@Transactional
 	public ApiResponse<String> delete(String rentUuid) {
-		// rentDomainProvider.delete(rentUuid);
 		rentDomainProvider.softDelete(rentUuid);
 		globalSseEvent.sendEvent(SseEvent.RENT_DELETED);
 
 		return ApiResponse.success("삭제 완료");
+	}
+
+	@Scheduled(fixedDelay = 60000)
+	@Transactional
+	public void updateStatus() {
+		LocalDateTime now = LocalDateTime.now();
+
+		List<RentEntity> reservedList = rentProvider.getByStatus(RentStatus.RESERVED);
+
+		reservedList.forEach(reserved -> {
+			if (reserved.getRentStime().isBefore(now)) {
+				reserved.updateStatus(RentStatus.RENTING);
+				log.info("예약 상태 변경 : {}, 시작 시간 : {}", reserved.getRentUuid(), reserved.getRentStime());
+			}
+		});
 	}
 }
