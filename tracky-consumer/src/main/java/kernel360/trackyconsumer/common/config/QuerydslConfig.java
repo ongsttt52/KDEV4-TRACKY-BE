@@ -1,4 +1,4 @@
-package kernel360.trackyconsumer.config;
+package kernel360.trackyconsumer.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
