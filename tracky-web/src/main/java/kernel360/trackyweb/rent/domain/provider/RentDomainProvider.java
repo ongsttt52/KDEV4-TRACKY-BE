@@ -22,19 +22,16 @@ public class RentDomainProvider {
 	private final RentDomainRepository rentDomainRepository;
 	private final CarDomainRepository carDomainRepository;
 
-	public Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid) {
-		return rentDomainRepository.searchRentByFilter(request, bizUuid);
-	}
-
 	public RentEntity save(RentEntity rent) {
 		return rentDomainRepository.save(rent);
 	}
 
-	// public void delete(String rentUuid) { rentDomainRepository.deleteByRentUuid(rentUuid); }
-	public void softDelete(String rentUuid) {
-		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
-			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
-		rent.updateStatus(RentStatus.DELETED);
+	public Long count() {
+		return rentDomainRepository.count();
+	}
+
+	public Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid) {
+		return rentDomainRepository.searchRentByFilter(request, bizUuid);
 	}
 
 	public List<String> getAllMdnByBizId(String bizUuid) {
@@ -49,7 +46,18 @@ public class RentDomainProvider {
 		return rentDomainRepository.getTotalRentDurationInMinutes();
 	}
 
-	public Long count() {
-		return rentDomainRepository.count();
+	public void updateRentStatus(String rentUuid, RentStatus rentStatus) {
+		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
+
+		rent.updateStatus(rentStatus);
+
+		rentDomainRepository.save(rent);
+	}
+
+	public void softDelete(String rentUuid) {
+		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
+		rent.updateStatus(RentStatus.DELETED);
 	}
 }

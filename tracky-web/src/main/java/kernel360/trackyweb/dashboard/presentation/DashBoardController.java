@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,4 +48,9 @@ public class DashBoardController implements DashBoardApiDocs {
 		Map<String, Integer> geoMap = dashBoardService.getGeoData();
 		return ApiResponse.success(geoMap);
 	}*/
+
+	@PatchMapping("/return/status/{rentUuid}")
+	public ApiResponse<String> updateStatusToReturn(@PathVariable String rentUuid) {
+		return dashBoardService.updateStatusToReturn(rentUuid);
+	}
 }
