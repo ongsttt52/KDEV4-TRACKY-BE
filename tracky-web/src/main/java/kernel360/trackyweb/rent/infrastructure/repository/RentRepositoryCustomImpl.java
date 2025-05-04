@@ -112,4 +112,19 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 			.fetch();
 	}
 
+
+	@Override
+	public List<RentEntity> findOverlappingRent(String mdn, LocalDateTime start, LocalDateTime end) {
+		QRentEntity rent = QRentEntity.rentEntity;
+
+		return queryFactory
+			.selectFrom(rent)
+			.where(
+				rent.car.mdn.eq(mdn),
+				rent.rentStatus.notIn("CANCELED", "DELETED"),
+				rent.rentStime.lt(end),
+				rent.rentEtime.gt(start)
+			)
+			.fetch();
+	}
 }

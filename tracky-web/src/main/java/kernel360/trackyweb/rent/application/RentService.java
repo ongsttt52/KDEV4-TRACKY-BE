@@ -82,6 +82,12 @@ public class RentService {
 	public ApiResponse<RentResponse> create(RentCreateRequest rentCreateRequest) {
 		CarEntity car = carProvider.findByMdn(rentCreateRequest.mdn());
 
+		rentDomainProvider.validateOverlappingRent(
+			car.getMdn(),
+			rentCreateRequest.rentStime(),
+			rentCreateRequest.rentEtime()
+		);
+
 		String rentUuid = UuidGenerator.generateUuid();
 
 		RentEntity rent = RentEntity.create(
@@ -121,6 +127,12 @@ public class RentService {
 		RentEntity rent = rentProvider.getRent(rentUuid);
 
 		CarEntity car = carProvider.findByMdn(rentUpdateRequest.mdn());
+
+		rentDomainProvider.validateOverlappingRent(
+			car.getMdn(),
+			rentUpdateRequest.rentStime(),
+			rentUpdateRequest.rentEtime()
+		);
 
 		rent.update(car, rentUpdateRequest.rentStime(), rentUpdateRequest.rentEtime(), rentUpdateRequest.renterName(),
 			rentUpdateRequest.renterPhone(),
