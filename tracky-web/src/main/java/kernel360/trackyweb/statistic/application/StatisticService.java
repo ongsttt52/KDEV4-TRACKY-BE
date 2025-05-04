@@ -2,10 +2,11 @@ package kernel360.trackyweb.statistic.application;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import com.querydsl.core.Tuple;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
@@ -40,23 +41,22 @@ public class StatisticService {
 		return ApiResponse.success(response);
 	}
 
-	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(String bizUuid, YearMonth date) {
+	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(String bizUuid, YearMonth date,
+		YearMonth targetDate) {
+
+		if (targetDate == null) {
+			targetDate = date.minusYears(1).plusMonths(1);
+		}
 
 		Long bizId = bizProvider.getBiz(bizUuid).getId();
 
 		MonthlyStatisticEntity monthlyStatistic = monthlyStatisticProvider.getMonthlyStatistic(bizId, date.atDay(1));
 
-		List<Integer> list = new ArrayList<>();
-		for (int i = 0; i < 12; i++) {
-			list.add(1);
-		}
-		List<Long> list2 = new ArrayList<>();
-		for (int i = 0; i < 12; i++) {
-			list2.add(1L);
-		}
-		MonthlyStatisticResponse response = MonthlyStatisticResponse.from(monthlyStatistic, list, list2);
+		List<Tuple> monthlyDataTuples = monthlyStatisticProvider.getMonthlyDataTuples(bizId, date.atDay(1),
+			targetDate.atDay(1));
+
+		MonthlyStatisticResponse response = MonthlyStatisticResponse.from(monthlyStatistic, monthlyDataTuples);
 
 		return ApiResponse.success(response);
 	}
-
 }

@@ -38,8 +38,9 @@ public class StatisticController {
 	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(
 		@AuthenticationPrincipal MemberPrincipal memberPrincipal,
 		@RequestParam(name = "date")
-		YearMonth date
+		YearMonth date,
+		YearMonth targetDate
 	) {
-		return statisticService.getMonthlyStatistic(memberPrincipal.bizUuid(), date);
+		return statisticService.getMonthlyStatistic(memberPrincipal.bizUuid(), date, targetDate);
 	}
 }

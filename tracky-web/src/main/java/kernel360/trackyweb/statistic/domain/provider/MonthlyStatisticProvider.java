@@ -1,8 +1,11 @@
 package kernel360.trackyweb.statistic.domain.provider;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
+
+import com.querydsl.core.Tuple;
 
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
@@ -20,5 +23,10 @@ public class MonthlyStatisticProvider {
 
 		return monthlyStatisticRepository.findByBizIdAndDate(bizId, date)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.STATISTIC_NOT_FOUND));
+	}
+
+	public List<Tuple> getMonthlyDataTuples(Long bizId, LocalDate localDate, LocalDate localDate1) {
+
+		return monthlyStatisticRepository.getMonthlyDataTuples(bizId, localDate, localDate1);
 	}
 }
