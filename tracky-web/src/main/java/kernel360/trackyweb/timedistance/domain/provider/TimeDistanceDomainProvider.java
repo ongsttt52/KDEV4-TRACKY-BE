@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.querydsl.core.Tuple;
+
+import kernel360.trackycore.core.domain.entity.QTimeDistanceEntity;
 import kernel360.trackyweb.timedistance.application.dto.internal.OperationTime;
 import kernel360.trackyweb.timedistance.infrastructure.repository.TimeDistanceDomainRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +15,25 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class TimeDistanceDomainProvider {
-	TimeDistanceDomainRepository timeDistanceDomainRepository;
+
+	private final TimeDistanceDomainRepository timeDistanceDomainRepository;
+
+	public long[] getHourlyDriveCounts(Long bizId, LocalDate targetDate) {
+
+		List<Tuple> hourlyDriveCount = timeDistanceDomainRepository.countByBizIdAndDateGroupedByHour(bizId, targetDate);
+
+		long[] hourlyStat = new long[24];
+
+		for (Tuple tuple : hourlyDriveCount) {
+			Integer hour = tuple.get(QTimeDistanceEntity.timeDistanceEntity.hour);
+			Long driveCount = tuple.get(QTimeDistanceEntity.timeDistanceEntity.count());
+
+			if (hour != null && driveCount != null) {
+				hourlyStat[hour] = driveCount;
+			}
+		}
+		return hourlyStat;
+	}
 
 	public List<OperationTime> calculateOperationTimeGroupedByBizId(LocalDate targetDate) {
 		return timeDistanceDomainRepository.getTotalOperationTimeGroupedByBIzId(targetDate);

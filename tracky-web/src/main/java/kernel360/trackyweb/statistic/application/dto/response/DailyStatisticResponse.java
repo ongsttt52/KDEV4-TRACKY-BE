@@ -1,7 +1,7 @@
 package kernel360.trackyweb.statistic.application.dto.response;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
 
@@ -15,22 +15,23 @@ public record DailyStatisticResponse(
 		double averageOperationRate,
 		long totalDrivingSeconds,
 		int totalDriveCount,
-		double totalDrivingDistanceKm  // 저장 단위는 km로 가정
+		double totalDrivingDistance
 	) {
 	}
 
 	public record HourlyStat(
 		int hour,
-		int driveCount
+		long driveCount
 	) {
 	}
 
-	public static DailyStatisticResponse from(DailyStatisticEntity e, List<Integer> hourlyDriveCounts) {
-		List<DailyStatisticResponse.HourlyStat> hourlyStats = IntStream.range(0, 24)
-			.mapToObj(i -> new DailyStatisticResponse.HourlyStat(
-				i,
-				hourlyDriveCounts.get(i)
-			)).toList();
+	public static DailyStatisticResponse from(DailyStatisticEntity e, long[] hourlyDriveCounts) {
+		List<HourlyStat> hourlyStats = new ArrayList<>();
+
+		for (int i = 0; i < hourlyDriveCounts.length; i++) {
+			HourlyStat hourlyStat = new HourlyStat(i, hourlyDriveCounts[i]);
+			hourlyStats.add(hourlyStat);
+		}
 
 		return new DailyStatisticResponse(
 			new Summary(

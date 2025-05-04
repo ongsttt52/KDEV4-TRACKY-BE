@@ -42,7 +42,7 @@ public class DriveDomainProvider {
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
 	}
 
-	public DriveHistory findByDriveId(Long driveId) {
+	public  DriveHistory findByDriveId(Long driveId) {
 		return driveDomainRepository.findByDriveId(driveId)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
 	}
@@ -63,5 +63,4 @@ public class DriveDomainProvider {
 	public Long getTotalDriveDurationInMinutes() {
 		return driveDomainRepository.getTotalDriveDurationInMinutes();
 	}
-
 }

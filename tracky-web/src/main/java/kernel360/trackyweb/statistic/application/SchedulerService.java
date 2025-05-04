@@ -31,6 +31,7 @@ public class SchedulerService {
 	public void dailyStatistic(LocalDate targetDate) {
 		//업체별 차량 총 개수
 		List<CarCountWithBizId> carCountResult = carDomainProvider.countAllCarGroupedByBizId();
+
 		Map<String, Integer> totalCarMap = CarCountWithBizId.toMap(carCountResult);
 
 		//일일 운행 차량 수
