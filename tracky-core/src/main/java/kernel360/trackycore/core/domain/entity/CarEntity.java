@@ -122,12 +122,14 @@ public class CarEntity extends DateBaseEntity {
 		this.sum = sum;
 	}
 
-	public void updateDistance(double additionalDistance) {
+	public void off(double additionalDistance, LocalDateTime lastDrive) {
 		this.sum += additionalDistance;
+		this.lastDrive = lastDrive;
+		this.status = CarStatus.WAITING;
 	}
 
-	public void lastDrive(LocalDateTime lastDrive) {
-		this.lastDrive = lastDrive;
+	public void updateStatusToRunning() {
+		this.status = CarStatus.RUNNING;
 	}
 
 	public void delete(
