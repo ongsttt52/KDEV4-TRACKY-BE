@@ -45,18 +45,23 @@ public class DriveDomainProvider {
                 .orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
     }
 
-    public DriveHistory findByDriveId(Long driveId) {
-        return driveDomainRepository.findByDriveId(driveId)
-                .orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
-    }
+	public DriveHistory findByDriveId(Long driveId) {
+		return driveDomainRepository.findByDriveId(driveId)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
+	}
 
     public List<DriveEntity> findByMdn(String mdn) {
         return driveDomainRepository.findDriveListByMdn(mdn);
     }
 
-    public Double getTotalDriveDistance() {
-        return driveDomainRepository.getTotalDriveDistance();
-    }
+	//일일 통계 - 당일 운행 차량 수 (distinct mdn)
+	public List<OperationCarCount> countOperationCarGroupedByBizId(LocalDate targetDate) {
+		return driveDomainRepository.findOperationMdnGroupedByBizId(targetDate);
+	}
+
+	public Double getTotalDriveDistance() {
+		return driveDomainRepository.getTotalDriveDistance();
+	}
 
     public Long getTotalDriveDurationInMinutes() {
         return driveDomainRepository.getTotalDriveDurationInMinutes();
