@@ -23,10 +23,8 @@ import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
 import kernel360.trackyweb.car.application.dto.response.CarResponse;
 import kernel360.trackyweb.car.application.dto.response.MdnWithBizResponse;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
-import kernel360.trackyweb.car.domain.provider.MdnStatus;
 import kernel360.trackyweb.car.infrastructure.util.ExcelGenerator;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
-import kernel360.trackyweb.dashboard.domain.CarStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
