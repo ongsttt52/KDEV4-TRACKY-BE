@@ -2,6 +2,7 @@ package kernel360.trackyweb.car.infrastructure.repository;
 
 import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
+import static kernel360.trackycore.core.domain.entity.QRentEntity.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
