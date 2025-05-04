@@ -121,7 +121,7 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 			.selectFrom(rent)
 			.where(
 				rent.car.mdn.eq(mdn),
-				rent.rentStatus.notIn("CANCELED", "DELETED"),
+				rent.rentStatus.notIn(RentStatus.CANCELED, RentStatus.DELETED),
 				rent.rentStime.lt(end),
 				rent.rentEtime.gt(start)
 			)
