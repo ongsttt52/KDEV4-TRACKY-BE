@@ -47,6 +47,10 @@ public class DriveDomainProvider {
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
 	}
 
+	public List<DriveEntity> findByMdn(String mdn) {
+		return driveDomainRepository.findDriveListByMdn(mdn);
+	}
+
 	//일일 통계 - 당일 운행 차량 수 (distinct mdn)
 	public List<OperationCarCount> countOperationCarGroupedByBizId(LocalDate targetDate) {
 		return driveDomainRepository.findOperationMdnGroupedByBizId(targetDate);

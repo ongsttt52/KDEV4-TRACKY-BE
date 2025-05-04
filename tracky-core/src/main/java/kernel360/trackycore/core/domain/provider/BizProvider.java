@@ -18,4 +18,9 @@ public class BizProvider {
 		return bizRepository.findById(id)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.BIZ_NOT_FOUND));
 	}
+
+	public BizEntity getBiz(String bizUuid) {
+		return bizRepository.findByBizUuid(bizUuid)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.BIZ_NOT_FOUND));
+	}
 }

@@ -65,7 +65,7 @@ public class CarDomainProvider {
 		return carDomainRepository.findAllGroupedByStatus();
 	}
 
-	public List<CarCountWithBizId> coundAllCarGroupedByBizId() {
+	public List<CarCountWithBizId> countAllCarGroupedByBizId() {
 		return carDomainRepository.findTotalMdnsGroupedByBizId();
 	}
 
