@@ -14,7 +14,7 @@ import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
 import kernel360.trackycore.core.domain.entity.enums.MemberStatus;
 import kernel360.trackycore.core.domain.entity.enums.Role;
-import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
+import kernel360.trackycore.core.domain.provider.BizProvider;
 import kernel360.trackyweb.sign.application.dto.request.ApproveRequest;
 import kernel360.trackyweb.sign.application.dto.request.MemberDeleteRequest;
 import kernel360.trackyweb.sign.application.dto.request.MemberSearchByFilter;
@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SignService {
 
 	private final MemberProvider memberProvider;
-	private final BizDomainProvider bizDomainProvider;
+	private final BizProvider bizProvider;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final SignValidator signValidator;
 	private final PasswordEncoder passwordEncoder;
@@ -74,7 +74,7 @@ public class SignService {
 			signupRequest.bizPhoneNum(),
 			null
 		);
-		bizDomainProvider.save(biz);
+		bizProvider.save(biz);
 
 		MemberEntity member = MemberEntity.create(
 			biz,
