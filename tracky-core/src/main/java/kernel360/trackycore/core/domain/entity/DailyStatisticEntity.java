@@ -25,8 +25,8 @@ public class DailyStatisticEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "biz_uuid", nullable = false, length = 16)
-	private String bizUuid;
+	@Column(name = "biz_id", nullable = false)
+	private Long bizId;
 
 	@Column(name = "date", nullable = false)
 	private LocalDate date;
@@ -50,11 +50,11 @@ public class DailyStatisticEntity {
 	private Double dailyDriveDistance;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "biz_uuid", referencedColumnName = "biz_uuid", insertable = false, updatable = false)
+	@JoinColumn(name = "biz_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BizEntity biz;
 
 	private DailyStatisticEntity(
-		String bizUuid,
+		Long bizId,
 		LocalDate date,
 		Integer totalCarCount,
 		Integer dailyDriveCarCount,
@@ -63,7 +63,7 @@ public class DailyStatisticEntity {
 		Integer dailyDriveCount,
 		Double dailyDriveDistance
 	) {
-		this.bizUuid = bizUuid;
+		this.bizId = bizId;
 		this.date = date;
 		this.totalCarCount = totalCarCount;
 		this.dailyDriveCarCount = dailyDriveCarCount;
@@ -74,7 +74,7 @@ public class DailyStatisticEntity {
 	}
 
 	public static DailyStatisticEntity create(
-		String bizUuid,
+		Long bizId,
 		LocalDate date,
 		Integer totalCarCount,
 		Integer dailyDriveCarCount,
@@ -83,7 +83,7 @@ public class DailyStatisticEntity {
 		Integer dailyDriveCount,
 		Double dailyDriveDistance
 	) {
-		return new DailyStatisticEntity(bizUuid, date, totalCarCount, dailyDriveCarCount, avgOperationRate,
+		return new DailyStatisticEntity(bizId, date, totalCarCount, dailyDriveCarCount, avgOperationRate,
 			dailyDriveSec, dailyDriveCount, dailyDriveDistance);
 	}
 }
