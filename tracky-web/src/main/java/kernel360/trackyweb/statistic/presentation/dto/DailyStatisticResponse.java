@@ -1,4 +1,4 @@
-package kernel360.trackyweb.statistic.application.dto.response;
+package kernel360.trackyweb.statistic.presentation.dto;
 
 import java.util.ArrayList;
 import java.util.List;

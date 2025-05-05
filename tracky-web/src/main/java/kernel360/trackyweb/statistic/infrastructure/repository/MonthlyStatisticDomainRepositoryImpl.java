@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity;
+import kernel360.trackyweb.statistic.domain.dto.MonthlyStat;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -18,10 +19,17 @@ public class MonthlyStatisticDomainRepositoryImpl implements MonthlyStatisticDom
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<Tuple> getMonthlyDataTuples(Long bizId, LocalDate currentDate, LocalDate targetDate) {
+	public List<MonthlyStat> getMonthlyStats(Long bizId, LocalDate currentDate, LocalDate targetDate) {
 		QMonthlyStatisticEntity e = QMonthlyStatisticEntity.monthlyStatisticEntity;
 
-		return queryFactory.select(e.date.year(), e.date.month(), e.totalDriveCount.sum(), e.totalDriveDistance.sum())
+		return queryFactory.select(
+				Projections.constructor(
+					MonthlyStat.class,
+					e.date.year(),
+					e.date.month(),
+					e.totalDriveCount.sum(),
+					e.totalDriveDistance.sum()
+				))
 			.from(e)
 			.where(
 				e.bizId.eq(bizId)

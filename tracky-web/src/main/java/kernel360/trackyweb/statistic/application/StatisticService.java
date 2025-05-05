@@ -6,16 +6,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.querydsl.core.Tuple;
-
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
-import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.domain.provider.BizProvider;
-import kernel360.trackyweb.statistic.application.dto.response.DailyStatisticResponse;
-import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
+import kernel360.trackyweb.statistic.domain.dto.MonthlyStat;
+import kernel360.trackyweb.statistic.domain.dto.Summary;
 import kernel360.trackyweb.statistic.domain.provider.DailyStatisticProvider;
 import kernel360.trackyweb.statistic.domain.provider.MonthlyStatisticProvider;
+import kernel360.trackyweb.statistic.presentation.dto.DailyStatisticResponse;
+import kernel360.trackyweb.statistic.presentation.dto.MonthlyStatisticResponse;
 import kernel360.trackyweb.timedistance.domain.provider.TimeDistanceDomainProvider;
 import lombok.RequiredArgsConstructor;
 
@@ -44,18 +43,13 @@ public class StatisticService {
 	public ApiResponse<MonthlyStatisticResponse> getMonthlyStatistic(String bizUuid, YearMonth date,
 		YearMonth targetDate) {
 
-		if (targetDate == null) {
-			targetDate = date.minusYears(1).plusMonths(1);
-		}
-
 		Long bizId = bizProvider.getBiz(bizUuid).getId();
 
-		MonthlyStatisticEntity monthlyStatistic = monthlyStatisticProvider.getMonthlyStatistic(bizId, date.atDay(1));
+		Summary summary = monthlyStatisticProvider.getSummary(bizId, date);
 
-		List<Tuple> monthlyDataTuples = monthlyStatisticProvider.getMonthlyDataTuples(bizId, date.atDay(1),
-			targetDate.atDay(1));
+		List<MonthlyStat> monthlyStats = monthlyStatisticProvider.getMonthlyStats(bizId, date, targetDate);
 
-		MonthlyStatisticResponse response = MonthlyStatisticResponse.from(monthlyStatistic, monthlyDataTuples);
+		MonthlyStatisticResponse response = new MonthlyStatisticResponse(summary, monthlyStats);
 
 		return ApiResponse.success(response);
 	}

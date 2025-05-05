@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import kernel360.trackyweb.statistic.application.StatisticService;
-import kernel360.trackyweb.statistic.application.dto.response.DailyStatisticResponse;
-import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
+import kernel360.trackyweb.statistic.presentation.dto.DailyStatisticResponse;
+import kernel360.trackyweb.statistic.presentation.dto.MonthlyStatisticResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
