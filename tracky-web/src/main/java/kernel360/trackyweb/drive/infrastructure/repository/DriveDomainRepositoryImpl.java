@@ -1,6 +1,7 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
+import static kernel360.trackycore.core.domain.entity.QDailyStatisticEntity.dailyStatisticEntity;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
@@ -15,6 +16,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.querydsl.jpa.JPAExpressions;
+import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
+import kernel360.trackyweb.drive.application.dto.internal.OperationTotalCount;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -168,23 +172,69 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		return Optional.of(driveHistory);
 	}
 
+	//일일 통계 - target Date에 운행한 차량 수
 	@Override
-	public List<OperationCarCount> findOperationMdnGroupedByBizId(LocalDate targetDate) {
+	public List<OperationCarCount> getDailyOperationCar(LocalDate targetDate) {
 		LocalDateTime start = targetDate.atStartOfDay();
 		LocalDateTime end = targetDate.plusDays(1).atStartOfDay();
 
 		return queryFactory
 			.select(Projections.constructor(
 				OperationCarCount.class,
-				carEntity.biz.id,
+					driveEntity.car.biz.id,
 				driveEntity.car.mdn.countDistinct()
 			))
 			.from(driveEntity)
-			.join(carEntity).on(driveEntity.car.mdn.eq(carEntity.mdn))
 			.where(driveEntity.driveOnTime.between(start, end.minusNanos(1)))
-			.groupBy(carEntity.biz.id)
+			.groupBy(driveEntity.car.biz.id)
 			.fetch();
 	}
+
+	//일일 통계 - target Date의 운행 총 횟수
+	@Override
+	public List<OperationTotalCount> getDailyTotalOperation(LocalDate targetDate) {
+		LocalDateTime start = targetDate.atStartOfDay();
+		LocalDateTime end = targetDate.plusDays(1).atStartOfDay();
+
+        return queryFactory
+                .select(Projections.constructor(
+                        OperationTotalCount.class,
+                        driveEntity.car.biz.id,
+                        driveEntity.driveOnTime.count()
+                ))
+                .from(driveEntity)
+                .where(driveEntity.driveOnTime.between(start, end.minusNanos(1)))
+                .groupBy(driveEntity.car.biz.id)
+                .fetch();
+	}
+
+	//월별 통계 - 미운행 차량 수
+	@Override
+	public List<NonOperatedCar> getNonOperatedCars(LocalDate targetDate) {
+		LocalDateTime monthStart = targetDate.withDayOfMonth(1).atStartOfDay();
+		LocalDateTime targetEnd = targetDate.plusDays(1).atStartOfDay();
+
+		return queryFactory
+				.select(Projections.constructor(
+						NonOperatedCar.class,
+						carEntity.biz.id,
+						carEntity.count()
+				))
+				.from(carEntity)
+				.where(
+						JPAExpressions
+								.selectOne()
+								.from(driveEntity)
+								.where(
+										driveEntity.car.eq(carEntity),
+										driveEntity.driveOnTime.between(monthStart, targetEnd)
+								)
+								.notExists()
+				)
+				.groupBy(carEntity.biz.id)
+				.fetch();
+	}
+
 
 	private BooleanBuilder buildRunningDriveCondition(String search) {
 		return new BooleanBuilder()
@@ -219,4 +269,5 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		return driveEntity.car.mdn.eq(mdn)
 			.and(driveEntity.rent.renterName.containsIgnoreCase(search));
 	}
+
 }

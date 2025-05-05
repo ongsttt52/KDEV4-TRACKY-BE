@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record CarCountWithBizId(
-	String bizId,
+	Long bizId,
 	int carCount
 ) {
-	public static Map<String, Integer> toMap(List<CarCountWithBizId> dtoList) {
+	public static Map<Long, Integer> toMap(List<CarCountWithBizId> dtoList) {
 		return dtoList.stream()
 			.collect(Collectors.toMap(
 				CarCountWithBizId::bizId,

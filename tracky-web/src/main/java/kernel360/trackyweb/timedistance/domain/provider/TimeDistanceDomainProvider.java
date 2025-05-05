@@ -1,11 +1,12 @@
 package kernel360.trackyweb.timedistance.domain.provider;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
+import kernel360.trackyweb.timedistance.application.dto.internal.OperationDistance;
 import org.springframework.stereotype.Component;
 
-import kernel360.trackyweb.timedistance.application.dto.internal.OperationTime;
+import kernel360.trackyweb.timedistance.application.dto.internal.OperationSeconds;
 import kernel360.trackyweb.timedistance.infrastructure.repository.TimeDistanceDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +15,11 @@ import lombok.RequiredArgsConstructor;
 public class TimeDistanceDomainProvider {
 	TimeDistanceDomainRepository timeDistanceDomainRepository;
 
-	public List<OperationTime> calculateOperationTimeGroupedByBizId(LocalDate targetDate) {
-		return timeDistanceDomainRepository.getTotalOperationTimeGroupedByBIzId(targetDate);
+	public Map<Long, Long> calculateDailyOperationTime(LocalDate targetDate) {
+		return OperationSeconds.toMap(timeDistanceDomainRepository.getDailyOperationTime(targetDate));
+	}
+
+	public Map<Long, Double> calculateDailyOperationDistance(LocalDate targetDate) {
+		return OperationDistance.toMap(timeDistanceDomainRepository.getDailyOperationDistance(targetDate));
 	}
 }

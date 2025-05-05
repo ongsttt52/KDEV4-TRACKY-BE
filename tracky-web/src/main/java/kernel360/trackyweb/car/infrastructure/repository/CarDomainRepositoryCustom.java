@@ -35,6 +35,6 @@ public interface CarDomainRepositoryCustom {
 		String bizUuid
 	);
 
-	List<CarCountWithBizId> findTotalMdnsGroupedByBizId();
+	List<CarCountWithBizId> getDailyTotalCarCount();
 
 }

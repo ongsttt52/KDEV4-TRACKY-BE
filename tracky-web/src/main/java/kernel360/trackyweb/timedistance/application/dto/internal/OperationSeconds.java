@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public record OperationDistance(
-		Long bizId,
-	double distance
+public record OperationSeconds(
+		long bizId,
+		long operationSeconds
 ) {
-	public static Map<Long, Double> toMap(List<OperationDistance> dtoList) {
+	public static Map<Long, Long> toMap(List<OperationSeconds> dtoList) {
 		return dtoList.stream()
 				.collect(Collectors.toMap(
-						OperationDistance::bizId,
-						OperationDistance::distance
+						OperationSeconds::bizId,
+						OperationSeconds::operationSeconds
 				));
 	}
+
 }

@@ -1,6 +1,7 @@
 package kernel360.trackyweb.car.domain.provider;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,7 +66,7 @@ public class CarDomainProvider {
 		return carDomainRepository.findAllGroupedByStatus();
 	}
 
-	public List<CarCountWithBizId> countAllCarGroupedByBizId() {
-		return carDomainRepository.findTotalMdnsGroupedByBizId();
+	public Map<Long, Integer> countDailyTotalCar() {
+		return CarCountWithBizId.toMap(carDomainRepository.getDailyTotalCarCount());
 	}
 }

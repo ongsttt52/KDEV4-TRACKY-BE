@@ -1,4 +1,4 @@
-package kernel360.trackyweb.statistic.infrastructure.repository;
+package kernel360.trackyweb.statistic.infrastructure.repository.monthly;
 
 import java.time.LocalDate;
 import java.util.Optional;

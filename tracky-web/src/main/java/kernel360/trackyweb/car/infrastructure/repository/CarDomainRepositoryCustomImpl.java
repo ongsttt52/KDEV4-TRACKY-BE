@@ -105,7 +105,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 	@Override
-	public List<CarCountWithBizId> findTotalMdnsGroupedByBizId() {
+	public List<CarCountWithBizId> getDailyTotalCarCount() {
 		return queryFactory
 			.select(Projections.constructor(
 				CarCountWithBizId.class,
