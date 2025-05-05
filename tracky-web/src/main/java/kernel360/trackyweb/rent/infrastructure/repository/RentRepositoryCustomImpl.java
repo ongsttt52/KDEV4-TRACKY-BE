@@ -17,7 +17,6 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
@@ -61,30 +60,28 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 
 	@Override
 	public List<Tuple> findRentableMdn(String bizUuid) {
-		QRentEntity rent = QRentEntity.rentEntity;
 
 		return queryFactory
-			.select(rent.car.mdn, rent.car.status)
+			.select(rentEntity.car.mdn, rentEntity.car.status)
 			.distinct()
-			.from(rent)
+			.from(rentEntity)
 			.where(
-				rent.car.biz.bizUuid.eq(bizUuid),
-				rent.car.status.ne(CarStatus.CLOSED),
-				rent.car.status.ne(CarStatus.DELETED)
+				rentEntity.car.biz.bizUuid.eq(bizUuid),
+				rentEntity.car.status.ne(CarStatus.CLOSED),
+				rentEntity.car.status.ne(CarStatus.DELETED)
 			)
 			.fetch();
 	}
 
 	@Override
 	public List<RentEntity> findDelayedRents(String bizUuid, LocalDateTime now) {
-		QRentEntity rent = QRentEntity.rentEntity;
 
 		return queryFactory
-			.selectFrom(rent)
+			.selectFrom(rentEntity)
 			.where(
-				rent.rentStatus.eq(RentStatus.RENTING),
-				rent.rentEtime.before(now),
-				rent.car.biz.bizUuid.eq(bizUuid)
+				rentEntity.rentStatus.eq(RentStatus.RENTING),
+				rentEntity.rentEtime.before(now),
+				rentEntity.car.biz.bizUuid.eq(bizUuid)
 			)
 			.fetch();
 	}
