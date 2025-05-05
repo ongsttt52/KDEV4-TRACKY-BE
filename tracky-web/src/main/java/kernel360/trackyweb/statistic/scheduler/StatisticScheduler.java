@@ -18,4 +18,9 @@ public class StatisticScheduler {
 		schedulerService.dailyStatistic(targetDate);
 	}
 
+	public void runMonthlyStatistic() {
+		LocalDate targetDate = LocalDateTime.now().minusDays(1).toLocalDate();
+		schedulerService.monthlyStatistic(targetDate);
+	}
+
 }
