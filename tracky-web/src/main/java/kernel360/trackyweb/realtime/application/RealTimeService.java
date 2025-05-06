@@ -1,6 +1,5 @@
-package kernel360.trackyweb.realtime.application.dto;
+package kernel360.trackyweb.realtime.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -12,10 +11,8 @@ import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackyweb.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyweb.realtime.application.dto.request.RealTimeCarListRequest;
-import kernel360.trackyweb.realtime.application.dto.response.GpsDataResponse;
 import kernel360.trackyweb.realtime.application.dto.response.RunningCarDetailResponse;
 import kernel360.trackyweb.realtime.application.dto.response.RunningCarResponse;
-// import kernel360.trackyweb.realtime.domain.provider.GpsHistoryDomainProvider;
 import lombok.RequiredArgsConstructor;
 
 @Service

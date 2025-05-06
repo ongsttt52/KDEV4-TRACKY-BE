@@ -25,7 +25,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.QDriveEntity;
 import kernel360.trackyweb.drive.domain.DriveHistory;
 import kernel360.trackyweb.drive.domain.GpsData;
@@ -33,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
+public class DriveDomainRepositoryCustomImpl implements DriveDomainRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
@@ -126,6 +125,7 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 	private boolean isUnboundedSearch(LocalDateTime start, LocalDateTime end) {
 		return start == null && end == null;
 	}
+
 	@Override
 	public Optional<DriveHistory> findByDriveId(Long driveId) {
 
@@ -199,4 +199,19 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		return driveEntity.car.mdn.eq(mdn)
 			.and(driveEntity.rent.renterName.containsIgnoreCase(search));
 	}
+
+	@Override
+	public Optional<Long> findRunningDriveIdByMdn(String mdn) {
+		return Optional.ofNullable(
+			queryFactory
+				.select(driveEntity.id)
+				.from(driveEntity)
+				.where(
+					driveEntity.car.mdn.eq(mdn),
+					driveEntity.driveOffTime.isNull()
+				)
+				.fetchOne()
+		);
+	}
+
 }

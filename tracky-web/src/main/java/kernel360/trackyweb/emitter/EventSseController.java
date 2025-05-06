@@ -16,8 +16,8 @@ public class EventSseController {
 	private final EventEmitterService eventEmitterService;
 
 	@GetMapping("/subscribe")
-	public SseEmitter subscribe(@RequestParam String clientId) {
-		return eventEmitterService.subscribe(clientId);
+	public SseEmitter subscribe(@RequestParam String driveId) {
+		return eventEmitterService.subscribe(driveId);
 	}
 
 }

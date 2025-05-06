@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackyweb.realtime.application.dto.RealTimeService;
+import kernel360.trackyweb.realtime.application.RealTimeService;
 import kernel360.trackyweb.realtime.application.dto.request.RealTimeCarListRequest;
 import kernel360.trackyweb.realtime.application.dto.response.RunningCarDetailResponse;
 import kernel360.trackyweb.realtime.application.dto.response.RunningCarResponse;

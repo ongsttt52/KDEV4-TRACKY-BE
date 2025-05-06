@@ -1,7 +1,6 @@
 package kernel360.trackyweb.drive.domain.provider;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -46,7 +45,7 @@ public class DriveDomainProvider {
 		return driveDomainRepository.findDriveListByMdn(mdn);
 	}
 
-	public  DriveHistory findByDriveId(Long driveId) {
+	public DriveHistory findByDriveId(Long driveId) {
 		return driveDomainRepository.findByDriveId(driveId)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
 	}
@@ -57,6 +56,11 @@ public class DriveDomainProvider {
 
 	public Long getTotalDriveDurationInMinutes() {
 		return driveDomainRepository.getTotalDriveDurationInMinutes();
+	}
+
+	public Long findActiveDriveIdByMdn(String mdn) {
+		return driveDomainRepository.findRunningDriveIdByMdn(mdn)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
 	}
 
 }
