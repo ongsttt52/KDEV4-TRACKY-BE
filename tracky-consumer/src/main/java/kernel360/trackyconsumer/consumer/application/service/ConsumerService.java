@@ -2,17 +2,16 @@ package kernel360.trackyconsumer.consumer.application.service;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
 import kernel360.trackyconsumer.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyconsumer.rent.domain.provider.RentDomainProvider;
-import kernel360.trackyconsumer.timedistance.domain.provider.TimeDistanceProvider;
+import kernel360.trackyconsumer.timedistance.domain.provider.TimeDistanceDomainProvider;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
@@ -35,7 +34,7 @@ public class ConsumerService {
 	private final LocationProvider locationProvider;
 	private final GpsHistoryProvider gpsHistoryProvider;
 	private final RentDomainProvider rentDomainProvider;
-	private final TimeDistanceProvider timeDistanceProvider;
+	private final TimeDistanceDomainProvider timeDistanceDomainProvider;
 
 	@Async("taskExecutor")
 	@Transactional
@@ -62,6 +61,7 @@ public class ConsumerService {
 		locationProvider.save(location);
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
+		car.updateStatusToRunning();
 
 		RentEntity rent = rentDomainProvider.getRent(car, carOnOffRequest.onTime());
 
@@ -75,12 +75,10 @@ public class ConsumerService {
 	public void processOffMessage(CarOnOffRequest carOnOffRequest) {
 
 		CarEntity car = carProvider.findByMdn(carOnOffRequest.mdn());
-		car.lastDrive(carOnOffRequest.offTime());
-
 		DriveEntity drive = driveProvider.getDrive(car, carOnOffRequest.onTime());
-		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
 
-		car.updateDistance(drive.getDriveDistance());
+		drive.off(carOnOffRequest.gpsInfo().getSum(), carOnOffRequest.offTime());
+		car.off(drive.getDriveDistance(), carOnOffRequest.offTime());
 
 		LocationEntity location = drive.getLocation();
 		location.updateEndLocation(carOnOffRequest.gpsInfo().getLat(), carOnOffRequest.gpsInfo().getLon());
@@ -114,6 +112,7 @@ public class ConsumerService {
 	private void processTimeDistance(List<CycleGpsRequest> cycleGpsRequests, CarEntity car) {
 
 		double distance = 0.0;
+		int seconds = 1;
 		LocalDate prevDate = cycleGpsRequests.get(0).oTime().toLocalDate();
 		int prevHour = cycleGpsRequests.get(0).oTime().getHour();
 
@@ -124,26 +123,28 @@ public class ConsumerService {
 
 			if (prevHour != currentHour) {
 				if (distance > 0.0)
-					saveTimeDistance(prevDate, prevHour, car, distance);
+					saveTimeDistance(prevDate, prevHour, car, distance, seconds);
 				distance = 0.0;
 				prevDate = currentDate;
 				prevHour = currentHour;
 			}
 
 			distance += cycleGpsRequest.gpsInfo().getSum();
+			seconds++;
 		}
 
+		log.info("세컨트스 : {}", seconds);
 		if (distance > 0.0)
-			saveTimeDistance(prevDate, prevHour, car, distance);
+			saveTimeDistance(prevDate, prevHour, car, distance, seconds);
 	}
 
-	private void saveTimeDistance(LocalDate date, int hour, CarEntity car, double totalDistance) {
+	private void saveTimeDistance(LocalDate date, int hour, CarEntity car, double totalDistance, int seconds) {
 
-		timeDistanceProvider.getTimeDistance(date, hour, car)
+		timeDistanceDomainProvider.getTimeDistance(date, hour, car)
 			.ifPresentOrElse(
-				timeDistance -> timeDistance.updateDistance(totalDistance),
-				() -> timeDistanceProvider.save(
-					TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance)
+				timeDistance -> timeDistance.updateDistance(totalDistance, seconds),
+				() -> timeDistanceDomainProvider.save(
+					TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance, seconds)
 				)
 			);
 	}

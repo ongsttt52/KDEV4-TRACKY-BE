@@ -1,10 +1,13 @@
 package kernel360.trackycore.core.domain.provider;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackycore.core.infrastructure.repository.RentRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -17,5 +20,9 @@ public class RentProvider {
 	public RentEntity getRent(String rentUuid) {
 		return rentRepository.findByRentUuid(rentUuid)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
+	}
+
+	public List<RentEntity> getByStatus(RentStatus rentStatus) {
+		return rentRepository.findAllByRentStatus(rentStatus);
 	}
 }

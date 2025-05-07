@@ -26,6 +26,7 @@ import kernel360.trackyweb.car.application.dto.request.CarSearchByFilterRequest;
 import kernel360.trackyweb.car.application.dto.request.CarUpdateRequest;
 import kernel360.trackyweb.car.application.dto.response.CarDetailResponse;
 import kernel360.trackyweb.car.application.dto.response.CarResponse;
+import kernel360.trackyweb.car.application.dto.response.MdnWithBizResponse;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,9 +82,15 @@ public class CarController implements CarApiDocs {
 		return carService.delete(carDeleteRequest);
 	}
 
+	@GetMapping("/emulator/mdns")
+	public ApiResponse<List<MdnWithBizResponse>> getMdnAndBizId(
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
+	) {
+		return carService.getMdnAndBizId(memberPrincipal.bizUuid());
+	}
+
 	@GetMapping("/excel")
 	public ResponseEntity<byte[]> exportCarToExcel(
-
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
 	) {
 		byte[] res = carService.exportCarListToExcel(memberPrincipal.bizUuid());
