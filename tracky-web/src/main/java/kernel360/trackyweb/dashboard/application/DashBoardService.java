@@ -49,7 +49,7 @@ public class DashBoardService {
 
 	public ApiResponse<List<ReturnResponse>> getDelayedReturn(String bizUuid) {
 		LocalDateTime now = LocalDateTime.now();
-		List<RentEntity> delayedRents = rentDomainProvider.getDelayedRentList(bizUuid, now);
+		List<RentEntity> delayedRents = rentDomainProvider.findDelayedRentList(bizUuid, now);
 
 		return ApiResponse.success(
 			delayedRents.stream()
@@ -132,7 +132,7 @@ public class DashBoardService {
 		RentEntity rent = rentProvider.getRent(rentUuid);
 
 		rent.updateStatus(RentStatus.RETURNED);
-		
+
 		return ApiResponse.success("반납 처리 완료");
 	}
 }
