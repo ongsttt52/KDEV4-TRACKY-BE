@@ -18,6 +18,7 @@ import kernel360.trackyweb.common.sse.SseEvent;
 import kernel360.trackyweb.rent.application.dto.request.RentCreateRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentUpdateRequest;
+import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
 import kernel360.trackyweb.rent.domain.util.UuidGenerator;
@@ -29,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RentService {
 
-	private final RentDomainProvider rentDomainProvider;
 	private final RentProvider rentProvider;
+	private final RentDomainProvider rentDomainProvider;
 	private final CarProvider carProvider;
 	private final GlobalSseEvent globalSseEvent;
 
@@ -39,9 +40,11 @@ public class RentService {
 	 *
 	 * @return mdn list
 	 */
-	public ApiResponse<List<String>> getAllMdnByBizId(String bizUuid) {
-		List<String> mdns = rentDomainProvider.getAllMdnByBizId(bizUuid);
-		return ApiResponse.success(mdns);
+	public ApiResponse<List<RentMdnResponse>> getAllMdnByBizUuid(String bizUuid) {
+
+		List<RentMdnResponse> rentable = rentDomainProvider.getRentableMdnList(bizUuid);
+
+		return ApiResponse.success(rentable);
 	}
 
 	/**
@@ -140,7 +143,6 @@ public class RentService {
 	 */
 	@Transactional
 	public ApiResponse<String> delete(String rentUuid) {
-		// rentDomainProvider.delete(rentUuid);
 		rentDomainProvider.softDelete(rentUuid);
 		globalSseEvent.sendEvent(SseEvent.RENT_DELETED);
 
