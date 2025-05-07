@@ -31,7 +31,8 @@ public enum ErrorCode {
 	EXCEL_GENERATION_FAIL("EXCEL_001", "엑셀 파일 생성 중 오류가 발생했습니다."),
 
 	STATISTIC_NOT_FOUND("STATISTIC_001", "조회된 데이터가 없습니다."),
-	;
+
+	RENT_OVERLAP("RENT_007", "해당 차량은 요청된 시간에 이미 예약되어 있습니다.");
 
 	private final String code;
 	private final String message;

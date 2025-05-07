@@ -71,7 +71,8 @@ public class TimeDistanceEntity extends DateBaseEntity {
 		return new TimeDistanceEntity(car, biz, date, hour, distance, seconds);
 	}
 
-	public void updateDistance(double distance) {
+	public void updateDistance(double distance, int seconds) {
 		this.distance += distance;
+		this.seconds += seconds;
 	}
 }

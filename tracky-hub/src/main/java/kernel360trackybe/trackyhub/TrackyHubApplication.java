@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = "kernel360")
 @EnableJpaRepositories(basePackages = {
 	"kernel360.trackycore.core.infrastructure",
-	"kernel360trackybe.trackyhub.infrastructor.repository"
+	"kernel360trackybe.trackyhub.car.infrastructor.repository"
 })
 @ComponentScan(basePackages = {"kernel360", "kernel360trackybe"})
 public class TrackyHubApplication {
