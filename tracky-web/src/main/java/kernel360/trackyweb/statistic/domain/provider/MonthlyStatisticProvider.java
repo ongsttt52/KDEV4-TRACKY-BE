@@ -41,6 +41,5 @@ public class MonthlyStatisticProvider {
 				monthlyStatisticRepository.save(entity);
 			}
 		}
-		monthlyStatisticRepository.saveMonthlyStatistic(resultEntities);
 	}
 }
