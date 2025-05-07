@@ -16,6 +16,7 @@ import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackycore.core.domain.provider.CarProvider;
+import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
 import kernel360.trackyweb.dashboard.domain.CarStatusTemp;
@@ -34,6 +35,7 @@ public class DashBoardService {
 	private final DashGpsHistoryProvider dashGpsHistoryProvider;
 	private final CarProvider carProvider;
 	private final CarDomainProvider carDomainProvider;
+	private final RentProvider rentProvider;
 	private final RentDomainProvider rentDomainProvider;
 	private final DriveDomainProvider driveDomainProvider;
 
@@ -124,9 +126,13 @@ public class DashBoardService {
 		return provinceCountMap;
 	}
 
+	@Transactional
 	public ApiResponse<String> updateStatusToReturn(String rentUuid) {
-		rentDomainProvider.updateRentStatus(rentUuid, RentStatus.RETURNED);
 
+		RentEntity rent = rentProvider.getRent(rentUuid);
+
+		rent.updateStatus(RentStatus.RETURNED);
+		
 		return ApiResponse.success("반납 처리 완료");
 	}
 }
