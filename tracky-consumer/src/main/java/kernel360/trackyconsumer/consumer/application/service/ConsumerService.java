@@ -2,10 +2,12 @@ package kernel360.trackyconsumer.consumer.application.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import kernel360.trackycore.core.domain.entity.enums.CarStatus;
+import java.util.Optional;
+
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
@@ -140,12 +142,23 @@ public class ConsumerService {
 
 	private void saveTimeDistance(LocalDate date, int hour, CarEntity car, double totalDistance, int seconds) {
 
-		timeDistanceDomainProvider.getTimeDistance(date, hour, car)
-			.ifPresentOrElse(
-				timeDistance -> timeDistance.updateDistance(totalDistance, seconds),
-				() -> timeDistanceDomainProvider.save(
-					TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance, seconds)
-				)
+		Optional<TimeDistanceEntity> timeDistance = timeDistanceDomainProvider.getTimeDistance(date, hour, car);
+
+		if (timeDistance.isPresent()) {
+			log.info("TimeDistance 엔티티 있음");
+			timeDistance.get().updateDistance(totalDistance, seconds);
+		} else {
+			log.info("TimeDistance 엔티티 없음");
+			timeDistanceDomainProvider.save(
+				TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance, seconds)
 			);
+		}
+		// timeDistanceDomainProvider.getTimeDistance(date, hour, car)
+		// 	.ifPresentOrElse(
+		// 		timeDistance -> timeDistance.updateDistance(totalDistance, seconds),
+		// 		() -> timeDistanceDomainProvider.save(
+		// 			TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance, seconds)
+		// 		)
+		// 	);
 	}
 }
