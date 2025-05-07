@@ -46,15 +46,6 @@ public class RentDomainProvider {
 		return rentDomainRepository.getTotalRentDurationInMinutes();
 	}
 
-	public void updateRentStatus(String rentUuid, RentStatus rentStatus) {
-		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
-			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
-
-		rent.updateStatus(rentStatus);
-
-		rentDomainRepository.save(rent);
-	}
-
 	public void softDelete(String rentUuid) {
 		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
