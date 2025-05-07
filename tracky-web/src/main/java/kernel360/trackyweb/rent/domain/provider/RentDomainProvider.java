@@ -66,4 +66,12 @@ public class RentDomainProvider {
 			throw GlobalException.throwError(ErrorCode.RENT_OVERLAP, conflictList);
 		}
 	}
+
+	public List<OverlappingRentResponse> validateOverlappingRentOps(String mdn, LocalDateTime rentStime, LocalDateTime rentEtime) {
+		List<RentEntity> overlaps = rentDomainRepository.findOverlappingRent(mdn, rentStime, rentEtime);
+
+		return overlaps.stream()
+			.map(OverlappingRentResponse::from)
+			.collect(Collectors.toList());
+	}
 }
