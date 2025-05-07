@@ -22,29 +22,6 @@ public record CarOnOffRequest(
 
 	LocalDateTime offTime
 ) {
-	@JsonCreator
-	public CarOnOffRequest(
-		@JsonProperty String mdn,
-		@JsonProperty String gcd,
-		@JsonProperty String tid,
-		@JsonProperty String mid,
-		@JsonProperty String pv,
-		@JsonProperty String did,
-		@JsonProperty int lat,
-		@JsonProperty int lon,
-		@JsonProperty int ang,
-		@JsonProperty int spd,
-		@JsonProperty double sum,
-		@JsonProperty @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime onTime,
-		@JsonProperty @JsonFormat(pattern = "yyyyMMddHHmmss") LocalDateTime offTime
-	) {
-		this(mdn,
-			gcd,
-			EmulatorInfo.create(),
-			GpsInfo.create(lat, lon, ang, spd, sum),
-			onTime,
-			offTime);
-	}
 
 	public LocationEntity toLocationEntity() {
 		return LocationEntity.create(

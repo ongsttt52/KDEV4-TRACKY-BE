@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EntityScan(basePackages = "kernel360")
 @ComponentScan(basePackages = "kernel360")
 @EnableJpaRepositories(basePackages = "kernel360")
+@EnableScheduling
 public class TrackyWebApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TrackyWebApplication.class, args);
