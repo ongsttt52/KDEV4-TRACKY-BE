@@ -21,6 +21,10 @@ spring:
       org.hibernate.SQL: debug            # SQL 쿼리
       org.hibernate.type.descriptor.sql: trace   # 파라미터 값까지 출력
 
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+
 discord:
   enable: ${DISCORD_WEBHOOK_ENABLE:false}
   webhook-url: ${DISCORD_WEBHOOK_WEB_URL}
