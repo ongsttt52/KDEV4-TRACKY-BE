@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 
 public record OperationCarCount(
 	Long bizId,
-	int carCount) {
+	Long carCount) {
 
 	public static Map<Long, Integer> toMap(List<OperationCarCount> dtoList) {
 		return dtoList.stream()
 			.collect(Collectors.toMap(
 				OperationCarCount::bizId,
-				OperationCarCount::carCount
+				dto -> dto.carCount().intValue() // Long → int 변환
 			));
 	}
 }

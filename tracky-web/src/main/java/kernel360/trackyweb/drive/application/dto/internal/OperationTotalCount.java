@@ -5,16 +5,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record OperationTotalCount(
-        Long bizId,
-        int totalCount
+	Long bizId,
+	Long totalCount
 ) {
-    public static Map<Long, Integer> toMap(List<OperationTotalCount> dtoList) {
-        return dtoList.stream()
-                .collect(Collectors.toMap(
-                        OperationTotalCount::bizId,
-                        OperationTotalCount::totalCount
-                ));
-    }
+	public static Map<Long, Integer> toMap(List<OperationTotalCount> dtoList) {
+		return dtoList.stream()
+			.collect(Collectors.toMap(
+				OperationTotalCount::bizId,
+				dto -> dto.totalCount().intValue()
+			));
+	}
 }
 
 

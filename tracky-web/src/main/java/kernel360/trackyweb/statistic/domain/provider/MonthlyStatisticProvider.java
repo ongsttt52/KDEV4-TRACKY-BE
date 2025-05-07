@@ -2,9 +2,11 @@ package kernel360.trackyweb.statistic.domain.provider;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
@@ -15,15 +17,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MonthlyStatisticProvider {
 
-    private final MonthlyStatisticDomainRepository monthlyStatisticRepository;
+	private final MonthlyStatisticDomainRepository monthlyStatisticRepository;
 
-    public MonthlyStatisticEntity getMonthlyStatistic(Long bizId, LocalDate date) {
+	public MonthlyStatisticEntity getMonthlyStatistic(Long bizId, LocalDate date) {
 
-        return monthlyStatisticRepository.findByBizIdAndDate(bizId, date)
-                .orElseThrow(() -> GlobalException.throwError(ErrorCode.STATISTIC_NOT_FOUND));
-    }
+		return monthlyStatisticRepository.findByBizIdAndDate(bizId, date)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.STATISTIC_NOT_FOUND));
+	}
 
-    public void saveMonthlyStatistic(List<MonthlyStatisticEntity> resultEntities) {
-        monthlyStatisticRepository.saveAll(resultEntities);
-    }
+	@Transactional
+	public void saveMonthlyStatistic(List<MonthlyStatisticEntity> resultEntities) {
+
+		for (MonthlyStatisticEntity entity : resultEntities) {
+			Optional<MonthlyStatisticEntity> existEntity = monthlyStatisticRepository.findByBizIdAndDate(
+				entity.getBizId(), entity.getDate());
+
+			if (existEntity.isPresent()) {
+				MonthlyStatisticEntity existing = existEntity.get();
+				existing.update(entity.getTotalCarCount(), entity.getNonOperatingCarCount(),
+					entity.getAvgOperationRate(), entity.getTotalDriveSec(), entity.getTotalDriveCount(),
+					entity.getTotalDriveDistance());
+			} else {
+				monthlyStatisticRepository.save(entity);
+			}
+		}
+		monthlyStatisticRepository.saveMonthlyStatistic(resultEntities);
+	}
 }

@@ -15,14 +15,18 @@ import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipa
 import kernel360.trackyweb.statistic.application.StatisticService;
 import kernel360.trackyweb.statistic.application.dto.response.DailyStatisticResponse;
 import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
+import kernel360.trackyweb.statistic.scheduler.StatisticScheduler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/statistic")
 @RequiredArgsConstructor
+@Slf4j
 public class StatisticController {
 
 	private final StatisticService statisticService;
+	private final StatisticScheduler statisticScheduler;
 
 	@GetMapping("/daily")
 	public ApiResponse<DailyStatisticResponse> getDailyStatistic(

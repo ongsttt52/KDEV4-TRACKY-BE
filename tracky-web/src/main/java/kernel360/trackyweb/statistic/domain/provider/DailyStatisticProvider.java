@@ -4,12 +4,16 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import kernel360.trackyweb.statistic.application.dto.internal.*;
 import org.springframework.stereotype.Component;
 
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
+import kernel360.trackyweb.statistic.application.dto.internal.OperationCount;
+import kernel360.trackyweb.statistic.application.dto.internal.OperationDistance;
+import kernel360.trackyweb.statistic.application.dto.internal.OperationRate;
+import kernel360.trackyweb.statistic.application.dto.internal.OperationTime;
+import kernel360.trackyweb.statistic.application.dto.internal.TotalCarCount;
 import kernel360.trackyweb.statistic.infrastructure.repository.daily.DailyStatisticDomainRepository;
 import lombok.RequiredArgsConstructor;
 

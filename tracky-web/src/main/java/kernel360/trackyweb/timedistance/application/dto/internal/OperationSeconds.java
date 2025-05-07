@@ -5,15 +5,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public record OperationSeconds(
-		long bizId,
-		long operationSeconds
+	long bizId,
+	int operationSeconds
 ) {
 	public static Map<Long, Long> toMap(List<OperationSeconds> dtoList) {
 		return dtoList.stream()
-				.collect(Collectors.toMap(
-						OperationSeconds::bizId,
-						OperationSeconds::operationSeconds
-				));
+			.collect(Collectors.toMap(
+				OperationSeconds::bizId,
+				dto -> (long)dto.operationSeconds() // int → long 변환
+			));
 	}
 
 }
+

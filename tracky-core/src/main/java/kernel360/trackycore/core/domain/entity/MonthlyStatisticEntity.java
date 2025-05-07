@@ -93,4 +93,14 @@ public class MonthlyStatisticEntity {
 			totalDriveDistance
 		);
 	}
+
+	public void update(Integer totalCarCount, Integer nonOperatingCarCount, Double avgOperationRate, Long totalDriveSec,
+		Integer totalDriveCount, Double totalDriveDistance) {
+		this.totalCarCount = totalCarCount;
+		this.nonOperatingCarCount = nonOperatingCarCount;
+		this.avgOperationRate = avgOperationRate;
+		this.totalDriveSec = totalDriveSec;
+		this.totalDriveCount = totalDriveCount;
+		this.totalDriveDistance = totalDriveDistance;
+	}
 }
