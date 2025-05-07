@@ -4,6 +4,7 @@ import kernel360.trackycore.core.domain.entity.AdminStatisticEntity;
 
 public record AdminStatisticResponse() {
 
-	public static AdminStatisticResponse from(AdminStatisticEntity adminStatistic) {
+	public static AdminStatisticResponse from(AdminStatisticEntity e) {
+		return new AdminStatisticResponse();
 	}
 }

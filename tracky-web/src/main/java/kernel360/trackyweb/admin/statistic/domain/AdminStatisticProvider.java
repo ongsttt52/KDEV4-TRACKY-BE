@@ -14,8 +14,8 @@ public class AdminStatisticProvider {
 
 	private final AdminStatisticRepository adminStatisticRepository;
 
-	public AdminStatisticEntity getAdminStatistic() {
+	public AdminStatisticEntity getAdminStatistic(LocalDate date) {
 
-		return adminStatisticRepository.findByDate(LocalDate.now());
+		return adminStatisticRepository.findByDate(date);
 	}
 }

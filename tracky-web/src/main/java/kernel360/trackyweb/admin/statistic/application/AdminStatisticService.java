@@ -1,5 +1,7 @@
 package kernel360.trackyweb.admin.statistic.application;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
@@ -14,8 +16,8 @@ public class AdminStatisticService {
 
 	private final AdminStatisticProvider adminStatisticProvider;
 
-	public ApiResponse<AdminStatisticResponse> getAdminStatistic() {
-		AdminStatisticEntity adminStatistic = adminStatisticProvider.getAdminStatistic();
+	public ApiResponse<AdminStatisticResponse> getAdminStatistic(LocalDate date) {
+		AdminStatisticEntity adminStatistic = adminStatisticProvider.getAdminStatistic(date);
 
 		AdminStatisticResponse response = AdminStatisticResponse.from(adminStatistic);
 
