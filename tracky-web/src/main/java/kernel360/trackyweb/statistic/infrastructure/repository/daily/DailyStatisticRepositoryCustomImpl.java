@@ -26,8 +26,6 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 	//말일의 total car count 값
 	@Override
 	public List<TotalCarCount> getLastTotalCarCount(LocalDate targetDate) {
-		LocalDate maxDate = getMaxDate(targetDate);
-
 		return queryFactory
 			.select(Projections.constructor(
 				TotalCarCount.class,
@@ -35,7 +33,7 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 				dailyStatisticEntity.totalCarCount
 			))
 			.from(dailyStatisticEntity)
-			.where(dailyStatisticEntity.date.eq(maxDate))
+			.orderBy(dailyStatisticEntity.date.desc())
 			.groupBy(dailyStatisticEntity.bizId)
 			.fetch();
 	}
@@ -44,7 +42,6 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 	@Override
 	public List<OperationRate> findAverageOperationRate(LocalDate targetDate) {
 		LocalDate firstDay = targetDate.withDayOfMonth(1);
-		LocalDate maxDate = getMaxDate(targetDate);
 
 		return queryFactory
 			.select(Projections.constructor(
@@ -53,7 +50,7 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 				dailyStatisticEntity.avgOperationRate.avg()
 			))
 			.from(dailyStatisticEntity)
-			.where(dailyStatisticEntity.date.between(firstDay, maxDate))
+			.where(dailyStatisticEntity.date.between(firstDay, targetDate))
 			.groupBy(dailyStatisticEntity.bizId)
 			.fetch();
 	}
@@ -62,7 +59,6 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 	@Override
 	public List<OperationCount> findSumOperationCount(LocalDate targetDate) {
 		LocalDate firstDay = targetDate.withDayOfMonth(1);
-		LocalDate maxDate = getMaxDate(targetDate);
 
 		return queryFactory
 			.select(Projections.constructor(
@@ -71,7 +67,7 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 				dailyStatisticEntity.dailyDriveCount.sum()
 			))
 			.from(dailyStatisticEntity)
-			.where(dailyStatisticEntity.date.between(firstDay, maxDate))
+			.where(dailyStatisticEntity.date.between(firstDay, targetDate))
 			.groupBy(dailyStatisticEntity.bizId)
 			.fetch();
 	}
@@ -80,7 +76,6 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 	@Override
 	public List<OperationTime> findSumOperationTime(LocalDate targetDate) {
 		LocalDate firstDay = targetDate.withDayOfMonth(1);
-		LocalDate maxDate = getMaxDate(targetDate);
 
 		return queryFactory
 			.select(Projections.constructor(
@@ -89,7 +84,7 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 				dailyStatisticEntity.dailyDriveSec.sum()
 			))
 			.from(dailyStatisticEntity)
-			.where(dailyStatisticEntity.date.between(firstDay, maxDate))
+			.where(dailyStatisticEntity.date.between(firstDay, targetDate))
 			.groupBy(dailyStatisticEntity.bizId)
 			.fetch();
 	}
@@ -98,7 +93,6 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 	@Override
 	public List<OperationDistance> findSumOperationDistance(LocalDate targetDate) {
 		LocalDate firstDay = targetDate.withDayOfMonth(1);
-		LocalDate maxDate = getMaxDate(targetDate);
 
 		return queryFactory
 			.select(Projections.constructor(
@@ -107,20 +101,8 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 				dailyStatisticEntity.dailyDriveDistance.sum()
 			))
 			.from(dailyStatisticEntity)
-			.where(dailyStatisticEntity.date.between(firstDay, maxDate))
+			.where(dailyStatisticEntity.date.between(firstDay, targetDate))
 			.groupBy(dailyStatisticEntity.bizId)
 			.fetch();
-	}
-
-	//일일 통계 테이블 중 target date가 속한 달의 가장 최신 날짜
-	private LocalDate getMaxDate(LocalDate targetDate) {
-		LocalDate firstDay = targetDate.withDayOfMonth(1);
-		LocalDate lastDay = targetDate.withDayOfMonth(targetDate.lengthOfMonth());
-
-		return queryFactory
-			.select(dailyStatisticEntity.date.max())
-			.from(dailyStatisticEntity)
-			.where(dailyStatisticEntity.date.between(firstDay, lastDay))
-			.fetchOne(); // maxDate가 없으면 null 반환
 	}
 }
