@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
@@ -23,11 +25,10 @@ import kernel360.trackycore.core.domain.entity.TimeDistanceEntity;
 import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.GpsHistoryProvider;
 import kernel360.trackycore.core.domain.provider.LocationProvider;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 @Slf4j
 public class ConsumerService {
 
@@ -37,6 +38,27 @@ public class ConsumerService {
 	private final GpsHistoryProvider gpsHistoryProvider;
 	private final RentDomainProvider rentDomainProvider;
 	private final TimeDistanceDomainProvider timeDistanceDomainProvider;
+	private final Counter messageCounter;
+
+	public ConsumerService(
+		DriveDomainProvider driveProvider,
+		CarProvider carProvider,
+		LocationProvider locationProvider,
+		GpsHistoryProvider gpsHistoryProvider,
+		RentDomainProvider rentDomainProvider,
+		TimeDistanceDomainProvider timeDistanceDomainProvider,
+		MeterRegistry meterRegistry
+	) {
+		this.driveProvider = driveProvider;
+		this.carProvider = carProvider;
+		this.locationProvider = locationProvider;
+		this.gpsHistoryProvider = gpsHistoryProvider;
+		this.rentDomainProvider = rentDomainProvider;
+		this.timeDistanceDomainProvider = timeDistanceDomainProvider;
+		this.messageCounter = Counter.builder("rabbitmq_messages_processed_total")
+			.description("Total number of messages processed from RabbitMQ")
+			.register(meterRegistry);
+	}
 
 	@Async("taskExecutor")
 	@Transactional
@@ -53,6 +75,7 @@ public class ConsumerService {
 
 		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive);
 		gpsHistoryProvider.saveAll(gpsHistories);
+		messageCounter.increment();
 	}
 
 	@Transactional
