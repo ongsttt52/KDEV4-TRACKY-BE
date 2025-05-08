@@ -7,13 +7,17 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.querydsl.core.Tuple;
+
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
+import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.response.OverlappingRentResponse;
+import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 import kernel360.trackyweb.rent.infrastructure.repository.RentDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -24,19 +28,16 @@ public class RentDomainProvider {
 	private final RentDomainRepository rentDomainRepository;
 	private final CarDomainRepository carDomainRepository;
 
-	public Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid) {
-		return rentDomainRepository.searchRentByFilter(request, bizUuid);
-	}
-
 	public RentEntity save(RentEntity rent) {
 		return rentDomainRepository.save(rent);
 	}
 
-	// public void delete(String rentUuid) { rentDomainRepository.deleteByRentUuid(rentUuid); }
-	public void softDelete(String rentUuid) {
-		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
-			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
-		rent.updateStatus(RentStatus.DELETED);
+	public Long count() {
+		return rentDomainRepository.count();
+	}
+
+	public Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid) {
+		return rentDomainRepository.searchRentByFilter(request, bizUuid);
 	}
 
 	public List<String> getAllMdnByBizId(String bizUuid) {
@@ -51,8 +52,10 @@ public class RentDomainProvider {
 		return rentDomainRepository.getTotalRentDurationInMinutes();
 	}
 
-	public Long count() {
-		return rentDomainRepository.count();
+	public void softDelete(String rentUuid) {
+		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
+		rent.updateStatus(RentStatus.DELETED);
 	}
 
 	public void validateOverlappingRent(String mdn, LocalDateTime rentStime, LocalDateTime rentEtime) {
@@ -66,4 +69,13 @@ public class RentDomainProvider {
 			throw GlobalException.throwError(ErrorCode.RENT_OVERLAP, conflictList);
 		}
 	}
+
+	public List<RentMdnResponse> getRentableMdnList(String bizUuid) {
+		List<Tuple> tuples = rentDomainRepository.findRentableMdn(bizUuid);
+		return tuples.stream().map(tuple -> {
+			return new RentMdnResponse(tuple.get(QRentEntity.rentEntity.car.mdn),
+				tuple.get(QRentEntity.rentEntity.car.status));
+		}).toList();
+	}
+
 }

@@ -69,7 +69,7 @@ public class CarDomainProvider {
 	public Map<Long, Integer> countDailyTotalCar() {
 		return CarCountWithBizId.toMap(carDomainRepository.getDailyTotalCarCount());
   }
-  
+
 	public List<CarEntity> findAllByAvailableEmulate(String bizUuid) {
 		return carDomainRepository.availableEmulate(bizUuid);
 	 }
