@@ -75,6 +75,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 	@Override
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
+
 		JPAQuery<CarEntity> query = queryFactory
 			.select(carEntity)
 			.from(carEntity)
@@ -116,21 +117,21 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			))
 			.from(carEntity)
 			.groupBy(carEntity.biz.id)
-      .fetch();
-  }
-      
-    @Override
-    public List<CarEntity> availableEmulate(String bizUuid) {
-       LocalDateTime now = LocalDateTime.now();
-       return queryFactory
-         .select(carEntity)
-         .from(carEntity)
-         .join(rentEntity).on(rentEntity.car.eq(carEntity)) // 반드시 rent가 연결된 경우만
-         .where(
-           carEntity.biz.bizUuid.eq(bizUuid),
-           rentEntity.rentStime.loe(now),
-           rentEntity.rentEtime.goe(now)
-         )
+			.fetch();
+	}
+
+	@Override
+	public List<CarEntity> availableEmulate(String bizUuid) {
+		LocalDateTime now = LocalDateTime.now();
+		return queryFactory
+			.select(carEntity)
+			.from(carEntity)
+			.join(rentEntity).on(rentEntity.car.eq(carEntity)) // 반드시 rent가 연결된 경우만
+			.where(
+				carEntity.biz.bizUuid.eq(bizUuid),
+				rentEntity.rentStime.loe(now),
+				rentEntity.rentEtime.goe(now)
+			)
 			.fetch();
 	}
 

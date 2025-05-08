@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -15,16 +14,17 @@ import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
-import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
+import kernel360.trackyweb.dashboard.application.dto.response.Statistics;
 import kernel360.trackyweb.dashboard.domain.CarStatusTemp;
-import kernel360.trackyweb.dashboard.domain.Statistics;
 import kernel360.trackyweb.dashboard.domain.provider.DashGpsHistoryProvider;
 import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
-import kernel360.trackyweb.drive.domain.provider.DriveDomainProvider;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
+import kernel360.trackyweb.statistic.application.dto.internal.DashboardStatistic;
+import kernel360.trackyweb.statistic.domain.provider.DailyStatisticProvider;
+import kernel360.trackyweb.statistic.domain.provider.MonthlyStatisticProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,16 +33,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class DashBoardService {
 	private final DashGpsHistoryProvider dashGpsHistoryProvider;
-	private final CarProvider carProvider;
 	private final CarDomainProvider carDomainProvider;
 	private final RentProvider rentProvider;
 	private final RentDomainProvider rentDomainProvider;
-	private final DriveDomainProvider driveDomainProvider;
 
 	private final ProvinceMatcher provinceMatcher;
+	private final MonthlyStatisticProvider monthlyStatisticProvider;
+	private final DailyStatisticProvider dailyStatisticProvider;
 
 	/**
 	 * 반납 조회( 지연된 반납 )
+	 *
 	 * @param
 	 * @return 지연된 반납 list
 	 */
@@ -71,6 +72,7 @@ public class DashBoardService {
 
 	/**
 	 * 차량 상태 통계 api
+	 *
 	 * @return hashmap(status, count)
 	 */
 	@Transactional(readOnly = true)
@@ -87,22 +89,21 @@ public class DashBoardService {
 
 	/**
 	 * 대시보드용 통계 데이터
+	 *
 	 * @return Statistics 통계 데이터
 	 */
 	@Transactional(readOnly = true)
-	public Statistics getStatistics() {
-		double totalDriveDistance = Optional.ofNullable(driveDomainProvider.getTotalDriveDistance()).orElse(0.0);
-		long totalRentCount = rentDomainProvider.count();
-		long totalCarCount = carProvider.count();
-		long totalRentDuration = Optional.ofNullable(rentDomainProvider.getTotalRentDurationInMinutes()).orElse(0L);
-		long totalDriveDuration = Optional.ofNullable(driveDomainProvider.getTotalDriveDurationInMinutes()).orElse(0L);
+	public Statistics getStatistics(String bizUuid) {
+		DashboardStatistic dashboardStatistic = monthlyStatisticProvider.getDashBoardStatistic(bizUuid);
+		List<Integer> dailyDriveCount = dailyStatisticProvider.getDailyDriveCount(bizUuid);
 
-		return Statistics.create(totalDriveDistance, totalRentCount, totalCarCount, totalRentDuration,
-			totalDriveDuration);
+		return Statistics.create(dashboardStatistic.avgOperationRate(), dashboardStatistic.nonOperatingCarCount(),
+			dashboardStatistic.totalDriveCount(), dailyDriveCount);
 	}
 
 	/**
 	 * geo 기반 영역 안의 차량 수 hashmap 구하기
+	 *
 	 * @return 구역 : 차량 수 map
 	 */
 	@Transactional(readOnly = true)

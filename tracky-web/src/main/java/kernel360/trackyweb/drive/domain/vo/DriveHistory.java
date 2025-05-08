@@ -1,4 +1,4 @@
-package kernel360.trackyweb.drive.domain;
+package kernel360.trackyweb.drive.domain.vo;
 
 import java.time.LocalDateTime;
 import java.util.List;

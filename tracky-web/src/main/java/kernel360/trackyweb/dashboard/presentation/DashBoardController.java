@@ -15,7 +15,7 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackyweb.dashboard.application.DashBoardService;
 import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
-import kernel360.trackyweb.dashboard.domain.Statistics;
+import kernel360.trackyweb.dashboard.application.dto.response.Statistics;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 
@@ -39,8 +39,9 @@ public class DashBoardController implements DashBoardApiDocs {
 	}
 
 	@GetMapping("/statistics")
-	public ApiResponse<Statistics> getStatistics() {
-		return ApiResponse.success(dashBoardService.getStatistics());
+	public ApiResponse<Statistics> getStatistics(
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+		return ApiResponse.success(dashBoardService.getStatistics(memberPrincipal.bizUuid()));
 	}
 
 	@PatchMapping("/return/status/{rentUuid}")
