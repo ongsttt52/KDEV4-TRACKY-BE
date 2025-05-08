@@ -6,12 +6,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import kernel360.trackyweb.timedistance.application.dto.internal.OperationDistance;
-import kernel360.trackyweb.timedistance.application.dto.internal.OperationSeconds;
 import com.querydsl.core.Tuple;
 
 import kernel360.trackycore.core.domain.entity.QTimeDistanceEntity;
-import kernel360.trackyweb.timedistance.application.dto.internal.OperationTime;
+import kernel360.trackyweb.timedistance.application.dto.internal.OperationDistance;
+import kernel360.trackyweb.timedistance.application.dto.internal.OperationSeconds;
 import kernel360.trackyweb.timedistance.infrastructure.repository.TimeDistanceDomainRepository;
 import lombok.RequiredArgsConstructor;
 

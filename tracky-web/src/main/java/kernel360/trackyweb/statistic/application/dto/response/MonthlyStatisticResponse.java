@@ -1,13 +1,14 @@
 package kernel360.trackyweb.statistic.application.dto.response;
 
 import java.util.List;
-import java.util.stream.IntStream;
+
+import com.querydsl.core.Tuple;
 
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 
 public record MonthlyStatisticResponse(
 	Summary summary,
-	List<MonthlyStats> monthlyStat
+	List<MonthlyStats> monthlyStats
 ) {
 	public record Summary(
 		int totalCarCount,
@@ -23,22 +24,20 @@ public record MonthlyStatisticResponse(
 		int year,
 		int month,
 		int driveCount,
-		long driveDistance
+		double driveDistance
 	) {
 	}
 
-	public static MonthlyStatisticResponse from(MonthlyStatisticEntity e,
-		List<Integer> monthlyDriveCounts,
-		List<Long> monthlyDriveDistances
-	) {
-		int currentMonth = e.getDate().getMonthValue();
-		List<MonthlyStats> monthlyStats = IntStream.range(0, currentMonth)
-			.mapToObj(i -> new MonthlyStats(
-				e.getDate().getYear(),
-				i + 1,
-				monthlyDriveCounts.get(i),
-				monthlyDriveDistances.get(i)
-			)).toList();
+	public static MonthlyStatisticResponse from(MonthlyStatisticEntity e, List<Tuple> monthlyDataTuples) {
+
+		List<MonthlyStats> monthlyStats = monthlyDataTuples.stream().map(tuple -> {
+			int year = tuple.get(0, Integer.class);
+			int month = tuple.get(1, Integer.class);
+			int driveCount = tuple.get(2, Integer.class);
+			double driveDistance = tuple.get(3, Double.class);
+
+			return new MonthlyStats(year, month, driveCount, driveDistance);
+		}).toList();
 
 		return new MonthlyStatisticResponse(
 			new Summary(

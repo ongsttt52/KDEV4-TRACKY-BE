@@ -1,19 +1,19 @@
 package kernel360.trackyweb.timedistance.infrastructure.repository;
 
 import static kernel360.trackycore.core.domain.entity.QTimeDistanceEntity.*;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import com.querydsl.core.types.Projections;
-import kernel360.trackyweb.timedistance.application.dto.internal.OperationDistance;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kernel360.trackyweb.timedistance.application.dto.internal.OperationSeconds;
 import kernel360.trackycore.core.domain.entity.QTimeDistanceEntity;
-import kernel360.trackyweb.timedistance.application.dto.internal.OperationTime;
+import kernel360.trackyweb.timedistance.application.dto.internal.OperationDistance;
+import kernel360.trackyweb.timedistance.application.dto.internal.OperationSeconds;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -39,30 +39,30 @@ public class TimeDistanceDomainRepositoryCustomImpl implements TimeDistanceDomai
 	@Override
 	public List<OperationSeconds> getDailyOperationTime(LocalDate targetDate) {
 		return queryFactory
-				.select(Projections.constructor(
-						OperationSeconds.class,
-						timeDistanceEntity.biz.id,
-						timeDistanceEntity.seconds.sum()
-				))
-				.from(timeDistanceEntity)
-				.where(timeDistanceEntity.date.eq(targetDate))
-				.groupBy(timeDistanceEntity.biz.id)
-				.fetch();
+			.select(Projections.constructor(
+				OperationSeconds.class,
+				timeDistanceEntity.biz.id,
+				timeDistanceEntity.seconds.sum()
+			))
+			.from(timeDistanceEntity)
+			.where(timeDistanceEntity.date.eq(targetDate))
+			.groupBy(timeDistanceEntity.biz.id)
+			.fetch();
 
 	}
 
 	@Override
 	public List<OperationDistance> getDailyOperationDistance(LocalDate targetDate) {
 		return queryFactory
-				.select(Projections.constructor(
-						OperationDistance.class,
-						timeDistanceEntity.biz.id,
-						timeDistanceEntity.distance.sum()
-				))
-				.from(timeDistanceEntity)
-				.where(timeDistanceEntity.date.eq(targetDate))
-				.groupBy(timeDistanceEntity.biz.id)
-				.fetch();
+			.select(Projections.constructor(
+				OperationDistance.class,
+				timeDistanceEntity.biz.id,
+				timeDistanceEntity.distance.sum()
+			))
+			.from(timeDistanceEntity)
+			.where(timeDistanceEntity.date.eq(targetDate))
+			.groupBy(timeDistanceEntity.biz.id)
+			.fetch();
 	}
 
 }
