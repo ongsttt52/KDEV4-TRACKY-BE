@@ -4,9 +4,11 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
+import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.domain.provider.BizProvider;
@@ -25,6 +27,7 @@ public class StatisticService {
 	private final MonthlyStatisticProvider monthlyStatisticProvider;
 	private final TimeDistanceDomainProvider timeDistanceDomainProvider;
 	private final BizProvider bizProvider;
+	private final CarDomainProvider carDomainProvider;
 
 	public ApiResponse<DailyStatisticResponse> getDailyStatistic(String bizUuid, LocalDate date) {
 
@@ -57,5 +60,19 @@ public class StatisticService {
 		MonthlyStatisticResponse response = MonthlyStatisticResponse.from(monthlyStatistic, monthlyStats);
 
 		return ApiResponse.success(response);
+	}
+
+	public ApiResponse<List<CarStatisticResponse>> getCarStatistic(String bizUuid,
+		CarStatisticRequest carStatisticRequest) {
+
+		Long bizId = bizProvider.getBiz(bizUuid).getId();
+
+		Page<CarStatisticResponse> carResponses = carDomainProvider.searchCarStatisticByFilter(bizId,
+			carStatisticRequest.search(),
+			carStatisticRequest.toPageable());
+
+		PageResponse pageResponse = PageResponse.from(carResponses);
+
+		return ApiResponse.success(carResponses.getContent(), pageResponse);
 	}
 }
