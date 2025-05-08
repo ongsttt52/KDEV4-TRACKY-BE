@@ -141,9 +141,9 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	@Override
 	public Page<CarStatisticResponse> searchCarStatisticByFilter(Long bizId, String search, Pageable pageable) {
 
-		NumberExpression<Integer> totalSeconds = timeDistanceEntity.seconds.sum();
+		NumberExpression<Integer> totalSeconds = timeDistanceEntity.seconds.sum().coalesce(0);
 
-		NumberExpression<Double> totalDistance = timeDistanceEntity.distance.sum();
+		NumberExpression<Double> totalDistance = timeDistanceEntity.distance.sum().coalesce(0.0);
 
 		NumberExpression<Integer> avgSpeed
 			= totalDistance
@@ -170,10 +170,10 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 				avgSpeed
 			))
 			.from(carEntity)
-			.join(timeDistanceEntity)
+			.leftJoin(timeDistanceEntity)
 			.on(timeDistanceEntity.car.mdn.eq(carEntity.mdn))
 			.where(builder)
-			.groupBy(carEntity.carPlate)
+			.groupBy(carEntity.mdn)
 			.orderBy(carPlateSort(search))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -181,10 +181,8 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 		long total = Optional.ofNullable(
 			queryFactory
-				.select(carEntity.carPlate.countDistinct())
+				.select(carEntity.mdn.count())
 				.from(carEntity)
-				.join(timeDistanceEntity)
-				.on(timeDistanceEntity.car.mdn.eq(carEntity.mdn))
 				.where(builder)
 				.fetchOne()
 		).orElse(0L);
