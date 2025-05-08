@@ -35,7 +35,7 @@ public interface CarApiDocs {
 	ApiResponse<CarDetailResponse> searchOne(@PathVariable String mdn);
 
 	@Operation(summary = "차량 신규 등록", description = "차량 신규 등록 API")
-	ApiResponse<CarDetailResponse> create(@RequestBody CarCreateRequest carCreateRequest);
+	ApiResponse<CarDetailResponse> create(@RequestBody CarCreateRequest carCreateRequest, @Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal);
 
 	@Operation(summary = "차량 정보 수정", description = "차량 정보를 수정하는 API")
 	ApiResponse<CarDetailResponse> update(@RequestBody CarUpdateRequest carUpdateRequest);

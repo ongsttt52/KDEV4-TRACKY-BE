@@ -35,22 +35,14 @@ public class CarDomainProvider {
 	}
 
 	public CarEntity update(CarEntity car) {
-
-		globalSseEvent.sendEvent(SseEvent.CAR_UPDATED);
-
 		return carDomainRepository.save(car);
 	}
 
 	public CarEntity save(CarEntity car) {
-
-		globalSseEvent.sendEvent(SseEvent.CAR_CREATED);
-
 		return carDomainRepository.save(car);
 	}
 
 	public void delete(String mdn) {
-		globalSseEvent.sendEvent(SseEvent.CAR_DELETED);
-
 		carDomainRepository.deleteByMdn(mdn);
 	}
 

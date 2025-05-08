@@ -63,9 +63,10 @@ public class CarController implements CarApiDocs {
 
 	@PostMapping("")
 	public ApiResponse<CarDetailResponse> create(
-		@RequestBody CarCreateRequest carCreateRequest
+		@RequestBody CarCreateRequest carCreateRequest,
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
 	) {
-		return carService.create(carCreateRequest);
+		return carService.create(memberPrincipal.bizUuid(), carCreateRequest);
 	}
 
 	@PatchMapping("")

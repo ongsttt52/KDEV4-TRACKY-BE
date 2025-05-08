@@ -47,4 +47,10 @@ public class DashBoardController implements DashBoardApiDocs {
 	public ApiResponse<String> updateStatusToReturn(@PathVariable String rentUuid) {
 		return dashBoardService.updateStatusToReturn(rentUuid);
 	}
+
+	@GetMapping("/geo")
+	public ApiResponse<Map<String, Integer>> getGeoData() {
+		Map<String, Integer> geoMap = dashBoardService.getGeoData();
+		return ApiResponse.success(geoMap);
+	}
 }
