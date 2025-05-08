@@ -5,15 +5,14 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import com.querydsl.core.Tuple;
-
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
+import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 
 public interface RentRepositoryCustom {
 	Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid);
 
-	List<Tuple> findRentableMdn(Long bizId);
+	List<RentMdnResponse> findRentableMdn(Long bizId);
 
 	List<RentEntity> findDelayedRents(String bizUuid, LocalDateTime now);
 

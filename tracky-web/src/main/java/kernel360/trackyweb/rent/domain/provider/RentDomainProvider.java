@@ -7,12 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import com.querydsl.core.Tuple;
-
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.BizEntity;
-import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackycore.core.infrastructure.repository.BizRepository;
@@ -81,11 +78,6 @@ public class RentDomainProvider {
 		BizEntity biz = bizRepository.findByBizUuid(bizUuid)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.BIZ_NOT_FOUND));
 
-		List<Tuple> tuples = rentDomainRepository.findRentableMdn(biz.getId());
-
-		return tuples.stream().map(tuple -> {
-			return new RentMdnResponse(tuple.get(QRentEntity.rentEntity.car.mdn),
-				tuple.get(QRentEntity.rentEntity.car.status));
-		}).toList();
+		return rentDomainRepository.findRentableMdn(biz.getId());
 	}
 }
