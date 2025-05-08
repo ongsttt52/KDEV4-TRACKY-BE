@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
@@ -25,6 +26,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
+import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -105,17 +107,30 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 	@Override
-	public List<CarEntity> availableEmulate(String bizUuid) {
-		LocalDateTime now = LocalDateTime.now();
+	public List<CarCountWithBizId> getDailyTotalCarCount() {
 		return queryFactory
-			.select(carEntity)
+			.select(Projections.constructor(
+				CarCountWithBizId.class,
+				carEntity.biz.id,
+				carEntity.count()
+			))
 			.from(carEntity)
-			.join(rentEntity).on(rentEntity.car.eq(carEntity)) // 반드시 rent가 연결된 경우만
-			.where(
-				carEntity.biz.bizUuid.eq(bizUuid),
-				rentEntity.rentStime.loe(now),
-				rentEntity.rentEtime.goe(now)
-			)
+			.groupBy(carEntity.biz.id)
+      .fetch();
+  }
+      
+    @Override
+    public List<CarEntity> availableEmulate(String bizUuid) {
+       LocalDateTime now = LocalDateTime.now();
+       return queryFactory
+         .select(carEntity)
+         .from(carEntity)
+         .join(rentEntity).on(rentEntity.car.eq(carEntity)) // 반드시 rent가 연결된 경우만
+         .where(
+           carEntity.biz.bizUuid.eq(bizUuid),
+           rentEntity.rentStime.loe(now),
+           rentEntity.rentEtime.goe(now)
+         )
 			.fetch();
 	}
 
@@ -178,5 +193,3 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 }
-
-

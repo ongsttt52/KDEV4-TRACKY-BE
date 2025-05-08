@@ -21,6 +21,7 @@ import kernel360.trackyweb.rent.application.dto.request.RentOverLapRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentUpdateRequest;
 import kernel360.trackyweb.rent.application.dto.response.OverlappingRentResponse;
+import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +36,12 @@ public class RentController implements RentApiDocs {
 	private final RentService rentService;
 
 	@GetMapping("/mdns")
-	public ApiResponse<List<String>> getAllMdnByBizId(
+	public ApiResponse<List<RentMdnResponse>> getAllMdnByBizId(
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
 	) {
 		String bizUuid = memberPrincipal.bizUuid();
-		return rentService.getAllMdnByBizId(bizUuid);
+
+		return rentService.getAllMdnByBizUuid(bizUuid);
 	}
 
 	@GetMapping()
