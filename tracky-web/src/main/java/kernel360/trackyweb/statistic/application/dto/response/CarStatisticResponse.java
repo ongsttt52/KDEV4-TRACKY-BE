@@ -1,4 +1,4 @@
-package kernel360.trackyweb.statistic.presentation.dto;
+package kernel360.trackyweb.statistic.application.dto.response;
 
 import kernel360.trackycore.core.domain.entity.enums.CarType;
 

@@ -12,6 +12,9 @@ import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.domain.provider.BizProvider;
+import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
+import kernel360.trackyweb.statistic.application.dto.request.CarStatisticRequest;
+import kernel360.trackyweb.statistic.application.dto.response.CarStatisticResponse;
 import kernel360.trackyweb.statistic.application.dto.response.DailyStatisticResponse;
 import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import kernel360.trackyweb.statistic.domain.provider.DailyStatisticProvider;
@@ -53,7 +56,7 @@ public class StatisticService {
 
 		MonthlyStatisticEntity monthlyStatistic = monthlyStatisticProvider.getMonthlyStatistic(bizId, date.atDay(1));
 
-		List<MonthlyStatisticResponse.MonthlyStats> monthlyStats = monthlyStatisticProvider.getMonthlyDataTuples(bizId,
+		List<MonthlyStatisticResponse.MonthlyStats> monthlyStats = monthlyStatisticProvider.getMonthlyStats(bizId,
 			date.atDay(1),
 			targetDate.atDay(1));
 
@@ -67,7 +70,8 @@ public class StatisticService {
 
 		Long bizId = bizProvider.getBiz(bizUuid).getId();
 
-		Page<CarStatisticResponse> carResponses = carDomainProvider.searchCarStatisticByFilter(bizId,
+		Page<CarStatisticResponse> carResponses = carDomainProvider.searchCarStatisticByFilter(
+			bizId,
 			carStatisticRequest.search(),
 			carStatisticRequest.toPageable());
 

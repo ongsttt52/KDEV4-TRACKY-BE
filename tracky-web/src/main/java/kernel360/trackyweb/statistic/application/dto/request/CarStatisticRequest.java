@@ -1,4 +1,4 @@
-package kernel360.trackyweb.statistic.presentation.dto;
+package kernel360.trackyweb.statistic.application.dto.request;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
