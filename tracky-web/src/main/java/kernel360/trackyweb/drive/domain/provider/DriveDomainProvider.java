@@ -54,10 +54,6 @@ public class DriveDomainProvider {
 		return driveDomainRepository.findDriveListByMdn(mdn);
 	}
 
-	public Long getTotalDriveDurationInMinutes() {
-		return driveDomainRepository.getTotalDriveDurationInMinutes();
-	}
-
 	//일일 통계 - 당일 운행 차량 수 (distinct mdn)
 	public Map<Long, Integer> countDailyOperationCar(LocalDate targetDate) {
 		return OperationCarCount.toMap(driveDomainRepository.getDailyOperationCar(targetDate));
