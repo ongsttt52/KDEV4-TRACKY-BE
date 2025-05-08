@@ -49,7 +49,7 @@ public class StatisticService {
 		YearMonth targetDate) {
 
 		if (targetDate == null) {
-			targetDate = date.minusYears(1).plusMonths(1);
+			targetDate = date.minusMonths(11);
 		}
 
 		Long bizId = bizProvider.getBiz(bizUuid).getId();
