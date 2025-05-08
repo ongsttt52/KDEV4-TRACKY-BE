@@ -16,10 +16,12 @@ import kernel360.trackyweb.statistic.application.StatisticService;
 import kernel360.trackyweb.statistic.application.dto.response.DailyStatisticResponse;
 import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/statistic")
 @RequiredArgsConstructor
+@Slf4j
 public class StatisticController {
 
 	private final StatisticService statisticService;

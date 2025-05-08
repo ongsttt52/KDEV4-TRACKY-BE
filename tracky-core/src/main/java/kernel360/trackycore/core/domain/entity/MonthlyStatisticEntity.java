@@ -24,8 +24,8 @@ public class MonthlyStatisticEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "biz_uuid", nullable = false, length = 16)
-	private String bizUuid;
+	@Column(name = "biz_id", nullable = false)
+	private Long bizId;
 
 	@Column(name = "date", nullable = false)
 	private LocalDate date;
@@ -49,11 +49,11 @@ public class MonthlyStatisticEntity {
 	private Double totalDriveDistance;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "biz_uuid", referencedColumnName = "biz_uuid", insertable = false, updatable = false)
+	@JoinColumn(name = "biz_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BizEntity biz;
 
 	private MonthlyStatisticEntity(
-		String bizUuid,
+		Long bizId,
 		LocalDate date,
 		Integer totalCarCount,
 		Integer nonOperatingCarCount,
@@ -62,7 +62,7 @@ public class MonthlyStatisticEntity {
 		Integer totalDriveCount,
 		Double totalDriveDistance
 	) {
-		this.bizUuid = bizUuid;
+		this.bizId = bizId;
 		this.date = date;
 		this.totalCarCount = totalCarCount;
 		this.nonOperatingCarCount = nonOperatingCarCount;
@@ -73,7 +73,7 @@ public class MonthlyStatisticEntity {
 	}
 
 	public static MonthlyStatisticEntity create(
-		String bizUuid,
+		Long bizId,
 		LocalDate date,
 		Integer totalCarCount,
 		Integer nonOperatingCarCount,
@@ -83,7 +83,7 @@ public class MonthlyStatisticEntity {
 		Double totalDriveDistance
 	) {
 		return new MonthlyStatisticEntity(
-			bizUuid,
+			bizId,
 			date,
 			totalCarCount,
 			nonOperatingCarCount,
@@ -92,5 +92,15 @@ public class MonthlyStatisticEntity {
 			totalDriveCount,
 			totalDriveDistance
 		);
+	}
+
+	public void update(Integer totalCarCount, Integer nonOperatingCarCount, Double avgOperationRate, Long totalDriveSec,
+		Integer totalDriveCount, Double totalDriveDistance) {
+		this.totalCarCount = totalCarCount;
+		this.nonOperatingCarCount = nonOperatingCarCount;
+		this.avgOperationRate = avgOperationRate;
+		this.totalDriveSec = totalDriveSec;
+		this.totalDriveCount = totalDriveCount;
+		this.totalDriveDistance = totalDriveDistance;
 	}
 }

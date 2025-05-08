@@ -1,6 +1,7 @@
 package kernel360.trackyweb.car.domain.provider;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
+import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
@@ -64,7 +66,11 @@ public class CarDomainProvider {
 		return carDomainRepository.findAllGroupedByStatus();
 	}
 
+	public Map<Long, Integer> countDailyTotalCar() {
+		return CarCountWithBizId.toMap(carDomainRepository.getDailyTotalCarCount());
+  }
+  
 	public List<CarEntity> findAllByAvailableEmulate(String bizUuid) {
 		return carDomainRepository.availableEmulate(bizUuid);
-	}
+	 }
 }
