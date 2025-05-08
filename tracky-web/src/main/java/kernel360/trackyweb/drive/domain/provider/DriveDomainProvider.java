@@ -14,7 +14,8 @@ import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
 import kernel360.trackyweb.drive.application.dto.internal.OperationCarCount;
 import kernel360.trackyweb.drive.application.dto.internal.OperationTotalCount;
-import kernel360.trackyweb.drive.domain.DriveHistory;
+import kernel360.trackyweb.drive.domain.vo.DriveHistory;
+
 import kernel360.trackyweb.drive.infrastructure.repository.DriveDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -52,14 +53,6 @@ public class DriveDomainProvider {
 
 	public List<DriveEntity> findByMdn(String mdn) {
 		return driveDomainRepository.findDriveListByMdn(mdn);
-	}
-
-	public Double getTotalDriveDistance() {
-		return driveDomainRepository.getTotalDriveDistance();
-	}
-
-	public Long getTotalDriveDurationInMinutes() {
-		return driveDomainRepository.getTotalDriveDurationInMinutes();
 	}
 
 	//일일 통계 - 당일 운행 차량 수 (distinct mdn)

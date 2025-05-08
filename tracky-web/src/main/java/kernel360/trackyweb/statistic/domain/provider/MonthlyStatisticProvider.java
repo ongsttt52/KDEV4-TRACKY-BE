@@ -49,4 +49,9 @@ public class MonthlyStatisticProvider {
 
 		return monthlyStatisticRepository.getMonthlyStats(bizId, currentDate, targetDate);
 	}
+
+	public MonthlyStatisticEntity getDashBoardStatistic(String bizUuid) {
+		return monthlyStatisticRepository.findLatestMonthlyStatistic(bizUuid);
+	}
+
 }

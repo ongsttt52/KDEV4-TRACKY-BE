@@ -78,6 +78,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 	@Override
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
+
 		JPAQuery<CarEntity> query = queryFactory
 			.select(carEntity)
 			.from(carEntity)

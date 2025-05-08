@@ -4,6 +4,8 @@ import static kernel360.trackycore.core.domain.entity.QDailyStatisticEntity.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -104,5 +106,34 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 			.where(dailyStatisticEntity.date.between(firstDay, targetDate))
 			.groupBy(dailyStatisticEntity.bizId)
 			.fetch();
+	}
+
+	@Override
+	public List<Integer> findDriveCountByBizUuid(String bizUuid) {
+		LocalDate today = LocalDate.now();
+		LocalDate startOfMonth = today.withDayOfMonth(1);
+
+		// 1. DB에서 실제 데이터 조회
+		Map<LocalDate, Integer> driveCountMap = queryFactory
+			.select(
+				dailyStatisticEntity.date,
+				dailyStatisticEntity.dailyDriveCount
+			)
+			.from(dailyStatisticEntity)
+			.where(
+				dailyStatisticEntity.biz.bizUuid.eq(bizUuid),
+				dailyStatisticEntity.date.between(startOfMonth, today)
+			)
+			.fetch()
+			.stream()
+			.collect(Collectors.toMap(
+				tuple -> tuple.get(dailyStatisticEntity.date),
+				tuple -> tuple.get(dailyStatisticEntity.dailyDriveCount)
+			));
+
+		// 2. 결과 리스트 생성 (날짜 순서대로)
+		return startOfMonth.datesUntil(today.plusDays(1))
+			.map(date -> driveCountMap.getOrDefault(date, 0))
+			.collect(Collectors.toList());
 	}
 }
