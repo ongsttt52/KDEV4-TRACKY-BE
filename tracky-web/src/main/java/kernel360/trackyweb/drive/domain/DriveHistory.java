@@ -20,7 +20,7 @@ public record DriveHistory(
 	String renterName,
 	String renterPhone,
 	RentStatus rentStatus,
-	CarStatus carStatus,
+	CarStatus status,
 	String purpose,
 	LocalDateTime driveOnTime,
 	LocalDateTime driveOffTime,
