@@ -13,7 +13,7 @@ import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterReques
 public interface RentRepositoryCustom {
 	Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid);
 
-	List<Tuple> findRentableMdn(String bizUuid);
+	List<Tuple> findRentableMdn(Long bizId);
 
 	List<RentEntity> findDelayedRents(String bizUuid, LocalDateTime now);
 

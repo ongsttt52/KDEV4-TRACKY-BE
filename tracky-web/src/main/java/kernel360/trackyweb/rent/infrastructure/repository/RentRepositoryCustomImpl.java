@@ -60,14 +60,14 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 	}
 
 	@Override
-	public List<Tuple> findRentableMdn(String bizUuid) {
+	public List<Tuple> findRentableMdn(Long bizId) {
 
 		return queryFactory
 			.select(rentEntity.car.mdn, rentEntity.car.status)
 			.distinct()
 			.from(rentEntity)
 			.where(
-				rentEntity.car.biz.bizUuid.eq(bizUuid),
+				rentEntity.car.biz.id.eq(bizId),
 				rentEntity.car.status.ne(CarStatus.CLOSED),
 				rentEntity.car.status.ne(CarStatus.DELETED)
 			)

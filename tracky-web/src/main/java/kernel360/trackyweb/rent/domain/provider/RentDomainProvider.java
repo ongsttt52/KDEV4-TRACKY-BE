@@ -11,9 +11,11 @@ import com.querydsl.core.Tuple;
 
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
+import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
+import kernel360.trackycore.core.infrastructure.repository.BizRepository;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.response.OverlappingRentResponse;
@@ -27,6 +29,7 @@ public class RentDomainProvider {
 
 	private final RentDomainRepository rentDomainRepository;
 	private final CarDomainRepository carDomainRepository;
+	private final BizRepository bizRepository;
 
 	public RentEntity save(RentEntity rent) {
 		return rentDomainRepository.save(rent);
@@ -37,6 +40,7 @@ public class RentDomainProvider {
 	}
 
 	public Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid) {
+
 		return rentDomainRepository.searchRentByFilter(request, bizUuid);
 	}
 
@@ -53,8 +57,10 @@ public class RentDomainProvider {
 	}
 
 	public void softDelete(String rentUuid) {
+
 		RentEntity rent = rentDomainRepository.findByRentUuid(rentUuid)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.RENT_NOT_FOUND));
+
 		rent.updateStatus(RentStatus.DELETED);
 	}
 
@@ -71,11 +77,15 @@ public class RentDomainProvider {
 	}
 
 	public List<RentMdnResponse> getRentableMdnList(String bizUuid) {
-		List<Tuple> tuples = rentDomainRepository.findRentableMdn(bizUuid);
+
+		BizEntity biz = bizRepository.findByBizUuid(bizUuid)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.BIZ_NOT_FOUND));
+
+		List<Tuple> tuples = rentDomainRepository.findRentableMdn(biz.getId());
+
 		return tuples.stream().map(tuple -> {
 			return new RentMdnResponse(tuple.get(QRentEntity.rentEntity.car.mdn),
 				tuple.get(QRentEntity.rentEntity.car.status));
 		}).toList();
 	}
-
 }
