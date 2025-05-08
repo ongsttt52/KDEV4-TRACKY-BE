@@ -10,5 +10,4 @@ public interface MonthlyStatisticDomainRepository
 	extends MonthlyStatisticRepository, MonthlyStatisticRepositoryCustom {
 
 	Optional<MonthlyStatisticEntity> findByBizIdAndDate(Long bizId, LocalDate date);
-
 }

@@ -73,6 +73,14 @@ public class RentDomainProvider {
 		}
 	}
 
+	public List<OverlappingRentResponse> validateOverlappingRentOps(String mdn, LocalDateTime rentStime, LocalDateTime rentEtime) {
+		List<RentEntity> overlaps = rentDomainRepository.findOverlappingRent(mdn, rentStime, rentEtime);
+
+		return overlaps.stream()
+			.map(OverlappingRentResponse::from)
+			.collect(Collectors.toList());
+  }
+
 	public List<RentMdnResponse> getRentableMdnList(String bizUuid) {
 
 		BizEntity biz = bizRepository.findByBizUuid(bizUuid)
