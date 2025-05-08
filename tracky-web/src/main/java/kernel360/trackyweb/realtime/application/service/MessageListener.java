@@ -23,7 +23,7 @@ public class MessageListener {
 	@RabbitListener(queues = "web-queue")
 	public void receiveCarMessages(GpsHistoryMessage messages) {
 		log.info("Web-Queue 메시지 수신: {}", messages);
-		
+
 		try {
 			Long driveId = driveDomainProvider.findActiveDriveIdByMdn(messages.mdn());
 
@@ -33,12 +33,9 @@ public class MessageListener {
 
 			eventEmitterService.sendToDriveId(driveId.toString(), "drive_path", gpsList);
 
-			log.info("SSE 전송 완료: driveId={}, gpsCount={}", driveId, gpsList.size());
+			log.info("SSE 전송 시도: driveId={}, gpsCount={}", driveId, gpsList.size());
 		} catch (Exception e) {
 			log.error("GPS 메시지 처리 실패: {}", messages, e);
 		}
-
-		/*eventEmitterService.sendEvent("gps_data", messages);
-		log.info("Web-Queue 메시지 SSE 전송: {}", messages.toString());*/
 	}
 }

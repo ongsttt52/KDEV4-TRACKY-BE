@@ -1,7 +1,5 @@
 package kernel360.trackyweb.emitter;
 
-import java.time.LocalDateTime;
-
 import kernel360.trackyweb.realtime.application.dto.request.CycleGpsRequest;
 
 public record GpsPointResponse(
@@ -9,7 +7,7 @@ public record GpsPointResponse(
 	double lon,
 	int ang,
 	int spd,
-	LocalDateTime oTime
+	String oTime
 ) {
 	public static GpsPointResponse from(CycleGpsRequest req) {
 		return new GpsPointResponse(
@@ -17,7 +15,7 @@ public record GpsPointResponse(
 			req.gpsInfo().getLon() / 1_000_000.0,
 			req.gpsInfo().getAng(),
 			req.gpsInfo().getSpd(),
-			req.oTime()
+			req.oTime().toString()
 		);
 	}
 }
