@@ -7,8 +7,7 @@ import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.infrastructure.repository.MonthlyStatisticRepository;
 
 public interface MonthlyStatisticDomainRepository
-	extends MonthlyStatisticRepository {
+	extends MonthlyStatisticRepository, MonthlyStatisticDomainRepositoryCustom {
 
 	Optional<MonthlyStatisticEntity> findByBizIdAndDate(Long bizId, LocalDate date);
-
 }

@@ -9,5 +9,4 @@ import kernel360.trackycore.core.infrastructure.repository.DailyStatisticReposit
 public interface DailyStatisticDomainRepository extends DailyStatisticRepository, DailyStatisticRepositoryCustom {
 
 	Optional<DailyStatisticEntity> findByBizIdAndDate(Long bizId, LocalDate date);
-
 }

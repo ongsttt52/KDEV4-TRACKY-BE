@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
+import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import kernel360.trackyweb.statistic.infrastructure.repository.monthly.MonthlyStatisticDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -41,5 +42,11 @@ public class MonthlyStatisticProvider {
 				monthlyStatisticRepository.save(entity);
 			}
 		}
+	}
+
+	public List<MonthlyStatisticResponse.MonthlyStats> getMonthlyDataTuples(Long bizId, LocalDate localDate,
+		LocalDate localDate1) {
+
+		return monthlyStatisticRepository.getMonthlyStats(bizId, localDate, localDate1);
 	}
 }
