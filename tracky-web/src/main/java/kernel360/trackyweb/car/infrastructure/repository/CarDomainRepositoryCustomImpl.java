@@ -152,12 +152,8 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(carEntity.biz.id.eq(bizId))
-			.and(carEntity.status.ne(CarStatus.DELETED));
-
-		BooleanExpression searchExpression = isContainsCarMdnOrCarPlate(search);
-		if (searchExpression != null) {
-			builder.and(searchExpression);
-		}
+			.and(carEntity.status.ne(CarStatus.DELETED))
+			.and(isContainsCarMdnOrCarPlate(search));
 
 		List<CarStatisticResponse> carStatisticResponses = queryFactory
 			.select(Projections.constructor(
