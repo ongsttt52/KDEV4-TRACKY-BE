@@ -15,6 +15,7 @@ import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
 import kernel360.trackyweb.dashboard.domain.CarStatusTemp;
+import kernel360.trackyweb.statistic.application.dto.response.CarStatisticResponse;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -68,9 +69,13 @@ public class CarDomainProvider {
 
 	public Map<Long, Integer> countDailyTotalCar() {
 		return CarCountWithBizId.toMap(carDomainRepository.getDailyTotalCarCount());
-  }
+	}
 
 	public List<CarEntity> findAllByAvailableEmulate(String bizUuid) {
 		return carDomainRepository.availableEmulate(bizUuid);
-	 }
+	}
+
+	public Page<CarStatisticResponse> searchCarStatisticByFilter(Long bizId, String search, Pageable pageable) {
+		return carDomainRepository.searchCarStatisticByFilter(bizId, search, pageable);
+	}
 }
