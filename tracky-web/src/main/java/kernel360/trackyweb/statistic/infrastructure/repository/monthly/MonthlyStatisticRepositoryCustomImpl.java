@@ -2,11 +2,16 @@ package kernel360.trackyweb.statistic.infrastructure.repository.monthly;
 
 import static kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
+import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,5 +28,27 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 			.orderBy(monthlyStatisticEntity.date.desc())
 			.limit(1)
 			.fetchOne();
+	}
+
+	@Override
+	public List<MonthlyStatisticResponse.MonthlyStats> getMonthlyStats(Long bizId, LocalDate currentDate,
+		LocalDate targetDate) {
+		return queryFactory
+			.select(
+				Projections.constructor(
+					MonthlyStatisticResponse.MonthlyStats.class,
+					monthlyStatisticEntity.date.year(),
+					monthlyStatisticEntity.date.month(),
+					monthlyStatisticEntity.totalDriveCount.sum(),
+					monthlyStatisticEntity.totalDriveDistance.sum()
+				))
+			.from(monthlyStatisticEntity)
+			.where(
+				monthlyStatisticEntity.bizId.eq(bizId)
+					.and(monthlyStatisticEntity.date.between(targetDate, currentDate))
+			)
+			.groupBy(monthlyStatisticEntity.date.yearMonth())
+			.orderBy(monthlyStatisticEntity.date.yearMonth().asc())
+			.fetch();
 	}
 }
