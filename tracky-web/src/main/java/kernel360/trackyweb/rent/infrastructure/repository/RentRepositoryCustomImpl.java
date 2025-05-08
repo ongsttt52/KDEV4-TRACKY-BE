@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -22,6 +22,7 @@ import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
+import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -60,14 +61,18 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 	}
 
 	@Override
-	public List<Tuple> findRentableMdn(String bizUuid) {
+	public List<RentMdnResponse> findRentableMdn(Long bizId) {
 
 		return queryFactory
-			.select(rentEntity.car.mdn, rentEntity.car.status)
+			.select(
+				Projections.constructor(
+					RentMdnResponse.class,
+					rentEntity.car.mdn, rentEntity.car.status
+				))
 			.distinct()
 			.from(rentEntity)
 			.where(
-				rentEntity.car.biz.bizUuid.eq(bizUuid),
+				rentEntity.car.biz.id.eq(bizId),
 				rentEntity.car.status.ne(CarStatus.CLOSED),
 				rentEntity.car.status.ne(CarStatus.DELETED)
 			)
