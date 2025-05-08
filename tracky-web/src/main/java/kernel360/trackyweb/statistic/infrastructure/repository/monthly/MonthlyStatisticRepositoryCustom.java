@@ -1,9 +1,9 @@
 package kernel360.trackyweb.statistic.infrastructure.repository.monthly;
 
-import kernel360.trackyweb.statistic.application.dto.internal.DashboardStatistic;
+import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 
 public interface MonthlyStatisticRepositoryCustom {
 
-	DashboardStatistic findStatisticReportByBizUuid(String bizUuid);
+	MonthlyStatisticEntity findLatestMonthlyStatistic(String bizUuid);
 
 }

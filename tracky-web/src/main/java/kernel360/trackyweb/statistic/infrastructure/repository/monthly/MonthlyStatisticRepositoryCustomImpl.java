@@ -4,10 +4,9 @@ import static kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity.*;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kernel360.trackyweb.statistic.application.dto.internal.DashboardStatistic;
+import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -17,15 +16,9 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public DashboardStatistic findStatisticReportByBizUuid(String bizUuid) {
+	public MonthlyStatisticEntity findLatestMonthlyStatistic(String bizUuid) {
 		return queryFactory
-			.select(Projections.constructor(
-				DashboardStatistic.class,
-				monthlyStatisticEntity.avgOperationRate,
-				monthlyStatisticEntity.nonOperatingCarCount,
-				monthlyStatisticEntity.totalDriveCount
-			))
-			.from(monthlyStatisticEntity)
+			.selectFrom(monthlyStatisticEntity)
 			.where(monthlyStatisticEntity.biz.bizUuid.eq(bizUuid))
 			.orderBy(monthlyStatisticEntity.date.desc())
 			.limit(1)

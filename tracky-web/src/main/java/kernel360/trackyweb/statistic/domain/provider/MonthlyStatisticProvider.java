@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
-import kernel360.trackyweb.statistic.application.dto.internal.DashboardStatistic;
 import kernel360.trackyweb.statistic.infrastructure.repository.monthly.MonthlyStatisticDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -44,8 +43,8 @@ public class MonthlyStatisticProvider {
 		}
 	}
 
-	public DashboardStatistic getDashBoardStatistic(String bizUuid) {
-		return monthlyStatisticRepository.findStatisticReportByBizUuid(bizUuid);
+	public MonthlyStatisticEntity getDashBoardStatistic(String bizUuid) {
+		return monthlyStatisticRepository.findLatestMonthlyStatistic(bizUuid);
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
@@ -22,7 +23,6 @@ import kernel360.trackyweb.dashboard.domain.CarStatusTemp;
 import kernel360.trackyweb.dashboard.domain.provider.DashGpsHistoryProvider;
 import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
-import kernel360.trackyweb.statistic.application.dto.internal.DashboardStatistic;
 import kernel360.trackyweb.statistic.domain.provider.DailyStatisticProvider;
 import kernel360.trackyweb.statistic.domain.provider.MonthlyStatisticProvider;
 import lombok.RequiredArgsConstructor;
@@ -94,11 +94,12 @@ public class DashBoardService {
 	 */
 	@Transactional(readOnly = true)
 	public Statistics getStatistics(String bizUuid) {
-		DashboardStatistic dashboardStatistic = monthlyStatisticProvider.getDashBoardStatistic(bizUuid);
+		MonthlyStatisticEntity monthlyStatisticEntity = monthlyStatisticProvider.getDashBoardStatistic(bizUuid);
 		List<Integer> dailyDriveCount = dailyStatisticProvider.getDailyDriveCount(bizUuid);
 
-		return Statistics.create(dashboardStatistic.avgOperationRate(), dashboardStatistic.nonOperatingCarCount(),
-			dashboardStatistic.totalDriveCount(), dailyDriveCount);
+		return Statistics.create(monthlyStatisticEntity.getAvgOperationRate(),
+			monthlyStatisticEntity.getNonOperatingCarCount(),
+			monthlyStatisticEntity.getTotalDriveCount(), dailyDriveCount);
 	}
 
 	/**
