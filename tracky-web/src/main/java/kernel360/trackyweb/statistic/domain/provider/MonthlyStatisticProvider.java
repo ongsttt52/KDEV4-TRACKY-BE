@@ -6,12 +6,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.querydsl.core.Tuple;
-
 import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
+import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import kernel360.trackyweb.statistic.infrastructure.repository.monthly.MonthlyStatisticDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -45,8 +44,9 @@ public class MonthlyStatisticProvider {
 		}
 	}
 
-	public List<Tuple> getMonthlyDataTuples(Long bizId, LocalDate localDate, LocalDate localDate1) {
+	public List<MonthlyStatisticResponse.MonthlyStats> getMonthlyDataTuples(Long bizId, LocalDate localDate,
+		LocalDate localDate1) {
 
-		return monthlyStatisticRepository.getMonthlyDataTuples(bizId, localDate, localDate1);
+		return monthlyStatisticRepository.getMonthlyStats(bizId, localDate, localDate1);
 	}
 }

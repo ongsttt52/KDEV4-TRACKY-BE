@@ -2,8 +2,6 @@ package kernel360.trackyweb.statistic.application.dto.response;
 
 import java.util.List;
 
-import com.querydsl.core.Tuple;
-
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 
 public record MonthlyStatisticResponse(
@@ -28,16 +26,7 @@ public record MonthlyStatisticResponse(
 	) {
 	}
 
-	public static MonthlyStatisticResponse from(MonthlyStatisticEntity e, List<Tuple> monthlyDataTuples) {
-
-		List<MonthlyStats> monthlyStats = monthlyDataTuples.stream().map(tuple -> {
-			int year = tuple.get(0, Integer.class);
-			int month = tuple.get(1, Integer.class);
-			int driveCount = tuple.get(2, Integer.class);
-			double driveDistance = tuple.get(3, Double.class);
-
-			return new MonthlyStats(year, month, driveCount, driveDistance);
-		}).toList();
+	public static MonthlyStatisticResponse from(MonthlyStatisticEntity e, List<MonthlyStats> monthlyStats) {
 
 		return new MonthlyStatisticResponse(
 			new Summary(

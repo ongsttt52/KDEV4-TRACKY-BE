@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.querydsl.core.Tuple;
-
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
@@ -52,10 +50,11 @@ public class StatisticService {
 
 		MonthlyStatisticEntity monthlyStatistic = monthlyStatisticProvider.getMonthlyStatistic(bizId, date.atDay(1));
 
-		List<Tuple> monthlyDataTuples = monthlyStatisticProvider.getMonthlyDataTuples(bizId, date.atDay(1),
+		List<MonthlyStatisticResponse.MonthlyStats> monthlyStats = monthlyStatisticProvider.getMonthlyDataTuples(bizId,
+			date.atDay(1),
 			targetDate.atDay(1));
 
-		MonthlyStatisticResponse response = MonthlyStatisticResponse.from(monthlyStatistic, monthlyDataTuples);
+		MonthlyStatisticResponse response = MonthlyStatisticResponse.from(monthlyStatistic, monthlyStats);
 
 		return ApiResponse.success(response);
 	}
