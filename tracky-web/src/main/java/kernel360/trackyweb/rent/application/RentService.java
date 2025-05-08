@@ -18,8 +18,10 @@ import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
 import kernel360.trackyweb.common.sse.SseEvent;
 import kernel360.trackyweb.rent.application.dto.request.RentCreateRequest;
+import kernel360.trackyweb.rent.application.dto.request.RentOverLapRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentUpdateRequest;
+import kernel360.trackyweb.rent.application.dto.response.OverlappingRentResponse;
 import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 import kernel360.trackyweb.rent.application.dto.response.RentResponse;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
@@ -176,5 +178,16 @@ public class RentService {
 				log.info("예약 상태 변경 : {}, 시작 시간 : {}", reserved.getRentUuid(), reserved.getRentStime());
 			}
 		});
+	}
+
+	@Transactional(readOnly = true)
+	public ApiResponse<List<OverlappingRentResponse>> validateOverlappingRentOps(
+		RentOverLapRequest rentOverLapRequest
+	) {
+		return ApiResponse.success(rentDomainProvider.validateOverlappingRentOps(
+			rentOverLapRequest.mdn(),
+			rentOverLapRequest.startDate(),
+			rentOverLapRequest.endDate()
+		));
 	}
 }
