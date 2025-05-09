@@ -51,6 +51,9 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	@Override
 	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, CarStatus status, CarType carType,
 		Pageable pageable) {
+
+
+
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(carEntity.biz.bizUuid.eq(bizUuid))
 			.and(isContainsCarMdnOrCarPlate(search))
