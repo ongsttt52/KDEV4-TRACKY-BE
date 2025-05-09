@@ -18,7 +18,9 @@ import kernel360.trackyweb.statistic.application.dto.internal.OperationRate;
 import kernel360.trackyweb.statistic.application.dto.internal.OperationTime;
 import kernel360.trackyweb.statistic.application.dto.internal.TotalCarCount;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class DailyStatisticRepositoryCustomImpl implements DailyStatisticRepositoryCustom {
@@ -110,8 +112,8 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 
 	@Override
 	public List<Integer> findDriveCountByBizUuid(String bizUuid) {
-		LocalDate today = LocalDate.now();
-		LocalDate startOfMonth = today.withDayOfMonth(1);
+		LocalDate yesterday = LocalDate.now().minusDays(1);
+		LocalDate startOfMonth = yesterday.withDayOfMonth(1);
 
 		// 1. DB에서 실제 데이터 조회
 		Map<LocalDate, Integer> driveCountMap = queryFactory
@@ -122,7 +124,7 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 			.from(dailyStatisticEntity)
 			.where(
 				dailyStatisticEntity.biz.bizUuid.eq(bizUuid),
-				dailyStatisticEntity.date.between(startOfMonth, today)
+				dailyStatisticEntity.date.between(startOfMonth, yesterday)
 			)
 			.fetch()
 			.stream()
@@ -132,8 +134,10 @@ public class DailyStatisticRepositoryCustomImpl implements DailyStatisticReposit
 			));
 
 		// 2. 결과 리스트 생성 (날짜 순서대로)
-		return startOfMonth.datesUntil(today.plusDays(1))
+		List<Integer> result = startOfMonth.datesUntil(yesterday.plusDays(1))
 			.map(date -> driveCountMap.getOrDefault(date, 0))
 			.collect(Collectors.toList());
+
+		return result;
 	}
 }
