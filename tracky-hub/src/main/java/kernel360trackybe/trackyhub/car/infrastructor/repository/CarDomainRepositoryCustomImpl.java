@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.CarEntity;
@@ -24,12 +22,14 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	@Override
 	public List<CarEntity> availableRent() {
 		LocalDateTime now = LocalDateTime.now();
+
 		return queryFactory
 			.select(carEntity)
 			.from(carEntity)
-			.leftJoin(rentEntity).on(rentEntity.car.eq(carEntity)
-				.and(rentEntity.rentStime.lt(now))
-				.and(rentEntity.rentEtime.gt(now)))
+			.join(rentEntity).on(
+				rentEntity.car.eq(carEntity),
+				rentEntity.rentEtime.goe(now)
+			)
 			.fetch();
 	}
 }
