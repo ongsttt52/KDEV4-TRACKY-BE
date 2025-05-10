@@ -18,6 +18,13 @@ public class MonthlyStatisticDomainRepositoryImpl implements MonthlyStatisticDom
 
 	private final JPAQueryFactory queryFactory;
 
+	/**
+	 * 월별 운행량 그래프 데이터 조회
+	 * @param bizId
+	 * @param currentDate
+	 * @param targetDate targetDate BETWEEN currentDate 기간 조회
+	 * @return
+	 */
 	@Override
 	public List<MonthlyStat> getMonthlyStats(Long bizId, LocalDate currentDate, LocalDate targetDate) {
 		QMonthlyStatisticEntity e = QMonthlyStatisticEntity.monthlyStatisticEntity;
