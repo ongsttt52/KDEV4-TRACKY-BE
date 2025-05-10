@@ -10,7 +10,6 @@ import kernel360.trackyweb.admin.statistic.application.dto.AdminBizStatisticResp
 import kernel360.trackyweb.admin.statistic.infrastructure.AdminStatisticRepositoryCustom;
 import kernel360.trackyweb.statistic.domain.dto.MonthlyStat;
 import kernel360.trackyweb.statistic.infrastructure.repository.MonthlyStatisticDomainRepository;
-import kernel360.trackyweb.timedistance.infrastructure.repository.TimeDistanceDomainRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -18,16 +17,17 @@ import lombok.RequiredArgsConstructor;
 public class AdminStatisticProvider {
 
 	private final AdminStatisticRepositoryCustom adminStatisticRepository;
-	private final TimeDistanceDomainRepository timeDistanceDomainRepository;
 	private final MonthlyStatisticDomainRepository monthlyStatisticDomainRepository;
 
+	// 업체 목록 (업체명, 전체 차량 수, 운행중 차량 수, 오류율)
 	public List<AdminBizListResponse> getAdminBizList(LocalDate selectedDate) {
 		return adminStatisticRepository.fetchAdminBizList(selectedDate);
 	}
 
+	// 업체별 운행량 카드 섹션 + 운행량 그래프
 	public AdminBizStatisticResponse getDriveStatByBizIdAndDate(Long bizId, LocalDate selectedDate) {
 
-		AdminBizStatisticResponse response = timeDistanceDomainRepository.getDriveStatByBizIdAndDate(bizId,
+		AdminBizStatisticResponse response = adminStatisticRepository.getDriveStatByBizIdAndDate(bizId,
 			selectedDate);
 		List<MonthlyStat> monthlyStats = monthlyStatisticDomainRepository.getMonthlyStats(bizId, selectedDate,
 			selectedDate.minusMonths(12));
