@@ -175,7 +175,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			.where(builder)
 			.groupBy(carEntity.carPlate)
 			.orderBy(carPlateSort(search))
-			.offset(pageable.getOffset() - pageable.getPageSize())
+			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
