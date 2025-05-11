@@ -5,8 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import kernel360.trackyweb.admin.statistic.application.dto.AdminBizListResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.AdminBizStatisticResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizStatisticResponse;
 import kernel360.trackyweb.admin.statistic.infrastructure.AdminStatisticRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,17 @@ public class AdminStatisticProvider {
 
 		if (response == null)
 			return new AdminBizStatisticResponse(0, 0, 0);
+		else
+			return response;
+	}
+
+	public List<AdminBizMonthlyResponse> getAdminBizMonthlyDriveCount(Long bizId, LocalDate selectedDate) {
+
+		List<AdminBizMonthlyResponse> response = adminStatisticRepository.getTotalDriveCountInOneYear(bizId,
+			selectedDate);
+
+		if (response == null)
+			return List.of();
 		else
 			return response;
 	}

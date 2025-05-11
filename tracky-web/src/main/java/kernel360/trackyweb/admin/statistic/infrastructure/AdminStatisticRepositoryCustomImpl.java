@@ -3,22 +3,25 @@ package kernel360.trackyweb.admin.statistic.infrastructure;
 import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
+import static kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity.*;
 import static kernel360.trackycore.core.domain.entity.QTimeDistanceEntity.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kernel360.trackyweb.admin.statistic.application.dto.AdminBizListResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.AdminBizStatisticResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizStatisticResponse;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -76,20 +79,46 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 				.from(timeDistanceEntity)
 				.join(driveEntity)
 				.on(driveEntity.car.mdn.eq(timeDistanceEntity.car.mdn))
-				.where(isEqualsBizId(bizId)
-					.and(timeDistanceEntity.date.eq(selectedDate)));
+				.where(
+					(bizId != null
+						? timeDistanceEntity.biz.id.eq(bizId)
+						: Expressions.TRUE)
+						.and(timeDistanceEntity.date.eq(selectedDate)));
 
-		// 전체 -> bizId를 null로 설정, 전체 검색이 아닐때만 groupBy 설정
+		// bizId가 null일 경우 전체 검색 (groupBy 제거)
 		if (bizId != null)
 			query.groupBy(timeDistanceEntity.biz);
 
 		return query.fetchOne();
 	}
 
-	private BooleanExpression isEqualsBizId(Long bizId) {
-		if (bizId == null) {
-			return Expressions.TRUE;
-		}
-		return timeDistanceEntity.biz.id.eq(bizId);
+	/**
+	 * 관리자 통계 - 월별 운행량 그래프
+	 * @param bizId
+	 * @return
+	 */
+	@Override
+	public List<AdminBizMonthlyResponse> getTotalDriveCountInOneYear(Long bizId, LocalDate selectedDate) {
+		LocalDate endDate = selectedDate.with(TemporalAdjusters.lastDayOfMonth()); // selectedDate를 월말로 설정
+		LocalDate startDate = YearMonth.now().minusMonths(12).atEndOfMonth();
+
+		return queryFactory
+			.select(Projections.constructor(
+				AdminBizMonthlyResponse.class,
+				monthlyStatisticEntity.date.year(),
+				monthlyStatisticEntity.date.month(),
+				monthlyStatisticEntity.totalDriveCount.sum().coalesce(0)
+			))
+			.from(monthlyStatisticEntity)
+			// bizId가 null일 경우 전체 검색
+			.where(
+				(bizId != null
+					? monthlyStatisticEntity.biz.id.eq(bizId)
+					: Expressions.TRUE)
+					.and(monthlyStatisticEntity.date.between(startDate, endDate))
+			)
+			.groupBy(monthlyStatisticEntity.date.yearMonth())
+			.orderBy(monthlyStatisticEntity.date.yearMonth().asc())
+			.fetch();
 	}
 }

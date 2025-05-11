@@ -62,8 +62,4 @@ public class MonthlyStatisticProvider {
 	public List<GraphsResponse.DriveCount> getDriveCount() {
 		return monthlyStatisticRepository.getTotalDriveCount();
 	}
-
-	public List<MonthlyStatisticEntity> getAdminBizMonthlyDriveCount(Long bizId) {
-		return monthlyStatisticRepository.getTotalDriveCountInOneYear(bizId);
-	}
 }

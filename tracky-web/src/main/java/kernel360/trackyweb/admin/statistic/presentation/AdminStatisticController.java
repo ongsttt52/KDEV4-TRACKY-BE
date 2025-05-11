@@ -5,17 +5,16 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.admin.statistic.application.AdminStatisticService;
-import kernel360.trackyweb.admin.statistic.application.dto.AdminBizListResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.AdminBizStatisticResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.AdminStatisticRequest;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizStatisticResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.GraphsResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.response.MonthlyDriveCountResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -37,9 +36,9 @@ public class AdminStatisticController {
 	}
 
 	@GetMapping("/monthly")
-	public ApiResponse<List<MonthlyDriveCountResponse>> getMonthlyDriveCounts(
-		@RequestParam String bizName) {
-		return adminStatisticService.getAdminBizMonthlyDriveCount(bizName);
+	public ApiResponse<List<AdminBizMonthlyResponse>> getMonthlyDriveCounts(
+		@ModelAttribute AdminStatisticRequest adminStatisticRequest) {
+		return adminStatisticService.getAdminBizMonthlyDriveCount(adminStatisticRequest);
 	}
 
 	@GetMapping("/hourly")

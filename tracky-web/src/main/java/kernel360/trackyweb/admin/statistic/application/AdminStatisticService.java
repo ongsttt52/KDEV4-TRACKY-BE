@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.BizEntity;
-import kernel360.trackyweb.admin.statistic.application.dto.AdminBizListResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.AdminBizStatisticResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.AdminStatisticRequest;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizStatisticResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.GraphsResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.response.MonthlyDriveCountResponse;
 import kernel360.trackyweb.admin.statistic.domain.AdminStatisticProvider;
 import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
 import kernel360.trackyweb.statistic.domain.provider.DailyStatisticProvider;
@@ -43,18 +43,19 @@ public class AdminStatisticService {
 
 		Long bizId = mapToBizId(adminStatisticRequest.bizName());
 
-		AdminBizStatisticResponse bizStat = adminStatisticProvider.getDriveStatByBizIdAndDate(
-			bizId, adminStatisticRequest.selectedDate());
+		AdminBizStatisticResponse bizStat = adminStatisticProvider.getDriveStatByBizIdAndDate(bizId,
+			adminStatisticRequest.selectedDate());
 
 		return ApiResponse.success(bizStat);
 	}
 
-	public ApiResponse<List<MonthlyDriveCountResponse>> getAdminBizMonthlyDriveCount(String bizName) {
+	public ApiResponse<List<AdminBizMonthlyResponse>> getAdminBizMonthlyDriveCount(
+		AdminStatisticRequest adminStatisticRequest) {
 
-		Long bizId = mapToBizId(bizName);
+		Long bizId = mapToBizId(adminStatisticRequest.bizName());
 
 		return ApiResponse.success(
-			MonthlyDriveCountResponse.toDto(monthlyStatisticProvider.getAdminBizMonthlyDriveCount(bizId)));
+			adminStatisticProvider.getAdminBizMonthlyDriveCount(bizId, adminStatisticRequest.selectedDate()));
 	}
 
 	public ApiResponse<List<HourlyGraphResponse>> getHourlyGraph() {
@@ -72,6 +73,7 @@ public class AdminStatisticService {
 	}
 
 	private Long mapToBizId(String bizName) {
+
 		if (!bizName.isBlank()) {
 			BizEntity biz = bizDomainProvider.getBizByBizName(bizName);
 			return biz.getId();

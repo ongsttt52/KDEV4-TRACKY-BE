@@ -107,18 +107,4 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 			.limit(6)
 			.fetch();
 	}
-
-	@Override
-	public List<MonthlyStatisticEntity> getTotalDriveCountInOneYear(Long bizId) {
-		LocalDate thisMonth = LocalDate.now().minusDays(1);
-		LocalDate twelveMonthsAgo = YearMonth.now().minusMonths(12).atEndOfMonth();
-
-		return queryFactory
-			.selectFrom(monthlyStatisticEntity)
-			.where(
-				monthlyStatisticEntity.biz.id.eq(bizId)
-					.and(monthlyStatisticEntity.date.between(twelveMonthsAgo, thisMonth))
-			)
-			.fetch();
-	}
 }

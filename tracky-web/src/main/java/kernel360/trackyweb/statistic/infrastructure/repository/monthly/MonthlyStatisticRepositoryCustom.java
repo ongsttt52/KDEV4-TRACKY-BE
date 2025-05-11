@@ -17,6 +17,4 @@ public interface MonthlyStatisticRepositoryCustom {
 	List<GraphsResponse.NonOperatedCar> getNonOperatedCarWithBizName();
 
 	List<GraphsResponse.DriveCount> getTotalDriveCount();
-
-	List<MonthlyStatisticEntity> getTotalDriveCountInOneYear(Long bizId);
 }

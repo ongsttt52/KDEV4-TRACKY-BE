@@ -1,4 +1,4 @@
-package kernel360.trackyweb.admin.statistic.application.dto;
+package kernel360.trackyweb.admin.statistic.application.dto.response;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public record AdminBizListResponse(
 		int totalCarSum = 0;
 		int drivingCarSum = 0;
 		int skipCountSum = 0;
-		
+
 		for (int i = 0; i < list.size(); i++) {
 			AdminBizListResponse response = list.get(i);
 			totalCarSum += response.totalCarCount;
