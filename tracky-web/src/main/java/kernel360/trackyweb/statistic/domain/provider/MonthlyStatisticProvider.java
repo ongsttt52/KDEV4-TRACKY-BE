@@ -4,15 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.response.GraphsResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.response.MonthlyDriveCountResponse;
 import org.springframework.stereotype.Component;
 
 import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
+import kernel360.trackyweb.admin.statistic.application.dto.response.GraphsResponse;
 import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import kernel360.trackyweb.statistic.infrastructure.repository.monthly.MonthlyStatisticDomainRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +63,7 @@ public class MonthlyStatisticProvider {
 		return monthlyStatisticRepository.getTotalDriveCount();
 	}
 
-	public List<MonthlyStatisticEntity> getAdminBizMonthlyDriveCount(String bizName) {
-		return monthlyStatisticRepository.getTotalDriveCountInOneYear(bizName);
+	public List<MonthlyStatisticEntity> getAdminBizMonthlyDriveCount(Long bizId) {
+		return monthlyStatisticRepository.getTotalDriveCountInOneYear(bizId);
 	}
 }

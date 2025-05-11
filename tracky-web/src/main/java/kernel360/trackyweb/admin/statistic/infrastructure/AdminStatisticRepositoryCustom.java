@@ -8,7 +8,7 @@ import kernel360.trackyweb.admin.statistic.application.dto.AdminBizStatisticResp
 
 public interface AdminStatisticRepositoryCustom {
 
-	List<AdminBizListResponse> fetchAdminBizList(LocalDate selectedDate);
+	List<AdminBizListResponse> fetchAdminBizList();
 
 	AdminBizStatisticResponse getDriveStatByBizIdAndDate(Long bizId, LocalDate selectedDate);
 }

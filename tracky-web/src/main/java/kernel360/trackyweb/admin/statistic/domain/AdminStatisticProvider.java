@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import kernel360.trackyweb.admin.statistic.application.dto.AdminBizListResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.AdminBizStatisticResponse;
 import kernel360.trackyweb.admin.statistic.infrastructure.AdminStatisticRepositoryCustom;
-import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
-import kernel360.trackyweb.statistic.infrastructure.repository.monthly.MonthlyStatisticDomainRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -17,20 +15,19 @@ import lombok.RequiredArgsConstructor;
 public class AdminStatisticProvider {
 
 	private final AdminStatisticRepositoryCustom adminStatisticRepository;
-	private final MonthlyStatisticDomainRepository monthlyStatisticDomainRepository;
 
-	public List<AdminBizListResponse> getAdminBizList(LocalDate selectedDate) {
-		return adminStatisticRepository.fetchAdminBizList(selectedDate);
+	public List<AdminBizListResponse> getAdminBizList() {
+		return adminStatisticRepository.fetchAdminBizList();
 	}
 
 	public AdminBizStatisticResponse getDriveStatByBizIdAndDate(Long bizId, LocalDate selectedDate) {
 
 		AdminBizStatisticResponse response = adminStatisticRepository.getDriveStatByBizIdAndDate(bizId,
 			selectedDate);
-		List<MonthlyStatisticResponse.MonthlyStats> monthlyStats = monthlyStatisticDomainRepository.getMonthlyStats(
-			bizId, selectedDate,
-			selectedDate.minusMonths(12));
 
-		return response.update(monthlyStats);
+		if (response == null)
+			return new AdminBizStatisticResponse(0, 0, 0);
+		else
+			return response;
 	}
 }

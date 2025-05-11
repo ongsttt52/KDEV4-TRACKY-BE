@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackyweb.admin.statistic.application.dto.AdminBizListResponse;
@@ -26,19 +27,20 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 
 	private final JPAQueryFactory queryFactory;
 
+	/**
+	 * 관리자 통계 - 업체 목록
+	 * @return
+	 */
 	@Override
-	public List<AdminBizListResponse> fetchAdminBizList(LocalDate selectedDate) {
-		LocalDateTime start = selectedDate.atStartOfDay();
-		LocalDateTime end = selectedDate.plusDays(1).atStartOfDay();
+	public List<AdminBizListResponse> fetchAdminBizList() {
+		LocalDateTime today = LocalDateTime.now();
 
 		return queryFactory
 			.select(Projections.constructor(
 				AdminBizListResponse.class,
 				bizEntity.bizName,
 				carEntity.mdn.countDistinct().intValue(),
-				// 운행차량 수: driveOffTime 조건은 ON 절에 포함
 				driveEntity.car.mdn.countDistinct().intValue(),
-				// 오류율: 운행 레코드가 없으면 sum()이 null → coalesce로 0 처리
 				driveEntity.skipCount.sum().coalesce(0).intValue()
 			))
 			.from(bizEntity)
@@ -48,7 +50,7 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 			.on(driveEntity.car.mdn.eq(carEntity.mdn)
 				.and(
 					driveEntity.driveOffTime.isNull()
-						.or(driveEntity.driveOffTime.between(start, end))
+						.or(driveEntity.driveOffTime.eq(today))
 				)
 			)
 			.groupBy(bizEntity.id)
@@ -64,22 +66,24 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 	@Override
 	public AdminBizStatisticResponse getDriveStatByBizIdAndDate(Long bizId, LocalDate selectedDate) {
 
-		return queryFactory
-			.select(Projections.constructor(
-				AdminBizStatisticResponse.class,
-				driveEntity.id.countDistinct().intValue(),
-				timeDistanceEntity.distance.sum(),
-				timeDistanceEntity.seconds.sum(),
-				Expressions.nullExpression(List.class)
-			))
-			.from(timeDistanceEntity)
-			.join(driveEntity)
-			.on(driveEntity.car.mdn.eq(timeDistanceEntity.car.mdn))
-			.where(isEqualsBizId(bizId)
-				.and(timeDistanceEntity.date.eq(selectedDate))
-			)
-			.groupBy(timeDistanceEntity.biz.id)
-			.fetchOne();
+		JPAQuery<AdminBizStatisticResponse> query =
+			queryFactory.select(Projections.constructor(
+					AdminBizStatisticResponse.class,
+					driveEntity.id.countDistinct().coalesce(0L).intValue(),
+					timeDistanceEntity.distance.sum().coalesce(0.0),
+					timeDistanceEntity.seconds.sum().coalesce(0)
+				))
+				.from(timeDistanceEntity)
+				.join(driveEntity)
+				.on(driveEntity.car.mdn.eq(timeDistanceEntity.car.mdn))
+				.where(isEqualsBizId(bizId)
+					.and(timeDistanceEntity.date.eq(selectedDate)));
+
+		// 전체 -> bizId를 null로 설정, 전체 검색이 아닐때만 groupBy 설정
+		if (bizId != null)
+			query.groupBy(timeDistanceEntity.biz);
+
+		return query.fetchOne();
 	}
 
 	private BooleanExpression isEqualsBizId(Long bizId) {

@@ -4,13 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
 import org.springframework.stereotype.Component;
 
 import com.querydsl.core.Tuple;
 
 import kernel360.trackycore.core.domain.entity.QTimeDistanceEntity;
+import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
 import kernel360.trackyweb.timedistance.application.dto.internal.OperationDistance;
 import kernel360.trackyweb.timedistance.application.dto.internal.OperationSeconds;
 import kernel360.trackyweb.timedistance.infrastructure.repository.TimeDistanceDomainRepository;
