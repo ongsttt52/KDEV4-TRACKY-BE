@@ -1,9 +1,12 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QBizEntity.bizEntity;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +18,12 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPQLQuery;
+import kernel360.trackycore.core.domain.entity.QBizEntity;
+import kernel360.trackycore.core.domain.entity.QCarEntity;
+import lombok.extern.slf4j.Slf4j;
 import com.querydsl.jpa.JPAExpressions;
 
 import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
@@ -43,6 +52,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
@@ -55,7 +65,7 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
         BooleanBuilder condition = new BooleanBuilder();
 
         // 날짜 구간은 무조건 필터링
-        condition.and(driveEntity.driveOnTime.between(startDate.atStartOfDay(), endDate.atStartOfDay()));
+        condition.and(driveEntity.driveOnTime.between(startDate.atStartOfDay(), endDate.atStartOfDay().plusDays(1)));
         condition.and(isEqualMdnContainsRenterName(mdn, search));
 
         // 메인 쿼리
@@ -81,17 +91,14 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 
     // 현재 주행중인 차량 목록 조회 (차량별로 하나만 유지 + 검색 포함)
     @Override
-    public Page<DriveEntity> findRunningDriveList(String bizUuid, String search, Pageable pageable) {
+    public Page<DriveEntity> findRunningDriveList(String search, Pageable pageable) {
 
         // 주행 중인 차량 리스트 가져오기
         List<DriveEntity> fetchedDrives = queryFactory
                 .selectFrom(driveEntity)
                 .join(driveEntity.car)
                 .fetchJoin()
-                .where(
-                    driveEntity.car.biz.bizUuid.eq(bizUuid),
-                    buildRunningDriveCondition(search)
-                )
+                .where(buildRunningDriveCondition(search))
                 .orderBy(driveEntity.driveOnTime.desc())
                 .fetch();
 
@@ -111,6 +118,21 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
         List<DriveEntity> pagedDrives = (start < end) ? distinctDrives.subList(start, end) : Collections.emptyList();
 
         return new PageImpl<>(pagedDrives, pageable, distinctDrives.size());
+    }
+
+    // 특정 주행 ID로 주행 중인 항목 단건 조회
+    @Override
+    public Optional<DriveEntity> findRunningDriveById(Long driveId) {
+        return Optional.ofNullable(
+                queryFactory.selectFrom(QDriveEntity.driveEntity)
+                        .join(QDriveEntity.driveEntity.car).fetchJoin()
+                        .join(QDriveEntity.driveEntity.rent).fetchJoin()
+                        .where(
+                                QDriveEntity.driveEntity.id.eq(driveId),
+                                QDriveEntity.driveEntity.driveOffTime.isNull()
+                        )
+                        .fetchFirst()
+        );
     }
 
     // 현재 주행중인 차량 목록 조회 (차량별로 하나만 유지 + 검색 포함)
@@ -148,74 +170,60 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
     }
 
 
-    // 특정 주행 ID로 주행 중인 항목 단건 조회
-    @Override
-    public Optional<DriveEntity> findRunningDriveById(Long driveId) {
-        return Optional.ofNullable(
-                queryFactory.selectFrom(QDriveEntity.driveEntity)
-                        .join(QDriveEntity.driveEntity.car).fetchJoin()
-                        .join(QDriveEntity.driveEntity.rent).fetchJoin()
-                        .where(
-                                QDriveEntity.driveEntity.id.eq(driveId),
-                                QDriveEntity.driveEntity.driveOffTime.isNull()
-                        )
-                        .fetchFirst()
-        );
-    }
 
-    @Override
-    public List<DriveEntity> findDriveListByMdn(String mdn) {
-        return queryFactory
-                .selectFrom(driveEntity)
-                .where(driveEntity.car.mdn.eq(mdn))
-                .fetch();
-    }
 
-    private boolean isUnboundedSearch(LocalDateTime start, LocalDateTime end) {
-        return start == null && end == null;
-    }
+	@Override
+	public List<DriveEntity> findDriveListByMdn(String mdn) {
+		return queryFactory
+			.selectFrom(driveEntity)
+			.where(driveEntity.car.mdn.eq(mdn))
+			.fetch();
+	}
 
-    @Override
-    public Optional<DriveHistory> findByDriveId(Long driveId) {
+	private boolean isUnboundedSearch(LocalDateTime start, LocalDateTime end) {
+		return start == null && end == null;
+	}
 
-        // drive 기본 정보 조회
-        DriveEntity drive = queryFactory
-                .selectFrom(driveEntity)
-                .distinct()
-                .join(driveEntity.car).fetchJoin()
-                .join(driveEntity.rent).fetchJoin()
-                .join(driveEntity.location).fetchJoin()
-                .where(driveEntity.id.eq(driveId))
-                .fetchOne();
+	@Override
+	public Optional<DriveHistory> findByDriveId(Long driveId) {
 
-        if (drive == null) {
-            return Optional.empty();
-        }
+		// drive 기본 정보 조회
+		DriveEntity drive = queryFactory
+			.selectFrom(driveEntity)
+			.distinct()
+			.join(driveEntity.car).fetchJoin()
+			.join(driveEntity.rent).fetchJoin()
+			.join(driveEntity.location).fetchJoin()
+			.where(driveEntity.id.eq(driveId))
+			.fetchOne();
 
-        // gps 이력 리스트 조회
-        List<GpsData> gpsDataList = queryFactory
-                .selectFrom(gpsHistoryEntity)
-                .where(gpsHistoryEntity.drive.id.eq(driveId))
-                .orderBy(gpsHistoryEntity.oTime.asc())
-                .fetch()
-                .stream()
-                .map(gps -> GpsData.create(
-                        gps.getLat(),
-                        gps.getLon(),
-                        gps.getSpd(),
-                        gps.getAng(),
-                        gps.getOTime()
-                ))
-                .toList();
+		if (drive == null) {
+			return Optional.empty();
+		}
 
-        DriveHistory driveHistory = DriveHistory.create(
-                drive, gpsDataList
-        );
+		// gps 이력 리스트 조회
+		List<GpsData> gpsDataList = queryFactory
+			.selectFrom(gpsHistoryEntity)
+			.where(gpsHistoryEntity.drive.id.eq(driveId))
+			.orderBy(gpsHistoryEntity.oTime.asc())
+			.fetch()
+			.stream()
+			.map(gps -> GpsData.create(
+				gps.getLat(),
+				gps.getLon(),
+				gps.getSpd(),
+				gps.getAng(),
+				gps.getOTime()
+			))
+			.toList();
 
-        return Optional.of(driveHistory);
-    }
+		DriveHistory driveHistory = DriveHistory.create(
+			drive, gpsDataList
+		);
 
-    //일일 통계 - target Date에 운행한 차량 수
+		return Optional.of(driveHistory);
+	}
+
     @Override
     public List<OperationCarCount> getDailyOperationCar(LocalDate targetDate) {
         LocalDateTime start = targetDate.atStartOfDay();
@@ -224,67 +232,62 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
         return queryFactory
                 .select(Projections.constructor(
                         OperationCarCount.class,
-                        driveEntity.car.biz.id,
-                        driveEntity.car.mdn.countDistinct()
+                        bizEntity.id,
+                        driveEntity.car.mdn.countDistinct().coalesce(0L)
                 ))
-                .from(driveEntity)
-                .where(driveEntity.driveOnTime.between(start, end.minusNanos(1)))
-                .groupBy(driveEntity.car.biz.id)
+                .from(bizEntity)
+                .leftJoin(carEntity).on(carEntity.biz.id.eq(bizEntity.id))
+                .leftJoin(driveEntity).on(
+                        driveEntity.car.mdn.eq(carEntity.mdn),
+                        driveEntity.driveOnTime.between(start, end.minusNanos(1))
+                )
+                .groupBy(bizEntity.id)
                 .fetch();
     }
 
-    //일일 통계 - target Date의 운행 총 횟수
-    @Override
-    public List<OperationTotalCount> getDailyTotalOperation(LocalDate targetDate) {
-        LocalDateTime start = targetDate.atStartOfDay();
-        LocalDateTime end = targetDate.plusDays(1).atStartOfDay().minusNanos(1);
+	//일일 통계 - target Date의 운행 총 횟수
+	@Override
+	public List<OperationTotalCount> getDailyTotalOperation(LocalDate targetDate) {
+		LocalDateTime start = targetDate.atStartOfDay();
+		LocalDateTime end = targetDate.plusDays(1).atStartOfDay().minusNanos(1);
 
         return queryFactory
                 .select(Projections.constructor(
                         OperationTotalCount.class,
-                        driveEntity.car.biz.id,
-                        driveEntity.count()
+                        bizEntity.id,
+                        driveEntity.count().coalesce(0L)
                 ))
-                .from(driveEntity)
-                .where(driveEntity.driveOnTime.between(start, end))
-                .groupBy(driveEntity.car.biz.id)
+                .from(bizEntity)
+                .leftJoin(driveEntity)
+                .on(
+                        driveEntity.car.biz.id.eq(bizEntity.id),
+                        driveEntity.driveOnTime.between(start, end)
+                )
+                .groupBy(bizEntity.id)
                 .fetch();
     }
 
-    //월별 통계 - 미운행 차량 수
-    @Override
-    public List<NonOperatedCar> getNonOperatedCars(LocalDate targetDate) {
-        LocalDateTime monthStart = targetDate.withDayOfMonth(1).atStartOfDay();
-        LocalDateTime targetEnd = targetDate.plusDays(1).atStartOfDay();
+	//월별 통계 - 미운행 차량 수
+	@Override
+	public List<NonOperatedCar> getNonOperatedCars(LocalDate targetDate) {
+		LocalDateTime monthStart = targetDate.withDayOfMonth(1).atStartOfDay();
+		LocalDateTime targetEnd = targetDate.plusDays(1).atStartOfDay();
 
         return queryFactory
                 .select(Projections.constructor(
                         NonOperatedCar.class,
-                        carEntity.biz.id,
-                        carEntity.count()
+                        bizEntity.id,
+                        carEntity.count().coalesce(0L)
                 ))
-                .from(carEntity)
-                .where(
-                        JPAExpressions
-                                .selectOne()
-                                .from(driveEntity)
-                                .where(
-                                        driveEntity.car.eq(carEntity),
-                                        driveEntity.driveOnTime.between(monthStart, targetEnd)
-                                )
-                                .notExists()
+                .from(bizEntity)
+                .leftJoin(carEntity).on(carEntity.biz.id.eq(bizEntity.id))
+                .leftJoin(driveEntity).on(
+                        driveEntity.car.eq(carEntity),
+                        driveEntity.driveOnTime.between(monthStart, targetEnd)
                 )
-                .groupBy(carEntity.biz.id)
+                .where(driveEntity.isNull())
+                .groupBy(bizEntity.id)
                 .fetch();
-    }
-
-    @Override
-    public Double getRealDriveDistance(Long driveId) {
-        return queryFactory
-            .select(gpsHistoryEntity.sum.sum())
-            .from(gpsHistoryEntity)
-            .where(gpsHistoryEntity.drive.id.eq(driveId))
-            .fetchOne();
     }
 
     private BooleanBuilder buildRunningDriveCondition(String search) {
@@ -311,7 +314,6 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
                         .fetchOne()
         ).orElse(0L);
     }
-
 
     //검색 조건
     private BooleanExpression isEqualMdnContainsRenterName(String mdn, String search) {
