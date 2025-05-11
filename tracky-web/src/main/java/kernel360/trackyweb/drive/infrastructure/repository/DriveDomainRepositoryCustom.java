@@ -23,8 +23,15 @@ public interface DriveDomainRepositoryCustom {
             Pageable pageable);
 
     Page<DriveEntity> findRunningDriveList(
+            String bizUuid,
             String search,
             Pageable pageable
+    );
+
+    Page<DriveEntity> findRunningDriveListAdmin(
+        String bizSearch,
+        String search,
+        Pageable pageable
     );
 
 
@@ -39,4 +46,6 @@ public interface DriveDomainRepositoryCustom {
     List<OperationTotalCount> getDailyTotalOperation(LocalDate targetDate);
 
     List<NonOperatedCar> getNonOperatedCars(LocalDate targetDate);
+
+    Double getRealDriveDistance(Long driveId);
 }

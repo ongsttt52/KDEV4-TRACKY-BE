@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.querydsl.jpa.JPAExpressions;
+
 import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
 import kernel360.trackyweb.drive.application.dto.internal.OperationTotalCount;
 import org.apache.commons.lang3.StringUtils;
@@ -77,14 +78,17 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 
     // 현재 주행중인 차량 목록 조회 (차량별로 하나만 유지 + 검색 포함)
     @Override
-    public Page<DriveEntity> findRunningDriveList(String search, Pageable pageable) {
+    public Page<DriveEntity> findRunningDriveList(String bizUuid, String search, Pageable pageable) {
 
         // 주행 중인 차량 리스트 가져오기
         List<DriveEntity> fetchedDrives = queryFactory
                 .selectFrom(driveEntity)
                 .join(driveEntity.car)
                 .fetchJoin()
-                .where(buildRunningDriveCondition(search))
+                .where(
+                    driveEntity.car.biz.bizUuid.eq(bizUuid),
+                    buildRunningDriveCondition(search)
+                )
                 .orderBy(driveEntity.driveOnTime.desc())
                 .fetch();
 
@@ -105,6 +109,41 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 
         return new PageImpl<>(pagedDrives, pageable, distinctDrives.size());
     }
+
+    // 현재 주행중인 차량 목록 조회 (차량별로 하나만 유지 + 검색 포함)
+    @Override
+    public Page<DriveEntity> findRunningDriveListAdmin(String bizSearch, String search, Pageable pageable) {
+
+        // 주행 중인 차량 리스트 가져오기
+        List<DriveEntity> fetchedDrives = queryFactory
+            .selectFrom(driveEntity)
+            .join(driveEntity.car)
+            .fetchJoin()
+            .where(
+                isContainsBizName(bizSearch),
+                buildRunningDriveCondition(search)
+            )
+            .orderBy(driveEntity.driveOnTime.desc())
+            .fetch();
+
+        // 차량(mdn) 당 하나만 유지
+        Map<String, DriveEntity> distinctByMdn = fetchedDrives.stream()
+            .collect(Collectors.toMap(
+                drive -> drive.getCar().getMdn(),
+                Function.identity(),
+                (existing, replacement) -> existing,
+                LinkedHashMap::new
+            ));
+
+        List<DriveEntity> distinctDrives = new ArrayList<>(distinctByMdn.values());
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), distinctDrives.size());
+        List<DriveEntity> pagedDrives = (start < end) ? distinctDrives.subList(start, end) : Collections.emptyList();
+
+        return new PageImpl<>(pagedDrives, pageable, distinctDrives.size());
+    }
+
 
     // 특정 주행 ID로 주행 중인 항목 단건 조회
     @Override
@@ -236,6 +275,14 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public Double getRealDriveDistance(Long driveId) {
+        return queryFactory
+            .select(gpsHistoryEntity.sum.sum())
+            .from(gpsHistoryEntity)
+            .where(gpsHistoryEntity.drive.id.eq(driveId))
+            .fetchOne();
+    }
 
     private BooleanBuilder buildRunningDriveCondition(String search) {
         return new BooleanBuilder()
@@ -262,6 +309,7 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
         ).orElse(0L);
     }
 
+
     //검색 조건
     private BooleanExpression isEqualMdnContainsRenterName(String mdn, String search) {
         if (StringUtils.isBlank(search)) {
@@ -269,6 +317,14 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
         }
         return driveEntity.car.mdn.eq(mdn)
                 .and(driveEntity.rent.renterName.containsIgnoreCase(search));
+    }
+
+    //검색 조건
+    private BooleanExpression isContainsBizName(String bizSearch) {
+        if (StringUtils.isBlank(bizSearch)) {
+            return null;
+        }
+        return driveEntity.car.biz.bizName.containsIgnoreCase(bizSearch);
     }
 
 }

@@ -24,6 +24,18 @@ public class CarDomainProvider {
 	private final CarDomainRepository carDomainRepository;
 	private final GlobalSseEvent globalSseEvent;
 
+	public Page<CarEntity> searchCarByFilterAdmin(
+		String bizSearch,
+		String search,
+		CarStatus status,
+		CarType carType,
+		Pageable pageable
+	) {
+		return carDomainRepository.searchCarByFilterAdmin(
+			bizSearch, search, status, carType, pageable
+		);
+	}
+
 	public Page<CarEntity> searchCarByFilter(
 		String bizUuid,
 		String search,
@@ -52,6 +64,10 @@ public class CarDomainProvider {
 		globalSseEvent.sendEvent(SseEvent.CAR_DELETED);
 
 		carDomainRepository.deleteByMdn(mdn);
+	}
+
+	public Page<CarEntity> searchDriveCarByFilterAdmin(String bizSearch, String search, Pageable pageable) {
+		return carDomainRepository.searchDriveCarByFilterAdmin(bizSearch, search, pageable);
 	}
 
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {

@@ -46,6 +46,39 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 	@Override
+	public Page<CarEntity> searchCarByFilterAdmin(
+		String bizSearch,
+		String search,
+		CarStatus status,
+		CarType carType,
+		Pageable pageable
+	) {
+		BooleanBuilder builder = new BooleanBuilder()
+			.and(isContainsBizName(bizSearch))
+			.and(isContainsCarMdnOrCarPlate(search))
+			.and(isEqualStatus(status))
+			.and(isEqualCarType(carType))
+			.and(isNotDeleted(status));
+
+		JPAQuery<CarEntity> query = queryFactory
+			.selectFrom(carEntity)
+			.where(builder)
+			.orderBy(carPlateSort(search));
+
+		List<CarEntity> content = fetchPagedContent(query, pageable);
+
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(carEntity.count())
+				.from(carEntity)
+				.where(builder)
+				.fetchOne()
+		).orElse(0L);
+
+		return new PageImpl<>(content, pageable, total);
+	}
+
+	@Override
 	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, CarStatus status, CarType carType,
 		Pageable pageable) {
 		BooleanBuilder builder = new BooleanBuilder()
@@ -72,6 +105,35 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 		return new PageImpl<>(content, pageable, total);
 	}
+
+	@Override
+	public Page<CarEntity> searchDriveCarByFilterAdmin(String bizSearch, String search, Pageable pageable) {
+		JPAQuery<CarEntity> query = queryFactory
+			.select(carEntity)
+			.from(carEntity)
+			.join(carEntity.biz, bizEntity)
+			.where(
+				isContainsBizName(bizSearch),
+				isContainsCarMdnOrCarPlate(search)
+			);
+
+		List<CarEntity> content = fetchPagedContent(query, pageable);
+
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(carEntity.count())
+				.from(carEntity)
+				.join(carEntity.biz, bizEntity)
+				.where(
+					isContainsBizName(bizSearch),
+					isContainsCarMdnOrCarPlate(search)
+				)
+				.fetchOne()
+		).orElse(0L);
+
+		return new PageImpl<>(content, pageable, total);
+	}
+
 
 	@Override
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
@@ -135,6 +197,13 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	}
 
 	//검색 조건
+	private BooleanExpression isContainsBizName(String bizSearch) {
+		if (StringUtils.isBlank(bizSearch)) {
+			return null;
+		}
+		return carEntity.biz.bizName.containsIgnoreCase(bizSearch);
+	}
+
 	private BooleanExpression isContainsCarMdnOrCarPlate(String search) {
 		if (StringUtils.isBlank(search)) {
 			return null;
