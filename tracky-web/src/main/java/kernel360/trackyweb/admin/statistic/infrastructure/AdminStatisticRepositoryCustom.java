@@ -6,6 +6,7 @@ import java.util.List;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizStatisticResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
 
 public interface AdminStatisticRepositoryCustom {
 
@@ -14,4 +15,6 @@ public interface AdminStatisticRepositoryCustom {
 	AdminBizStatisticResponse getDriveStatByBizIdAndDate(Long bizId, LocalDate selectedDate);
 
 	List<AdminBizMonthlyResponse> getTotalDriveCountInOneYear(Long bizId, LocalDate selectedDate);
+
+	List<HourlyGraphResponse> getHourlyDriveCounts(Long bizId, LocalDate selectedDate);
 }

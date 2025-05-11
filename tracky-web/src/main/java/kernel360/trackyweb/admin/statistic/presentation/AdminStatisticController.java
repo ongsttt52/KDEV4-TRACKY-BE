@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackyweb.admin.statistic.application.AdminStatisticService;
-import kernel360.trackyweb.admin.statistic.application.dto.AdminStatisticRequest;
+import kernel360.trackyweb.admin.statistic.application.dto.request.AdminStatisticRequest;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizStatisticResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.response.GraphsResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -31,23 +31,27 @@ public class AdminStatisticController {
 
 	@GetMapping("/biz/stat")
 	public ApiResponse<AdminBizStatisticResponse> getAdminBizStatistics(
-		@ModelAttribute AdminStatisticRequest adminStatisticRequest) {
+		@ModelAttribute AdminStatisticRequest adminStatisticRequest
+	) {
 		return adminStatisticService.getAdminBizStatistics(adminStatisticRequest);
 	}
 
 	@GetMapping("/monthly")
 	public ApiResponse<List<AdminBizMonthlyResponse>> getMonthlyDriveCounts(
-		@ModelAttribute AdminStatisticRequest adminStatisticRequest) {
-		return adminStatisticService.getAdminBizMonthlyDriveCount(adminStatisticRequest);
+		@ModelAttribute AdminStatisticRequest adminStatisticRequest
+	) {
+		return adminStatisticService.getMonthlyDriveCounts(adminStatisticRequest);
 	}
 
 	@GetMapping("/hourly")
-	public ApiResponse<List<HourlyGraphResponse>> getHourlyDriveCounts() {
-		return adminStatisticService.getHourlyGraph();
+	public ApiResponse<List<HourlyGraphResponse>> getHourlyDriveCounts(
+		@ModelAttribute AdminStatisticRequest adminStatisticRequest
+	) {
+		return adminStatisticService.getHourlyDriveCounts(adminStatisticRequest);
 	}
 
 	@GetMapping("/graphs")
-	public ApiResponse<GraphsResponse> getGraphs() {
-		return adminStatisticService.getGraphs();
+	public ApiResponse<AdminGraphStatsResponse> getGraphStats() {
+		return adminStatisticService.getGraphStats();
 	}
 }

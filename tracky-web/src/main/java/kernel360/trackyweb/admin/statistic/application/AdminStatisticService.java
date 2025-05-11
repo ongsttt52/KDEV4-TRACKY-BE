@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.BizEntity;
-import kernel360.trackyweb.admin.statistic.application.dto.AdminStatisticRequest;
+import kernel360.trackyweb.admin.statistic.application.dto.request.AdminStatisticRequest;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizStatisticResponse;
-import kernel360.trackyweb.admin.statistic.application.dto.response.GraphsResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
 import kernel360.trackyweb.admin.statistic.domain.AdminStatisticProvider;
 import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
@@ -39,8 +39,8 @@ public class AdminStatisticService {
 	}
 
 	public ApiResponse<AdminBizStatisticResponse> getAdminBizStatistics(
-		AdminStatisticRequest adminStatisticRequest) {
-
+		AdminStatisticRequest adminStatisticRequest
+	) {
 		Long bizId = mapToBizId(adminStatisticRequest.bizName());
 
 		AdminBizStatisticResponse bizStat = adminStatisticProvider.getDriveStatByBizIdAndDate(bizId,
@@ -49,36 +49,42 @@ public class AdminStatisticService {
 		return ApiResponse.success(bizStat);
 	}
 
-	public ApiResponse<List<AdminBizMonthlyResponse>> getAdminBizMonthlyDriveCount(
-		AdminStatisticRequest adminStatisticRequest) {
-
+	public ApiResponse<List<AdminBizMonthlyResponse>> getMonthlyDriveCounts(
+		AdminStatisticRequest adminStatisticRequest
+	) {
 		Long bizId = mapToBizId(adminStatisticRequest.bizName());
 
-		return ApiResponse.success(
-			adminStatisticProvider.getAdminBizMonthlyDriveCount(bizId, adminStatisticRequest.selectedDate()));
+		return ApiResponse.success(adminStatisticProvider
+			.getAdminBizMonthlyDriveCount(bizId, adminStatisticRequest.selectedDate()));
 	}
 
-	public ApiResponse<List<HourlyGraphResponse>> getHourlyGraph() {
-		return ApiResponse.success(HourlyGraphResponse.toResultList(timeDistanceDomainProvider.getYesterdayData()));
+	public ApiResponse<List<HourlyGraphResponse>> getHourlyDriveCounts(
+		AdminStatisticRequest adminStatisticRequest
+	) {
+		Long bizId = mapToBizId(adminStatisticRequest.bizName());
+
+		return ApiResponse.success(HourlyGraphResponse
+			.toResultList(adminStatisticProvider
+				.getAdminBizHourlyDriveCount(bizId, adminStatisticRequest.selectedDate())));
 	}
 
-	public ApiResponse<GraphsResponse> getGraphs() {
-		List<GraphsResponse.CarCount> carCountWithBizName = dailyStatisticProvider.getCarCountWithBizName();
-		List<GraphsResponse.OperationRate> operationRateWithBizName = dailyStatisticProvider.getOperationRatesAvgWithBizName();
-		List<GraphsResponse.NonOperatedCar> nonOperatedCarWithBizName = monthlyStatisticProvider.getNonOperatedCarWithBizName();
-		List<GraphsResponse.DriveCount> monthlyDriveCount = monthlyStatisticProvider.getDriveCount();
+	public ApiResponse<AdminGraphStatsResponse> getGraphStats() {
 
-		return ApiResponse.success(GraphsResponse.toResponse(
-			carCountWithBizName, operationRateWithBizName, nonOperatedCarWithBizName, monthlyDriveCount));
+		List<AdminGraphStatsResponse.CarCount> carCountWithBizName = dailyStatisticProvider.getCarCountWithBizName();
+		List<AdminGraphStatsResponse.OperationRate> operationRateWithBizName = dailyStatisticProvider.getOperationRatesAvgWithBizName();
+		List<AdminGraphStatsResponse.NonOperatedCar> nonOperatedCarWithBizName = monthlyStatisticProvider.getNonOperatedCarWithBizName();
+		List<AdminGraphStatsResponse.DriveCount> monthlyDriveCount = monthlyStatisticProvider.getDriveCount();
+
+		return ApiResponse.success(AdminGraphStatsResponse
+			.toResponse(carCountWithBizName, operationRateWithBizName, nonOperatedCarWithBizName, monthlyDriveCount));
 	}
 
 	private Long mapToBizId(String bizName) {
 
-		if (!bizName.isBlank()) {
-			BizEntity biz = bizDomainProvider.getBizByBizName(bizName);
-			return biz.getId();
-		} else {
+		if (bizName.isBlank()) {
 			return null;
 		}
+		BizEntity biz = bizDomainProvider.getBizByBizName(bizName);
+		return biz.getId();
 	}
 }

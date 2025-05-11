@@ -10,7 +10,7 @@ import jakarta.transaction.Transactional;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
-import kernel360.trackyweb.admin.statistic.application.dto.response.GraphsResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import kernel360.trackyweb.statistic.infrastructure.repository.monthly.MonthlyStatisticDomainRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,11 +55,11 @@ public class MonthlyStatisticProvider {
 		return monthlyStatisticRepository.findLatestMonthlyStatistic(bizUuid);
 	}
 
-	public List<GraphsResponse.NonOperatedCar> getNonOperatedCarWithBizName() {
+	public List<AdminGraphStatsResponse.NonOperatedCar> getNonOperatedCarWithBizName() {
 		return monthlyStatisticRepository.getNonOperatedCarWithBizName();
 	}
 
-	public List<GraphsResponse.DriveCount> getDriveCount() {
+	public List<AdminGraphStatsResponse.DriveCount> getDriveCount() {
 		return monthlyStatisticRepository.getTotalDriveCount();
 	}
 }

@@ -14,7 +14,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity;
-import kernel360.trackyweb.admin.statistic.application.dto.response.GraphsResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -65,12 +65,12 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 	}
 
 	@Override
-	public List<GraphsResponse.NonOperatedCar> getNonOperatedCarWithBizName() {
+	public List<AdminGraphStatsResponse.NonOperatedCar> getNonOperatedCarWithBizName() {
 		QMonthlyStatisticEntity sub = new QMonthlyStatisticEntity("sub");
 
 		return queryFactory
 			.select(Projections.constructor(
-					GraphsResponse.NonOperatedCar.class,
+					AdminGraphStatsResponse.NonOperatedCar.class,
 					monthlyStatisticEntity.biz.bizName,
 					monthlyStatisticEntity.nonOperatingCarCount
 				)
@@ -90,13 +90,13 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 	}
 
 	@Override
-	public List<GraphsResponse.DriveCount> getTotalDriveCount() {
+	public List<AdminGraphStatsResponse.DriveCount> getTotalDriveCount() {
 		LocalDate thisMonth = LocalDate.now().minusDays(1);
 		LocalDate sixMonthsAgo = YearMonth.now().minusMonths(6).atEndOfMonth();
 
 		return queryFactory
 			.select(Projections.constructor(
-				GraphsResponse.DriveCount.class,
+				AdminGraphStatsResponse.DriveCount.class,
 				monthlyStatisticEntity.date,
 				monthlyStatisticEntity.totalDriveCount.sum()
 			))

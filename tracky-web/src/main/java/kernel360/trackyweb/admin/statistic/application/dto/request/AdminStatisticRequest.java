@@ -1,4 +1,4 @@
-package kernel360.trackyweb.admin.statistic.application.dto;
+package kernel360.trackyweb.admin.statistic.application.dto.request;
 
 import java.time.LocalDate;
 

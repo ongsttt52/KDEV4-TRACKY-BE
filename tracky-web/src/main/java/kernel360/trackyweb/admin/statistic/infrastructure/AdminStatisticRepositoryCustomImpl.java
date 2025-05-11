@@ -22,6 +22,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizStatisticResponse;
+import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -119,6 +120,32 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 			)
 			.groupBy(monthlyStatisticEntity.date.yearMonth())
 			.orderBy(monthlyStatisticEntity.date.yearMonth().asc())
+			.fetch();
+	}
+
+	/**
+	 * 관리자 통계 - 시간별 운행량 그래프
+	 * @param bizId
+	 * @param selectedDate
+	 * @return
+	 */
+	@Override
+	public List<HourlyGraphResponse> getHourlyDriveCounts(Long bizId, LocalDate selectedDate) {
+
+		return queryFactory
+			.select(Projections.constructor(
+				HourlyGraphResponse.class,
+				timeDistanceEntity.hour,
+				timeDistanceEntity.count()
+			))
+			.from(timeDistanceEntity)
+			.where(
+				(bizId != null
+					? timeDistanceEntity.biz.id.eq(bizId)
+					: Expressions.TRUE)
+					.and(timeDistanceEntity.date.eq(selectedDate))
+			)
+			.groupBy(timeDistanceEntity.hour)
 			.fetch();
 	}
 }
