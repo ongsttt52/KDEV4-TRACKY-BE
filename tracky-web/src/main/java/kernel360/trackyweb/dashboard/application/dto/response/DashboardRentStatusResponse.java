@@ -6,7 +6,7 @@ import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 
-public record RentDashboardDto(
+public record DashboardRentStatusResponse(
 	String rentUuid,
 	String renterName,
 	String mdn,
@@ -16,8 +16,8 @@ public record RentDashboardDto(
 	LocalDateTime rentStime,
 	LocalDateTime rentEtime
 ) {
-	public static RentDashboardDto from(RentEntity rent) {
-		return new RentDashboardDto(
+	public static DashboardRentStatusResponse from(RentEntity rent) {
+		return new DashboardRentStatusResponse(
 			rent.getRentUuid(),
 			rent.getRenterName(),
 			rent.getCar().getMdn(),

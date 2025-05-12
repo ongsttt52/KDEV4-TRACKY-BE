@@ -8,14 +8,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
+import kernel360.trackyweb.dashboard.application.dto.response.DashboardReturnResponse;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 
 @Tag(name = "DashBoard Api", description = "대쉬보드 관련 API")
 public interface DashBoardApiDocs {
 
 	@Operation(summary = "지연된 반납 조회", description = "반납이 지연된 차량 리스트")
-	ApiResponse<List<ReturnResponse>> getdelayedReturn(
+	ApiResponse<List<DashboardReturnResponse>> getdelayedReturn(
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
 	);
 

@@ -5,7 +5,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 
-import kernel360.trackyweb.dashboard.domain.ProvincePolygon;
+import kernel360.trackyweb.dashboard.domain.vo.ProvincePolygon;
 
 @Component
 public class ProvinceMatcher {

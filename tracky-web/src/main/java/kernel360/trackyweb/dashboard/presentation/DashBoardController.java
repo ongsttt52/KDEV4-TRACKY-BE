@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackyweb.dashboard.application.DashBoardService;
-import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
-import kernel360.trackyweb.dashboard.application.dto.response.Statistics;
+import kernel360.trackyweb.dashboard.application.dto.response.DashboardCarStatusResponse;
+import kernel360.trackyweb.dashboard.application.dto.response.DashboardReturnResponse;
+import kernel360.trackyweb.dashboard.application.dto.response.DashboardStatisticsResponse;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 
@@ -27,19 +27,20 @@ public class DashBoardController implements DashBoardApiDocs {
 	private final DashBoardService dashBoardService;
 
 	@GetMapping("/return/status")
-	public ApiResponse<List<ReturnResponse>> getdelayedReturn(
+	public ApiResponse<List<DashboardReturnResponse>> getdelayedReturn(
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 		return dashBoardService.getDelayedReturn(memberPrincipal.bizUuid());
 	}
 
 	@GetMapping("/cars/status")
-	public ApiResponse<Map<CarStatus, Long>> getAllCarStatus() {
-		Map<CarStatus, Long> statusMap = dashBoardService.getAllCarStatus();
-		return ApiResponse.success(statusMap);
+	public ApiResponse<List<DashboardCarStatusResponse>> getAllCarStatus(
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
+	) {
+		return ApiResponse.success(dashBoardService.getAllCarStatus(memberPrincipal.bizUuid()));
 	}
 
 	@GetMapping("/statistics")
-	public ApiResponse<Statistics> getStatistics(
+	public ApiResponse<DashboardStatisticsResponse> getStatistics(
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 		return ApiResponse.success(dashBoardService.getStatistics(memberPrincipal.bizUuid()));
 	}
