@@ -62,34 +62,33 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 	}
 
 	/**
-	 * 관리자 통계 - 업체별 운행량 카드 섹션
+	 * 관리자 통계 - 월별 운행량 카드
 	 * @param bizId
 	 * @param selectedDate
 	 * @return
 	 */
 	@Override
 	public AdminBizStatisticResponse getDriveStatByBizIdAndDate(Long bizId, LocalDate selectedDate) {
+		LocalDate startOfMonth = selectedDate.withDayOfMonth(1);
+		LocalDate endOfMonth = selectedDate.with(TemporalAdjusters.lastDayOfMonth());
 
 		JPAQuery<AdminBizStatisticResponse> query =
 			queryFactory.select(Projections.constructor(
 					AdminBizStatisticResponse.class,
-					driveEntity.id.countDistinct().coalesce(0L).intValue(),
-					timeDistanceEntity.distance.sum().coalesce(0.0),
-					timeDistanceEntity.seconds.sum().coalesce(0)
+					monthlyStatisticEntity.totalDriveCount.coalesce(0).sum(),
+					monthlyStatisticEntity.totalDriveDistance.coalesce(0.0).sum(),
+					monthlyStatisticEntity.totalDriveSec.coalesce(0L).sum().intValue()
 				))
-				.from(timeDistanceEntity)
-				.join(driveEntity)
-				.on(driveEntity.car.mdn.eq(timeDistanceEntity.car.mdn))
+				.from(monthlyStatisticEntity)
 				.where(
 					(bizId != null
-						? timeDistanceEntity.biz.id.eq(bizId)
+						? monthlyStatisticEntity.biz.id.eq(bizId)
 						: Expressions.TRUE)
-						.and(timeDistanceEntity.date.eq(selectedDate)));
-
-		// bizId가 null일 경우 전체 검색 (groupBy 제거)
-		if (bizId != null)
-			query.groupBy(timeDistanceEntity.biz);
-
+						.and(monthlyStatisticEntity.date.between(startOfMonth, endOfMonth))
+				);
+		if (bizId != null) {
+			query.groupBy(monthlyStatisticEntity.biz.id);
+		}
 		return query.fetchOne();
 	}
 
