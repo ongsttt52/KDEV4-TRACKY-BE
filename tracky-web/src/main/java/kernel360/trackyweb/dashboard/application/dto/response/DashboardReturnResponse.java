@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 
-public record ReturnResponse(
+public record DashboardReturnResponse(
 	String rentUuid,
 	String renterName,
 	RentStatus rentStatus,

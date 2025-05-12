@@ -1,4 +1,4 @@
-package kernel360.trackyweb.dashboard.domain;
+package kernel360.trackyweb.dashboard.domain.vo;
 
 import org.locationtech.jts.geom.Geometry;
 

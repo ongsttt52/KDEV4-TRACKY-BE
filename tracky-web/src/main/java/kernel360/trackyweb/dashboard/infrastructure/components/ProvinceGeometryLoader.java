@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PostConstruct;
-import kernel360.trackyweb.dashboard.domain.ProvincePolygon;
+import kernel360.trackyweb.dashboard.domain.vo.ProvincePolygon;
 
 @Component
 public class ProvinceGeometryLoader {
