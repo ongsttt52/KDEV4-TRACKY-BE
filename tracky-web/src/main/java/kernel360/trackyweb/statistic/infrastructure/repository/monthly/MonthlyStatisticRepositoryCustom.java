@@ -11,6 +11,8 @@ public interface MonthlyStatisticRepositoryCustom {
 
 	MonthlyStatisticEntity findLatestMonthlyStatistic(String bizUuid);
 
+	MonthlyStatisticEntity findByBizIdAndDate(Long bizId, LocalDate date);
+
 	List<MonthlyStatisticResponse.MonthlyStats> getMonthlyStats(Long bizId, LocalDate currentDate,
 		LocalDate targetDate);
 

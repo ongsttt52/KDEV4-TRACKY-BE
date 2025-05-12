@@ -3,6 +3,7 @@ package kernel360.trackyweb.statistic.infrastructure.repository.monthly;
 import static kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity.*;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -30,6 +31,19 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 			.where(monthlyStatisticEntity.biz.bizUuid.eq(bizUuid))
 			.orderBy(monthlyStatisticEntity.date.desc())
 			.limit(1)
+			.fetchOne();
+	}
+
+	@Override
+	public MonthlyStatisticEntity findByBizIdAndDate(Long bizId, LocalDate date) {
+		LocalDate start = date.withDayOfMonth(1);
+		LocalDate end = date.with(TemporalAdjusters.lastDayOfMonth());
+
+		return queryFactory
+			.selectFrom(monthlyStatisticEntity)
+			.where(monthlyStatisticEntity.biz.id.eq(bizId)
+				.and(monthlyStatisticEntity.date.between(start, end))
+			)
 			.fetchOne();
 	}
 
