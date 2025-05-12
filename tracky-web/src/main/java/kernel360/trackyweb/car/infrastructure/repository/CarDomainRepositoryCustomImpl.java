@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import kernel360.trackycore.core.domain.entity.QBizEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -31,6 +30,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
 import kernel360.trackyweb.dashboard.application.dto.response.DashboardCarStatusResponse;
 import kernel360.trackyweb.statistic.application.dto.response.CarStatisticResponse;
@@ -88,6 +88,8 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	@Override
 	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, CarStatus status, CarType carType,
 		Pageable pageable) {
+
+
 
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(carEntity.biz.bizUuid.eq(bizUuid))
@@ -253,6 +255,21 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		).orElse(0L);
 
 		return new PageImpl<>(carStatisticResponses, pageable, total);
+	}
+
+	@Override
+	public List<AdminGraphStatsResponse.CarTypeCount> getCarTypeCounts() {
+		return queryFactory
+			.select(
+				Projections.constructor(
+					AdminGraphStatsResponse.CarTypeCount.class,
+					carEntity.carType,
+					carEntity.count()
+				)
+			)
+			.from(carEntity)
+			.groupBy(carEntity.carType)
+			.fetch();
 	}
 
 	@Override

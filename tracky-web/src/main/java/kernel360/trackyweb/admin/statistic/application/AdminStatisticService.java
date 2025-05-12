@@ -14,6 +14,7 @@ import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphSt
 import kernel360.trackyweb.admin.statistic.application.dto.response.HourlyGraphResponse;
 import kernel360.trackyweb.admin.statistic.domain.AdminStatisticProvider;
 import kernel360.trackyweb.biz.domain.provider.BizDomainProvider;
+import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.statistic.domain.provider.DailyStatisticProvider;
 import kernel360.trackyweb.statistic.domain.provider.MonthlyStatisticProvider;
 import kernel360.trackyweb.timedistance.domain.provider.TimeDistanceDomainProvider;
@@ -30,6 +31,7 @@ public class AdminStatisticService {
 	private final TimeDistanceDomainProvider timeDistanceDomainProvider;
 	private final DailyStatisticProvider dailyStatisticProvider;
 	private final MonthlyStatisticProvider monthlyStatisticProvider;
+	private final CarDomainProvider carDomainProvider;
 
 	public ApiResponse<List<AdminBizListResponse>> getAdminBizList() {
 
@@ -71,12 +73,12 @@ public class AdminStatisticService {
 	public ApiResponse<AdminGraphStatsResponse> getGraphStats() {
 
 		List<AdminGraphStatsResponse.CarCount> carCountWithBizName = dailyStatisticProvider.getCarCountWithBizName();
+		List<AdminGraphStatsResponse.CarTypeCount> carTypeCount = carDomainProvider.getCarTypeCounts();
 		List<AdminGraphStatsResponse.OperationRate> operationRateWithBizName = dailyStatisticProvider.getOperationRatesAvgWithBizName();
 		List<AdminGraphStatsResponse.NonOperatedCar> nonOperatedCarWithBizName = monthlyStatisticProvider.getNonOperatedCarWithBizName();
-		List<AdminGraphStatsResponse.DriveCount> monthlyDriveCount = monthlyStatisticProvider.getDriveCount();
 
 		return ApiResponse.success(AdminGraphStatsResponse
-			.toResponse(carCountWithBizName, operationRateWithBizName, nonOperatedCarWithBizName, monthlyDriveCount));
+			.toResponse(carCountWithBizName, carTypeCount, operationRateWithBizName, nonOperatedCarWithBizName));
 	}
 
 	private Long mapToBizId(String bizName) {

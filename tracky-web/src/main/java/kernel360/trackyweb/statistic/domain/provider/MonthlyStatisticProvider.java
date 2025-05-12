@@ -58,8 +58,5 @@ public class MonthlyStatisticProvider {
 	public List<AdminGraphStatsResponse.NonOperatedCar> getNonOperatedCarWithBizName() {
 		return monthlyStatisticRepository.getNonOperatedCarWithBizName();
 	}
-
-	public List<AdminGraphStatsResponse.DriveCount> getDriveCount() {
-		return monthlyStatisticRepository.getTotalDriveCount();
-	}
+	
 }

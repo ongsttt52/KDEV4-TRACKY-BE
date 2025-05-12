@@ -33,6 +33,7 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 
 	/**
 	 * 관리자 통계 - 업체 목록
+	 *
 	 * @return
 	 */
 	@Override
@@ -63,6 +64,7 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 
 	/**
 	 * 관리자 통계 - 월별 운행량 카드
+	 *
 	 * @param bizId
 	 * @param selectedDate
 	 * @return
@@ -94,6 +96,7 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 
 	/**
 	 * 관리자 통계 - 월별 운행량 그래프
+	 *
 	 * @param bizId
 	 * @return
 	 */
@@ -124,6 +127,7 @@ public class AdminStatisticRepositoryCustomImpl implements AdminStatisticReposit
 
 	/**
 	 * 관리자 통계 - 시간별 운행량 그래프
+	 *
 	 * @param bizId
 	 * @param selectedDate
 	 * @return

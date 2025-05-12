@@ -3,7 +3,6 @@ package kernel360.trackyweb.statistic.infrastructure.repository.monthly;
 import static kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity.*;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -89,22 +88,4 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 			.fetch();
 	}
 
-	@Override
-	public List<AdminGraphStatsResponse.DriveCount> getTotalDriveCount() {
-		LocalDate thisMonth = LocalDate.now().minusDays(1);
-		LocalDate sixMonthsAgo = YearMonth.now().minusMonths(6).atEndOfMonth();
-
-		return queryFactory
-			.select(Projections.constructor(
-				AdminGraphStatsResponse.DriveCount.class,
-				monthlyStatisticEntity.date,
-				monthlyStatisticEntity.totalDriveCount.sum()
-			))
-			.from(monthlyStatisticEntity)
-			.where(monthlyStatisticEntity.date.between(sixMonthsAgo, thisMonth))
-			.groupBy(monthlyStatisticEntity.date)
-			.orderBy(monthlyStatisticEntity.date.desc())
-			.limit(6)
-			.fetch();
-	}
 }

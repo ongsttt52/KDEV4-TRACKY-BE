@@ -15,6 +15,4 @@ public interface MonthlyStatisticRepositoryCustom {
 		LocalDate targetDate);
 
 	List<AdminGraphStatsResponse.NonOperatedCar> getNonOperatedCarWithBizName();
-
-	List<AdminGraphStatsResponse.DriveCount> getTotalDriveCount();
 }

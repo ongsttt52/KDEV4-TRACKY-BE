@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
 import kernel360.trackyweb.dashboard.application.dto.response.DashboardCarStatusResponse;
 import kernel360.trackyweb.statistic.application.dto.response.CarStatisticResponse;
@@ -51,8 +52,7 @@ public interface CarDomainRepositoryCustom {
 	Page<CarEntity> searchDriveCarByFilter(
 		String bizUuid,
 		String search,
-		Pageable pageable
-	);
+		Pageable pageable);
 
 	List<CarEntity> findAllByBizUuid(
 		String bizUuid
@@ -61,6 +61,8 @@ public interface CarDomainRepositoryCustom {
 	List<CarCountWithBizId> getDailyTotalCarCount();
 
 	Page<CarStatisticResponse> searchCarStatisticByFilter(Long bizId, String search, Pageable pageable);
+
+	List<AdminGraphStatsResponse.CarTypeCount> getCarTypeCounts();
 
 	List<DashboardCarStatusResponse> getCarStatusGroupedByBizUuid(String bizUuid);
 }
