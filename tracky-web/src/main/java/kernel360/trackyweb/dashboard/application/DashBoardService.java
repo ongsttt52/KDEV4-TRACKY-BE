@@ -13,13 +13,12 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
-import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
-import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
-import kernel360.trackyweb.dashboard.application.dto.response.Statistics;
-import kernel360.trackyweb.dashboard.domain.CarStatusTemp;
+import kernel360.trackyweb.dashboard.application.dto.response.DashboardCarStatusResponse;
+import kernel360.trackyweb.dashboard.application.dto.response.DashboardReturnResponse;
+import kernel360.trackyweb.dashboard.application.dto.response.DashboardStatisticsResponse;
 import kernel360.trackyweb.dashboard.domain.provider.DashGpsHistoryProvider;
 import kernel360.trackyweb.dashboard.infrastructure.components.ProvinceMatcher;
 import kernel360.trackyweb.rent.domain.provider.RentDomainProvider;
@@ -47,8 +46,7 @@ public class DashBoardService {
 	 * @param
 	 * @return 지연된 반납 list
 	 */
-
-	public ApiResponse<List<ReturnResponse>> getDelayedReturn(String bizUuid) {
+	public ApiResponse<List<DashboardReturnResponse>> getDelayedReturn(String bizUuid) {
 		LocalDateTime now = LocalDateTime.now();
 		List<RentEntity> delayedRents = rentDomainProvider.findDelayedRentList(bizUuid, now);
 
@@ -56,7 +54,7 @@ public class DashBoardService {
 			delayedRents.stream()
 				.map(rent -> {
 					var car = rent.getCar();
-					return new ReturnResponse(
+					return new DashboardReturnResponse(
 						rent.getRentUuid(),
 						rent.getRenterName(),
 						rent.getRentStatus(),
@@ -71,33 +69,16 @@ public class DashBoardService {
 	}
 
 	/**
-	 * 차량 상태 통계 api
-	 *
-	 * @return hashmap(status, count)
-	 */
-	@Transactional(readOnly = true)
-	public Map<CarStatus, Long> getAllCarStatus() {
-		List<CarStatusTemp> grouped = carDomainProvider.getAllGroupedByStatus();
-
-		Map<CarStatus, Long> carStatusMap = new HashMap<>();
-		for (CarStatusTemp carStatus : grouped) {
-			carStatusMap.put(carStatus.getStatus(), carStatus.getCount());
-		}
-
-		return carStatusMap;
-	}
-
-	/**
 	 * 대시보드용 통계 데이터
 	 *
 	 * @return Statistics 통계 데이터
 	 */
 	@Transactional(readOnly = true)
-	public Statistics getStatistics(String bizUuid) {
+	public DashboardStatisticsResponse getStatistics(String bizUuid) {
 		MonthlyStatisticEntity monthlyStatisticEntity = monthlyStatisticProvider.getDashBoardStatistic(bizUuid);
 		List<Integer> dailyDriveCount = dailyStatisticProvider.getDailyDriveCount(bizUuid);
 
-		return Statistics.create(monthlyStatisticEntity.getAvgOperationRate(),
+		return DashboardStatisticsResponse.create(monthlyStatisticEntity.getAvgOperationRate(),
 			monthlyStatisticEntity.getNonOperatingCarCount(),
 			monthlyStatisticEntity.getTotalDriveCount(), dailyDriveCount);
 	}
@@ -136,5 +117,9 @@ public class DashBoardService {
 		rent.updateStatus(RentStatus.RETURNED);
 
 		return ApiResponse.success("반납 처리 완료");
+	}
+
+	public List<DashboardCarStatusResponse> getAllCarStatus(String bizUuid) {
+		return carDomainProvider.getCarStatusCounts(bizUuid);
 	}
 }

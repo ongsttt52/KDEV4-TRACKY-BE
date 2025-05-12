@@ -2,7 +2,7 @@ package kernel360.trackyweb.dashboard.application.dto.response;
 
 import java.util.List;
 
-public record Statistics(
+public record DashboardStatisticsResponse(
 	//당월 평균 운행률
 	double avgOperationRate,
 	//당월 미운행 차량 수
@@ -12,7 +12,7 @@ public record Statistics(
 	//일별 운행 수
 	List<Integer> dailyDriveCount
 ) {
-	public Statistics(
+	public DashboardStatisticsResponse(
 		double avgOperationRate,
 		int nonOperatingCarCount,
 		int totalDriveCount,
@@ -24,13 +24,13 @@ public record Statistics(
 		this.dailyDriveCount = dailyDriveCount;
 	}
 
-	public static Statistics create(
+	public static DashboardStatisticsResponse create(
 		double avgOperationRate,
 		int nonOperationCarCount,
 		int totalDriveCount,
 		List<Integer> dailyDriveCount
 	) {
-		return new Statistics(
+		return new DashboardStatisticsResponse(
 			avgOperationRate,
 			nonOperationCarCount,
 			totalDriveCount,

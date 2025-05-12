@@ -7,7 +7,9 @@ import static kernel360.trackycore.core.domain.entity.QTimeDistanceEntity.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
 import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
+import kernel360.trackyweb.dashboard.application.dto.response.DashboardCarStatusResponse;
 import kernel360.trackyweb.statistic.application.dto.response.CarStatisticResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -84,8 +87,6 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	@Override
 	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, CarStatus status, CarType carType,
 		Pageable pageable) {
-
-
 
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(carEntity.biz.bizUuid.eq(bizUuid))
@@ -250,6 +251,39 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		).orElse(0L);
 
 		return new PageImpl<>(carStatisticResponses, pageable, total);
+	}
+
+	@Override
+	public List<DashboardCarStatusResponse> getCarStatusGroupedByBizUuid(String bizUuid) {
+		List<CarStatus> carStatus = List.of(CarStatus.RUNNING, CarStatus.WAITING, CarStatus.FIXING);
+
+		List<DashboardCarStatusResponse> actualResults = queryFactory
+			.select(
+				Projections.constructor(
+					DashboardCarStatusResponse.class,
+					carEntity.status,
+					carEntity.count()
+				)
+			)
+			.from(carEntity)
+			.where(carEntity.biz.bizUuid.eq(bizUuid)
+				.and(carEntity.status.in(carStatus)))
+			.groupBy(carEntity.status)
+			.fetch();
+
+		Map<CarStatus, Long> resultMap = actualResults.stream()
+			.collect(Collectors.toMap(
+				DashboardCarStatusResponse::carStatus,
+				DashboardCarStatusResponse::carCount
+			));
+
+		// 모든 상태(RUNNING, WAITING, FIXING)에 대해 결과 생성 (없으면 0)
+		return carStatus.stream()
+			.map(status -> new DashboardCarStatusResponse(
+				status,
+				resultMap.getOrDefault(status, 0L)
+			))
+			.collect(Collectors.toList());
 	}
 
 	//검색 조건
