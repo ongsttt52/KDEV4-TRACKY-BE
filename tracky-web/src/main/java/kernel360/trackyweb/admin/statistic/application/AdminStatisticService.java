@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackyweb.admin.statistic.application.dto.request.AdminStatisticRequest;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizListResponse;
 import kernel360.trackyweb.admin.statistic.application.dto.response.AdminBizMonthlyResponse;
@@ -43,31 +42,32 @@ public class AdminStatisticService {
 	public ApiResponse<AdminBizStatisticResponse> getAdminBizStatistics(
 		AdminStatisticRequest adminStatisticRequest
 	) {
-		Long bizId = mapToBizId(adminStatisticRequest.bizName());
-
-		AdminBizStatisticResponse bizStat = adminStatisticProvider.getDriveStatByBizIdAndDate(bizId,
-			adminStatisticRequest.selectedDate());
-
+		AdminBizStatisticResponse bizStat = adminStatisticProvider.getDriveStatByBizIdAndDate(
+			adminStatisticRequest.bizName(), adminStatisticRequest.selectedDate()
+		);
 		return ApiResponse.success(bizStat);
 	}
 
 	public ApiResponse<List<AdminBizMonthlyResponse>> getMonthlyDriveCounts(
 		AdminStatisticRequest adminStatisticRequest
 	) {
-		Long bizId = mapToBizId(adminStatisticRequest.bizName());
-
-		return ApiResponse.success(adminStatisticProvider
-			.getAdminBizMonthlyDriveCount(bizId, adminStatisticRequest.selectedDate()));
+		return ApiResponse.success(
+			adminStatisticProvider.getAdminBizMonthlyDriveCount(
+				adminStatisticRequest.bizName(), adminStatisticRequest.selectedDate()
+			)
+		);
 	}
 
 	public ApiResponse<List<HourlyGraphResponse>> getHourlyDriveCounts(
 		AdminStatisticRequest adminStatisticRequest
 	) {
-		Long bizId = mapToBizId(adminStatisticRequest.bizName());
-
-		return ApiResponse.success(HourlyGraphResponse
-			.toResultList(adminStatisticProvider
-				.getAdminBizHourlyDriveCount(bizId, adminStatisticRequest.selectedDate())));
+		return ApiResponse.success(
+			HourlyGraphResponse.toResultList(
+				adminStatisticProvider.getAdminBizHourlyDriveCount(
+					adminStatisticRequest.bizName(), adminStatisticRequest.selectedDate()
+				)
+			)
+		);
 	}
 
 	public ApiResponse<AdminGraphStatsResponse> getGraphStats() {
@@ -77,16 +77,13 @@ public class AdminStatisticService {
 		List<AdminGraphStatsResponse.OperationRate> operationRateWithBizName = dailyStatisticProvider.getOperationRatesAvgWithBizName();
 		List<AdminGraphStatsResponse.NonOperatedCar> nonOperatedCarWithBizName = monthlyStatisticProvider.getNonOperatedCarWithBizName();
 
-		return ApiResponse.success(AdminGraphStatsResponse
-			.toResponse(carCountWithBizName, carTypeCount, operationRateWithBizName, nonOperatedCarWithBizName));
-	}
-
-	private Long mapToBizId(String bizName) {
-
-		if (bizName.isBlank()) {
-			return null;
-		}
-		BizEntity biz = bizDomainProvider.getBizByBizName(bizName);
-		return biz.getId();
+		return ApiResponse.success(
+			AdminGraphStatsResponse.toResponse(
+				carCountWithBizName,
+				carTypeCount,
+				operationRateWithBizName,
+				nonOperatedCarWithBizName
+			)
+		);
 	}
 }
