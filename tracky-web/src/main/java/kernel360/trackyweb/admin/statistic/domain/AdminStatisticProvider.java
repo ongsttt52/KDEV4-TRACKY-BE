@@ -27,10 +27,10 @@ public class AdminStatisticProvider {
 		AdminBizStatisticResponse response = adminStatisticRepository.getDriveStatByBizIdAndDate(bizId,
 			selectedDate);
 
-		if (response == null)
+		if (response == null) {
 			return new AdminBizStatisticResponse(0, 0, 0);
-		else
-			return response;
+		}
+		return response;
 	}
 
 	public List<AdminBizMonthlyResponse> getAdminBizMonthlyDriveCount(Long bizId, LocalDate selectedDate) {
@@ -38,19 +38,19 @@ public class AdminStatisticProvider {
 		List<AdminBizMonthlyResponse> response = adminStatisticRepository.getTotalDriveCountInOneYear(bizId,
 			selectedDate);
 
-		if (response == null)
+		if (response == null) {
 			return List.of();
-		else
-			return response;
+		}
+		return response;
 	}
 
 	public List<HourlyGraphResponse> getAdminBizHourlyDriveCount(Long bizId, LocalDate selectedDate) {
 
 		List<HourlyGraphResponse> response = adminStatisticRepository.getHourlyDriveCounts(bizId, selectedDate);
 
-		if (response == null)
+		if (response == null) {
 			return List.of();
-		else
-			return response;
+		}
+		return response;
 	}
 }
