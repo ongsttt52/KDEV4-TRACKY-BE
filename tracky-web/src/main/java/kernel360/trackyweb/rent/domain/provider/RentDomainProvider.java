@@ -13,6 +13,7 @@ import kernel360.trackycore.core.domain.entity.BizEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackycore.core.infrastructure.repository.BizRepository;
+import kernel360.trackyweb.admin.search.application.request.AdminRentSearchByFilterRequest;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.response.OverlappingRentResponse;
@@ -34,6 +35,11 @@ public class RentDomainProvider {
 
 	public Long count() {
 		return rentDomainRepository.count();
+	}
+
+	public Page<RentEntity> searchRentByFilterAdmin(AdminRentSearchByFilterRequest request) {
+
+		return rentDomainRepository.searchRentByFilterAdmin(request);
 	}
 
 	public Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid) {

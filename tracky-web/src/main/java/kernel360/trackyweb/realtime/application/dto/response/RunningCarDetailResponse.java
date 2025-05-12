@@ -21,14 +21,14 @@ public record RunningCarDetailResponse(
 	int lat,
 	int lon
 ) {
-	public static RunningCarDetailResponse from(DriveEntity drive) {
+	public static RunningCarDetailResponse from(DriveEntity drive, Double sum) {
 		Long id = drive.getId();
 		String mdn = drive.getCar().getMdn();
 		String plate = drive.getCar().getCarPlate();
 		String carName = drive.getCar().getCarName();
 		LocalDate date = LocalDate.now();
 		String renter = drive.getRent().getRenterName();
-		double distance = drive.getDriveDistance();
+		double distance = sum;
 
 		LocalDateTime driveOnTime = drive.getDriveOnTime();
 		Duration duration = Duration.between(driveOnTime, LocalDateTime.now());

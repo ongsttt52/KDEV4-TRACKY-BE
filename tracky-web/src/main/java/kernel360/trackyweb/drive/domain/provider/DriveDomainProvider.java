@@ -34,11 +34,20 @@ public class DriveDomainProvider {
 		return driveDomainRepository.searchByFilter(search, mdn, startDateTime, endDateTime, pageable);
 	}
 
-	public Page<DriveEntity> findRunningDriveList(
+	public Page<DriveEntity> findRunningDriveListAdmin(
+		String bizSearch,
 		String search,
 		Pageable pageable
 	) {
-		return driveDomainRepository.findRunningDriveList(search, pageable);
+		return driveDomainRepository.findRunningDriveListAdmin(bizSearch, search, pageable);
+	}
+
+	public Page<DriveEntity> findRunningDriveList(
+		String bizUuid,
+		String search,
+		Pageable pageable
+	) {
+		return driveDomainRepository.findRunningDriveList(bizUuid, search, pageable);
 	}
 
 	public DriveEntity findRunningDriveById(Long driveId) {
@@ -54,6 +63,16 @@ public class DriveDomainProvider {
 	public List<DriveEntity> findByMdn(String mdn) {
 		return driveDomainRepository.findDriveListByMdn(mdn);
 	}
+
+	public Double getTotalDriveDistance() {
+		return driveDomainRepository.getTotalDriveDistance();
+	}
+
+	public Long getTotalDriveDurationInMinutes() {
+		return driveDomainRepository.getTotalDriveDurationInMinutes();
+	}
+
+	public Double getRealDriveDistance(Long driveId) { return  driveDomainRepository.getRealDriveDistance(driveId); }
 
 	//일일 통계 - 당일 운행 차량 수 (distinct mdn)
 	public Map<Long, Integer> countDailyOperationCar(LocalDate targetDate) {

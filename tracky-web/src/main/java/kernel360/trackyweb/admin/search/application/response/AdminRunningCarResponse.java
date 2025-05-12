@@ -1,4 +1,4 @@
-package kernel360.trackyweb.realtime.application.dto.response;
+package kernel360.trackyweb.admin.search.application.response;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -6,21 +6,23 @@ import java.time.LocalDateTime;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 
-public record RunningCarResponse(
+public record AdminRunningCarResponse(
 	Long id,
 	String mdn,
 	String carPlate,
 	String renterName,
 	double distance,
 	long drivingTime,
-	CarStatus status
+	CarStatus status,
+	String bizName
 ) {
-	public static RunningCarResponse from(DriveEntity entity) {
+	public static AdminRunningCarResponse from(DriveEntity entity) {
 		Long id = entity.getId();
 		String mdn = entity.getCar().getMdn();
 		String plate = entity.getCar().getCarPlate();
 		String renter = entity.getRent().getRenterName();
 		double distance = entity.getDriveDistance();
+		String bizName = entity.getCar().getBiz().getBizName();
 
 		LocalDateTime driveOn = entity.getDriveOnTime();
 		Duration duration = Duration.between(driveOn, LocalDateTime.now());
@@ -28,7 +30,7 @@ public record RunningCarResponse(
 
 		CarStatus status = entity.getCar().getStatus();
 
-		return new RunningCarResponse(id, mdn, plate, renter, distance, drivingTime, status);
+		return new AdminRunningCarResponse(id, mdn, plate, renter, distance, drivingTime, status, bizName);
 
 	}
 
@@ -46,4 +48,3 @@ public record RunningCarResponse(
 		}
 	}
 }
-

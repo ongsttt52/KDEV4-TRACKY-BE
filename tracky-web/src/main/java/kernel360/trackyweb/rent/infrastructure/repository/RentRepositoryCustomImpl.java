@@ -1,5 +1,6 @@
 package kernel360.trackyweb.rent.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QRentEntity.*;
 
 import java.time.LocalDate;
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -21,6 +24,7 @@ import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
+import kernel360.trackyweb.admin.search.application.request.AdminRentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
 import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +34,35 @@ import lombok.RequiredArgsConstructor;
 public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
+
+	@Override
+	public Page<RentEntity> searchRentByFilterAdmin(AdminRentSearchByFilterRequest request) {
+		Pageable pageable = request.toPageable();
+
+		BooleanBuilder builder = new BooleanBuilder()
+			.and(isContainsBizName(request.bizSearch()))
+			.and(isContainsRentUuid(request.rentUuid()))
+			.and(isEqualRentStatus(request.status()))
+			.and(isOverlapRentDate(request.rentDate()))
+			.and(isNotDeleted(request.status()));
+
+		JPAQuery<RentEntity> query = queryFactory
+			.selectFrom(rentEntity)
+			.where(builder)
+			.orderBy(rentEntity.updatedAt.coalesce(rentEntity.createdAt).desc());
+
+		List<RentEntity> content = fetchPagedContent(query, pageable);
+
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(rentEntity.count())
+				.from(rentEntity)
+				.where(builder)
+				.fetchOne()
+		).orElse(0L);
+
+		return new PageImpl<>(content, pageable, total);
+	}
 
 	@Override
 	public Page<RentEntity> searchRentByFilter(RentSearchByFilterRequest request, String bizUuid) {
@@ -77,6 +110,13 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 				rentEntity.car.status.ne(CarStatus.DELETED)
 			)
 			.fetch();
+	}
+
+	private BooleanExpression isContainsBizName(String bizSearch) {
+		if (StringUtils.isBlank(bizSearch)) {
+			return null;
+		}
+		return rentEntity.car.biz.bizName.containsIgnoreCase(bizSearch);
 	}
 
 	private BooleanBuilder isNotDeleted(RentStatus status) {
