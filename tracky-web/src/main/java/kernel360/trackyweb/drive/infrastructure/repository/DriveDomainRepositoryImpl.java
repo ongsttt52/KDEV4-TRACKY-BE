@@ -1,7 +1,6 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
-import static kernel360.trackycore.core.domain.entity.QDailyStatisticEntity.dailyStatisticEntity;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
@@ -20,6 +19,7 @@ import com.querydsl.jpa.JPAExpressions;
 
 import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
 import kernel360.trackyweb.drive.application.dto.internal.OperationTotalCount;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,13 +29,16 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.domain.entity.QDriveEntity;
+import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
 import kernel360.trackyweb.drive.application.dto.internal.OperationCarCount;
-import kernel360.trackyweb.drive.domain.DriveHistory;
-import kernel360.trackyweb.drive.domain.GpsData;
+import kernel360.trackyweb.drive.application.dto.internal.OperationTotalCount;
+import kernel360.trackyweb.drive.domain.vo.DriveHistory;
+import kernel360.trackyweb.drive.domain.vo.GpsData;
 import lombok.RequiredArgsConstructor;
 
 @Repository

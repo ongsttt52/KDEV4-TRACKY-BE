@@ -3,6 +3,7 @@ package kernel360.trackyweb.car.infrastructure.repository;
 import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QRentEntity.*;
+import static kernel360.trackycore.core.domain.entity.QTimeDistanceEntity.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -27,6 +29,7 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
 import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
+import kernel360.trackyweb.statistic.application.dto.response.CarStatisticResponse;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -81,6 +84,9 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	@Override
 	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, CarStatus status, CarType carType,
 		Pageable pageable) {
+
+
+
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(carEntity.biz.bizUuid.eq(bizUuid))
 			.and(isContainsCarMdnOrCarPlate(search))
@@ -137,6 +143,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 
 	@Override
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
+
 		JPAQuery<CarEntity> query = queryFactory
 			.select(carEntity)
 			.from(carEntity)
@@ -178,22 +185,71 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			))
 			.from(carEntity)
 			.groupBy(carEntity.biz.id)
-      .fetch();
-  }
-      
-    @Override
-    public List<CarEntity> availableEmulate(String bizUuid) {
-       LocalDateTime now = LocalDateTime.now();
-       return queryFactory
-         .select(carEntity)
-         .from(carEntity)
-         .join(rentEntity).on(rentEntity.car.eq(carEntity)) // 반드시 rent가 연결된 경우만
-         .where(
-           carEntity.biz.bizUuid.eq(bizUuid),
-           rentEntity.rentStime.loe(now),
-           rentEntity.rentEtime.goe(now)
-         )
 			.fetch();
+	}
+
+	@Override
+	public List<CarEntity> availableEmulate(String bizUuid) {
+		LocalDateTime now = LocalDateTime.now();
+		return queryFactory
+			.select(carEntity)
+			.from(carEntity)
+			.join(rentEntity).on(rentEntity.car.eq(carEntity)) // 반드시 rent가 연결된 경우만
+			.where(
+				carEntity.biz.bizUuid.eq(bizUuid),
+				rentEntity.rentStime.loe(now),
+				rentEntity.rentEtime.goe(now)
+			)
+			.fetch();
+	}
+
+	// 통계 - 차량별 상세 통계
+	@Override
+	public Page<CarStatisticResponse> searchCarStatisticByFilter(Long bizId, String search, Pageable pageable) {
+
+		NumberExpression<Integer> totalSeconds = timeDistanceEntity.seconds.sum().coalesce(0);
+
+		NumberExpression<Double> totalDistance = timeDistanceEntity.distance.sum().coalesce(0.0);
+
+		NumberExpression<Integer> avgSpeed
+			= totalDistance
+			.multiply(3.6)
+			.divide(totalSeconds).intValue();
+
+		BooleanBuilder builder = new BooleanBuilder()
+			.and(carEntity.biz.id.eq(bizId))
+			.and(carEntity.status.ne(CarStatus.DELETED))
+			.and(isContainsCarMdnOrCarPlate(search));
+
+		List<CarStatisticResponse> carStatisticResponses = queryFactory
+			.select(Projections.constructor(
+				CarStatisticResponse.class,
+				carEntity.mdn,
+				carEntity.carPlate,
+				carEntity.carType,
+				totalSeconds,
+				totalDistance,
+				avgSpeed
+			))
+			.from(carEntity)
+			.leftJoin(timeDistanceEntity)
+			.on(timeDistanceEntity.car.mdn.eq(carEntity.mdn))
+			.where(builder)
+			.groupBy(carEntity.mdn)
+			.orderBy(carPlateSort(search))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		long total = Optional.ofNullable(
+			queryFactory
+				.select(carEntity.mdn.count())
+				.from(carEntity)
+				.where(builder)
+				.fetchOne()
+		).orElse(0L);
+
+		return new PageImpl<>(carStatisticResponses, pageable, total);
 	}
 
 	//검색 조건
@@ -254,7 +310,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return new OrderSpecifier<?>[] {carEntity.carPlate.asc()};
 	}
 
-	private List<CarEntity> fetchPagedContent(JPAQuery<CarEntity> query, Pageable pageable) {
+	private <T> List<T> fetchPagedContent(JPAQuery<T> query, Pageable pageable) {
 		return query
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())

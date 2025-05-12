@@ -31,7 +31,6 @@ public class TimeDistanceDomainRepositoryCustomImpl implements TimeDistanceDomai
 			.where(e.biz.id.eq(bizId)
 				.and(e.date.eq(targetDate))
 			)
-			.groupBy(e.hour)
 			.orderBy(e.hour.asc())
 			.fetch();
 	}

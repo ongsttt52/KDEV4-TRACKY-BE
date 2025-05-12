@@ -21,7 +21,7 @@ import kernel360.trackyweb.drive.application.dto.request.CarListRequest;
 import kernel360.trackyweb.drive.application.dto.request.DriveListRequest;
 import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
 import kernel360.trackyweb.drive.application.dto.response.DriveListResponse;
-import kernel360.trackyweb.drive.domain.DriveHistory;
+import kernel360.trackyweb.drive.domain.vo.DriveHistory;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -21,4 +21,6 @@ public interface DailyStatisticRepositoryCustom {
 
 	List<OperationDistance> findSumOperationDistance(LocalDate targetDate);
 
+	List<Integer> findDriveCountByBizUuid(String bizUuid);
+
 }

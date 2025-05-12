@@ -57,4 +57,8 @@ public class DailyStatisticProvider {
 	public Map<Long, Double> getOperationDistancesTotal(LocalDate targetDate) {
 		return OperationDistance.toMap(dailyStatisticDomainRepository.findSumOperationDistance(targetDate));
 	}
+
+	public List<Integer> getDailyDriveCount(String bizUuid) {
+		return dailyStatisticDomainRepository.findDriveCountByBizUuid(bizUuid);
+	}
 }

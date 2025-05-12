@@ -9,6 +9,7 @@ import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
 import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
+import kernel360.trackyweb.statistic.application.dto.response.CarStatisticResponse;
 
 public interface CarDomainRepositoryCustom {
 	/**
@@ -58,4 +59,5 @@ public interface CarDomainRepositoryCustom {
 
 	List<CarCountWithBizId> getDailyTotalCarCount();
 
+	Page<CarStatisticResponse> searchCarStatisticByFilter(Long bizId, String search, Pageable pageable);
 }

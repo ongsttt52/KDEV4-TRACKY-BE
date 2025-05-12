@@ -14,7 +14,8 @@ import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
 import kernel360.trackyweb.drive.application.dto.internal.OperationCarCount;
 import kernel360.trackyweb.drive.application.dto.internal.OperationTotalCount;
-import kernel360.trackyweb.drive.domain.DriveHistory;
+import kernel360.trackyweb.drive.domain.vo.DriveHistory;
+
 import kernel360.trackyweb.drive.infrastructure.repository.DriveDomainRepository;
 import lombok.RequiredArgsConstructor;
 

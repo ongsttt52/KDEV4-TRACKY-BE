@@ -44,9 +44,14 @@ public class MonthlyStatisticProvider {
 		}
 	}
 
-	public List<MonthlyStatisticResponse.MonthlyStats> getMonthlyDataTuples(Long bizId, LocalDate localDate,
-		LocalDate localDate1) {
+	public List<MonthlyStatisticResponse.MonthlyStats> getMonthlyStats(Long bizId, LocalDate currentDate,
+		LocalDate targetDate) {
 
-		return monthlyStatisticRepository.getMonthlyStats(bizId, localDate, localDate1);
+		return monthlyStatisticRepository.getMonthlyStats(bizId, currentDate, targetDate);
 	}
+
+	public MonthlyStatisticEntity getDashBoardStatistic(String bizUuid) {
+		return monthlyStatisticRepository.findLatestMonthlyStatistic(bizUuid);
+	}
+
 }
