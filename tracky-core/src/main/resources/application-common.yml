@@ -28,7 +28,7 @@ spring:
 
   sql:
     init:
-      mode: never
+      mode: always
       encoding: UTF-8
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
@@ -39,10 +39,10 @@ management:
       exposure:
         include:
           - "*"
-          
-logging:
-  level:
-    # RabbitMQ ConnectionFactory INFO 로그 끄기
-    org.springframework.amqp.rabbit.connection.CachingConnectionFactory: OFF
-    # RabbitMQ Listener INFO 로그 끄기
-    org.springframework.amqp.rabbit.listener: OFF
+
+#logging:
+#  level:
+#    # RabbitMQ ConnectionFactory INFO 로그 끄기
+#    org.springframework.amqp.rabbit.connection.CachingConnectionFactory: OFF
+#    # RabbitMQ Listener INFO 로그 끄기
+#    org.springframework.amqp.rabbit.listener: OFF

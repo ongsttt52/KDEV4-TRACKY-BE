@@ -38,13 +38,6 @@ public class RealTimeController {
 		return realTimeService.getRunningCarDetailById(id);
 	}
 
-	// 실시간 현재 위치 /gps/nowone/{id}
-/*	@GetMapping("/gps/nowone/{id}")
-	@Transactional(readOnly = true)
-	public GpsDataResponse getOneGps(@PathVariable Long id) {
-		return realTimeService.getOneGps(id);
-	}*/
-
 	@GetMapping("/gps/beforepath/{id}")
 	public ApiResponse<List<GpsDataResponse>> getBeforeGpsPath(
 		@PathVariable Long id,
@@ -52,4 +45,5 @@ public class RealTimeController {
 	) {
 		return ApiResponse.success(realTimeService.getBeforeGpsPath(id, nowTime));
 	}
+
 }

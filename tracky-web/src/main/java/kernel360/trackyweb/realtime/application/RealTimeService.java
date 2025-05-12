@@ -17,10 +17,11 @@ import kernel360.trackyweb.realtime.application.dto.response.RunningCarDetailRes
 import kernel360.trackyweb.realtime.application.dto.response.RunningCarResponse;
 import kernel360.trackyweb.realtime.domain.provider.GpsHistoryDomainProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-
+@Slf4j
 public class RealTimeService {
 
 	private final DriveDomainProvider driveDomainProvider;
@@ -49,13 +50,9 @@ public class RealTimeService {
 		return ApiResponse.success(RunningCarDetailResponse.from(drive));
 	}
 
-/*	@Transactional(readOnly = true)
-	public GpsDataResponse getOneGps(Long id) {
-		return gpsHistoryDomainProvider.getOneGpsByDriveId(id);
-	}*/
-
 	@Transactional(readOnly = true)
 	public List<GpsDataResponse> getBeforeGpsPath(Long id, LocalDateTime nowTime) {
+		log.info("nowTime{}", nowTime);
 		return gpsHistoryDomainProvider.getGpsPathBeforeTime(id, nowTime)
 			.stream()
 			.map(GpsDataResponse::from)

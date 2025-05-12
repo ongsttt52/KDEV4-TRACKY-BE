@@ -7,15 +7,17 @@ public record GpsPointResponse(
 	double lon,
 	int ang,
 	int spd,
-	String oTime
+	String oTime,
+	double sum
 ) {
 	public static GpsPointResponse from(CycleGpsRequest req) {
 		return new GpsPointResponse(
-			req.gpsInfo().getLat() / 1_000_000.0,
-			req.gpsInfo().getLon() / 1_000_000.0,
+			req.gpsInfo().getLat(),
+			req.gpsInfo().getLon(),
 			req.gpsInfo().getAng(),
 			req.gpsInfo().getSpd(),
-			req.oTime().toString()
+			req.oTime().toString(),
+			req.gpsInfo().getSum()
 		);
 	}
 }

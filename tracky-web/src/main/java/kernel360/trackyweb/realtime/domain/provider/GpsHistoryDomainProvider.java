@@ -26,13 +26,6 @@ public class GpsHistoryDomainProvider {
 		this.gpsHistoryRepositoryCustom = gpsHistoryRepositoryCustom;
 	}
 
-/*	@Transactional(readOnly = true)
-	public GpsDataResponse getOneGpsByDriveId(Long id) {
-		return gpsHistoryDomainRepository.findOneGpsByDriveId(id)
-			.map(GpsDataResponse::from)
-			.orElseThrow(() -> new IllegalArgumentException("해당 driveId에 GPS 데이터가 없습니다."));
-	}*/
-
 	@Transactional(readOnly = true)
 	public List<GpsHistoryEntity> getGpsPathBeforeTime(Long driveId, LocalDateTime nowTime) {
 		return gpsHistoryRepositoryCustom.findGpsPathBeforeTime(driveId, nowTime);
