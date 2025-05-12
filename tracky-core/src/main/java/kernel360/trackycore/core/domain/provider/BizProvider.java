@@ -14,8 +14,8 @@ public class BizProvider {
 
 	private final BizRepository bizRepository;
 
-	public BizEntity getBiz(Long id) {
-		return bizRepository.findById(id)
+	public BizEntity getBiz(String bizUuid) {
+		return bizRepository.findByBizUuid(bizUuid)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.BIZ_NOT_FOUND));
 	}
 }

@@ -1,7 +1,6 @@
 package kernel360.trackyweb.drive.application;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -11,19 +10,14 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.common.api.PageResponse;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.DriveEntity;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
-import kernel360.trackycore.core.domain.entity.RentEntity;
-import kernel360.trackycore.core.domain.provider.DriveProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.drive.application.dto.request.CarListRequest;
 import kernel360.trackyweb.drive.application.dto.request.DriveListRequest;
 import kernel360.trackyweb.drive.application.dto.request.DrivesExportRequest;
 import kernel360.trackyweb.drive.application.dto.response.CarListResponse;
 import kernel360.trackyweb.drive.application.dto.response.DriveListResponse;
-import kernel360.trackyweb.drive.domain.DriveHistory;
-import kernel360.trackyweb.drive.domain.GpsData;
 import kernel360.trackyweb.drive.domain.provider.DriveDomainProvider;
-import kernel360.trackyweb.drive.infrastructure.repository.GpsHistoryDomainRepository;
+import kernel360.trackyweb.drive.domain.vo.DriveHistory;
 import kernel360.trackyweb.drive.infrastructure.repository.util.DriveExcelGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +33,7 @@ public class DriveService {
 
 	/**
 	 * 운행 기록을 조회 할 차량 조회
+	 *
 	 * @param bizUuid
 	 * @param carListSearchFilterRequest
 	 * @return
@@ -61,6 +56,7 @@ public class DriveService {
 
 	/**
 	 * 차량에 대한 운행 기록 리스트
+	 *
 	 * @param driveListRequest
 	 * @return
 	 */
@@ -83,6 +79,7 @@ public class DriveService {
 
 	/**
 	 * gps data를 포함한 단건 조회
+	 *
 	 * @param driveId
 	 * @return
 	 */

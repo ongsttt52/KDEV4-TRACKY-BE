@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +15,7 @@ import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackyweb.dashboard.application.DashBoardService;
 import kernel360.trackyweb.dashboard.application.dto.response.ReturnResponse;
-import kernel360.trackyweb.dashboard.domain.Statistics;
+import kernel360.trackyweb.dashboard.application.dto.response.Statistics;
 import kernel360.trackyweb.sign.infrastructure.security.principal.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 
@@ -37,13 +39,19 @@ public class DashBoardController implements DashBoardApiDocs {
 	}
 
 	@GetMapping("/statistics")
-	public ApiResponse<Statistics> getStatistics() {
-		return ApiResponse.success(dashBoardService.getStatistics());
+	public ApiResponse<Statistics> getStatistics(
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+		return ApiResponse.success(dashBoardService.getStatistics(memberPrincipal.bizUuid()));
 	}
-/*
+
+	@PatchMapping("/return/status/{rentUuid}")
+	public ApiResponse<String> updateStatusToReturn(@PathVariable String rentUuid) {
+		return dashBoardService.updateStatusToReturn(rentUuid);
+	}
+
 	@GetMapping("/geo")
 	public ApiResponse<Map<String, Integer>> getGeoData() {
 		Map<String, Integer> geoMap = dashBoardService.getGeoData();
 		return ApiResponse.success(geoMap);
-	}*/
+	}
 }

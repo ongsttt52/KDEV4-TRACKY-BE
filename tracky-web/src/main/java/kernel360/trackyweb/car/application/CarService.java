@@ -92,11 +92,11 @@ public class CarService {
 	 * @return 등록 성공한 차량 detail
 	 */
 	@Transactional
-	public ApiResponse<CarDetailResponse> create(CarCreateRequest carCreateRequest) {
+	public ApiResponse<CarDetailResponse> create(String bizUuid, CarCreateRequest carCreateRequest) {
 		DeviceEntity device = deviceProvider.getDevice(1L);
 
 		// device 세팅 넣은 car 객체 <- 임시로 모든 차량은 device 세팅 1번
-		BizEntity biz = bizProvider.getBiz(1L);
+		BizEntity biz = bizProvider.getBiz(bizUuid);
 
 		carProvider.existsByMdnOps(carCreateRequest.mdn());
 

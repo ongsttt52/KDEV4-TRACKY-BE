@@ -13,13 +13,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.QRentEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
+import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 import kernel360.trackyweb.rent.application.dto.request.RentSearchByFilterRequest;
+import kernel360.trackyweb.rent.application.dto.response.RentMdnResponse;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -55,6 +58,25 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 		).orElse(0L);
 
 		return new PageImpl<>(content, pageable, total);
+	}
+
+	@Override
+	public List<RentMdnResponse> findRentableMdn(Long bizId) {
+
+		return queryFactory
+			.select(
+				Projections.constructor(
+					RentMdnResponse.class,
+					rentEntity.car.mdn, rentEntity.car.status
+				))
+			.distinct()
+			.from(rentEntity)
+			.where(
+				rentEntity.car.biz.id.eq(bizId),
+				rentEntity.car.status.ne(CarStatus.CLOSED),
+				rentEntity.car.status.ne(CarStatus.DELETED)
+			)
+			.fetch();
 	}
 
 	private BooleanBuilder isNotDeleted(RentStatus status) {
@@ -100,18 +122,16 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 
 	@Override
 	public List<RentEntity> findDelayedRents(String bizUuid, LocalDateTime now) {
-		QRentEntity rent = QRentEntity.rentEntity;
 
 		return queryFactory
-			.selectFrom(rent)
+			.selectFrom(rentEntity)
 			.where(
-				rent.rentStatus.eq(RentStatus.RENTING),
-				rent.rentEtime.before(now),
-				rent.car.biz.bizUuid.eq(bizUuid)
+				rentEntity.rentStatus.eq(RentStatus.RENTING),
+				rentEntity.rentEtime.before(now),
+				rentEntity.car.biz.bizUuid.eq(bizUuid)
 			)
 			.fetch();
 	}
-
 
 	@Override
 	public List<RentEntity> findOverlappingRent(String mdn, LocalDateTime start, LocalDateTime end) {

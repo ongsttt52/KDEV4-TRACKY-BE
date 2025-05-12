@@ -1,4 +1,4 @@
-package kernel360.trackyweb.drive.domain;
+package kernel360.trackyweb.drive.domain.vo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +20,7 @@ public record DriveHistory(
 	String renterName,
 	String renterPhone,
 	RentStatus rentStatus,
-	CarStatus carStatus,
+	CarStatus status,
 	String purpose,
 	LocalDateTime driveOnTime,
 	LocalDateTime driveOffTime,

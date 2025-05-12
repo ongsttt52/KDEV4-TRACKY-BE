@@ -1,5 +1,6 @@
 package kernel360.trackyweb.drive.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
@@ -21,13 +22,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.DriveEntity;
 import kernel360.trackycore.core.domain.entity.QDriveEntity;
-import kernel360.trackyweb.drive.domain.DriveHistory;
-import kernel360.trackyweb.drive.domain.GpsData;
+import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
+import kernel360.trackyweb.drive.application.dto.internal.OperationCarCount;
+import kernel360.trackyweb.drive.application.dto.internal.OperationTotalCount;
+import kernel360.trackyweb.drive.domain.vo.DriveHistory;
+import kernel360.trackyweb.drive.domain.vo.GpsData;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -44,7 +50,7 @@ public class DriveDomainRepositoryCustomImpl implements DriveDomainRepositoryCus
 		BooleanBuilder condition = new BooleanBuilder();
 
 		// 날짜 구간은 무조건 필터링
-		condition.and(driveEntity.driveOnTime.between(startDate.atStartOfDay(), endDate.atStartOfDay()));
+		condition.and(driveEntity.driveOnTime.between(startDate.atStartOfDay(), endDate.atStartOfDay().plusDays(1)));
 		condition.and(isEqualMdnContainsRenterName(mdn, search));
 
 		// 메인 쿼리
@@ -125,7 +131,6 @@ public class DriveDomainRepositoryCustomImpl implements DriveDomainRepositoryCus
 	private boolean isUnboundedSearch(LocalDateTime start, LocalDateTime end) {
 		return start == null && end == null;
 	}
-
 	@Override
 	public Optional<DriveHistory> findByDriveId(Long driveId) {
 
@@ -164,6 +169,69 @@ public class DriveDomainRepositoryCustomImpl implements DriveDomainRepositoryCus
 		);
 
 		return Optional.of(driveHistory);
+	}
+
+	//일일 통계 - target Date에 운행한 차량 수
+	@Override
+	public List<OperationCarCount> getDailyOperationCar(LocalDate targetDate) {
+		LocalDateTime start = targetDate.atStartOfDay();
+		LocalDateTime end = targetDate.plusDays(1).atStartOfDay();
+
+		return queryFactory
+			.select(Projections.constructor(
+				OperationCarCount.class,
+				driveEntity.car.biz.id,
+				driveEntity.car.mdn.countDistinct()
+			))
+			.from(driveEntity)
+			.where(driveEntity.driveOnTime.between(start, end.minusNanos(1)))
+			.groupBy(driveEntity.car.biz.id)
+			.fetch();
+	}
+
+	//일일 통계 - target Date의 운행 총 횟수
+	@Override
+	public List<OperationTotalCount> getDailyTotalOperation(LocalDate targetDate) {
+		LocalDateTime start = targetDate.atStartOfDay();
+		LocalDateTime end = targetDate.plusDays(1).atStartOfDay().minusNanos(1);
+
+		return queryFactory
+			.select(Projections.constructor(
+				OperationTotalCount.class,
+				driveEntity.car.biz.id,
+				driveEntity.count()
+			))
+			.from(driveEntity)
+			.where(driveEntity.driveOnTime.between(start, end))
+			.groupBy(driveEntity.car.biz.id)
+			.fetch();
+	}
+
+	//월별 통계 - 미운행 차량 수
+	@Override
+	public List<NonOperatedCar> getNonOperatedCars(LocalDate targetDate) {
+		LocalDateTime monthStart = targetDate.withDayOfMonth(1).atStartOfDay();
+		LocalDateTime targetEnd = targetDate.plusDays(1).atStartOfDay();
+
+		return queryFactory
+			.select(Projections.constructor(
+				NonOperatedCar.class,
+				carEntity.biz.id,
+				carEntity.count()
+			))
+			.from(carEntity)
+			.where(
+				JPAExpressions
+					.selectOne()
+					.from(driveEntity)
+					.where(
+						driveEntity.car.eq(carEntity),
+						driveEntity.driveOnTime.between(monthStart, targetEnd)
+					)
+					.notExists()
+			)
+			.groupBy(carEntity.biz.id)
+			.fetch();
 	}
 
 	private BooleanBuilder buildRunningDriveCondition(String search) {
@@ -213,5 +281,4 @@ public class DriveDomainRepositoryCustomImpl implements DriveDomainRepositoryCus
 				.fetchOne()
 		);
 	}
-
 }
