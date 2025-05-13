@@ -51,13 +51,15 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 	 * 월별 운행량 그래프 데이터 조회
 	 *
 	 * @param bizId
-	 * @param currentDate
-	 * @param targetDate  targetDate BETWEEN currentDate 기간 조회
+	 * @param currentDate Controller에서 받은 YearMonth의 atDay(1), 즉 yyyy-MM-01 형식의 값
+	 * @param targetDate 마찬가지로 yyyy-MM-01 형식의 값
 	 * @return
 	 */
 	@Override
 	public List<MonthlyStatisticResponse.MonthlyStats> getMonthlyStats(Long bizId, LocalDate currentDate,
 		LocalDate targetDate) {
+		LocalDate endDate = currentDate.with(TemporalAdjusters.lastDayOfMonth());
+
 		return queryFactory
 			.select(
 				Projections.constructor(
@@ -70,7 +72,7 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 			.from(monthlyStatisticEntity)
 			.where(
 				monthlyStatisticEntity.bizId.eq(bizId)
-					.and(monthlyStatisticEntity.date.between(targetDate, currentDate))
+					.and(monthlyStatisticEntity.date.between(targetDate, endDate))
 			)
 			.groupBy(monthlyStatisticEntity.date.yearMonth())
 			.orderBy(monthlyStatisticEntity.date.yearMonth().asc())
