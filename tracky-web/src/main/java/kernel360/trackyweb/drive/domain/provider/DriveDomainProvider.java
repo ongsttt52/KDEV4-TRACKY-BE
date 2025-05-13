@@ -15,7 +15,6 @@ import kernel360.trackyweb.drive.application.dto.internal.NonOperatedCar;
 import kernel360.trackyweb.drive.application.dto.internal.OperationCarCount;
 import kernel360.trackyweb.drive.application.dto.internal.OperationTotalCount;
 import kernel360.trackyweb.drive.domain.vo.DriveHistory;
-
 import kernel360.trackyweb.drive.infrastructure.repository.DriveDomainRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -34,11 +33,20 @@ public class DriveDomainProvider {
 		return driveDomainRepository.searchByFilter(search, mdn, startDateTime, endDateTime, pageable);
 	}
 
-	public Page<DriveEntity> findRunningDriveList(
+	public Page<DriveEntity> findRunningDriveListAdmin(
+		String bizSearch,
 		String search,
 		Pageable pageable
 	) {
-		return driveDomainRepository.findRunningDriveList(search, pageable);
+		return driveDomainRepository.findRunningDriveListAdmin(bizSearch, search, pageable);
+	}
+
+	public Page<DriveEntity> findRunningDriveList(
+		String bizUuid,
+		String search,
+		Pageable pageable
+	) {
+		return driveDomainRepository.findRunningDriveList(bizUuid, search, pageable);
 	}
 
 	public DriveEntity findRunningDriveById(Long driveId) {
@@ -46,13 +54,17 @@ public class DriveDomainProvider {
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
 	}
 
-	public List<DriveEntity> findByMdn(String mdn) {
-		return driveDomainRepository.findDriveListByMdn(mdn);
-	}
-
 	public DriveHistory findByDriveId(Long driveId) {
 		return driveDomainRepository.findByDriveId(driveId)
 			.orElseThrow(() -> GlobalException.throwError(ErrorCode.DRIVE_NOT_FOUND));
+	}
+
+	public List<DriveEntity> findByMdn(String mdn) {
+		return driveDomainRepository.findDriveListByMdn(mdn);
+	}
+	
+	public Double getRealDriveDistance(Long driveId) {
+		return driveDomainRepository.getRealDriveDistance(driveId);
 	}
 
 	//일일 통계 - 당일 운행 차량 수 (distinct mdn)

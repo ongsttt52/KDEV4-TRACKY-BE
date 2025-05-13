@@ -29,10 +29,12 @@ public class RealTimeService {
 
 	@Transactional(readOnly = true)
 	public ApiResponse<List<RunningCarResponse>> getRunningCars(
+		String bizUuid,
 		RealTimeCarListRequest realTimeCarListRequest
 	) {
 
 		Page<DriveEntity> cars = driveDomainProvider.findRunningDriveList(
+			bizUuid,
 			realTimeCarListRequest.search(),
 			realTimeCarListRequest.toPageable()
 		);
@@ -46,8 +48,9 @@ public class RealTimeService {
 	@Transactional(readOnly = true)
 	public ApiResponse<RunningCarDetailResponse> getRunningCarDetailById(Long id) {
 		DriveEntity drive = driveDomainProvider.findRunningDriveById(id);
+		Double sum = driveDomainProvider.getRealDriveDistance(id);
 
-		return ApiResponse.success(RunningCarDetailResponse.from(drive));
+		return ApiResponse.success(RunningCarDetailResponse.from(drive, sum));
 	}
 
 	@Transactional(readOnly = true)

@@ -26,6 +26,15 @@ public interface CarDomainRepositoryCustom {
 	/**
 	 * 필터 조건 기반 검색
 	 */
+	Page<CarEntity> searchCarByFilterAdmin(
+		String bizSearch,
+		String search,
+		CarStatus status,
+		CarType carType,
+		Pageable pageable
+	);
+
+
 	Page<CarEntity> searchCarByFilter(
 		String bizUuid,
 		String search,
@@ -33,10 +42,17 @@ public interface CarDomainRepositoryCustom {
 		CarType carType,
 		Pageable pageable);
 
+	Page<CarEntity> searchDriveCarByFilterAdmin(
+		String bizSearch,
+		String search,
+		Pageable pageable
+	);
+
 	Page<CarEntity> searchDriveCarByFilter(
 		String bizUuid,
 		String search,
-		Pageable pageable);
+		Pageable pageable
+	);
 
 	List<CarEntity> findAllByBizUuid(
 		String bizUuid

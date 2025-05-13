@@ -15,17 +15,24 @@ import kernel360.trackyweb.drive.domain.vo.DriveHistory;
 
 public interface DriveDomainRepositoryCustom {
 
-	Page<DriveEntity> searchByFilter(
-		String search,
-		String mdn,
-		LocalDate startDateTime,
-		LocalDate endDateTime,
-		Pageable pageable);
+  Page<DriveEntity> searchByFilter(
+          String search,
+          String mdn,
+          LocalDate startDateTime,
+          LocalDate endDateTime,
+          Pageable pageable);
 
-	Page<DriveEntity> findRunningDriveList(
-		String search,
-		Pageable pageable
-	);
+  Page<DriveEntity> findRunningDriveList(
+          String bizUuid,
+          String search,
+          Pageable pageable
+  );
+
+  Page<DriveEntity> findRunningDriveListAdmin(
+      String bizSearch,
+      String search,
+      Pageable pageable
+  );
 
 	Optional<DriveEntity> findRunningDriveById(Long driveId);
 
@@ -39,5 +46,7 @@ public interface DriveDomainRepositoryCustom {
 
 	List<OperationTotalCount> getDailyTotalOperation(LocalDate targetDate);
 
-	List<NonOperatedCar> getNonOperatedCars(LocalDate targetDate);
+  List<NonOperatedCar> getNonOperatedCars(LocalDate targetDate);
+
+  Double getRealDriveDistance(Long driveId);
 }
