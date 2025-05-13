@@ -9,7 +9,8 @@ public record GpsDataResponse(
 	int lat,
 	int lon,
 	int ang,
-	int spd
+	int spd,
+	double sum
 ) {
 	public static GpsDataResponse from(GpsHistoryEntity entity) {
 		return new GpsDataResponse(
@@ -17,7 +18,8 @@ public record GpsDataResponse(
 			entity.getLat(),
 			entity.getLon(),
 			entity.getAng(),
-			entity.getSpd()
+			entity.getSpd(),
+			entity.getSum()
 		);
 	}
 }

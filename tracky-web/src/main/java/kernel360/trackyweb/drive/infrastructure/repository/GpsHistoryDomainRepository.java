@@ -3,13 +3,14 @@ package kernel360.trackyweb.drive.infrastructure.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
+import kernel360.trackycore.core.infrastructure.repository.GpsHistoryRepository;
+import kernel360.trackyweb.realtime.infrastructure.repository.GpsHistoryRepositoryCustom;
 
-public interface GpsHistoryDomainRepository extends JpaRepository<GpsHistoryEntity, Long> {
+public interface GpsHistoryDomainRepository extends GpsHistoryRepository, GpsHistoryRepositoryCustom {
 
 	@Query(value = """
 		    SELECT * FROM gpshistory

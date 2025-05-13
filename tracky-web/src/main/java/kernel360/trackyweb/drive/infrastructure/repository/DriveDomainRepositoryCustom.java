@@ -40,6 +40,8 @@ public interface DriveDomainRepositoryCustom {
 
 	Optional<DriveHistory> findByDriveId(Long driveId);
 
+	Optional<Long> findRunningDriveIdByMdn(String mdn);
+
 	List<OperationCarCount> getDailyOperationCar(LocalDate targetDate);
 
 	List<OperationTotalCount> getDailyTotalOperation(LocalDate targetDate);

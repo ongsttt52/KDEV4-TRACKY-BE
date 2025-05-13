@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@Order(1)
 public class HttpLoggingFilter implements Filter {
 	@Override
 	public void doFilter(
@@ -28,6 +30,11 @@ public class HttpLoggingFilter implements Filter {
 	) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
+
+		if (isSseRequest(httpRequest)) {
+			chain.doFilter(request, response);
+			return;
+		}
 
 		ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(httpRequest);
 		ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(httpResponse);
@@ -89,5 +96,9 @@ public class HttpLoggingFilter implements Filter {
 
 		return headerString.toString();
 	}
-}
 
+	private boolean isSseRequest(HttpServletRequest request) {
+		String accept = request.getHeader("Accept");
+		return accept != null && accept.contains("text/event-stream");
+	}
+}

@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
+public class DriveDomainRepositoryCustomImpl implements DriveDomainRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
@@ -208,6 +208,7 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		return Optional.of(driveHistory);
 	}
 
+	//일일 통계 - target Date에 운행한 차량 수
 	@Override
 	public List<OperationCarCount> getDailyOperationCar(LocalDate targetDate) {
 		LocalDateTime start = targetDate.atStartOfDay();
@@ -308,6 +309,20 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 		).orElse(0L);
 	}
 
+	@Override
+	public Optional<Long> findRunningDriveIdByMdn(String mdn) {
+		return Optional.ofNullable(
+			queryFactory
+				.select(driveEntity.id)
+				.from(driveEntity)
+				.where(
+					driveEntity.car.mdn.eq(mdn),
+					driveEntity.driveOffTime.isNull()
+				)
+				.fetchOne()
+		);
+	}
+
 	//검색 조건
 	private BooleanExpression isEqualMdnContainsRenterName(String mdn, String search) {
 		if (StringUtils.isBlank(search)) {
@@ -326,3 +341,4 @@ public class DriveDomainRepositoryImpl implements DriveDomainRepositoryCustom {
 	}
 
 }
+

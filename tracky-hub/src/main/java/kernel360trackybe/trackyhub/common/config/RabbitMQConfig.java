@@ -13,7 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class RabbitMQConfig {
@@ -32,6 +34,7 @@ public class RabbitMQConfig {
 
 	@Bean
 	public Queue gpsQueue() {
+		log.info("Queue 생성: gpsQueue");
 		return QueueBuilder.durable(properties.getQueue().getGps())
 			.withArgument("x-dead-letter-exchange", properties.getExchange().getDlx())
 			.withArgument("x-dead-letter-routing-key", properties.getRouting().getDeadLetterKey())

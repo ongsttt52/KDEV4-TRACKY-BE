@@ -81,6 +81,11 @@ public class DriveDomainProvider {
 		return OperationTotalCount.toMap(driveDomainRepository.getDailyTotalOperation(targetDate));
 	}
 
+	public Long findActiveDriveIdByMdn(String mdn) {
+		return driveDomainRepository.findRunningDriveIdByMdn(mdn)
+			.orElseThrow(() -> GlobalException.throwError(ErrorCode.NOT_REALTIME_DRIVE));
+	}
+
 	//월별 통계 - 미운행 차량 수
 	public Map<Long, Integer> getNonOperatedCars(LocalDate targetDate) {
 		return NonOperatedCar.toMap(driveDomainRepository.getNonOperatedCars(targetDate));
