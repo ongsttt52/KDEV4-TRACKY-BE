@@ -3,17 +3,16 @@ package kernel360.trackyweb.dashboard.infrastructure.repository;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
-import kernel360.trackycore.core.domain.entity.QDriveEntity;
-import kernel360.trackycore.core.domain.entity.QGpsHistoryEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -24,26 +23,30 @@ public class DashGpsHistoryRepositoryCustomImpl implements DashGpsHistoryReposit
 
 	@Override
 	public List<GpsHistoryEntity> getLatestGps(String bizUuid) {
-		QGpsHistoryEntity gSub = new QGpsHistoryEntity("gSub");
-		QDriveEntity dSub = new QDriveEntity("dSub");
+		// 1. 각 MDN별 최신 GPS ID 조회
+		List<Tuple> latestGpsInfo = queryFactory
+			.select(driveEntity.car.mdn, gpsHistoryEntity.driveSeq.max())
+			.from(gpsHistoryEntity)
+			.join(driveEntity).on(gpsHistoryEntity.drive.id.eq(driveEntity.id))
+			.where(driveEntity.car.biz.bizUuid.eq(bizUuid))
+			.groupBy(driveEntity.car.mdn)
+			.fetch();
+
+		// 2. 최신 GPS ID들로 실제 엔티티 조회
+		List<UUID> latestGpsIds = latestGpsInfo.stream()
+			.map(tuple -> tuple.get(gpsHistoryEntity.driveSeq.max()))
+			.toList();
+
+		if (latestGpsIds.isEmpty()) {
+			return Collections.emptyList();
+		}
 
 		return queryFactory
 			.selectFrom(gpsHistoryEntity)
-			.join(gpsHistoryEntity.drive, driveEntity).fetchJoin()
+			.join(driveEntity).on(gpsHistoryEntity.drive.id.eq(driveEntity.id))
 			.where(
-				Expressions.list(
-					driveEntity.car.mdn,
-					gpsHistoryEntity.oTime
-				).in(
-					JPAExpressions
-						.select(
-							dSub.car.mdn,
-							gSub.oTime.max()
-						)
-						.from(gSub)
-						.join(gSub.drive, dSub)
-						.groupBy(dSub.car.mdn)
-				)
+				gpsHistoryEntity.driveSeq.in(latestGpsIds),
+				driveEntity.car.biz.bizUuid.eq(bizUuid)
 			)
 			.fetch();
 	}
