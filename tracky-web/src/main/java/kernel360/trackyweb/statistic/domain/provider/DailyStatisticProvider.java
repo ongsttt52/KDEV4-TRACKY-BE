@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.DailyStatisticEntity;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.statistic.application.dto.internal.OperationCount;
 import kernel360.trackyweb.statistic.application.dto.internal.OperationDistance;
 import kernel360.trackyweb.statistic.application.dto.internal.OperationRate;
@@ -60,5 +61,13 @@ public class DailyStatisticProvider {
 
 	public List<Integer> getDailyDriveCount(String bizUuid) {
 		return dailyStatisticDomainRepository.findDriveCountByBizUuid(bizUuid);
+	}
+
+	public List<AdminGraphStatsResponse.CarCount> getCarCountWithBizName() {
+		return dailyStatisticDomainRepository.getCarCountAndBizName();
+	}
+
+	public List<AdminGraphStatsResponse.OperationRate> getOperationRatesAvgWithBizName() {
+		return dailyStatisticDomainRepository.getOperationRateAndBizName();
 	}
 }

@@ -62,7 +62,11 @@ public class DriveDomainProvider {
 	public List<DriveEntity> findByMdn(String mdn) {
 		return driveDomainRepository.findDriveListByMdn(mdn);
 	}
-	
+
+	public Long getTotalDriveDurationInMinutes() {
+		return driveDomainRepository.getTotalDriveDurationInMinutes();
+	}
+
 	public Double getRealDriveDistance(Long driveId) {
 		return driveDomainRepository.getRealDriveDistance(driveId);
 	}
