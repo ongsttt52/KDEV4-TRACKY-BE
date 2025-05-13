@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.common.exception.ErrorCode;
 import kernel360.trackycore.core.common.exception.GlobalException;
 import kernel360.trackycore.core.domain.entity.MemberEntity;
+import kernel360.trackycore.core.domain.entity.enums.MemberStatus;
 import kernel360.trackycore.core.infrastructure.repository.MemberRepository;
 import kernel360.trackyweb.sign.infrastructure.repository.MemberDomainRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class MemberProvider {
 		return memberDomainRepository.existsByMemberId(memberId);
 	}
 
-	public List<MemberEntity> findByStatus(String status) {
+	public List<MemberEntity> findByStatus(MemberStatus status) {
 		return memberDomainRepository.findByStatus(status);
 	}
 
