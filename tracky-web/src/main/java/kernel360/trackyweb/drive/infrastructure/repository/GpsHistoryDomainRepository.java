@@ -8,8 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.infrastructure.repository.GpsHistoryRepository;
+import kernel360.trackyweb.realtime.infrastructure.repository.GpsHistoryRepositoryCustom;
 
-public interface GpsHistoryDomainRepository extends GpsHistoryRepository {
+public interface GpsHistoryDomainRepository extends GpsHistoryRepository, GpsHistoryRepositoryCustom {
 
 	@Query(value = """
 		    SELECT * FROM gpshistory

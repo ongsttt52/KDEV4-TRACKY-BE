@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +19,7 @@ public class EventSseController {
 	private final EventEmitterService eventEmitterService;
 
 	@GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public SseEmitter subscribe(@RequestParam String driveId, HttpServletResponse response) {
+	public SseEmitter subscribe(@RequestParam String driveId) {
 		return eventEmitterService.subscribe(driveId);
 	}
 }

@@ -13,11 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class EventEmitterService {
-	private static final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
-
-	public static Map<String, SseEmitter> getTest() {
-		return emitters;
-	}
+	private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
 	public SseEmitter subscribe(String driveId) {
 
