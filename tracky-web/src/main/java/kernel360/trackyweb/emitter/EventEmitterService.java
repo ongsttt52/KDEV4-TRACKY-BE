@@ -70,17 +70,6 @@ public class EventEmitterService {
 			emitter.completeWithError(e);
 			emitters.remove(driveId);
 		}
-
-		/*try {
-			String json = new ObjectMapper().writeValueAsString(data);
-			log.info("SSE 전송 시도: driveId={}, event={}, data={}", driveId, eventName, json);
-			emitter.send(SseEmitter.event().name(eventName).data(json));
-			log.debug("SSE 전송 완료: driveId={}, event={}", driveId, eventName);
-		} catch (Exception e) {
-			log.warn("SSE 전송 실패: driveId={}, eventName={}", driveId, e.getMessage());
-			emitter.completeWithError(e);
-			emitters.remove(driveId);
-		}*/
 	}
 
 	// keep-alive 메시지를 15초마다 전송
