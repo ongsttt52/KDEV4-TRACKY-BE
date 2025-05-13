@@ -4,12 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
@@ -25,10 +22,11 @@ import kernel360.trackycore.core.domain.entity.TimeDistanceEntity;
 import kernel360.trackycore.core.domain.provider.CarProvider;
 import kernel360.trackycore.core.domain.provider.GpsHistoryProvider;
 import kernel360.trackycore.core.domain.provider.LocationProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-// @RequiredArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ConsumerService {
 
@@ -38,44 +36,22 @@ public class ConsumerService {
 	private final GpsHistoryProvider gpsHistoryProvider;
 	private final RentDomainProvider rentDomainProvider;
 	private final TimeDistanceDomainProvider timeDistanceDomainProvider;
-	private final Counter messageCounter;
 
-	public ConsumerService(
-		DriveDomainProvider driveProvider,
-		CarProvider carProvider,
-		LocationProvider locationProvider,
-		GpsHistoryProvider gpsHistoryProvider,
-		RentDomainProvider rentDomainProvider,
-		TimeDistanceDomainProvider timeDistanceDomainProvider,
-		MeterRegistry meterRegistry
-	) {
-		this.driveProvider = driveProvider;
-		this.carProvider = carProvider;
-		this.locationProvider = locationProvider;
-		this.gpsHistoryProvider = gpsHistoryProvider;
-		this.rentDomainProvider = rentDomainProvider;
-		this.timeDistanceDomainProvider = timeDistanceDomainProvider;
-		this.messageCounter = Counter.builder("rabbitmq_messages_processed_total")
-			.description("Total number of messages processed from RabbitMQ")
-			.register(meterRegistry);
-	}
-
-	@Async("taskExecutor")
 	@Transactional
 	public void receiveCycleInfo(GpsHistoryMessage request) {
-
 		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
-		CarEntity car = carProvider.findByMdn(request.mdn());
+
+		CarEntity car = carProvider.findByMdn(request.mdn()); // 캐싱 도입
 		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
 
 		drive.skipCount(removeOverDistance(cycleGpsRequestList));
 
-		if (!cycleGpsRequestList.isEmpty())
+		if (!cycleGpsRequestList.isEmpty()) {
 			processTimeDistance(cycleGpsRequestList, car);
+		}
 
 		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive);
 		gpsHistoryProvider.saveAll(gpsHistories);
-		messageCounter.increment();
 	}
 
 	@Transactional
@@ -126,7 +102,6 @@ public class ConsumerService {
 				count++;
 			}
 		}
-		log.info("이상 거리 제거 개수 : {}", count);
 		return count;
 	}
 
@@ -159,7 +134,6 @@ public class ConsumerService {
 			seconds++;
 		}
 
-		log.info("세컨트스 : {}", seconds);
 		if (distance > 0.0)
 			saveTimeDistance(prevDate, prevHour, car, distance, seconds);
 	}
@@ -169,10 +143,8 @@ public class ConsumerService {
 		Optional<TimeDistanceEntity> timeDistance = timeDistanceDomainProvider.getTimeDistance(date, hour, car);
 
 		if (timeDistance.isPresent()) {
-			log.info("TimeDistance 엔티티 있음");
 			timeDistance.get().updateDistance(totalDistance, seconds);
 		} else {
-			log.info("TimeDistance 엔티티 없음");
 			timeDistanceDomainProvider.save(
 				TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance, seconds)
 			);
