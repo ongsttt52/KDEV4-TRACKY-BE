@@ -13,5 +13,5 @@ public interface TimeDistanceDomainRepositoryCustom {
 
 	List<OperationDistance> getDailyOperationDistance(LocalDate targetDate);
 
-	List<Tuple> countByBizIdAndDateGroupedByHour(Long bizId, LocalDate targetDate);
+	List<Tuple> countByBizIdAndDateGroupedByHour(Long bizId, LocalDate date);
 }

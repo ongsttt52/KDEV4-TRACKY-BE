@@ -1,5 +1,6 @@
 package kernel360.trackyweb.timedistance.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QTimeDistanceEntity.*;
 
 import java.time.LocalDate;
@@ -11,7 +12,6 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kernel360.trackycore.core.domain.entity.QTimeDistanceEntity;
 import kernel360.trackyweb.timedistance.application.dto.internal.OperationDistance;
 import kernel360.trackyweb.timedistance.application.dto.internal.OperationSeconds;
 import lombok.RequiredArgsConstructor;
@@ -23,15 +23,16 @@ public class TimeDistanceDomainRepositoryCustomImpl implements TimeDistanceDomai
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<Tuple> countByBizIdAndDateGroupedByHour(Long bizId, LocalDate targetDate) {
-		QTimeDistanceEntity e = QTimeDistanceEntity.timeDistanceEntity;
+	public List<Tuple> countByBizIdAndDateGroupedByHour(Long bizId, LocalDate date) {
 
-		return queryFactory.select(e.hour, e.count())
-			.from(e)
-			.where(e.biz.id.eq(bizId)
-				.and(e.date.eq(targetDate))
+		return queryFactory.select(timeDistanceEntity.hour, timeDistanceEntity.count())
+			.from(timeDistanceEntity)
+			.where(timeDistanceEntity.biz.id.eq(bizId)
+				.and(timeDistanceEntity.date.eq(date))
 			)
-			.orderBy(e.hour.asc())
+			.orderBy(timeDistanceEntity.hour.asc())
+			.groupBy(timeDistanceEntity.hour)
+			.orderBy(timeDistanceEntity.hour.asc())
 			.fetch();
 	}
 
@@ -40,28 +41,34 @@ public class TimeDistanceDomainRepositoryCustomImpl implements TimeDistanceDomai
 		return queryFactory
 			.select(Projections.constructor(
 				OperationSeconds.class,
-				timeDistanceEntity.biz.id,
-				timeDistanceEntity.seconds.sum()
+				bizEntity.id,
+				timeDistanceEntity.seconds.sum().coalesce(0) // 운행 시간이 없을 경우 0으로 처리
 			))
-			.from(timeDistanceEntity)
-			.where(timeDistanceEntity.date.eq(targetDate))
-			.groupBy(timeDistanceEntity.biz.id)
+			.from(bizEntity)
+			.leftJoin(timeDistanceEntity).on(
+				timeDistanceEntity.biz.id.eq(bizEntity.id),
+				timeDistanceEntity.date.eq(targetDate)
+			)
+			.groupBy(bizEntity.id)
 			.fetch();
-
 	}
 
 	@Override
 	public List<OperationDistance> getDailyOperationDistance(LocalDate targetDate) {
+
 		return queryFactory
 			.select(Projections.constructor(
 				OperationDistance.class,
-				timeDistanceEntity.biz.id,
-				timeDistanceEntity.distance.sum()
+				bizEntity.id,
+				timeDistanceEntity.distance.sum().coalesce(0.0)
 			))
-			.from(timeDistanceEntity)
-			.where(timeDistanceEntity.date.eq(targetDate))
-			.groupBy(timeDistanceEntity.biz.id)
+			.from(bizEntity)
+			.leftJoin(timeDistanceEntity)
+			.on(
+				timeDistanceEntity.biz.id.eq(bizEntity.id),
+				timeDistanceEntity.date.eq(targetDate)
+			)
+			.groupBy(bizEntity.id)
 			.fetch();
 	}
-
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
 import kernel360.trackyweb.car.infrastructure.repository.CarDomainRepository;
 import kernel360.trackyweb.common.sse.GlobalSseEvent;
@@ -84,5 +85,9 @@ public class CarDomainProvider {
 
 	public List<DashboardCarStatusResponse> getCarStatusCounts(String bizUuid) {
 		return carDomainRepository.getCarStatusGroupedByBizUuid(bizUuid);
+	}
+
+	public List<AdminGraphStatsResponse.CarTypeCount> getCarTypeCounts() {
+		return carDomainRepository.getCarTypeCounts();
 	}
 }

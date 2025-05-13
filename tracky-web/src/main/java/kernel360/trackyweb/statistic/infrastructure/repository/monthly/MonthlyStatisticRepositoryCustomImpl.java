@@ -3,14 +3,18 @@ package kernel360.trackyweb.statistic.infrastructure.repository.monthly;
 import static kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity.*;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
+import kernel360.trackycore.core.domain.entity.QMonthlyStatisticEntity;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +34,27 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 			.fetchOne();
 	}
 
+	@Override
+	public MonthlyStatisticEntity findByBizIdAndDate(Long bizId, LocalDate date) {
+		LocalDate start = date.withDayOfMonth(1);
+		LocalDate end = date.with(TemporalAdjusters.lastDayOfMonth());
+
+		return queryFactory
+			.selectFrom(monthlyStatisticEntity)
+			.where(monthlyStatisticEntity.biz.id.eq(bizId)
+				.and(monthlyStatisticEntity.date.between(start, end))
+			)
+			.fetchOne();
+	}
+
+	/**
+	 * 월별 운행량 그래프 데이터 조회
+	 *
+	 * @param bizId
+	 * @param currentDate
+	 * @param targetDate  targetDate BETWEEN currentDate 기간 조회
+	 * @return
+	 */
 	@Override
 	public List<MonthlyStatisticResponse.MonthlyStats> getMonthlyStats(Long bizId, LocalDate currentDate,
 		LocalDate targetDate) {
@@ -51,4 +76,30 @@ public class MonthlyStatisticRepositoryCustomImpl implements MonthlyStatisticRep
 			.orderBy(monthlyStatisticEntity.date.yearMonth().asc())
 			.fetch();
 	}
+
+	@Override
+	public List<AdminGraphStatsResponse.NonOperatedCar> getNonOperatedCarWithBizName() {
+		QMonthlyStatisticEntity sub = new QMonthlyStatisticEntity("sub");
+
+		return queryFactory
+			.select(Projections.constructor(
+					AdminGraphStatsResponse.NonOperatedCar.class,
+					monthlyStatisticEntity.biz.bizName,
+					monthlyStatisticEntity.nonOperatingCarCount
+				)
+			)
+			.from(monthlyStatisticEntity)
+			.where(
+				monthlyStatisticEntity.date.eq(
+					JPAExpressions
+						.select(sub.date.max())
+						.from(sub)
+						.where(sub.biz.id.eq(monthlyStatisticEntity.biz.id))
+				)
+			)
+			.orderBy(monthlyStatisticEntity.nonOperatingCarCount.desc())
+			.limit(5)
+			.fetch();
+	}
+
 }

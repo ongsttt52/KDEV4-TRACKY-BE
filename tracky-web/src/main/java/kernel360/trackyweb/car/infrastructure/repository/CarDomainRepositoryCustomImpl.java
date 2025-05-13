@@ -30,6 +30,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kernel360.trackycore.core.domain.entity.CarEntity;
 import kernel360.trackycore.core.domain.entity.enums.CarStatus;
 import kernel360.trackycore.core.domain.entity.enums.CarType;
+import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphStatsResponse;
 import kernel360.trackyweb.car.application.dto.internal.CarCountWithBizId;
 import kernel360.trackyweb.dashboard.application.dto.response.DashboardCarStatusResponse;
 import kernel360.trackyweb.statistic.application.dto.response.CarStatisticResponse;
@@ -141,7 +142,6 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return new PageImpl<>(content, pageable, total);
 	}
 
-
 	@Override
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
 
@@ -181,11 +181,12 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return queryFactory
 			.select(Projections.constructor(
 				CarCountWithBizId.class,
-				carEntity.biz.id,
-				carEntity.count()
+				bizEntity.id,
+				carEntity.count().coalesce(0L) // car가 없을 경우 0으로 처리
 			))
-			.from(carEntity)
-			.groupBy(carEntity.biz.id)
+			.from(bizEntity)
+			.leftJoin(carEntity).on(carEntity.biz.id.eq(bizEntity.id))
+			.groupBy(bizEntity.id)
 			.fetch();
 	}
 
@@ -251,6 +252,22 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		).orElse(0L);
 
 		return new PageImpl<>(carStatisticResponses, pageable, total);
+	}
+
+	@Override
+	public List<AdminGraphStatsResponse.CarTypeCount> getCarTypeCounts() {
+		return queryFactory
+			.select(
+				Projections.constructor(
+					AdminGraphStatsResponse.CarTypeCount.class,
+					carEntity.carType,
+					carEntity.count()
+				)
+			)
+			.from(carEntity)
+			.groupBy(carEntity.carType)
+			.limit(5)
+			.fetch();
 	}
 
 	@Override
