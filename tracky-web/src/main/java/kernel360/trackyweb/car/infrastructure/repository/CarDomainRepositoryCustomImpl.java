@@ -89,8 +89,6 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	public Page<CarEntity> searchCarByFilter(String bizUuid, String search, CarStatus status, CarType carType,
 		Pageable pageable) {
 
-
-
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(carEntity.biz.bizUuid.eq(bizUuid))
 			.and(isContainsCarMdnOrCarPlate(search))
@@ -144,7 +142,6 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 		return new PageImpl<>(content, pageable, total);
 	}
 
-
 	@Override
 	public Page<CarEntity> searchDriveCarByFilter(String bizUuid, String search, Pageable pageable) {
 
@@ -182,15 +179,15 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 	@Override
 	public List<CarCountWithBizId> getDailyTotalCarCount() {
 		return queryFactory
-				.select(Projections.constructor(
-						CarCountWithBizId.class,
-						bizEntity.id,
-						carEntity.count().coalesce(0L) // car가 없을 경우 0으로 처리
-				))
-				.from(bizEntity)
-				.leftJoin(carEntity).on(carEntity.biz.id.eq(bizEntity.id))
-				.groupBy(bizEntity.id)
-				.fetch();
+			.select(Projections.constructor(
+				CarCountWithBizId.class,
+				bizEntity.id,
+				carEntity.count().coalesce(0L) // car가 없을 경우 0으로 처리
+			))
+			.from(bizEntity)
+			.leftJoin(carEntity).on(carEntity.biz.id.eq(bizEntity.id))
+			.groupBy(bizEntity.id)
+			.fetch();
 	}
 
 	@Override
@@ -269,6 +266,7 @@ public class CarDomainRepositoryCustomImpl implements CarDomainRepositoryCustom 
 			)
 			.from(carEntity)
 			.groupBy(carEntity.carType)
+			.limit(5)
 			.fetch();
 	}
 
