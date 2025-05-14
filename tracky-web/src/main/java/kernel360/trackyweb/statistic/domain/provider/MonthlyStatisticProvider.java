@@ -28,10 +28,10 @@ public class MonthlyStatisticProvider {
 
 		for (MonthlyStatisticEntity entity : resultEntities) {
 			MonthlyStatisticEntity existEntity = monthlyStatisticRepository.findByBizIdAndDate(
-				entity.getBizId(), entity.getDate().minusDays(1));
+				entity.getBizId(), entity.getDate());
 
 			if (existEntity != null) {
-				existEntity.update(entity.getTotalCarCount(), entity.getNonOperatingCarCount(),
+				existEntity.update(entity.getDate(), entity.getTotalCarCount(), entity.getNonOperatingCarCount(),
 					entity.getAvgOperationRate(), entity.getTotalDriveSec(), entity.getTotalDriveCount(),
 					entity.getTotalDriveDistance());
 			} else {

@@ -94,8 +94,10 @@ public class MonthlyStatisticEntity {
 		);
 	}
 
-	public void update(Integer totalCarCount, Integer nonOperatingCarCount, Double avgOperationRate, Long totalDriveSec,
+	public void update(LocalDate date, Integer totalCarCount, Integer nonOperatingCarCount, Double avgOperationRate,
+		Long totalDriveSec,
 		Integer totalDriveCount, Double totalDriveDistance) {
+		this.date = date;
 		this.totalCarCount = totalCarCount;
 		this.nonOperatingCarCount = nonOperatingCarCount;
 		this.avgOperationRate = avgOperationRate;
