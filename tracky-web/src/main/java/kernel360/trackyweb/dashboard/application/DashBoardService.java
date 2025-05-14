@@ -1,6 +1,7 @@
 package kernel360.trackyweb.dashboard.application;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StopWatch;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
@@ -90,38 +90,28 @@ public class DashBoardService {
 	 * @return 구역 : 차량 수 map
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Integer> getGeoData(String bizUuid) {
+	public Map<String, List<String>> getGeoData(String bizUuid) {
 
-		StopWatch stopWatch = new StopWatch();
-
-		//1
-		stopWatch.start("작업 1");
-		List<GpsHistoryEntity> gpsList = dashGpsHistoryProvider.findLatestGpsByMdn(bizUuid);
-		stopWatch.stop();
+		List<GpsHistoryEntity> gpsList = dashGpsHistoryProvider.findLatestGps(bizUuid);
 
 		log.info("gpsList: {} ", gpsList);
 
-		Map<String, Integer> provinceCountMap = new HashMap<>();
+		Map<String, List<String>> provinceCountMap = new HashMap<>();
 
-		//2
-		stopWatch.start("작업 2");
 		for (GpsHistoryEntity gps : gpsList) {
 			// DB에 저장된 위도/경도는 정수형이므로 소수로 변환 필요
 			double lat = gps.getLat() / 1_000_000.0;
 			double lon = gps.getLon() / 1_000_000.0;
 
 			String province = provinceMatcher.findProvince(lon, lat);
+			String mdn = gps.getDrive().getCar().getMdn();
 
-			provinceCountMap.put(province, provinceCountMap.getOrDefault(province, 0) + 1);
+			provinceCountMap
+				.computeIfAbsent(province, k -> new ArrayList<>())
+				.add(mdn);
 		}
-		stopWatch.stop();
 
-		// 성능 분석 로그
-		log.info("=== 성능 분석 결과 ===");
-		log.info("전체 실행 시간: {}ms", stopWatch.getTotalTimeMillis());
 		log.info("처리된 GPS 데이터: {}개", gpsList.size());
-		log.info("\n{}", stopWatch.prettyPrint());
-
 		log.info("provinceCountMap: {}", provinceCountMap);
 		return provinceCountMap;
 	}
