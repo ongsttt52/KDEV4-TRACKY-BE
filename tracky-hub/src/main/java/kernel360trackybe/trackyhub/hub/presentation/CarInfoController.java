@@ -38,6 +38,7 @@ public class CarInfoController {
 	@PostMapping(value = "/on")
 	public ApiResponse<MdnResponse> sendCarStart(@RequestBody CarOnOffRequest carOnOffRequest) {
 
+		log.info(carOnOffRequest.toString());
 		producerService.sendCarStart(carOnOffRequest);
 		return ApiResponse.success(new MdnResponse(carOnOffRequest.mdn()));
 	}

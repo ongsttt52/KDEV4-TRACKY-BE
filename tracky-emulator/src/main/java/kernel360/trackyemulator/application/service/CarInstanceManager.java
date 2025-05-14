@@ -37,6 +37,7 @@ public class CarInstanceManager {
 	public int createEmulator(List<String> mdnList) {
 		this.instances = multiCarInstanceFactory.createCarInstances(mdnList);
 		log.info("multiCarInstanceFactory가 {}개의 인스턴스 생성 완료", instances.size());
+
 		return instances.size();
 	}
 

@@ -34,6 +34,7 @@ public class MultiCarInstanceFactory {
 			EmulatorInfo emulatorInfo = EmulatorInfo.create();
 			GpsInfo gpsInfo = GpsInfo.create(lat, lon, ang, 0, 0.0);
 			EmulatorInstance car = EmulatorInstance.create(mdn, emulatorInfo, gpsInfo, LocalDateTime.now());
+			log.info(String.valueOf(LocalDateTime.now()));
 
 			instances.add(car);
 		}

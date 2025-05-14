@@ -6,5 +6,5 @@ server:
   port: 8081
 
 url:
-  #  hub-service: "http://localhost:8082/hub/car"  # 로컬 환경 URL
-  hub-service: "http://hub-service.hub1:8082/hub/car"  # 개발 환경 URL
+  hub-service: "http://localhost:8082/hub/car"  # 로컬 환경 URL
+#  hub-service: "http://hub-service.hub1:8082/hub/car"  # 개발 환경 URL
