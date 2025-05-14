@@ -1,6 +1,15 @@
 spring:
+  main:
+    log-startup-info: true
   config:
     import: classpath:application-common.yml
+  application:
+    name: emulator
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
 
 server:
   port: 8081
