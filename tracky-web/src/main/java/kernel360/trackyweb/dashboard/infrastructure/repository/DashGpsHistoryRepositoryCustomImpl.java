@@ -12,6 +12,7 @@ import org.springframework.util.StopWatch;
 
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.zaxxer.hikari.HikariDataSource;
 
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DashGpsHistoryRepositoryCustomImpl implements DashGpsHistoryRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
+	private final HikariDataSource ds;
 
 	/**
 	 * 대시보드 차량 위치 지도 - 업체별 최신 GPS 조회

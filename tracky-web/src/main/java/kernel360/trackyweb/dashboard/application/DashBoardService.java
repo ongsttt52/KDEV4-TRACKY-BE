@@ -1,7 +1,6 @@
 package kernel360.trackyweb.dashboard.application;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +9,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
-
-import com.zaxxer.hikari.HikariDataSource;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
@@ -43,8 +40,6 @@ public class DashBoardService {
 	private final ProvinceMatcher provinceMatcher;
 	private final MonthlyStatisticProvider monthlyStatisticProvider;
 	private final DailyStatisticProvider dailyStatisticProvider;
-
-	private final HikariDataSource ds;
 
 	/**
 	 * 반납 조회( 지연된 반납 )
@@ -95,13 +90,13 @@ public class DashBoardService {
 	 * @return 구역 : 차량 수 map
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, List<String>> getGeoData(String bizUuid) {
+	public Map<String, Integer> getGeoData(String bizUuid) {
 
 		List<GpsHistoryEntity> gpsList = dashGpsHistoryProvider.findLatestGps(bizUuid);
 
 		log.info("gpsList: {} ", gpsList);
 
-		Map<String, List<String>> provinceCountMap = new HashMap<>();
+		Map<String, Integer> provinceCountMap = new HashMap<>();
 
 		StopWatch st = new StopWatch();
 
@@ -114,17 +109,10 @@ public class DashBoardService {
 			String province = provinceMatcher.findProvince(lon, lat);
 			String mdn = gps.getDrive().getCar().getMdn();
 
-			provinceCountMap
-				.computeIfAbsent(province, k -> new ArrayList<>())
-				.add(mdn);
+			provinceCountMap.put(province, provinceCountMap.getOrDefault(province, 0) + 1);
 		}
 		st.stop();
 		log.info("{}", st.prettyPrint());
-
-		System.out.println("Active: " + ds.getHikariPoolMXBean().getActiveConnections());
-		System.out.println("Idle  : " + ds.getHikariPoolMXBean().getIdleConnections());
-		System.out.println("Total : " + ds.getHikariPoolMXBean().getTotalConnections());
-		System.out.println("ThreadsAwaitingConnection: " + ds.getHikariPoolMXBean().getThreadsAwaitingConnection());
 
 		log.info("처리된 GPS 데이터: {}개", gpsList.size());
 		log.info("provinceCountMap: {}", provinceCountMap);
