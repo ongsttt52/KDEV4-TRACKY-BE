@@ -1,6 +1,7 @@
 package kernel360.trackyweb.dashboard.application;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,12 +90,13 @@ public class DashBoardService {
 	 * @return 구역 : 차량 수 map
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Integer> getGeoData() {
-		List<GpsHistoryEntity> gpsList = dashGpsHistoryProvider.findLatestGpsByMdn();
+	public Map<String, List<String>> getGeoData(String bizUuid) {
+
+		List<GpsHistoryEntity> gpsList = dashGpsHistoryProvider.findLatestGps(bizUuid);
 
 		log.info("gpsList: {} ", gpsList);
 
-		Map<String, Integer> provinceCountMap = new HashMap<>();
+		Map<String, List<String>> provinceCountMap = new HashMap<>();
 
 		for (GpsHistoryEntity gps : gpsList) {
 			// DB에 저장된 위도/경도는 정수형이므로 소수로 변환 필요
@@ -102,9 +104,14 @@ public class DashBoardService {
 			double lon = gps.getLon() / 1_000_000.0;
 
 			String province = provinceMatcher.findProvince(lon, lat);
+			String mdn = gps.getDrive().getCar().getMdn();
 
-			provinceCountMap.put(province, provinceCountMap.getOrDefault(province, 0) + 1);
+			provinceCountMap
+				.computeIfAbsent(province, k -> new ArrayList<>())
+				.add(mdn);
 		}
+
+		log.info("처리된 GPS 데이터: {}개", gpsList.size());
 		log.info("provinceCountMap: {}", provinceCountMap);
 		return provinceCountMap;
 	}

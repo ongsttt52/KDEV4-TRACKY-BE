@@ -14,7 +14,7 @@ public class DashGpsHistoryProvider {
 
 	private final DashGpsHistoryRepository dashGpsHistoryRepository;
 
-	public List<GpsHistoryEntity> findLatestGpsByMdn() {
-		return dashGpsHistoryRepository.findLatestGpsByMdn();
+	public List<GpsHistoryEntity> findLatestGps(String bizUuid) {
+		return dashGpsHistoryRepository.getLatestGps(bizUuid);
 	}
 }

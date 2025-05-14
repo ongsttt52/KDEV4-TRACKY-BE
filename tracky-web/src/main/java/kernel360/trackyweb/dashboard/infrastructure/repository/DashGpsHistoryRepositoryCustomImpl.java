@@ -1,5 +1,7 @@
 package kernel360.trackyweb.dashboard.infrastructure.repository;
 
+import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
+import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
 
@@ -7,13 +9,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
-import kernel360.trackycore.core.domain.entity.QDriveEntity;
-import kernel360.trackycore.core.domain.entity.QGpsHistoryEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -22,29 +21,32 @@ public class DashGpsHistoryRepositoryCustomImpl implements DashGpsHistoryReposit
 
 	private final JPAQueryFactory queryFactory;
 
+	/**
+	 * 대시보드 차량 위치 지도 - 업체별 최신 GPS 조회
+	 * @param bizUuid
+	 * @return
+	 */
 	@Override
 	public List<GpsHistoryEntity> getLatestGps(String bizUuid) {
-		QGpsHistoryEntity gSub = new QGpsHistoryEntity("gSub");
-		QDriveEntity dSub = new QDriveEntity("dSub");
 
 		return queryFactory
-			.selectFrom(gpsHistoryEntity)
-			.join(gpsHistoryEntity.drive, driveEntity).fetchJoin()
+			.select(gpsHistoryEntity)
+			.from(gpsHistoryEntity)
+			.join(gpsHistoryEntity.drive, driveEntity)
 			.where(
-				Expressions.list(
-					driveEntity.car.mdn,
-					gpsHistoryEntity.oTime
-				).in(
+				// bizUuid 필터링 + MDN별 최신 drive.id 서브쿼리
+				gpsHistoryEntity.drive.id.in(
 					JPAExpressions
-						.select(
-							dSub.car.mdn,
-							gSub.oTime.max()
-						)
-						.from(gSub)
-						.join(gSub.drive, dSub)
-						.groupBy(dSub.car.mdn)
+						.select(driveEntity.id.max())
+						.from(driveEntity)
+						.join(driveEntity.car, carEntity)
+						.join(carEntity.biz, bizEntity)
+						.where(bizEntity.bizUuid.eq(bizUuid))
+						.groupBy(carEntity.mdn)
 				)
 			)
+			.groupBy(driveEntity.id, driveEntity.car.mdn)
+			.orderBy(gpsHistoryEntity.driveSeq.desc())
 			.fetch();
 	}
 }

@@ -51,8 +51,10 @@ public class DashBoardController implements DashBoardApiDocs {
 	}
 
 	@GetMapping("/geo")
-	public ApiResponse<Map<String, Integer>> getGeoData() {
-		Map<String, Integer> geoMap = dashBoardService.getGeoData();
+	public ApiResponse<Map<String, List<String>>> getGeoData(
+		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
+	) {
+		Map<String, List<String>> geoMap = dashBoardService.getGeoData(memberPrincipal.bizUuid());
 		return ApiResponse.success(geoMap);
 	}
 }
