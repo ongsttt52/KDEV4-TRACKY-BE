@@ -11,9 +11,11 @@ import kernel360.trackyweb.admin.statistic.application.dto.response.AdminGraphSt
 import kernel360.trackyweb.statistic.application.dto.response.MonthlyStatisticResponse;
 import kernel360.trackyweb.statistic.infrastructure.repository.monthly.MonthlyStatisticDomainRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MonthlyStatisticProvider {
 
 	private final MonthlyStatisticDomainRepository monthlyStatisticRepository;
@@ -28,15 +30,18 @@ public class MonthlyStatisticProvider {
 
 		for (MonthlyStatisticEntity entity : resultEntities) {
 			MonthlyStatisticEntity existEntity = monthlyStatisticRepository.findByBizIdAndDate(
-				entity.getBizId(), entity.getDate().minusDays(1));
+				entity.getBizId(), entity.getDate());
 
 			if (existEntity != null) {
-				existEntity.update(entity.getTotalCarCount(), entity.getNonOperatingCarCount(),
+				existEntity.update(entity.getDate(), entity.getTotalCarCount(), entity.getNonOperatingCarCount(),
 					entity.getAvgOperationRate(), entity.getTotalDriveSec(), entity.getTotalDriveCount(),
 					entity.getTotalDriveDistance());
 			} else {
 				monthlyStatisticRepository.save(entity);
 			}
+
+			log.info("기존 date: {}", existEntity.getDate());
+			log.info("새 date: {}", entity.getDate());
 		}
 	}
 
