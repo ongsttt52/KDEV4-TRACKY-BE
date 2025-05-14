@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
+import kernel360.trackycore.core.domain.provider.BizProvider;
 import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.dashboard.application.dto.response.DashboardCarStatusResponse;
@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class DashBoardService {
 	private final DashGpsHistoryProvider dashGpsHistoryProvider;
+	private final BizProvider bizProvider;
 	private final CarDomainProvider carDomainProvider;
 	private final RentProvider rentProvider;
 	private final RentDomainProvider rentDomainProvider;
@@ -92,29 +93,29 @@ public class DashBoardService {
 	@Transactional(readOnly = true)
 	public Map<String, Integer> getGeoData(String bizUuid) {
 
-		List<GpsHistoryEntity> gpsList = dashGpsHistoryProvider.findLatestGps(bizUuid);
+		Long bizId = bizProvider.getBiz(bizUuid).getId();
 
-		log.info("gpsList: {} ", gpsList);
+		Map<String, int[]> map = dashGpsHistoryProvider.findLatestLatLon(bizId);
+		int[] lats = map.get("lats");
+		int[] lons = map.get("lons");
 
 		Map<String, Integer> provinceCountMap = new HashMap<>();
 
 		StopWatch st = new StopWatch();
-
 		st.start("provinceMatcher");
-		for (GpsHistoryEntity gps : gpsList) {
+
+		for (int i = 0; i < lats.length; i++) {
 			// DB에 저장된 위도/경도는 정수형이므로 소수로 변환 필요
-			double lat = gps.getLat() / 1_000_000.0;
-			double lon = gps.getLon() / 1_000_000.0;
+			double lat = lats[i] / 1_000_000.0;
+			double lon = lons[i] / 1_000_000.0;
 
 			String province = provinceMatcher.findProvince(lon, lat);
-			String mdn = gps.getDrive().getCar().getMdn();
 
 			provinceCountMap.put(province, provinceCountMap.getOrDefault(province, 0) + 1);
 		}
 		st.stop();
 		log.info("{}", st.prettyPrint());
 
-		log.info("처리된 GPS 데이터: {}개", gpsList.size());
 		log.info("provinceCountMap: {}", provinceCountMap);
 		return provinceCountMap;
 	}
