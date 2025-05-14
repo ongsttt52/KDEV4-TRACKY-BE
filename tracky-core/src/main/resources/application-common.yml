@@ -7,14 +7,6 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      pool-name: ConsumerHikariCP
-      maximum-pool-size: 60
-      minimum-idle: 10
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 600000
-      leak-detection-threshold: 10000
 
   jpa:
     hibernate:

@@ -6,6 +6,16 @@ spring:
   application:
     name: tracky-hub
 
+  datasource:
+    hikari:
+      pool-name: HubHikariCP
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 5000
+      idle-timeout: 300000
+      max-lifetime: 600000
+      leak-detection-threshold: 10000
+
 rabbitmq:
   exchange:
     car-info: car-info-exchange
