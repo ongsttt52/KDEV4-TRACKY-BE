@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
 import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
@@ -40,6 +43,8 @@ public class DashBoardService {
 	private final ProvinceMatcher provinceMatcher;
 	private final MonthlyStatisticProvider monthlyStatisticProvider;
 	private final DailyStatisticProvider dailyStatisticProvider;
+
+	private final HikariDataSource ds;
 
 	/**
 	 * 반납 조회( 지연된 반납 )
@@ -98,6 +103,9 @@ public class DashBoardService {
 
 		Map<String, List<String>> provinceCountMap = new HashMap<>();
 
+		StopWatch st = new StopWatch();
+
+		st.start("provinceMatcher");
 		for (GpsHistoryEntity gps : gpsList) {
 			// DB에 저장된 위도/경도는 정수형이므로 소수로 변환 필요
 			double lat = gps.getLat() / 1_000_000.0;
@@ -110,6 +118,13 @@ public class DashBoardService {
 				.computeIfAbsent(province, k -> new ArrayList<>())
 				.add(mdn);
 		}
+		st.stop();
+		log.info("{}", st.prettyPrint());
+
+		System.out.println("Active: " + ds.getHikariPoolMXBean().getActiveConnections());
+		System.out.println("Idle  : " + ds.getHikariPoolMXBean().getIdleConnections());
+		System.out.println("Total : " + ds.getHikariPoolMXBean().getTotalConnections());
+		System.out.println("ThreadsAwaitingConnection: " + ds.getHikariPoolMXBean().getThreadsAwaitingConnection());
 
 		log.info("처리된 GPS 데이터: {}개", gpsList.size());
 		log.info("provinceCountMap: {}", provinceCountMap);
