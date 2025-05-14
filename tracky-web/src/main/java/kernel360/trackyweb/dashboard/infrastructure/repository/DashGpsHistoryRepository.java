@@ -12,26 +12,31 @@ import kernel360.trackyweb.dashboard.domain.projection.GpsLatLonProjection;
 @Repository
 public interface DashGpsHistoryRepository extends GpsHistoryRepository, DashGpsHistoryRepositoryCustom {
 
-	@Query(
-		value = """
-			SELECT
-			  gh.lat, gh.lon
-			FROM gpshistory gh
-			JOIN (
-			  SELECT
-			    d2.id   AS drive_id,
-			    MAX(gh2.drive_seq) AS max_seq
-			  FROM drive d2
-			  JOIN car   c2   ON d2.mdn = c2.mdn
-			                AND c2.biz_id = :bizId
-			  JOIN gpshistory gh2
-			    ON gh2.drive_id = d2.id
-			  GROUP BY d2.id
-			) AS latest
-			  ON gh.drive_id = latest.drive_id
-			 AND gh.drive_seq = latest.max_seq
-			ORDER BY gh.drive_seq DESC
-			""",
+	@Query(value = """
+		WITH latest_seq AS (
+		  SELECT
+		    gh2.drive_id,
+		    MAX(gh2.drive_seq) AS max_seq
+		  FROM gpshistory gh2
+		  GROUP BY gh2.drive_id
+		)
+		SELECT
+		  d.mdn    AS mdn,
+		  gh.drive_seq AS driveSeq,
+		  gh.lat    AS lat,
+		  gh.lon    AS lon
+		FROM latest_seq ls
+		JOIN gpshistory gh
+		  ON gh.drive_id = ls.drive_id
+		 AND gh.drive_seq = ls.max_seq
+		JOIN drive d
+		  ON d.id = ls.drive_id
+		JOIN car c
+		  ON c.mdn = d.mdn
+		 AND c.biz_id = :bizId
+		GROUP BY c.mdn
+		ORDER BY gh.drive_seq DESC
+		""",
 		nativeQuery = true
 	)
 	List<GpsLatLonProjection> findLatestLatLonByBizId(@Param("bizId") Long bizId);

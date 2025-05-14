@@ -2,8 +2,8 @@ package kernel360.trackyweb.dashboard.infrastructure.repository;
 
 import java.util.List;
 
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
+import com.querydsl.core.Tuple;
 
 public interface DashGpsHistoryRepositoryCustom {
-	List<GpsHistoryEntity> getLatestGps(String bizUuid);
+	List<Tuple> getLatestGps(Long bizId);
 }

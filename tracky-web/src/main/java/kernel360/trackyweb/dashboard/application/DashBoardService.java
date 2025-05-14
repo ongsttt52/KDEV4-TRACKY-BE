@@ -95,7 +95,9 @@ public class DashBoardService {
 
 		Long bizId = bizProvider.getBiz(bizUuid).getId();
 
-		Map<String, int[]> map = dashGpsHistoryProvider.findLatestLatLon(bizId);
+		// Map<String, int[]> map  = dashGpsHistoryProvider.findLatestGps(bizId); // 개선 전
+		Map<String, int[]> map = dashGpsHistoryProvider.findLatestLatLon(bizId); // 개선 후
+
 		int[] lats = map.get("lats");
 		int[] lons = map.get("lons");
 
@@ -110,9 +112,9 @@ public class DashBoardService {
 			double lon = lons[i] / 1_000_000.0;
 
 			String province = provinceMatcher.findProvince(lon, lat);
-
 			provinceCountMap.put(province, provinceCountMap.getOrDefault(province, 0) + 1);
 		}
+
 		st.stop();
 		log.info("{}", st.prettyPrint());
 
