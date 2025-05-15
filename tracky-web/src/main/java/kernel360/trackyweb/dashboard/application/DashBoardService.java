@@ -1,7 +1,6 @@
 package kernel360.trackyweb.dashboard.application;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +8,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
 import kernel360.trackycore.core.common.api.ApiResponse;
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import kernel360.trackycore.core.domain.entity.MonthlyStatisticEntity;
 import kernel360.trackycore.core.domain.entity.RentEntity;
 import kernel360.trackycore.core.domain.entity.enums.RentStatus;
+import kernel360.trackycore.core.domain.provider.BizProvider;
 import kernel360.trackycore.core.domain.provider.RentProvider;
 import kernel360.trackyweb.car.domain.provider.CarDomainProvider;
 import kernel360.trackyweb.dashboard.application.dto.response.DashboardCarStatusResponse;
@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class DashBoardService {
 	private final DashGpsHistoryProvider dashGpsHistoryProvider;
+	private final BizProvider bizProvider;
 	private final CarDomainProvider carDomainProvider;
 	private final RentProvider rentProvider;
 	private final RentDomainProvider rentDomainProvider;
@@ -90,28 +91,33 @@ public class DashBoardService {
 	 * @return 구역 : 차량 수 map
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, List<String>> getGeoData(String bizUuid) {
+	public Map<String, Integer> getGeoData(String bizUuid) {
 
-		List<GpsHistoryEntity> gpsList = dashGpsHistoryProvider.findLatestGps(bizUuid);
+		Long bizId = bizProvider.getBiz(bizUuid).getId();
 
-		log.info("gpsList: {} ", gpsList);
+		// Map<String, int[]> map = dashGpsHistoryProvider.findLatestGps(bizId); // 개선 전
+		Map<String, int[]> map = dashGpsHistoryProvider.findLatestLatLon(bizId); // 개선 후
 
-		Map<String, List<String>> provinceCountMap = new HashMap<>();
+		int[] lats = map.get("lats");
+		int[] lons = map.get("lons");
 
-		for (GpsHistoryEntity gps : gpsList) {
+		Map<String, Integer> provinceCountMap = new HashMap<>();
+
+		StopWatch st = new StopWatch();
+		st.start("provinceMatcher");
+
+		for (int i = 0; i < lats.length; i++) {
 			// DB에 저장된 위도/경도는 정수형이므로 소수로 변환 필요
-			double lat = gps.getLat() / 1_000_000.0;
-			double lon = gps.getLon() / 1_000_000.0;
+			double lat = lats[i] / 1_000_000.0;
+			double lon = lons[i] / 1_000_000.0;
 
 			String province = provinceMatcher.findProvince(lon, lat);
-			String mdn = gps.getDrive().getCar().getMdn();
-
-			provinceCountMap
-				.computeIfAbsent(province, k -> new ArrayList<>())
-				.add(mdn);
+			provinceCountMap.put(province, provinceCountMap.getOrDefault(province, 0) + 1);
 		}
 
-		log.info("처리된 GPS 데이터: {}개", gpsList.size());
+		st.stop();
+		log.info("{}", st.prettyPrint());
+
 		log.info("provinceCountMap: {}", provinceCountMap);
 		return provinceCountMap;
 	}

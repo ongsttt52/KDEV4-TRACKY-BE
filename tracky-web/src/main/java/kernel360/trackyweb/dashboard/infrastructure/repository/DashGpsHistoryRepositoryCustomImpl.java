@@ -1,6 +1,5 @@
 package kernel360.trackyweb.dashboard.infrastructure.repository;
 
-import static kernel360.trackycore.core.domain.entity.QBizEntity.*;
 import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QDriveEntity.*;
 import static kernel360.trackycore.core.domain.entity.QGpsHistoryEntity.*;
@@ -9,10 +8,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.zaxxer.hikari.HikariDataSource;
 
-import kernel360.trackycore.core.domain.entity.GpsHistoryEntity;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -20,17 +20,18 @@ import lombok.RequiredArgsConstructor;
 public class DashGpsHistoryRepositoryCustomImpl implements DashGpsHistoryRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
+	private final HikariDataSource ds;
 
 	/**
 	 * 대시보드 차량 위치 지도 - 업체별 최신 GPS 조회
-	 * @param bizUuid
+	 * @param bizId
 	 * @return
 	 */
 	@Override
-	public List<GpsHistoryEntity> getLatestGps(String bizUuid) {
+	public List<Tuple> getLatestGps(Long bizId) {
 
 		return queryFactory
-			.select(gpsHistoryEntity)
+			.select(gpsHistoryEntity.lat, gpsHistoryEntity.lon)
 			.from(gpsHistoryEntity)
 			.join(gpsHistoryEntity.drive, driveEntity)
 			.where(
@@ -40,8 +41,7 @@ public class DashGpsHistoryRepositoryCustomImpl implements DashGpsHistoryReposit
 						.select(driveEntity.id.max())
 						.from(driveEntity)
 						.join(driveEntity.car, carEntity)
-						.join(carEntity.biz, bizEntity)
-						.where(bizEntity.bizUuid.eq(bizUuid))
+						.where(carEntity.biz.id.eq(bizId))
 						.groupBy(carEntity.mdn)
 				)
 			)
