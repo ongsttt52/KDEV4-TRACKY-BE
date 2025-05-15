@@ -61,7 +61,7 @@ public class CarController implements CarApiDocs {
 		return carService.searchOne(mdn);
 	}
 
-	@PostMapping("")
+	@PostMapping()
 	public ApiResponse<CarDetailResponse> create(
 		@RequestBody CarCreateRequest carCreateRequest,
 		@Schema(hidden = true) @AuthenticationPrincipal MemberPrincipal memberPrincipal
@@ -69,14 +69,14 @@ public class CarController implements CarApiDocs {
 		return carService.create(memberPrincipal.bizUuid(), carCreateRequest);
 	}
 
-	@PatchMapping("")
+	@PatchMapping()
 	public ApiResponse<CarDetailResponse> update(
 		@RequestBody CarUpdateRequest carUpdateRequest
 	) {
 		return carService.update(carUpdateRequest);
 	}
 
-	@DeleteMapping("")
+	@DeleteMapping()
 	public ApiResponse<CarDetailResponse> delete(
 		@RequestBody CarDeleteRequest carDeleteRequest
 	) {

@@ -15,4 +15,14 @@ public enum CarStatus {
 	CarStatus(String label) {
 		this.label = label;
 	}
+
+	public static CarStatus from(String value) {
+		if (value == null || value.isBlank())
+			return null;
+		try {
+			return CarStatus.valueOf(value.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+	}
 }

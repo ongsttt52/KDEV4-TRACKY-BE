@@ -63,8 +63,8 @@ public class CarService {
 		Page<CarEntity> cars = carDomainProvider.searchCarByFilter(
 			bizUuid,
 			carSearchByFilterRequest.search(),
-			carSearchByFilterRequest.status(),
-			carSearchByFilterRequest.carType(),
+			carSearchByFilterRequest.toCarStatus(),
+			carSearchByFilterRequest.toCarType(),
 			carSearchByFilterRequest.toPageable());
 
 		Page<CarResponse> carResponses = cars.map(CarResponse::from);

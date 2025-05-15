@@ -15,4 +15,14 @@ public enum RentStatus {
 	RentStatus(String label) {
 		this.label = label;
 	}
+
+	public static RentStatus from(String value) {
+		if (value == null || value.isBlank())
+			return null;
+		try {
+			return RentStatus.valueOf(value.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+	}
 }

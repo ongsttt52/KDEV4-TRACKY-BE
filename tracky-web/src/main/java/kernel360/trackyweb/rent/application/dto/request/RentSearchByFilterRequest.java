@@ -11,7 +11,7 @@ import kernel360.trackycore.core.domain.entity.enums.RentStatus;
 public record RentSearchByFilterRequest(
 	String rentUuid,
 	String search,
-	RentStatus status,
+	String status,
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	LocalDate rentDate,
 	Integer page,
@@ -22,4 +22,9 @@ public record RentSearchByFilterRequest(
 		int safeSize = size != null ? size : 10;
 		return PageRequest.of(safePage, safeSize);
 	}
+
+	public RentStatus toRentStatus() {
+		return RentStatus.from(status);
+	}
+
 }
