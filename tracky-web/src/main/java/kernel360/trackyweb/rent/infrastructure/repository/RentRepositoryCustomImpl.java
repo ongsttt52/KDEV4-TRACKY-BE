@@ -1,6 +1,5 @@
 package kernel360.trackyweb.rent.infrastructure.repository;
 
-import static kernel360.trackycore.core.domain.entity.QCarEntity.*;
 import static kernel360.trackycore.core.domain.entity.QRentEntity.*;
 
 import java.time.LocalDate;
@@ -71,9 +70,9 @@ public class RentRepositoryCustomImpl implements RentRepositoryCustom {
 		BooleanBuilder builder = new BooleanBuilder()
 			.and(rentEntity.car.biz.bizUuid.eq(bizUuid))
 			.and(isContainsRentUuid(request.rentUuid()))
-			.and(isEqualRentStatus(request.status()))
+			.and(isEqualRentStatus(request.toRentStatus()))
 			.and(isOverlapRentDate(request.rentDate()))
-			.and(isNotDeleted(request.status()));
+			.and(isNotDeleted(request.toRentStatus()));
 
 		JPAQuery<RentEntity> query = queryFactory
 			.selectFrom(rentEntity)

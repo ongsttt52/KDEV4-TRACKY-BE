@@ -18,4 +18,15 @@ public enum CarType {
 	CarType(String label) {
 		this.label = label;
 	}
+
+	public static CarType from(String value) {
+		if (value == null || value.isBlank())
+			return null;
+		try {
+			return CarType.valueOf(value.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+	}
+
 }

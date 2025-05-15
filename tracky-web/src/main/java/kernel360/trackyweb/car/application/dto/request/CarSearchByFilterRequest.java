@@ -8,8 +8,8 @@ import kernel360.trackycore.core.domain.entity.enums.CarType;
 
 public record CarSearchByFilterRequest(
 	String search,
-	CarStatus status,
-	CarType carType,
+	String status,
+	String carType,
 	Integer page,
 	Integer size
 ) {
@@ -17,5 +17,13 @@ public record CarSearchByFilterRequest(
 		int safePage = page != null ? page : 0;
 		int safeSize = size != null ? size : 10;
 		return PageRequest.of(safePage, safeSize);
+	}
+
+	public CarStatus toCarStatus() {
+		return CarStatus.from(status);
+	}
+
+	public CarType toCarType() {
+		return CarType.from(carType);
 	}
 }
