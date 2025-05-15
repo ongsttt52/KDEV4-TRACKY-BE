@@ -15,27 +15,27 @@ public interface DashGpsHistoryRepository extends GpsHistoryRepository, DashGpsH
 	@Query(value = """
 		WITH latest_seq AS (
 		  SELECT
-		    gh2.drive_id,
-		    MAX(gh2.drive_seq) AS max_seq
+			gh2.drive_id,
+			MAX(gh2.drive_seq) AS max_seq
 		  FROM gpshistory gh2
 		  GROUP BY gh2.drive_id
+		), latest_drive AS (
+			SELECT mdn, MAX(d3.id) AS max_drive
+			FROM drive d3
+			GROUP BY d3.mdn
 		)
 		SELECT
-		  d.mdn    AS mdn,
-		  gh.drive_seq AS driveSeq,
-		  gh.lat    AS lat,
-		  gh.lon    AS lon
+		gh.lat, gh.lon
 		FROM latest_seq ls
+		JOIN latest_drive ld
+			ON ld.max_drive = ls.drive_id
 		JOIN gpshistory gh
-		  ON gh.drive_id = ls.drive_id
-		 AND gh.drive_seq = ls.max_seq
-		JOIN drive d
-		  ON d.id = ls.drive_id
+			ON gh.drive_id = ld.max_drive
+			AND gh.drive_seq = ls.max_seq
 		JOIN car c
-		  ON c.mdn = d.mdn
+		  ON c.mdn = ld.mdn
 		 AND c.biz_id = :bizId
-		GROUP BY c.mdn
-		ORDER BY gh.drive_seq DESC
+		 GROUP BY c.mdn
 		""",
 		nativeQuery = true
 	)

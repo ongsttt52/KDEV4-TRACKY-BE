@@ -95,7 +95,7 @@ public class DashBoardService {
 
 		Long bizId = bizProvider.getBiz(bizUuid).getId();
 
-		// Map<String, int[]> map  = dashGpsHistoryProvider.findLatestGps(bizId); // 개선 전
+		// Map<String, int[]> map = dashGpsHistoryProvider.findLatestGps(bizId); // 개선 전
 		Map<String, int[]> map = dashGpsHistoryProvider.findLatestLatLon(bizId); // 개선 후
 
 		int[] lats = map.get("lats");
