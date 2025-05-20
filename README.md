@@ -76,38 +76,38 @@ ERD - [https://www.erdcloud.com/d/mE2uimBHiXsvoxAWJ](https://www.erdcloud.com/d/
   <tbody>
     <tr>
       <td align="center">
-        <a href="">
-          <img src="" width="100px;" alt="팀장 프로필"/><br />
+        <a href="https://github.com/jun950829">
+          <img src="https://avatars.githubusercontent.com/u/55969783?v=4" width="100px;" alt="팀장 프로필"/><br />
           <span><b>천승준</b></span>
         </a>
       </td>
       <td align="center">
-        <a href="">
-          <img src="" width="100px;" alt="팀원 프로필"/><br />
+        <a href="https://github.com/ji-won-2">
+          <img src="https://avatars.githubusercontent.com/u/200579267?v=4" width="100px;" alt="팀원 프로필"/><br />
           <span><b>구지원</b></span>
         </a>
       </td>
       <td align="center">
-        <a href="">
-          <img src="" width="100px;" alt="팀원 프로필"/><br />
+        <a href="https://github.com/Tojaman">
+          <img src="https://avatars.githubusercontent.com/u/89668546?v=4" width="100px;" alt="팀원 프로필"/><br />
           <span><b>조형준</b></span>
         </a>
       </td>
       <td align="center">
-        <a href="">
-          <img src="" width="100px;" alt="팀원 프로필"/><br />
+        <a href="https://github.com/devJeenee">
+          <img src="https://avatars.githubusercontent.com/u/95906139?v=4" width="100px;" alt="팀원 프로필"/><br />
           <span><b>차의진</b></span>
         </a>
       </td>
       <td align="center">
-        <a href="">
-          <img src="" width="100px;" alt="팀원 프로필"/><br />
+        <a href="https://github.com/kimchijinju">
+          <img src="https://avatars.githubusercontent.com/u/85796402?v=4" width="100px;" alt="팀원 프로필"/><br />
           <span><b>김한빈</b></span>
         </a>
       </td>
       <td align="center">
-        <a href="">
-          <img src="" width="100px;" alt="팀원 프로필"/><br />
+        <a href="https://github.com/ongsttt52">
+          <img src="https://avatars.githubusercontent.com/u/177156866?v=4" width="100px;" alt="팀원 프로필"/><br />
           <span><b>오승택</b></span>
         </a>
       </td>
