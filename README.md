@@ -1,4 +1,4 @@
-# TRACKY - 실시간 차량 관제 서비스
+![image](https://github.com/user-attachments/assets/e34973da-12af-4e83-b175-aab25393aa35)# TRACKY - 실시간 차량 관제 서비스
 
 <img src="https://github.com/Kernel360/KDEV4-TRACKY-BE/blob/resource/img-tracky/image.png?raw=true" width="400">
 
@@ -30,29 +30,36 @@ ERD - [https://www.erdcloud.com/d/mE2uimBHiXsvoxAWJ](https://www.erdcloud.com/d/
 
 **대시보드**
 
-![대시보드]()
+![Image](https://github.com/user-attachments/assets/2460c131-a4ab-4194-b7f5-7d6cfc251c2c)
 
 **차량관리**
 
-![차량관리]()
+![image](https://github.com/user-attachments/assets/4a340ef1-06a9-46d1-a23c-1fe145fc3ee4)
+
 
 **준 실시간 경로 추적**
 
-![경로조회]()
+![image](https://github.com/user-attachments/assets/b1049061-a66b-483f-8a3a-a33856afacc2)
+
 
 
 **운행기록 조회**
 
-![운행기록]()
+![image](https://github.com/user-attachments/assets/ed011f62-7f4e-4d07-b847-11bcfd7a3cce)
+
+
 
 **사용자 및 관리자 통계**
 
-![통계]()
+![image](https://github.com/user-attachments/assets/b80b6fa8-0a30-4958-8f8d-45baa4505353)
+![image](https://github.com/user-attachments/assets/e59c7f7b-fc92-492d-b9da-05161fd0186c)
+
+
 
 
 
 ## 시스템 아키텍처
-![아키텍처.png]()
+![Image](https://github.com/user-attachments/assets/fccb1d2b-671f-4e15-8ca6-782d31b58f95)
 
 
 ## 이슈 및 트러블 슈팅
