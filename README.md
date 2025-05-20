@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/e34973da-12af-4e83-b175-aab25393aa35)# TRACKY - 실시간 차량 관제 서비스
+# TRACKY - 실시간 차량 관제 서비스
 
 <img src="https://github.com/Kernel360/KDEV4-TRACKY-BE/blob/resource/img-tracky/image.png?raw=true" width="400">
 
