@@ -59,6 +59,8 @@ ERD - [https://www.erdcloud.com/d/mE2uimBHiXsvoxAWJ](https://www.erdcloud.com/d/
 
 
 ## 시스템 아키텍처
+![image](https://github.com/user-attachments/assets/dd4dae3e-c694-4340-bb05-5da51b74ab86)
+---
 ![Image](https://github.com/user-attachments/assets/fccb1d2b-671f-4e15-8ca6-782d31b58f95)
 
 
