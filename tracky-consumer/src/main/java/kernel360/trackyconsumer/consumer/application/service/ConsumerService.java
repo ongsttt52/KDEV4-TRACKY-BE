@@ -3,10 +3,6 @@ package kernel360.trackyconsumer.consumer.application.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.CycleGpsRequest;
 import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
@@ -24,6 +20,8 @@ import kernel360.trackycore.core.domain.provider.GpsHistoryProvider;
 import kernel360.trackycore.core.domain.provider.LocationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -166,7 +164,7 @@ public class ConsumerService {
 			timeDistance.get().updateDistance(totalDistance, seconds);
 		} else {
 			timeDistanceDomainProvider.save(
-				TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance, seconds)
+				TimeDistanceEntity.create(car, car.getBiz(), date, hour, totalDistance, seconds, 1L)
 			);
 		}
 		// timeDistanceDomainProvider.getTimeDistance(date, hour, car)

@@ -1,7 +1,5 @@
 package kernel360.trackycore.core.domain.entity;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -13,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import kernel360.trackycore.core.domain.entity.base.DateBaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -49,13 +48,17 @@ public class TimeDistanceEntity extends DateBaseEntity {
 	@Column(name = "seconds", nullable = false)
 	private int seconds;
 
+	@Column(name = "version", nullable = false)
+	private long version;
+
 	private TimeDistanceEntity(
 		CarEntity car,
 		BizEntity biz,
 		LocalDate date,
 		int hour,
 		double distance,
-		int seconds
+		int seconds,
+		long version
 	) {
 
 		this.car = car;
@@ -64,11 +67,12 @@ public class TimeDistanceEntity extends DateBaseEntity {
 		this.hour = hour;
 		this.distance = distance;
 		this.seconds = seconds;
+		this.version = version;
 	}
 
 	public static TimeDistanceEntity create(CarEntity car, BizEntity biz, LocalDate date, int hour, double distance,
-		int seconds) {
-		return new TimeDistanceEntity(car, biz, date, hour, distance, seconds);
+		int seconds, long version) {
+		return new TimeDistanceEntity(car, biz, date, hour, distance, seconds, version);
 	}
 
 	public void updateDistance(double distance, int seconds) {
