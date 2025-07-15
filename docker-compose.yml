@@ -49,14 +49,17 @@ services:
     image: grafana/k6:latest
     container_name: k6
     entrypoint: ["k6"]
-    command: run -o experimental-prometheus-rw /scripts/script.js
+    command: run -o experimental-prometheus-rw /src/test.js
     environment:
       - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
       - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./scripts:/scripts
+      # 현재 디렉터리(.)를 컨테이너의 /src 디렉터리에 마운트
+      - ./:/src
+      # 안정적인 실행을 위해 tty 옵션 추가
+    tty: true
     depends_on:
       - prometheus
 

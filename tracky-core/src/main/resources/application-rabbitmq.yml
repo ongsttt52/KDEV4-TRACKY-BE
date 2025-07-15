@@ -9,6 +9,6 @@ spring:
 rabbitmq:
   queue:
     gps: gps-queue
-    onoff: on-off-Queue
+    onoff: on-off-queue
     web: web-queue
     dlq: dead-letter-queue

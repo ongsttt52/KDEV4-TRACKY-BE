@@ -1,5 +1,7 @@
 package kernel360trackybe.trackyhub.common.config;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
@@ -12,10 +14,9 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class RabbitMQConfig {
 
 	private final RabbitMQProperties properties;
@@ -54,13 +55,13 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	public Binding gpsBinding(Queue gpsQueue, FanoutExchange exchange) {
-		return BindingBuilder.bind(gpsQueue).to(exchange);
+	public Binding gpsBinding(Queue gpsQueue, FanoutExchange fanoutExchange) {
+		return BindingBuilder.bind(gpsQueue).to(fanoutExchange);
 	}
 
 	@Bean
-	public Binding webBinding(Queue webQueue, FanoutExchange exchange) {
-		return BindingBuilder.bind(webQueue).to(exchange);
+	public Binding webBinding(Queue webQueue, FanoutExchange fanoutExchange) {
+		return BindingBuilder.bind(webQueue).to(fanoutExchange);
 	}
 
 	@Bean
