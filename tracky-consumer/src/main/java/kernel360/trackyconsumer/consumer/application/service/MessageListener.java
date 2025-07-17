@@ -21,7 +21,7 @@ public class MessageListener {
 	// --- 1500개 메시지 측정용 변수 추가 ---
 	private static final AtomicInteger totalProcessedMessages = new AtomicInteger(0);
 	private static final AtomicLong startTimeFor1500Messages = new AtomicLong(0);
-	private static final int TARGET_MESSAGE_COUNT = 150;
+	private static final int TARGET_MESSAGE_COUNT = 3000;
 	private final ConsumerService consumerService;
 
 	@RabbitListener(queues = "on-off-queue")

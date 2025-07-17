@@ -9,7 +9,7 @@ const cycleApiTrend = new Trend('cycle_api_duration');
 
 // 테스트 옵션: 150명의 가상 사용자가 10분 동안 테스트를 실행
 export const options = {
-  vus: 150,
+  vus: 146,
   duration: '1s',
   thresholds: {
     // 95%의 요청이 800ms 안에 처리되어야 함
