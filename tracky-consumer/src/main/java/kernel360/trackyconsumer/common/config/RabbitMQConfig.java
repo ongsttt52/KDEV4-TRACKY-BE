@@ -1,13 +1,10 @@
 package kernel360.trackyconsumer.common.config;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,44 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
 	private final RabbitMQProperties properties;
-	private final MeterRegistry meterRegistry;
-
-	// yml 파일에서 큐 이름을 주입받습니다.
-	@Value("${rabbitmq.queue.gps}")
-	private String gpsQueueName;
-
-	@Value("${rabbitmq.queue.onoff}")
-	private String onoffQueueName;
-
-	@Value("${rabbitmq.queue.web}")
-	private String webQueueName;
-
-	@Value("${rabbitmq.queue.dlq}")
-	private String deadLetterQueueName;
-
-	/**
-	 * gps-queue 라는 이름의 큐 Bean을 생성합니다.
-	 * durable: true 속성으로 RabbitMQ 서버가 재시작되어도 큐가 유지되도록 합니다.
-	 */
-	@Bean
-	public Queue gpsQueue() {
-		return new Queue(gpsQueueName, true);
-	}
-
-	@Bean
-	public Queue onoffQueue() {
-		return new Queue(onoffQueueName, true);
-	}
-
-	@Bean
-	public Queue webQueue() {
-		return new Queue(webQueueName, true);
-	}
-
-	@Bean
-	public Queue deadLetterQueue() {
-		return new Queue(deadLetterQueueName, true);
-	}
 
 	@Bean
 	public Jackson2JsonMessageConverter messageConverter() {

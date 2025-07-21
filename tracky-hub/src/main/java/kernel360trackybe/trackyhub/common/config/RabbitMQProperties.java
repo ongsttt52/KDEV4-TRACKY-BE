@@ -1,10 +1,9 @@
 package kernel360trackybe.trackyhub.common.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "rabbitmq")
@@ -21,7 +20,7 @@ public class RabbitMQProperties {
 	public static class Exchange {
 		private String carInfo;
 		private String cycleInfo;
-		private String dlx;
+		private String deadLetter;
 	}
 
 	@Getter

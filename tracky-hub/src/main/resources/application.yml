@@ -10,10 +10,16 @@ rabbitmq:
   exchange:
     car-info: car-info-exchange
     cycle-info: cycle-info-exchange
-    dlx: dlx-exchange
+    dead-letter: dead-letter-exchange
   routing:
     on-key: onKey
     off-key: offKey
     dead-letter-key: deadLetterKey
+  queue:
+    gps: gps-queue
+    onoff: on-off-queue
+    web: web-queue
+    dlq: dead-letter-queue
+
 server:
   port: 8082

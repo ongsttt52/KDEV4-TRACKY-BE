@@ -34,7 +34,7 @@ public class RabbitMQConfig {
 	@Bean
 	public Queue gpsQueue() {
 		return QueueBuilder.durable(properties.getQueue().getGps())
-			.withArgument("x-dead-letter-exchange", properties.getExchange().getDlx())
+			.withArgument("x-dead-letter-exchange", properties.getExchange().getDeadLetter())
 			.withArgument("x-dead-letter-routing-key", properties.getRouting().getDeadLetterKey())
 			.build();
 	}

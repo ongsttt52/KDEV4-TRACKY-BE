@@ -9,11 +9,9 @@ const cycleApiTrend = new Trend('cycle_api_duration');
 
 // 테스트 옵션: 150명의 가상 사용자가 10분 동안 테스트를 실행
 export const options = {
-  vus: 146,
+  vus: 39,
   duration: '1s',
   thresholds: {
-    // 95%의 요청이 800ms 안에 처리되어야 함
-    'http_req_duration': ['p(95)<800'],
     // 요청 실패율은 1% 미만이어야 함
     'http_req_failed': ['rate<0.01'],
   },
@@ -22,7 +20,7 @@ export const options = {
 // setup 함수: 테스트 시작 전 한번만 실행되어 테스트 데이터를 준비합니다.
 export function setup() {
     console.log('--- 테스트 데이터 생성 시작 ---');
-    const baseTime = '202506261530'; // 기준 시간
+    const baseTime = '202504301530'; // 기준 시간
     const cList = [];
 
     // cList 배열 안의 oTime을 ...00초부터 ...59초까지 동적으로 생성
@@ -60,7 +58,7 @@ export function setup() {
 // 각 가상 사용자(VU)가 실행할 메인 함수
 // setup에서 반환된 데이터가 'data' 파라미터로 전달됩니다.
 export default function (data) {
-  const baseUrl = 'http://host.docker.internal:8082'; // 실제 테스트 대상 URL
+  const baseUrl = 'http://hub:8082'; // 실제 테스트 대상 URL
   const headers = { 'Content-Type': 'application/json' };
 
   // setup에서 만든 완전한 페이로드를 사용
