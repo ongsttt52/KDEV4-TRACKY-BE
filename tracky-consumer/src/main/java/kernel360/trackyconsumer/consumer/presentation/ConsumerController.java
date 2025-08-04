@@ -1,17 +1,15 @@
 package kernel360.trackyconsumer.consumer.presentation;
 
+import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
+import kernel360.trackyconsumer.consumer.application.service.ConsumerService;
+import kernel360.trackycore.core.common.api.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import kernel360.trackyconsumer.consumer.application.dto.request.CarOnOffRequest;
-import kernel360.trackyconsumer.consumer.application.dto.request.GpsHistoryMessage;
-import kernel360.trackyconsumer.consumer.application.service.ConsumerService;
-import kernel360.trackycore.core.common.api.ApiResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RequestMapping("/consume")
 @RestController
@@ -50,10 +48,10 @@ public class ConsumerController {
 		return ApiResponse.success(request.mdn());
 	}
 
-	@PostMapping("/cycle")
-	public ApiResponse<String> postCarCycle(@RequestBody GpsHistoryMessage request) {
-
-		ConsumerService.receiveCycleInfo(request);
-		return ApiResponse.success(request.mdn());
-	}
+//	@PostMapping("/cycle")
+//	public ApiResponse<String> postCarCycle(@RequestBody GpsHistoryMessage request) {
+//
+//		ConsumerService.receiveCycleInfo(request);
+//		return ApiResponse.success(request.mdn());
+//	}
 }

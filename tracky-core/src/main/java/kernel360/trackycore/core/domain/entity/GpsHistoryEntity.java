@@ -3,10 +3,7 @@ package kernel360.trackycore.core.domain.entity;
 import com.fasterxml.uuid.Generators;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
@@ -29,9 +26,8 @@ public class GpsHistoryEntity implements Persistable<UUID> {
 	@Column(name = "drive_seq", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
 	private UUID driveSeq;    //주행기록 시퀀스
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "drive_id", nullable = false)
-	private DriveEntity drive;    //주행ID 외래키
+	@Column(name = "mdn", nullable = false)
+	private String mdn;
 
 	@Column(name = "o_time", nullable = false)
 	private LocalDateTime oTime;    //발생시간
@@ -62,11 +58,11 @@ public class GpsHistoryEntity implements Persistable<UUID> {
 	@Transient // 데이터베이스에 매핑되지 않음을 명시
 	private boolean isNew = true;
 
-	public GpsHistoryEntity(DriveEntity drive, LocalDateTime oTime, String gcd, int lat, int lon, int ang,
+	public GpsHistoryEntity(String mdn, LocalDateTime oTime, String gcd, int lat, int lon, int ang,
 		int spd,
 		double sum) {
 		this.driveSeq = Generators.timeBasedEpochGenerator().generate();
-		this.drive = drive;
+		this.mdn = mdn;
 		this.oTime = oTime;
 		this.gcd = gcd;
 		this.lat = lat;

@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,9 @@ public class MessageListener {
 	// --- 1500개 메시지 측정용 변수 추가 ---
 	private static final AtomicInteger totalProcessedMessages = new AtomicInteger(0);
 	private static final AtomicLong startTimeFor1500Messages = new AtomicLong(0);
-	private static final int TARGET_MESSAGE_COUNT = 15000;
+	private static final int TARGET_MESSAGE_COUNT = 5000;
+	private static final AtomicInteger loopCount = new AtomicInteger(1);
+
 	private final ConsumerService consumerService;
 
 	@RabbitListener(queues = "on-off-queue")
@@ -42,20 +45,22 @@ public class MessageListener {
 	}
 
 	// GPS 정보 처리 큐
+	@Transactional
 	@RabbitListener(queues = "gps-queue", containerFactory = "batchRabbitListenerContainerFactory")
 	public void receiveCarMessages_bulk(List<GpsHistoryMessage> messages) {
 		// --- 1500개 메시지 측정 시작 로직 ---
 		// 첫 메시지 묶음이 들어올 때 시간 기록 (단 한 번만)
 		if (totalProcessedMessages.get() == 0 && startTimeFor1500Messages.get() == 0) {
 			startTimeFor1500Messages.set(System.currentTimeMillis());
-			log.info("--- 1500개 메시지 처리 시간 측정 시작 ---");
+			log.info("--- 5000개 메시지 처리 시간 측정 시작 ---");
 		}
 		// ------------------------------------
+		long start = System.currentTimeMillis();
 
 		log.info("GPS 메시지 {}건 수신 - Thread: {}", messages.size(), Thread.currentThread().getName());
 
 		List<GpsHistoryEntity> gpses = new ArrayList<>();
-		long start = System.currentTimeMillis();
+
 		for (GpsHistoryMessage message : messages) {
 			try {
 				gpses.addAll(consumerService.receiveCycleInfo_bulk(message));
@@ -63,29 +68,28 @@ public class MessageListener {
 				log.error("GPS 메시지 처리 중 오류 발생: {}", e.getMessage());
 			}
 		}
-
 		long end = System.currentTimeMillis();
-
-		log.info("receiveCarMessages_bulk - receiveCycleInfo_bulk : {}ms 소요", end - start);
+		log.info("ver 11) 메시지 {}건 변환 : {}ms 소요", messages.size(), end - start);
 
 		start = System.currentTimeMillis();
 		consumerService.saveAllGps(gpses);
 		end = System.currentTimeMillis();
 
-		log.info("receiveCarMessages_bulk - saveAllGps : {}ms 소요", end - start);
+		log.info("ver 11) 메시지 {}건 저장 : {}ms 소요", messages.size(), end - start);
 
-		// --- 1500개 메시지 측정 종료 로직 ---
+		// --- 5000개 메시지 측정 종료 로직 ---
 		// 현재 처리된 메시지 개수를 더하고
 		int currentTotal = totalProcessedMessages.addAndGet(messages.size());
 
 		// 만약 TARGET_MESSAGE_COUNT를 넘었거나 정확히 도달했다면 시간 출력
 		if (currentTotal >= TARGET_MESSAGE_COUNT) {
 			long totalElapsedTime = System.currentTimeMillis() - startTimeFor1500Messages.get();
-			log.info("--- 총 {}개 메시지 처리 완료. 총 소요 시간: {}ms ---", TARGET_MESSAGE_COUNT, totalElapsedTime);
+			log.info("--- ver 11) ({}번째)총 {}개 메시지 처리 완료. 총 소요 시간: {}ms ---", loopCount, TARGET_MESSAGE_COUNT, totalElapsedTime);
 
 			// 측정 완료 후 변수 초기화 (필요하다면 다음 측정을 위해)
 			totalProcessedMessages.set(0);
 			startTimeFor1500Messages.set(0);
+			loopCount.addAndGet(1);
 		}
 		// ------------------------------------
 	}

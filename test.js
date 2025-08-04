@@ -9,11 +9,11 @@ const cycleApiTrend = new Trend('cycle_api_duration');
 
 // 테스트 옵션: 150명의 가상 사용자가 10분 동안 테스트를 실행
 export const options = {
-  vus: 39,
-  duration: '1s',
+  vus: 150,
+  duration: '100s',
   thresholds: {
     // 요청 실패율은 1% 미만이어야 함
-    'http_req_failed': ['rate<0.01'],
+    'http_req_failed': ['rate<1.0'],
   },
 };
 

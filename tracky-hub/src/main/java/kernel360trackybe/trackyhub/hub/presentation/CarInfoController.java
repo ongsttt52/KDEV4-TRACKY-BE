@@ -1,14 +1,6 @@
 package kernel360trackybe.trackyhub.hub.presentation;
 
 import java.util.List;
-
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import kernel360trackybe.trackyhub.hub.application.dto.request.CarOnOffRequest;
 import kernel360trackybe.trackyhub.hub.application.dto.request.CycleInfoRequest;
 import kernel360trackybe.trackyhub.hub.application.dto.request.TokenRequest;
@@ -19,6 +11,12 @@ import kernel360trackybe.trackyhub.hub.application.dto.response.TokenResponse;
 import kernel360trackybe.trackyhub.hub.application.service.CarInfoProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/hub/car", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,7 +28,7 @@ public class CarInfoController {
 
 	@PostMapping(value = "/cycle")
 	public ApiResponse<MdnResponse> sendCycleInfo(@RequestBody CycleInfoRequest cycleInfoRequest) {
-
+		log.info("요청 받았다");
 		producerService.sendCycleInfo(cycleInfoRequest);
 		return ApiResponse.success(new MdnResponse(cycleInfoRequest.mdn()));
 	}

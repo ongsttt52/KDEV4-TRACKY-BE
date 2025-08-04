@@ -35,40 +35,28 @@ public class ConsumerService {
 	private final RentDomainProvider rentDomainProvider;
 	private final TimeDistanceDomainProvider timeDistanceDomainProvider;
 
-	@Transactional
-	public void receiveCycleInfo(GpsHistoryMessage request) {
-		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
-
-		CarEntity car = carProvider.findByMdn(request.mdn()); // 캐싱 도입
-		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
-
-		drive.skipCount(removeOverDistance(cycleGpsRequestList));
-
-		if (!cycleGpsRequestList.isEmpty()) {
-			processTimeDistance(cycleGpsRequestList, car);
-		}
-
-		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive);
-		gpsHistoryProvider.saveAll(gpsHistories);
-	}
-
-	@Transactional
-	public List<GpsHistoryEntity> receiveCycleInfo_bulk(GpsHistoryMessage request) {
-		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
-
-		CarEntity car = carProvider.findByMdn(request.mdn()); // 캐싱 도입
-		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
-
-		long prevMillis = System.currentTimeMillis();
-		drive.skipCount(removeOverDistance(cycleGpsRequestList));
-		long afterMillis = System.currentTimeMillis();
-		log.info("receiveCycleInfo - skipCount 시간 측정 결과 : {}ms", afterMillis - prevMillis);
-
+//	@Transactional
+//	public void receiveCycleInfo(GpsHistoryMessage request) {
+//		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
+//
+//		CarEntity car = carProvider.findByMdn(request.mdn()); // 캐싱 도입
+//		DriveEntity drive = driveProvider.getDrive(car, request.oTime());
+//
+//		drive.skipCount(removeOverDistance(cycleGpsRequestList));
+//
 //		if (!cycleGpsRequestList.isEmpty()) {
 //			processTimeDistance(cycleGpsRequestList, car);
 //		}
+//
+//		List<GpsHistoryEntity> gpsHistories = toGpsHistoryList(cycleGpsRequestList, drive);
+//		gpsHistoryProvider.saveAll(gpsHistories);
+//	}
 
-		return toGpsHistoryList(cycleGpsRequestList, drive);
+
+	public List<GpsHistoryEntity> receiveCycleInfo_bulk(GpsHistoryMessage request) {
+		List<CycleGpsRequest> cycleGpsRequestList = request.cList();
+
+		return toGpsHistoryList(cycleGpsRequestList, request.mdn());
 	}
 
 	public void saveAllGps(List<GpsHistoryEntity> gpsHistories) {
@@ -107,10 +95,10 @@ public class ConsumerService {
 	}
 
 	private List<GpsHistoryEntity> toGpsHistoryList(List<CycleGpsRequest> cycleGpsRequestList,
-		DriveEntity drive) {
+		String mdn) {
 
 		return cycleGpsRequestList.stream()
-			.map(request -> request.toGpsHistoryEntity(drive, request.gpsInfo().getSum()))
+			.map(request -> request.toGpsHistoryEntity(mdn, request.gpsInfo().getSum()))
 			.toList();
 	}
 
