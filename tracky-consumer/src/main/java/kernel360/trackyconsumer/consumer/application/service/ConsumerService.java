@@ -1,5 +1,6 @@
 package kernel360.trackyconsumer.consumer.application.service;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ public class ConsumerService {
 	private final GpsHistoryProvider gpsHistoryProvider;
 	private final RentDomainProvider rentDomainProvider;
 	private final TimeDistanceDomainProvider timeDistanceDomainProvider;
+	private final MeterRegistry meterRegistry;
 
 //	@Transactional
 //	public void receiveCycleInfo(GpsHistoryMessage request) {
@@ -60,7 +62,13 @@ public class ConsumerService {
 	}
 
 	public void saveAllGps(List<GpsHistoryEntity> gpsHistories) {
-		gpsHistoryProvider.saveAll(gpsHistories);
+		try {
+			int savedCount = gpsHistories.size(); // 저장될 GPS 데이터의 개수
+			gpsHistoryProvider.saveAll(gpsHistories);
+			meterRegistry.counter("db.gps.save.count", "status", "success").increment(savedCount);
+		} catch(Exception e) {
+			meterRegistry.counter("db.gps.save.count", "status", "failure").increment();
+		}
 	}
 
 	@Transactional
